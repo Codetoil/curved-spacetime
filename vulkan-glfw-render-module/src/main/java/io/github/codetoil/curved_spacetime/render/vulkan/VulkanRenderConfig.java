@@ -49,17 +49,34 @@ public class VulkanRenderConfig {
         try (FileReader reader = new FileReader(FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn("Could not find config file " + FILENAME, ex);
+            Logger.warn("Could not find config file " + FILENAME);
+            ex.printStackTrace(System.err);
             this.dirty = true;
         }
 
-        this.dirty = this.dirty || !props.containsKey("fps");
-        this.fps = Integer.parseInt(props.getOrDefault("fps", DEFAULT_FPS).toString());
-        if (this.fps < 1 || this.fps > 1000)
+        Object fpsPropValue = props.get("fps");
+        if (fpsPropValue != null)
         {
-            Logger.warn("Invalid value for FPS: {}, valid bounds [1,1000], resetting to default {}", this.fps,
+            try {
+                this.fps = Integer.parseInt(fpsPropValue.toString());
+            } catch (NumberFormatException ex)
+            {
+                Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
+                        fpsPropValue, DEFAULT_FPS);
+                ex.printStackTrace(System.err);
+                this.fps = DEFAULT_FPS;
+                this.dirty = true;
+            }
+            if (this.fps < 1 || this.fps > 1000)
+            {
+                Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
+                        this.fps, DEFAULT_FPS);
+                this.fps = DEFAULT_FPS;
+                this.dirty = true;
+            }
+        } else {
+            Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
                     DEFAULT_FPS);
-            this.fps = DEFAULT_FPS;
             this.dirty = true;
         }
 

@@ -76,7 +76,7 @@ public class VulkanPhysicalDevice {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             // Get available devices
             PointerBuffer pPhysicalDevices = getPhysicalDevices(instance, stack);
-            int numDevices = pPhysicalDevices != null ? pPhysicalDevices.capacity() : 0;
+            int numDevices = pPhysicalDevices.capacity();
             if (numDevices <= 0) {
                 throw new RuntimeException("No physical devices found");
             }

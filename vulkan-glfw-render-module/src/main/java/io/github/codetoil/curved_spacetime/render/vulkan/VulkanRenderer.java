@@ -37,8 +37,6 @@ import java.util.concurrent.TimeUnit;
 public class VulkanRenderer extends Renderer {
     public final VulkanRenderConfig vulkanRenderConfig;
     protected final VulkanInstance vulkanInstance;
-    protected final VulkanPhysicalDevice vulkanPhysicalDevice;
-    protected final VulkanLogicalDevice vulkanLogicalDevice;
     protected final VulkanGraphicsQueue vulkanGraphicsQueue;
     protected final VulkanSurface vulkanSurface;
 
@@ -58,11 +56,10 @@ public class VulkanRenderer extends Renderer {
         this.executor = Executors.newSingleThreadScheduledExecutor();
         this.window.init();
 
-        this.vulkanInstance = new VulkanInstance(true, GLFWVulkan::glfwGetRequiredInstanceExtensions);
-        this.vulkanPhysicalDevice = VulkanPhysicalDevice.createPhysicalDevice(vulkanInstance, null);
-        this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);
-        this.vulkanSurface = new VulkanSurface(vulkanPhysicalDevice, ((VulkanWindow) window).getWindowHandle());
-        this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanLogicalDevice, 0);
+        this.vulkanInstance = new VulkanInstance(GLFWVulkan::glfwGetRequiredInstanceExtensions);
+        this.vulkanSurface = new VulkanSurface(this.vulkanInstance.getVulkanPhysicalDevice(), ((VulkanWindow) window)
+                .getWindowHandle());
+        this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanInstance.getVulkanLogicalDevice(), 0);
 
         this.frameHandler = this.executor.scheduleAtFixedRate(this.window::loop,
                 1_000 / this.vulkanRenderConfig.getFPS(), 1_000 / this.vulkanRenderConfig.getFPS(),
@@ -73,8 +70,6 @@ public class VulkanRenderer extends Renderer {
     public void clean() {
         super.clean();
         this.vulkanSurface.cleanup();
-        this.vulkanLogicalDevice.cleanup();
-        this.vulkanPhysicalDevice.cleanup();
         this.vulkanInstance.cleanup();
     }
 

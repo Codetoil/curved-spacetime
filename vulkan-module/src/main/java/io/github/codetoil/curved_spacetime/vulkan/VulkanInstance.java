@@ -48,11 +48,13 @@ public class VulkanInstance {
     public final VulkanConfig vulkanConfig;
 
     private final VkInstance vkInstance;
+    protected final VulkanPhysicalDevice vulkanPhysicalDevice;
+    protected final VulkanLogicalDevice vulkanLogicalDevice;
 
     private VkDebugUtilsMessengerCreateInfoEXT debugUtils;
     private long vkDebugHandle;
 
-    public VulkanInstance(boolean validate, Supplier<PointerBuffer> windowExtensionsGetter)
+    public VulkanInstance(Supplier<PointerBuffer> windowExtensionsGetter)
     {
         try {
             this.vulkanConfig = new VulkanConfig().load();
@@ -72,13 +74,18 @@ public class VulkanInstance {
                     .apiVersion(VK13.VK_API_VERSION_1_3);
 
             // Validation layers
-            List<String> validationLayers = getSupportedValidationLayers();
-            int numValidationLayers = validationLayers.size();
-            boolean supportsValidation = validate;
-            if (validate && numValidationLayers == 0) {
-                supportsValidation = false;
-                Logger.warn("Request validation but no supported validation layers found. " +
-                        "Falling back to no validation");
+            boolean supportsValidation = this.vulkanConfig.validation();
+            List<String> validationLayers = List.of();
+            int numValidationLayers = 0;
+
+            if (this.vulkanConfig.validation()) {
+                validationLayers = getSupportedValidationLayers();
+                numValidationLayers = validationLayers.size();
+                if (numValidationLayers == 0) {
+                    supportsValidation = false;
+                    Logger.warn("Request validation but no supported validation layers found. " +
+                            "Falling back to no validation");
+                }
             }
             Logger.debug("Validation: {}", supportsValidation);
 
@@ -153,6 +160,10 @@ public class VulkanInstance {
                 vkDebugHandle = longBuff.get(0);
             }
         }
+
+        this.vulkanPhysicalDevice = VulkanPhysicalDevice.createPhysicalDevice(this,
+                this.vulkanConfig.getPreferredDeviceName());
+        this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);
     }
 
     private List<String> getSupportedValidationLayers() {
@@ -218,28 +229,31 @@ public class VulkanInstance {
     }
 
     private static VkDebugUtilsMessengerCreateInfoEXT createDebugCallback() {
-        VkDebugUtilsMessengerCreateInfoEXT result = VkDebugUtilsMessengerCreateInfoEXT.calloc()
+        return VkDebugUtilsMessengerCreateInfoEXT.calloc()
                 .sType(EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT)
                 .messageSeverity(MESSAGE_SEVERITY_BITMASK)
                 .messageType(MESSAGE_TYPE_BITMASK)
                 .pfnUserCallback((messageSeverity, messageTypes, callbackDataAddress, userData) -> {
-                    VkDebugUtilsMessengerCallbackDataEXT callbackData =
-                            VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);
-                    if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0) {
-                        Logger.info("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0) {
-                        Logger.warn("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
-                        Logger.error("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) != 0) {
-                        Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                    try (VkDebugUtilsMessengerCallbackDataEXT callbackData =
+                            VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress))
+                    {
+                        if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0) {
+                            Logger.info("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0) {
+                            Logger.warn("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
+                            Logger.error("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) != 0) {
+                            Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        }
                     }
                     return VK13.VK_FALSE;
                 });
-        return result;
     }
 
     public void cleanup() {
+        this.vulkanLogicalDevice.cleanup();
+        this.vulkanPhysicalDevice.cleanup();
         Logger.debug("Destroying Vulkan Instance");
         if (vkDebugHandle != VK13.VK_NULL_HANDLE) {
             EXTDebugUtils.vkDestroyDebugUtilsMessengerEXT(vkInstance, vkDebugHandle, null);
@@ -253,5 +267,13 @@ public class VulkanInstance {
 
     public VkInstance getVkInstance() {
         return vkInstance;
+    }
+
+    public VulkanLogicalDevice getVulkanLogicalDevice() {
+        return vulkanLogicalDevice;
+    }
+
+    public VulkanPhysicalDevice getVulkanPhysicalDevice() {
+        return vulkanPhysicalDevice;
     }
 }

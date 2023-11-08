@@ -30,7 +30,11 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class VulkanConfig {
+    private static final boolean DEFAULT_VALIDATE = false;
+    private static final String DEFAULT_PREFERRED_DEVICE_NAME = null;
     private static final String FILENAME = "vulkan-module.config";
+    private boolean _validation;
+    private String preferredDeviceName;
     private boolean dirty = false;
 
     public VulkanConfig() {
@@ -43,15 +47,39 @@ public class VulkanConfig {
         try (FileReader reader = new FileReader(FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn("Could not find config file " + FILENAME, ex);
+            Logger.warn("Could not find config file " + FILENAME);
+            ex.printStackTrace(System.err);
             this.dirty = true;
         }
+
+        Object validatePropValue = props.get("validation");
+        if (validatePropValue != null)
+        {
+            this._validation = Boolean.parseBoolean(validatePropValue.toString());
+        } else {
+            Logger.warn("Could not find required key validation, resetting to default {}",
+                    DEFAULT_VALIDATE);
+            this._validation = DEFAULT_VALIDATE;
+            this.dirty = true;
+        }
+
+        Object preferredDeviceNamePropValue = props.get("preferredDeviceName");
+        if (preferredDeviceNamePropValue != null)
+        {
+            this.preferredDeviceName = preferredDeviceNamePropValue.toString();
+        } else {
+            this.preferredDeviceName = DEFAULT_PREFERRED_DEVICE_NAME;
+        }
+
 
         return this;
     }
 
     public void save() throws IOException {
         Properties props = new Properties();
+        props.put("validation", String.valueOf(this._validation));
+        if (this.preferredDeviceName != null)
+            props.put("preferredDeviceName", this.preferredDeviceName);
 
         try (FileWriter writer = new FileWriter(FILENAME)) {
             props.store(writer, "Config for the Vulkan Module.");
@@ -61,5 +89,14 @@ public class VulkanConfig {
 
     public boolean isDirty() {
         return this.dirty;
+    }
+
+    public boolean validation() {
+        return this._validation;
+    }
+
+    public String getPreferredDeviceName()
+    {
+        return preferredDeviceName;
     }
 }

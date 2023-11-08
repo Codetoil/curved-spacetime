@@ -40,7 +40,8 @@ public class APIConfig {
         try (FileReader reader = new FileReader(FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn("Could not find config file " + FILENAME, ex);
+            Logger.warn("Could not find config file " + FILENAME);
+            ex.printStackTrace(System.err);
             this.dirty = true;
         }
 
