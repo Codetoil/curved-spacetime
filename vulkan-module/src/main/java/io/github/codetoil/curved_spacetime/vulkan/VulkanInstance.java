@@ -28,6 +28,7 @@ import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.*;
 import org.tinylog.Logger;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -44,6 +45,8 @@ public class VulkanInstance {
             EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
             EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
+    public final VulkanConfig vulkanConfig;
+
     private final VkInstance vkInstance;
 
     private VkDebugUtilsMessengerCreateInfoEXT debugUtils;
@@ -51,6 +54,13 @@ public class VulkanInstance {
 
     public VulkanInstance(boolean validate, Supplier<PointerBuffer> windowExtensionsGetter)
     {
+        try {
+            this.vulkanConfig = new VulkanConfig().load();
+            if (this.vulkanConfig.isDirty()) this.vulkanConfig.save();
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to load Vulkan Config", ex);
+        }
+
         try (MemoryStack stack = MemoryStack.stackPush()) {
             ByteBuffer appShortName = stack.UTF8("CurvedSpacetime");
             VkApplicationInfo appInfo = VkApplicationInfo.calloc(stack)

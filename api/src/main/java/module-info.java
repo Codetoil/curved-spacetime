@@ -25,4 +25,5 @@ module io.github.codetoil.curved_spacetime.api {
     exports io.github.codetoil.curved_spacetime.api.engine;
     exports io.github.codetoil.curved_spacetime.api.render;
     exports io.github.codetoil.curved_spacetime.api.scene;
+    exports io.github.codetoil.curved_spacetime.api;
 }

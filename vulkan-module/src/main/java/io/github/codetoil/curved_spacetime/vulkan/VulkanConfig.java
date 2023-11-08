@@ -19,34 +19,47 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-package io.github.codetoil.curved_spacetime.api.render;
+package io.github.codetoil.curved_spacetime.vulkan;
 
+import org.tinylog.Logger;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
-public class RendererConfig {
-    private static final int DEFAULT_FPS = 60;
-    private static final String FILENAME = "renderer.properties";
-    private int fps;
+public class VulkanConfig {
+    private static final String FILENAME = "vulkan-module.config";
+    private boolean dirty = false;
 
-    public RendererConfig() {
+    public VulkanConfig() {
 
     }
 
-    public int getFPS() {
-        return this.fps;
-    }
-
-    public RendererConfig load() throws IOException {
+    public VulkanConfig load() throws IOException {
         Properties props = new Properties();
 
-        try (InputStream stream = RendererConfig.class.getResourceAsStream("/" + FILENAME)) {
-            if (stream != null)
-                props.load(stream);
-            this.fps = Integer.parseInt(props.getOrDefault("fps", DEFAULT_FPS).toString());
+        try (FileReader reader = new FileReader(FILENAME)) {
+            props.load(reader);
+        } catch (FileNotFoundException ex) {
+            Logger.warn("Could not find config file " + FILENAME, ex);
+            this.dirty = true;
         }
 
         return this;
+    }
+
+    public void save() throws IOException {
+        Properties props = new Properties();
+
+        try (FileWriter writer = new FileWriter(FILENAME)) {
+            props.store(writer, "Config for the Vulkan Module.");
+        }
+        this.dirty = false;
+    }
+
+    public boolean isDirty() {
+        return this.dirty;
     }
 }

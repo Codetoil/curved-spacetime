@@ -21,6 +21,7 @@
 
 package io.github.codetoil.curved_spacetime.render.glfw;
 
+import io.github.codetoil.curved_spacetime.api.APIConfig;
 import io.github.codetoil.curved_spacetime.api.engine.Engine;
 import io.github.codetoil.curved_spacetime.api.render.Window;
 import org.lwjgl.Version;
@@ -30,13 +31,21 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryUtil;
 import org.tinylog.Logger;
 
+import java.io.IOException;
+
 public abstract class GLFWWindow extends Window {
+    public final GLFWRenderConfig GLFWRenderConfig;
     protected long windowHandle;
 
     protected GLFWWindow(Engine engine)
     {
         super(engine);
-        Logger.debug("LWJGL Version: " + Version.getVersion());
+        try {
+            this.GLFWRenderConfig = new GLFWRenderConfig().load();
+            if (this.GLFWRenderConfig.isDirty()) this.GLFWRenderConfig.save();
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to load GLFW Render Config", ex);
+        }
     }
 
     public void init() {

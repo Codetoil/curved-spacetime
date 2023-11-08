@@ -20,14 +20,24 @@
 
 package io.github.codetoil.curved_spacetime.api.engine;
 
+import io.github.codetoil.curved_spacetime.api.APIConfig;
 import io.github.codetoil.curved_spacetime.api.render.Renderer;
 import io.github.codetoil.curved_spacetime.api.scene.Scene;
 
+import java.io.IOException;
+
 public class Engine {
+    public final APIConfig APIConfig;
     public Renderer renderer;
     public Scene scene;
 
     public Engine() {
+        try {
+            this.APIConfig = new APIConfig().load();
+            if (this.APIConfig.isDirty()) this.APIConfig.save();
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to load API Config", ex);
+        }
         this.scene = new Scene();
     }
 

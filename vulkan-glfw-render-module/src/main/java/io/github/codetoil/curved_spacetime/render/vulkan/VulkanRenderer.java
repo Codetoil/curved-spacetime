@@ -21,6 +21,7 @@
 
 package io.github.codetoil.curved_spacetime.render.vulkan;
 
+import io.github.codetoil.curved_spacetime.api.APIConfig;
 import io.github.codetoil.curved_spacetime.api.engine.Engine;
 import io.github.codetoil.curved_spacetime.api.scene.Scene;
 import io.github.codetoil.curved_spacetime.api.render.Renderer;
@@ -29,10 +30,12 @@ import io.github.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
 import io.github.codetoil.curved_spacetime.vulkan.VulkanInstance;
 import org.lwjgl.glfw.GLFWVulkan;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class VulkanRenderer extends Renderer {
+    public final VulkanRenderConfig vulkanRenderConfig;
     protected final VulkanInstance vulkanInstance;
     protected final VulkanPhysicalDevice vulkanPhysicalDevice;
     protected final VulkanLogicalDevice vulkanLogicalDevice;
@@ -42,6 +45,13 @@ public class VulkanRenderer extends Renderer {
 
     public VulkanRenderer(Engine engine, Scene scene) {
         super(engine, scene);
+
+        try {
+            this.vulkanRenderConfig = new VulkanRenderConfig().load();
+            if (this.vulkanRenderConfig.isDirty()) this.vulkanRenderConfig.save();
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+        }
 
         this.window = new VulkanWindow(engine);
 
@@ -55,7 +65,7 @@ public class VulkanRenderer extends Renderer {
         this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanLogicalDevice, 0);
 
         this.frameHandler = this.executor.scheduleAtFixedRate(this.window::loop,
-                1_000 / this.rendererConfig.getFPS(), 1_000 / this.rendererConfig.getFPS(),
+                1_000 / this.vulkanRenderConfig.getFPS(), 1_000 / this.vulkanRenderConfig.getFPS(),
                 TimeUnit.MILLISECONDS);
         this.window.showWindow();
     }
