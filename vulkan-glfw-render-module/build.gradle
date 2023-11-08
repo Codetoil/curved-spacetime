@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api project(":api")
+    api project(":vulkan-module")
+    api project(":glfw-render-module")
+
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+
+    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+}

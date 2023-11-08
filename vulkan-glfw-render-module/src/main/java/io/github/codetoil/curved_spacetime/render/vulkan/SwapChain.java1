@@ -1,0 +1,40 @@
+package io.github.codetoil.curved_spacetime.render.vulkan;
+
+import io.github.codetoil.curved_spacetime.render.glfw.GLFWWindow;
+import io.github.codetoil.curved_spacetime.vulkan.LogicalDevice;
+import io.github.codetoil.curved_spacetime.vulkan.PhysicalDevice;
+import io.github.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.KHRSurface;
+import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
+import org.tinylog.Logger;
+
+public class SwapChain {
+
+    private final LogicalDevice logicalDevice;
+    private final ImageView[] imageViews;
+    private final SurfaceFormat surfaceFormat;
+    private final VkExtent2D swapChainExtent;
+    private final long vkSwapChain;
+
+    public SwapChain(LogicalDevice logicalDevice, Surface surface, GLFWWindow window, int requestedImages, boolean vsync) {
+        Logger.debug("Creating Vulkan SwapChain");
+        this.logicalDevice = logicalDevice;
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+
+            PhysicalDevice physicalDevice = logicalDevice.getPhysicalDevice();
+
+            // Get surface capabilities
+            VkSurfaceCapabilitiesKHR surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack);
+            VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+                    physicalDevice.getVkPhysicalDevice(), surface.getVkSurface(), surfCapabilities),
+                    "Failed to get surface capabilities");
+
+            int numImages = calcNumImages(surfCapabilities, requestedImages);
+
+            surfCapabilities = calcSurfaceFormat(physicalDevice, surface);
+
+        }
+    }
+}

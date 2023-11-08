@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api project(":api")
+
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+
+    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+
+    api "org.lwjgl:lwjgl-glfw"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${rootProject.getLWJGLNativesName()}"
+}

@@ -1,0 +1,80 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'io.github.codetoil'
+version = '1.0-SNAPSHOT'
+
+project.ext.lwjglVersion = "3.3.3"
+project.ext.junitVersion = "5.10.0"
+project.ext.jomlVersion = "1.10.5";
+project.ext.tinyLoggerVersion = "2.6.2"
+project.ext.quiltLoaderVersion = "0.22.0-beta.1"
+
+static String getLWJGLNativesName()
+{
+    String lwjglNatives = null;
+
+    if (DefaultNativePlatform.currentOperatingSystem.linux) {
+        def osArch = System.getProperty("os.arch")
+        lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
+                ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
+                : "natives-linux"
+    }
+    if (DefaultNativePlatform.currentOperatingSystem.macOsX) {
+        lwjglNatives = System.getProperty("os.arch").startsWith("aarch64") ? "natives-macos-arm64" : "natives-macos"
+    }
+    if (DefaultNativePlatform.currentOperatingSystem.windows) {
+        def osArch = System.getProperty("os.arch")
+        lwjglNatives = osArch.contains("64")
+                ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}"
+                : "natives-windows-x86"
+    }
+    return lwjglNatives;
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.quiltmc.org/repository/release/"
+    }
+}
+
+dependencies {
+    implementation project(":api")
+    implementation project(":vulkan-glfw-render-module")
+
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+
+    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+
+    runtimeOnly "org.lwjgl:lwjgl:${getLWJGLNativesName()}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${getLWJGLNativesName()}"
+    runtimeOnly "org.lwjgl:lwjgl-vulkan:${getLWJGLNativesName()}"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'io.github.codetoil.curved_spacetime.Main'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'io.github.codetoil.curved_spacetime.Main'
+        )
+    }
+}
