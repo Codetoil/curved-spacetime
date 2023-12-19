@@ -9,8 +9,6 @@ dependencies {
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
-
-    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 }
 
 tasks.named('test') {

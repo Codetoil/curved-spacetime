@@ -6,4 +6,5 @@ include 'api-module',
         'vulkan-glfw-render-module',
         'main-module',
         'loader-module',
-        'quilt-tweaker-agent'
+        'quilt-tweaker-agent',
+        'patched-files'
