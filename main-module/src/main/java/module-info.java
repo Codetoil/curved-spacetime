@@ -23,5 +23,4 @@ module io.github.codetoil.curved_spacetime {
     requires io.github.codetoil.curved_spacetime.api;
     requires io.github.codetoil.curved_spacetime.render.vulkan;
     requires org.lwjgl;
-    requires org.quiltmc.loader;
 }
