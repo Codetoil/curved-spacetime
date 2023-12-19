@@ -4,7 +4,7 @@
 
 https://github.com/lwjglgamedev/vulkanbook
 
-MIT License
+```MIT License
 
 Copyright (c) 2023 Antonio Hernández Bejarano
 
@@ -25,11 +25,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
 
 ## Quilt Loader
 
 https://github.com/QuiltMC/quilt-loader/tree/0.22.0
 
+```
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -231,3 +233,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```                                 
