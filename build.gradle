@@ -1,18 +1,18 @@
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
-
 plugins {
     id 'java'
-    id 'application'
 }
+
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 group = 'io.github.codetoil'
 version = '1.0-SNAPSHOT'
 
+project.ext.asmVersion = "9.6"
 project.ext.lwjglVersion = "3.3.3"
 project.ext.junitVersion = "5.10.0"
 project.ext.jomlVersion = "1.10.5";
 project.ext.tinyLoggerVersion = "2.6.2"
-project.ext.quiltLoaderVersion = "0.22.0-beta.1"
+project.ext.quiltLoaderVersion = "0.22.0"
 
 static String getLWJGLNativesName()
 {
@@ -36,45 +36,22 @@ static String getLWJGLNativesName()
     return lwjglNatives;
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+subprojects {
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://maven.fabricmc.net/"
+        }
+        maven {
+            url "https://maven.quiltmc.org/repository/release/"
+        }
     }
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        url "https://maven.quiltmc.org/repository/release/"
-    }
-}
-
-dependencies {
-    implementation project(":api")
-    implementation project(":vulkan-glfw-render-module")
-
-    testImplementation platform("org.junit:junit-bom:${junitVersion}")
-    testImplementation "org.junit.jupiter:junit-jupiter"
-
-    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
-
-    runtimeOnly "org.lwjgl:lwjgl:${getLWJGLNativesName()}"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:${getLWJGLNativesName()}"
-    runtimeOnly "org.lwjgl:lwjgl-vulkan:${getLWJGLNativesName()}"
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-application {
-    mainClass = 'io.github.codetoil.curved_spacetime.Main'
-}
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'io.github.codetoil.curved_spacetime.Main'
-        )
-    }
-}
+dependencies {}

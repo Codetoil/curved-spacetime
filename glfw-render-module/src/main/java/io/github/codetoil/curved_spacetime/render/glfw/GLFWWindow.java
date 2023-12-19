@@ -21,21 +21,21 @@
 
 package io.github.codetoil.curved_spacetime.render.glfw;
 
-import io.github.codetoil.curved_spacetime.api.APIConfig;
 import io.github.codetoil.curved_spacetime.api.engine.Engine;
 import io.github.codetoil.curved_spacetime.api.render.Window;
-import org.lwjgl.Version;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
-import org.tinylog.Logger;
 
 import java.io.IOException;
 
 public abstract class GLFWWindow extends Window {
     public final GLFWRenderConfig GLFWRenderConfig;
     protected long windowHandle;
+    protected int width;
+    protected int height;
 
     protected GLFWWindow(Engine engine)
     {
@@ -57,8 +57,13 @@ public abstract class GLFWWindow extends Window {
         if ( !GLFW.glfwInit() )
             throw new IllegalStateException("Unable to initialize GLFW");
 
-        if (!this.isSupported()) {
-            throwUnsupportedException();
+        GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+        assert vidMode != null;
+        this.width = vidMode.width();
+        this.height = vidMode.height();
+
+        if (!this.doesDriverExist()) {
+            throwDriverNotFoundException();
         }
 
         // Configure GLFW
@@ -86,10 +91,18 @@ public abstract class GLFWWindow extends Window {
         }
     }
 
-    public abstract boolean isSupported();
-    protected abstract void throwUnsupportedException();
+    public abstract boolean doesDriverExist();
+    protected abstract void throwDriverNotFoundException();
 
     protected abstract void setWindowHints();
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
 
     public void showWindow() {
         GLFW.glfwShowWindow(this.windowHandle);

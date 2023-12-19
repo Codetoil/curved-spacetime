@@ -31,18 +31,15 @@ public class VulkanWindow extends GLFWWindow {
     }
 
     @Override
-    public boolean isSupported() {
+    public boolean doesDriverExist() {
         return GLFWVulkan.glfwVulkanSupported();
     }
 
     @Override
-    protected void throwUnsupportedException() {
+    protected void throwDriverNotFoundException() {
         throw new IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)");
     }
 
-    /**
-     *
-     */
     @Override
     protected void setWindowHints() {
         GLFW.glfwDefaultWindowHints(); // optional, the current window hints are already the default

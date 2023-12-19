@@ -1,0 +1,43 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+dependencies {
+    implementation project(":api-module")
+    implementation project(":vulkan-glfw-render-module")
+
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+
+    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:${getLWJGLNativesName()}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${getLWJGLNativesName()}"
+    if (DefaultNativePlatform.currentOperatingSystem.macOsX)
+    {
+        runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
+    }
+
+    runtimeOnly "org.ow2.asm:asm:${asmVersion}"
+    runtimeOnly "org.ow2.asm:asm-util:${asmVersion}"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'io.github.codetoil.curved_spacetime.Main'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'io.github.codetoil.curved_spacetime.Main',
+                'Boot-Class-Path': 'asm-9.6.jar'
+        )
+    }
+}

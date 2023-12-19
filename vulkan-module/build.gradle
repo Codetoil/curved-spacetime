@@ -1,20 +1,21 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
 plugins {
     id 'java'
     id 'java-library'
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    api project(":api")
+    api project(":api-module")
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
 
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 
-    api "org.lwjgl:lwjgl-vulkan"
-    runtimeOnly "org.lwjgl:lwjgl-vulkan:${rootProject.getLWJGLNativesName()}"
+    api "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
+    if (DefaultNativePlatform.currentOperatingSystem.macOsX)
+    {
+        runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
+    }
 }

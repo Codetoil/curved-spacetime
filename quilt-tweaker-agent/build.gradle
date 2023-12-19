@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation "org.ow2.asm:asm:${asmVersion}"
+    implementation "org.ow2.asm:asm-util:${asmVersion}"
+    implementation "org.quiltmc:quilt-loader:${quiltLoaderVersion}"
+
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+
+    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Premain-Class':
+                        'QuiltTweakerAgent',
+                'Can-Retransform-Classes': true
+        )
+    }
+}

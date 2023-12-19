@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+dependencies {
+    implementation project(":api-module")
+    implementation project(":vulkan-glfw-render-module")
+    implementation "org.ow2.asm:asm:${asmVersion}"
+    implementation "org.ow2.asm:asm-util:${asmVersion}"
+    implementation "org.quiltmc:quilt-loader:${quiltLoaderVersion}"
+
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+
+    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+
+    implementation "net.fabricmc:tiny-mappings-parser:0.3.0+build.17"
+    implementation "net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5"
+    implementation "net.fabricmc:tiny-remapper:0.8.6"
+    implementation "net.fabricmc:access-widener:2.1.0"
+    implementation "org.quiltmc:quilt-json5:1.0.4+final"
+    implementation "org.ow2.asm:asm-analysis:9.6"
+    implementation "org.ow2.asm:asm-tree:9.6"
+    implementation "org.quiltmc:quilt-config:1.1.0-beta.3"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'io.github.codetoil.curved_spacetime.Main'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Premain-Class':
+                        'io.github.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader',
+                'Can-Retransform-Classes': true
+        )
+    }
+}

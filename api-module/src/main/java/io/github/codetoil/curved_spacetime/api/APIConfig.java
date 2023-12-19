@@ -19,25 +19,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-package io.github.codetoil.curved_spacetime.render.glfw;
+package io.github.codetoil.curved_spacetime.api;
 
 import org.tinylog.Logger;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
-public class GLFWRenderConfig {
-    private static final String FILENAME = "glfw-render-module.config";
+public class APIConfig {
+    private static final String FILENAME = "api-module.config";
     private boolean dirty = false;
 
-    public GLFWRenderConfig() {
+    public APIConfig() {
 
     }
 
-    public GLFWRenderConfig load() throws IOException {
+    public APIConfig load() throws IOException {
         Properties props = new Properties();
 
         try (FileReader reader = new FileReader(FILENAME)) {
@@ -54,7 +51,7 @@ public class GLFWRenderConfig {
         Properties props = new Properties();
 
         try (FileWriter writer = new FileWriter(FILENAME)) {
-            props.store(writer, "Config for the GLFW Render Module.");
+            props.store(writer, "Config for the API Module.");
         }
         this.dirty = false;
     }

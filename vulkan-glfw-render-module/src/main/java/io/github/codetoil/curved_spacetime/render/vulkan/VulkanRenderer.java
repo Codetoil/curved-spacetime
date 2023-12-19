@@ -21,12 +21,9 @@
 
 package io.github.codetoil.curved_spacetime.render.vulkan;
 
-import io.github.codetoil.curved_spacetime.api.APIConfig;
 import io.github.codetoil.curved_spacetime.api.engine.Engine;
 import io.github.codetoil.curved_spacetime.api.scene.Scene;
 import io.github.codetoil.curved_spacetime.api.render.Renderer;
-import io.github.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
-import io.github.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
 import io.github.codetoil.curved_spacetime.vulkan.VulkanInstance;
 import org.lwjgl.glfw.GLFWVulkan;
 
@@ -39,6 +36,7 @@ public class VulkanRenderer extends Renderer {
     protected final VulkanInstance vulkanInstance;
     protected final VulkanGraphicsQueue vulkanGraphicsQueue;
     protected final VulkanSurface vulkanSurface;
+    protected final VulkanSwapChain vulkanSwapChain;
 
 
     public VulkanRenderer(Engine engine, Scene scene) {
@@ -55,20 +53,25 @@ public class VulkanRenderer extends Renderer {
 
         this.executor = Executors.newSingleThreadScheduledExecutor();
         this.window.init();
+        this.window.showWindow();
 
         this.vulkanInstance = new VulkanInstance(GLFWVulkan::glfwGetRequiredInstanceExtensions);
         this.vulkanSurface = new VulkanSurface(this.vulkanInstance.getVulkanPhysicalDevice(), ((VulkanWindow) window)
                 .getWindowHandle());
         this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanInstance.getVulkanLogicalDevice(), 0);
 
+        this.vulkanSwapChain = new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface,
+                (VulkanWindow) this.window, this.vulkanRenderConfig.getRequestedImages(),
+                this.vulkanRenderConfig.hasVSync());
+
         this.frameHandler = this.executor.scheduleAtFixedRate(this.window::loop,
                 1_000 / this.vulkanRenderConfig.getFPS(), 1_000 / this.vulkanRenderConfig.getFPS(),
                 TimeUnit.MILLISECONDS);
-        this.window.showWindow();
     }
 
     public void clean() {
         super.clean();
+        this.vulkanSwapChain.cleanup();
         this.vulkanSurface.cleanup();
         this.vulkanInstance.cleanup();
     }

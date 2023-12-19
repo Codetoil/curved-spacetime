@@ -47,8 +47,7 @@ public class VulkanConfig {
         try (FileReader reader = new FileReader(FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn("Could not find config file " + FILENAME);
-            ex.printStackTrace(System.err);
+            Logger.warn(ex, "Could not find config file " + FILENAME);
             this.dirty = true;
         }
 

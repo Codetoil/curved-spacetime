@@ -179,7 +179,7 @@ public class VulkanInstance {
             for (int index = 0; index < numLayers; index++) {
                 VkLayerProperties props = propsBuffer.get(index);
                 String layerName = props.layerNameString();
-                supportedLayers.add(layerName);
+                   supportedLayers.add(layerName);
                 Logger.debug("Supported Layer [{}]", layerName);
             }
             List<String> layersToUse = new ArrayList<>();
@@ -234,18 +234,16 @@ public class VulkanInstance {
                 .messageSeverity(MESSAGE_SEVERITY_BITMASK)
                 .messageType(MESSAGE_TYPE_BITMASK)
                 .pfnUserCallback((messageSeverity, messageTypes, callbackDataAddress, userData) -> {
-                    try (VkDebugUtilsMessengerCallbackDataEXT callbackData =
-                            VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress))
-                    {
-                        if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0) {
-                            Logger.info("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0) {
-                            Logger.warn("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
-                            Logger.error("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) != 0) {
-                            Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                        }
+                    VkDebugUtilsMessengerCallbackDataEXT callbackData =
+                            VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);
+                    if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0) {
+                        Logger.info("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0) {
+                        Logger.warn("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
+                        Logger.error("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) != 0) {
+                        Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
                     }
                     return VK13.VK_FALSE;
                 });
