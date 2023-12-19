@@ -4,7 +4,8 @@
 
 https://github.com/lwjglgamedev/vulkanbook
 
-```MIT License
+```
+MIT License
 
 Copyright (c) 2023 Antonio Hernández Bejarano
 
