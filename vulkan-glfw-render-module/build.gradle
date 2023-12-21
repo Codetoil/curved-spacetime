@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    api project(":api-module")
+    api project(":main-module")
     api project(":vulkan-module")
     api project(":glfw-render-module")
 
@@ -12,4 +12,12 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter"
 
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+
+    implementation("net.fabricmc:sponge-mixin:${spongeMixinVersion}") {
+        exclude group: "com.google.code.gson"
+        exclude group: "com.google.guava"
+    }
+    implementation "com.google.code.gson:gson:${gsonVersion}"
+    implementation "com.google.guava:guava:${guavaVersion}"
+    runtimeOnly "cpw.mods:modlauncher:${modLauncherVersion}"
 }

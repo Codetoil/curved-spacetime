@@ -1,6 +1,7 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
  * Copyright (C) 2023  Anthony Michalek (Codetoil)<br>
+ * Copyright FabricMC, QuiltMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,38 +19,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-package io.github.codetoil.curved_spacetime.api.render;
+package io.github.codetoil.curved_spacetime.loader;
 
-import io.github.codetoil.curved_spacetime.api.APIConfig;
-import io.github.codetoil.curved_spacetime.api.engine.Engine;
-import io.github.codetoil.curved_spacetime.api.scene.Scene;
+import net.fabricmc.api.EnvType;
+import org.quiltmc.loader.impl.game.LibClassifier;
 
-import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+enum CurvedSpacetimeModule implements LibClassifier.LibraryType {
+    MAIN_MODULE("io/github/codetoil/curved_spacetime/Main.class");
 
-public abstract class Renderer {
-    protected final Engine engine;
-    protected ScheduledExecutorService executor;
-    protected ScheduledFuture<?> frameHandler;
-    protected final Scene scene;
-    protected Window window;
+    private final String[] paths;
 
-    protected Renderer(Engine engine, Scene scene)
-    {
-        this.engine = engine;
-        this.scene = scene;
+    CurvedSpacetimeModule(String... paths) {
+        this.paths = paths;
     }
 
-    public void clean() {
-        this.frameHandler.cancel(true);
-        this.executor.shutdown();
-        this.window.clean();
+    @Override
+    public boolean isApplicable(EnvType env) {
+        return env == KnotCurvedSpacetime.CURVED_SPACETIME;
     }
 
-    public abstract void render();
-
-    public Window getWindow() {
-        return this.window;
+    /**
+     * @return
+     */
+    @Override
+    public String[] getPaths() {
+        return this.paths;
     }
 }

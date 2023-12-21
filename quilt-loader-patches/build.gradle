@@ -7,3 +7,7 @@ java {
         languageVersion = JavaLanguageVersion.of(8)
     }
 }
+
+dependencies {
+    compileOnly "org.quiltmc:quilt-loader:${quiltLoaderVersion}"
+}

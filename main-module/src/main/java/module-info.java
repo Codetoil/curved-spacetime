@@ -20,7 +20,12 @@
 
 module io.github.codetoil.curved_spacetime {
     requires org.tinylog.api;
-    requires io.github.codetoil.curved_spacetime.api;
-    requires io.github.codetoil.curved_spacetime.render.vulkan;
-    requires org.lwjgl;
+    requires org.quiltmc.loader;
+
+    exports io.github.codetoil.curved_spacetime;
+    exports io.github.codetoil.curved_spacetime.api;
+    exports io.github.codetoil.curved_spacetime.api.render;
+    exports io.github.codetoil.curved_spacetime.api.loader;
+    exports io.github.codetoil.curved_spacetime.api.scene;
+    exports io.github.codetoil.curved_spacetime.api.engine;
 }

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "io.github.codetoil.curved_spacetime..vulkan",
+    "id": "curved_spacetime_vulkan_module",
+    "version": "0.1.0-SNAPSHOT",
+    "metadata": {
+      "name": "Curved Spacetime Vulkan Module",
+      "description": "Implements Vulkan Support into Curved Spacetime",
+      "contributors": {
+        "Codetoil": "Owner"
+      },
+      "contact": {
+        "homepage": "https://codetoil.github.io",
+        "issues": "https://github.com/Codetoil/curved_spacetime/issues",
+        "sources": "https://github.com/Codetoil/curved_spacetime"
+      },
+      "icon": "assets/curved_spacetime_vulkan_module/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": "io.github.codetoil.curved_spacetime.render.vulkan.ModuleEntrypoint"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.23.0-beta.1"
+      },
+      {
+        "id": "curved_spacetime_main_module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      }
+    ]
+  },
+  "mixin": "curved_spacetime_vulkan_module.mixins.json"
+}

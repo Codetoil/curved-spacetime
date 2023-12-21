@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    api project(":api-module")
+    api project(":main-module")
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"

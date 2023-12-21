@@ -20,7 +20,7 @@
 
 module io.github.codetoil.curved_spacetime.render.glfw {
     requires org.tinylog.api;
-    requires io.github.codetoil.curved_spacetime.api;
+    requires io.github.codetoil.curved_spacetime;
     requires org.lwjgl;
     requires org.lwjgl.glfw;
 

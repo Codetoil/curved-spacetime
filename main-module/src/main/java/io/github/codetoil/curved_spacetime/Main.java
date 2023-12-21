@@ -21,10 +21,22 @@
 package io.github.codetoil.curved_spacetime;
 
 import io.github.codetoil.curved_spacetime.api.engine.Engine;
-import io.github.codetoil.curved_spacetime.render.vulkan.VulkanRenderer;
+import io.github.codetoil.curved_spacetime.api.loader.ModuleInitializer;
+import org.quiltmc.loader.impl.QuiltLoaderImpl;
+import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
+import org.tinylog.Logger;
+
+import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) {
         Engine engine = new Engine();
-        engine.renderer = new VulkanRenderer(engine, engine.scene);
-    }}
+        Logger.info("Initialized Engine {}", engine);
+        initModules(engine);
+    }
+
+    public static void initModules(Engine engine) {
+        QuiltLoaderImpl.INSTANCE.prepareModInit(Paths.get(System.getProperty("user.dir")), engine);
+        EntrypointUtils.invoke("main", ModuleInitializer.class, ModuleInitializer::onInitialize);
+    }
+}

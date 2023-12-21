@@ -1,28 +1,54 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
 plugins {
     id 'java'
     id 'application'
 }
 
 dependencies {
-    implementation project(":api-module")
-    implementation project(":vulkan-glfw-render-module")
+    implementation project(":main-module")
     implementation "org.ow2.asm:asm:${asmVersion}"
     implementation "org.ow2.asm:asm-util:${asmVersion}"
-    implementation "org.quiltmc:quilt-loader:${quiltLoaderVersion}"
+    implementation "org.ow2.asm:asm-commons:${asmVersion}"
+    implementation "org.ow2.asm:asm-analysis:${asmVersion}"
+    implementation "org.ow2.asm:asm-tree:${asmVersion}"
+    implementation("org.quiltmc:quilt-loader:${quiltLoaderVersion}") {
+        exclude module: "annotations"
+    }
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation 'org.junit.platform:junit-platform-launcher'
 
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 
-    implementation "net.fabricmc:tiny-mappings-parser:0.3.0+build.17"
-    implementation "net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5"
-    implementation "net.fabricmc:tiny-remapper:0.8.6"
-    implementation "net.fabricmc:access-widener:2.1.0"
-    implementation "org.quiltmc:quilt-json5:1.0.4+final"
-    implementation "org.ow2.asm:asm-analysis:9.6"
-    implementation "org.ow2.asm:asm-tree:9.6"
-    implementation "org.quiltmc:quilt-config:1.1.0-beta.3"
+    runtimeOnly "net.fabricmc:tiny-mappings-parser:${tinyMappingsParserVersion}"
+    runtimeOnly "net.fabricmc:tiny-remapper:${tinyRemapperVersion}"
+    runtimeOnly "net.fabricmc:access-widener:${accessWidenerVersion}"
+    runtimeOnly("net.fabricmc:sponge-mixin:${spongeMixinVersion}") {
+        exclude group: "com.google.code.gson"
+        exclude group: "com.google.guava"
+    }
+    implementation "com.google.code.gson:gson:${gsonVersion}"
+    implementation "com.google.guava:guava:${guavaVersion}"
+    runtimeOnly "cpw.mods:modlauncher:${modLauncherVersion}"
+    runtimeOnly("org.quiltmc:quilt-json5:${quiltJson5Version}") {
+        exclude module: "annotations"
+    }
+    runtimeOnly("org.quiltmc:quilt-config:${quiltConfigVersion}") {
+        exclude module: "annotations"
+    }
+    runtimeOnly "io.github.llamalad7:mixinextras-fabric:${mixinExtrasVersion}"
+
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}"
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:${getLWJGLNativesName()}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${getLWJGLNativesName()}"
+    runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
+    if (DefaultNativePlatform.currentOperatingSystem.macOsX)
+    {
+        runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
+    }
 }
 
 tasks.named('test') {
@@ -30,15 +56,13 @@ tasks.named('test') {
 }
 
 application {
-    mainClass = 'io.github.codetoil.curved_spacetime.Main'
+    mainClass = 'io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
 }
 
 jar {
     manifest {
         attributes(
-                'Premain-Class':
-                        'io.github.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader',
-                'Can-Retransform-Classes': true
+                'Main-Class': 'io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
         )
     }
 }
