@@ -1,6 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023  Anthony Michalek (Codetoil)<br>
+ * Copyright (C) 2023-2024 Anthony Michalek (Codetoil)<br>
  * Copyright 2016 FabricMC<br>
  * Copyright 2022-2023 QuiltMC<br>
  * <br>
