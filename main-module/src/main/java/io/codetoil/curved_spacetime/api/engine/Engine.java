@@ -18,11 +18,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-module io.codetoil.curved_spacetime.render.glfw {
-    requires org.tinylog.api;
-    requires io.codetoil.curved_spacetime;
-    requires org.lwjgl;
-    requires org.lwjgl.glfw;
+package io.codetoil.curved_spacetime.api.engine;
 
-    exports io.codetoil.curved_spacetime.render.glfw;
+import io.codetoil.curved_spacetime.api.APIConfig;
+import io.codetoil.curved_spacetime.api.render.Renderer;
+import io.codetoil.curved_spacetime.api.scene.Scene;
+
+import java.io.IOException;
+
+public class Engine {
+    public final APIConfig APIConfig;
+    public Renderer renderer;
+    public Scene scene;
+
+    public Engine() {
+        try {
+            this.APIConfig = new APIConfig().load();
+            if (this.APIConfig.isDirty()) this.APIConfig.save();
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to load API Config", ex);
+        }
+        this.scene = new Scene();
+    }
+
+    public void clean() {
+        this.renderer.getWindow().hideWindow();
+        this.renderer.clean();
+    }
+
+    public void stop() {
+        this.clean();
+    }
 }

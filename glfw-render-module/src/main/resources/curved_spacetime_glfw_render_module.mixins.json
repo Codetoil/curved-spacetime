@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "io.github.codetoil.curved_spacetime.render.glfw.mixin",
+  "package": "io.codetoil.curved_spacetime.render.glfw.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
   ],

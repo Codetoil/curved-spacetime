@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "io.github.codetoil.curved_spacetime.render.glfw",
+    "group": "io.codetoil.curved_spacetime.render.glfw",
     "id": "curved_spacetime_glfw_render_module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {

@@ -18,11 +18,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-module io.codetoil.curved_spacetime.render.glfw {
-    requires org.tinylog.api;
-    requires io.codetoil.curved_spacetime;
-    requires org.lwjgl;
-    requires org.lwjgl.glfw;
+package io.codetoil.curved_spacetime.loader.test;
 
-    exports io.codetoil.curved_spacetime.render.glfw;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+public class CurvedSpacetimeTests {
+    static CurvedSpacetimeLaunchSessionListener curvedSpacetimeLaunchSessionListener;
+
+    @BeforeAll
+    static void init()
+    {
+        curvedSpacetimeLaunchSessionListener = new CurvedSpacetimeLaunchSessionListener();
+    }
+
+    @Test
+    void test1() {
+    }
 }

@@ -18,11 +18,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-module io.codetoil.curved_spacetime.render.glfw {
-    requires org.tinylog.api;
-    requires io.codetoil.curved_spacetime;
-    requires org.lwjgl;
-    requires org.lwjgl.glfw;
+package io.codetoil.curved_spacetime.api.render;
 
-    exports io.codetoil.curved_spacetime.render.glfw;
+import io.codetoil.curved_spacetime.api.engine.Engine;
+
+public abstract class Window {
+    protected Engine engine;
+
+    protected Window(Engine engine)
+    {
+        this.engine = engine;
+    }
+
+    public abstract void init();
+
+    public abstract void loop();
+
+    public abstract void showWindow();
+    public abstract void hideWindow();
+
+    public abstract void clean();
 }

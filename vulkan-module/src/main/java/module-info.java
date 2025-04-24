@@ -1,6 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2024 Anthony Michalek (Codetoil)<br>
+ * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,12 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-module io.github.codetoil.curved_spacetime.vulkan {
+module io.codetoil.curved_spacetime.vulkan {
     requires org.tinylog.api;
     requires org.lwjgl;
     requires org.lwjgl.vulkan;
-    requires io.github.codetoil.curved_spacetime;
+    requires io.codetoil.curved_spacetime;
 
-    exports io.github.codetoil.curved_spacetime.vulkan;
-    exports io.github.codetoil.curved_spacetime.vulkan.utils;
+    exports io.codetoil.curved_spacetime.vulkan;
+    exports io.codetoil.curved_spacetime.vulkan.utils;
 }

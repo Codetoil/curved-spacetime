@@ -1,6 +1,8 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
  * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
+ * Copyright 2016 FabricMC<br>
+ * Copyright 2022-2023 QuiltMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,11 +20,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
  */
 
-module io.codetoil.curved_spacetime.render.glfw {
-    requires org.tinylog.api;
-    requires io.codetoil.curved_spacetime;
-    requires org.lwjgl;
-    requires org.lwjgl.glfw;
+package io.codetoil.curved_spacetime.loader;
 
-    exports io.codetoil.curved_spacetime.render.glfw;
+import net.fabricmc.api.EnvType;
+import org.quiltmc.loader.impl.launch.knot.Knot;
+import org.quiltmc.loader.impl.util.SystemProperties;
+
+public class KnotCurvedSpacetime {
+    public static final EnvType CURVED_SPACETIME = EnvType.valueOf("CURVED_SPACETIME");
+
+    public static void main(String[] args) {
+        System.setProperty(SystemProperties.SKIP_MC_PROVIDER, "true");
+        System.setProperty(SystemProperties.MODS_DIRECTORY, "modules");
+        Knot.launch(args, CURVED_SPACETIME);
+    }
 }

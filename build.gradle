@@ -4,8 +4,8 @@ plugins {
 
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
-group = 'io.github.codetoil'
-version = '1.0-SNAPSHOT'
+group = 'io.codetoil'
+version = '0.1.0-SNAPSHOT'
 
 project.ext.asmVersion = "9.6"
 project.ext.lwjglVersion = "3.3.3"
