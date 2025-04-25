@@ -6,3 +6,10 @@ include 'quilt-tweaker-agent', 'glfw-render-module',
         'main-module',
         'loader-module',
         'quilt-loader-patches'
+project(":quilt-tweaker-agent").name = "curved-spacetime-quilt-tweaker-agent"
+project(":glfw-render-module").name = "curved-spacetime-glfw-render-module"
+project(":vulkan-module").name = "curved-spacetime-vulkan-module"
+project(":vulkan-glfw-render-module").name = "curved-spacetime-vulkan-glfw-render-module"
+project(":main-module").name = "curved-spacetime-main-module"
+project(":loader-module").name = "curved-spacetime-loader-module"
+project(":quilt-loader-patches").name = "curved-spacetime-quilt-loader-patches"

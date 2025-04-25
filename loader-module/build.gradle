@@ -4,7 +4,11 @@ import java.nio.file.Paths
 
 plugins {
     id 'java'
+    id 'maven-publish'
 }
+
+group = "io.codetoil"
+version = "0.1.0-SNAPSHOT"
 
 configurations {
     dependencyScope("vulkanGLFWRenderModuleRuntimeOnly") {
@@ -14,7 +18,7 @@ configurations {
 }
 
 dependencies {
-    implementation project(":main-module")
+    implementation project(":curved-spacetime-main-module")
     implementation "org.ow2.asm:asm:${asmVersion}"
     implementation "org.ow2.asm:asm-util:${asmVersion}"
     implementation "org.ow2.asm:asm-commons:${asmVersion}"
@@ -30,7 +34,7 @@ dependencies {
 
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 
-    runtimeOnly project(":quilt-tweaker-agent")
+    runtimeOnly project(":curved-spacetime-quilt-tweaker-agent")
     runtimeOnly "net.fabricmc:tiny-mappings-parser:${tinyMappingsParserVersion}"
     runtimeOnly "net.fabricmc:tiny-remapper:${tinyRemapperVersion}"
     runtimeOnly "net.fabricmc:access-widener:${accessWidenerVersion}"
@@ -59,9 +63,9 @@ dependencies {
         runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
     }
 
-    vulkanGLFWRenderModuleRuntimeOnly project(":vulkan-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":glfw-render-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":vulkan-glfw-render-module")
+    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-module")
+    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-render-module")
+    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-render-module")
 }
 
 configurations {
@@ -73,7 +77,7 @@ configurations {
     }
 }
 
-Set<Task> initQuiltTweakerAgent = project(":quilt-tweaker-agent").getTasksByName("jar", false)
+Set<Task> initQuiltTweakerAgent = project(":curved-spacetime-quilt-tweaker-agent").getTasksByName("jar", false)
 
 tasks.named('test') {
     useJUnitPlatform()
@@ -81,7 +85,7 @@ tasks.named('test') {
 }
 
 test {
-    jvmArgs '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar'
+    jvmArgs '-javaagent:../quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar'
     setWorkingDir(Paths.get(getWorkingDir().parent, "test").toFile().exists() ?
             Paths.get(getWorkingDir().parent, "test").toFile() :
             Paths.get(getWorkingDir().parent, "test").toFile().mkdirs() ?
@@ -92,9 +96,9 @@ tasks.register('runSingle', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
-    jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
+    jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar',
                '-Dloader.development=true',
-               '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
+               '-javaagent:../quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar',
                '-Dfile.encoding=UTF-8',
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
@@ -109,9 +113,9 @@ tasks.register('runWithVulkanGLFW', JavaExec) {
     classpath = configurations.runtimeClasspathWithVulkanGLFWRenderModule + sourceSets.main.runtimeClasspath
 
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
-    jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
+    jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar',
                '-Dloader.development=true',
-               '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
+               '-javaagent:../quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar',
                '-Dfile.encoding=UTF-8',
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
@@ -129,5 +133,23 @@ jar {
         attributes(
                 'Main-Class': 'io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
         )
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Codetoil/curved_spacetime")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            components.forEach(softwareComponent -> from(softwareComponent))
+        }
     }
 }

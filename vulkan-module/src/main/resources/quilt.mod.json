@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "io.codetoil.curved_spacetime..vulkan",
+    "group": "io.codetoil.curved_spacetime.vulkan",
     "id": "curved_spacetime_vulkan_module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {

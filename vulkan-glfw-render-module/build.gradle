@@ -1,12 +1,16 @@
 plugins {
     id 'java'
     id 'java-library'
+    id 'maven-publish'
 }
 
+group = "io.codetoil"
+version = "0.1.0-SNAPSHOT"
+
 dependencies {
-    api project(":main-module")
-    api project(":vulkan-module")
-    api project(":glfw-render-module")
+    api project(":curved-spacetime-main-module")
+    api project(":curved-spacetime-vulkan-module")
+    api project(":curved-spacetime-glfw-render-module")
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
@@ -20,4 +24,22 @@ dependencies {
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
     runtimeOnly "cpw.mods:modlauncher:${modLauncherVersion}"
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Codetoil/curved_spacetime")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            components.forEach(softwareComponent -> from(softwareComponent))
+        }
+    }
 }

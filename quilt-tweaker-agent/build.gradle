@@ -1,6 +1,10 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
+
+group = "io.codetoil"
+version = "0.1.0-SNAPSHOT"
 
 dependencies {
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
@@ -18,5 +22,23 @@ jar {
                         'QuiltTweakerAgent',
                 'Can-Retransform-Classes': true
         )
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Codetoil/curved_spacetime")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            components.forEach(softwareComponent -> from(softwareComponent))
+        }
     }
 }
