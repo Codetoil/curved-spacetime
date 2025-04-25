@@ -49,7 +49,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
     private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
     private final List<Path> miscGameLibraries = new ArrayList<>();
     private final GameTransformer transformer = new GameTransformer();
-    private MappingConfigurationImpl mappingConfiguration = new MappingConfigurationImpl();
+    private MappingConfiguration mappingConfiguration = new MappingConfigurationCurvedSpacetime();
 
     @Override
     public String getGameId() {
