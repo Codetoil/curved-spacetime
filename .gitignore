@@ -41,3 +41,4 @@ bin/
 lwjgl-natives
 runSingle
 runWithVulkanGLFW
+test
