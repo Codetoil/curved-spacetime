@@ -45,7 +45,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class CurvedSpacetimeGameProvider implements GameProvider {
-    private static final String ENTRYPOINT = "io.github.codetoil.curved_spacetime.Main";
+    private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.Main";
     private Arguments arguments;
     private final List<Path> gameJars = new ArrayList<>();
     private final List<Path> miscGameLibraries = new ArrayList<>();

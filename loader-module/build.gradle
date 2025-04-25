@@ -56,7 +56,7 @@ tasks.named('test') {
 }
 
 application {
-    mainClass = 'io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
+    mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
 }
 
 jar {
