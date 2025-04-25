@@ -30,6 +30,7 @@ dependencies {
 
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 
+    runtimeOnly project(":quilt-tweaker-agent")
     runtimeOnly "net.fabricmc:tiny-mappings-parser:${tinyMappingsParserVersion}"
     runtimeOnly "net.fabricmc:tiny-remapper:${tinyRemapperVersion}"
     runtimeOnly "net.fabricmc:access-widener:${accessWidenerVersion}"
@@ -125,9 +126,3 @@ test {
             Paths.get(getWorkingDir().parent, "test").toFile().mkdirs() ?
                     Paths.get(getWorkingDir().parent, "test").toFile() : null)
 }
-
-Set<Task> initQuiltweakerAgent = getTasksByName(":quilt-tweaker-agent:jar", true);
-
-runSingle.dependsOn(initQuiltweakerAgent)
-runWithVulkanGLFW.dependsOn(initQuiltweakerAgent)
-test.dependsOn(initQuiltweakerAgent)
