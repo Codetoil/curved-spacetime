@@ -125,3 +125,9 @@ test {
             Paths.get(getWorkingDir().parent, "test").toFile().mkdirs() ?
                     Paths.get(getWorkingDir().parent, "test").toFile() : null)
 }
+
+Set<Task> initQuiltweakerAgent = getTasksByName(":quilt-tweaker-agent:jar", true);
+
+runSingle.dependsOn(initQuiltweakerAgent)
+runWithVulkanGLFW.dependsOn(initQuiltweakerAgent)
+test.dependsOn(initQuiltweakerAgent)
