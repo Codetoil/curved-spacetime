@@ -4,7 +4,13 @@ import java.nio.file.Paths
 
 plugins {
     id 'java'
-    id 'application'
+}
+
+configurations {
+    dependencyScope("vulkanGLFWRenderModuleRuntimeOnly") {
+        canBeConsumed = false
+        canBeResolved = false
+    }
 }
 
 dependencies {
@@ -51,24 +57,54 @@ dependencies {
     {
         runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
     }
+
+    vulkanGLFWRenderModuleRuntimeOnly project(":vulkan-module")
+    vulkanGLFWRenderModuleRuntimeOnly project(":glfw-render-module")
+    vulkanGLFWRenderModuleRuntimeOnly project(":vulkan-glfw-render-module")
+}
+
+configurations {
+    // declare a resolvable configuration that is going to resolve the runtime classpath of the application
+    resolvable("runtimeClasspathWithVulkanGLFWRenderModule") {
+        canBeConsumed = false
+        canBeDeclared = false
+        extendsFrom(implementation, vulkanGLFWRenderModuleRuntimeOnly)
+    }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-application {
+tasks.register('runSingle', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
-    applicationDefaultJvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
-                                 '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
-                                 '-Dfile.encoding=UTF-8',
-                                 '-Dsun.stdout.encoding=UTF-8',
-                                 '-Dsun.stderr.encoding=UTF-8']
+    jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
+               '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
+               '-Dfile.encoding=UTF-8',
+               '-Dsun.stdout.encoding=UTF-8',
+               '-Dsun.stderr.encoding=UTF-8']
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runSingle").toFile().exists() ?
+            Paths.get(getWorkingDir().parent, "runSingle").toFile() :
+            Paths.get(getWorkingDir().parent, "runSingle").toFile().mkdirs())
 }
 
-run {
-    setWorkingDir(Paths.get(getWorkingDir().parent, "run").toFile())
+tasks.register('runWithVulkanGLFW', JavaExec) {
+    classpath = configurations.runtimeClasspathWithVulkanGLFWRenderModule + sourceSets.main.runtimeClasspath
+
+    mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
+    jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
+               '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
+               '-Dfile.encoding=UTF-8',
+               '-Dsun.stdout.encoding=UTF-8',
+               '-Dsun.stderr.encoding=UTF-8']
+
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile().exists() ?
+            Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile() :
+            Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile().mkdirs())
 }
+
 
 jar {
     manifest {
