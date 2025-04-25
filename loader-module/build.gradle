@@ -88,7 +88,8 @@ tasks.register('runSingle', JavaExec) {
                '-Dsun.stderr.encoding=UTF-8']
     setWorkingDir(Paths.get(getWorkingDir().parent, "runSingle").toFile().exists() ?
             Paths.get(getWorkingDir().parent, "runSingle").toFile() :
-            Paths.get(getWorkingDir().parent, "runSingle").toFile().mkdirs())
+            Paths.get(getWorkingDir().parent, "runSingle").toFile().mkdirs() ?
+                    Paths.get(getWorkingDir().parent, "runSingle").toFile() : null)
 }
 
 tasks.register('runWithVulkanGLFW', JavaExec) {
@@ -104,7 +105,8 @@ tasks.register('runWithVulkanGLFW', JavaExec) {
 
     setWorkingDir(Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile().exists() ?
             Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile() :
-            Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile().mkdirs())
+            Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile().mkdirs() ?
+                    Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile() : null)
 }
 
 
@@ -120,5 +122,6 @@ test {
     jvmArgs '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar'
     setWorkingDir(Paths.get(getWorkingDir().parent, "test").toFile().exists() ?
             Paths.get(getWorkingDir().parent, "test").toFile() :
-            Paths.get(getWorkingDir().parent, "test").toFile().mkdirs())
+            Paths.get(getWorkingDir().parent, "test").toFile().mkdirs() ?
+                    Paths.get(getWorkingDir().parent, "test").toFile() : null)
 }
