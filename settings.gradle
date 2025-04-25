@@ -1,9 +1,8 @@
 rootProject.name = 'curved-spacetime'
 
-include 'glfw-render-module',
+include 'quilt-tweaker-agent', 'glfw-render-module',
         'vulkan-module',
         'vulkan-glfw-render-module',
         'main-module',
         'loader-module',
-        'quilt-tweaker-agent',
         'quilt-loader-patches'
