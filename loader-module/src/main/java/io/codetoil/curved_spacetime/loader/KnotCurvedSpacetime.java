@@ -32,6 +32,7 @@ public class KnotCurvedSpacetime {
     public static void main(String[] args) {
         System.setProperty(SystemProperties.SKIP_MC_PROVIDER, "true");
         System.setProperty(SystemProperties.MODS_DIRECTORY, "modules");
+        System.setProperty(SystemProperties.TARGET_NAMESPACE, "official");
         Knot.launch(args, CURVED_SPACETIME);
     }
 }

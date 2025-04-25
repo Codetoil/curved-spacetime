@@ -1,5 +1,7 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
+import java.nio.file.Paths
+
 plugins {
     id 'java'
     id 'application'
@@ -57,6 +59,15 @@ tasks.named('test') {
 
 application {
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
+    applicationDefaultJvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
+                                 '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
+                                 '-Dfile.encoding=UTF-8',
+                                 '-Dsun.stdout.encoding=UTF-8',
+                                 '-Dsun.stderr.encoding=UTF-8']
+}
+
+run {
+    setWorkingDir(Paths.get(getWorkingDir().parent, "run").toFile())
 }
 
 jar {

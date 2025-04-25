@@ -101,9 +101,9 @@ public class VulkanPhysicalDevice {
                     vulkanPhysicalDevice.cleanup();
                 }
 
-                // No preferred device or it does not meet requirements, just pick the first one
+                // No preferred device, or it does not meet requirements. Just pick the first one.
                 selectedVulkanPhysicalDevice = selectedVulkanPhysicalDevice == null && !devices.isEmpty()
-                        ? devices.remove(0) : selectedVulkanPhysicalDevice;
+                        ? devices.removeFirst() : selectedVulkanPhysicalDevice;
 
                 // Clean up non-selected devices
                 for (VulkanPhysicalDevice vulkanPhysicalDevice1 : devices) {

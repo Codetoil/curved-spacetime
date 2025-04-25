@@ -2,7 +2,6 @@
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
  * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
  * Copyright 2016 FabricMC<br>
- * Copyright QuiltMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -22,14 +21,13 @@
 
 package io.codetoil.curved_spacetime.loader;
 
-import org.quiltmc.loader.api.QuiltLoader;
-import org.quiltmc.loader.api.Version;
+import org.jetbrains.annotations.Nullable;
+import org.quiltmc.loader.api.*;
 import org.quiltmc.loader.impl.FormattedException;
 import org.quiltmc.loader.impl.entrypoint.GameTransformer;
-import org.quiltmc.loader.impl.game.GameProvider;
-import org.quiltmc.loader.impl.game.GameProviderHelper;
-import org.quiltmc.loader.impl.game.LibClassifier;
+import org.quiltmc.loader.impl.game.*;
 import org.quiltmc.loader.impl.launch.common.QuiltLauncher;
+import org.quiltmc.loader.impl.launch.common.QuiltLauncherBase;
 import org.quiltmc.loader.impl.metadata.qmj.V1ModMetadataBuilder;
 import org.quiltmc.loader.impl.util.Arguments;
 import org.quiltmc.loader.impl.util.ExceptionUtil;
@@ -48,9 +46,10 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
     private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.Main";
     private Arguments arguments;
     private final List<Path> gameJars = new ArrayList<>();
+    private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
     private final List<Path> miscGameLibraries = new ArrayList<>();
-
     private final GameTransformer transformer = new GameTransformer();
+    private MappingConfigurationImpl mappingConfiguration = new MappingConfigurationImpl();
 
     @Override
     public String getGameId() {
@@ -80,9 +79,48 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
         metadata.version = Version.of(getNormalizedGameVersion());
         metadata.name = getGameName();
         metadata.description = "Base Module for Curved Spacetime";
+        VersionRange range = VersionRange.ofInterval(Version.of("21"), true, null, false);
+        metadata.depends.add(new ModDependency.Only() {
+            @Override
+            public boolean shouldIgnore() {
+                return false;
+            }
+
+            @Override
+            public VersionRange versionRange() {
+                return range;
+            }
+
+            @Override
+            public ModDependency unless() {
+                return null;
+            }
+
+            @Override
+            public String reason() {
+                return "";
+            }
+
+            @Override
+            public boolean optional() {
+                return false;
+            }
+
+            @Override
+            public ModDependencyIdentifier id() {
+                return ModDependencyIdentifier.of("", "java");
+            }
+        });
         List<Path> paths = new ArrayList<>(gameJars);
-        paths.addAll(miscGameLibraries);
-        return List.of(new BuiltinMod(paths, metadata.build()));
+        return Collections.singletonList(new BuiltinMod(paths, metadata.build()));
+    }
+
+    @Override
+    public List<Path> getGameJars(@Nullable String namespace) {
+        if (namespace == null) {
+            return gameJarsByNamespace.get(QuiltLauncherBase.getLauncher().getTargetNamespace());
+        }
+        return gameJarsByNamespace.get(namespace);
     }
 
     @Override
@@ -92,17 +130,21 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
 
     @Override
     public Path getLaunchDirectory() {
-        return Paths.get(".");
+        if (arguments == null) {
+            return Paths.get(".");
+        }
+
+        return getLaunchDirectory(arguments);
     }
 
     @Override
-    public boolean isObfuscated() {
-        return false;
+    public MappingConfiguration getMappingConfiguration() {
+        return mappingConfiguration;
     }
 
     @Override
     public boolean requiresUrlClassLoader() {
-        return !QuiltLoader.isDevelopmentEnvironment();
+        return false;
     }
 
     @Override
@@ -138,30 +180,58 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
 
             gameJars.add(gameJar);
 
-            for (Path path : classifier.getUnmatchedOrigins()) {
-                if (!classpath.contains(path)) {
-                    miscGameLibraries.add(path);
-                }
-            }
+            miscGameLibraries.addAll(classifier.getUnmatchedOrigins()
+                    .stream().filter(gameJars::contains).toList());
         } catch (IOException e) {
             throw ExceptionUtil.wrap(e);
         }
+
+        processArgumentMap(arguments);
+
         return true;
+    }
+
+    private static void processArgumentMap(Arguments argMap) {
+        Objects.requireNonNull(KnotCurvedSpacetime.CURVED_SPACETIME);
+        if (!argMap.containsKey("gameDir")) {
+            argMap.put("gameDir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
+        }
+    }
+
+    private static Path getLaunchDirectory(Arguments argMap) {
+        return Paths.get(argMap.getOrDefault("gameDir", "."));
     }
 
     @Override
     public boolean isGameClass(String name) {
-        return name.startsWith("io.github.codetoil.curved_spacetime.");
+        return name.startsWith("io.codetoil.curved_spacetime.");
     }
 
     @Override
     public void initialize(QuiltLauncher launcher) {
-        transformer.locateEntrypoints(launcher, gameJars);
+        gameJarsByNamespace.put(launcher.getEntrypoint(), Collections.unmodifiableList(gameJars));
+        gameJarsByNamespace = Collections.unmodifiableMap(gameJarsByNamespace);
+        transformer.locateEntrypoints(launcher, QuiltLauncherBase.getLauncher().getTargetNamespace(), gameJars);
+    }
+
+    @Override
+    public Arguments getArguments() {
+        return this.arguments;
+    }
+
+    @Override
+    public String[] getLaunchArguments(boolean sanitize) {
+        return arguments == null ? new String[0] : arguments.toArray();
     }
 
     @Override
     public GameTransformer getEntrypointTransformer() {
         return this.transformer;
+    }
+
+    @Override
+    public boolean hasAwtSupport() {
+        return !LoaderUtil.hasMacOs();
     }
 
     @Override
@@ -173,11 +243,6 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
         for (Path lib : miscGameLibraries) {
             launcher.addToClassPath(lib);
         }
-    }
-
-    @Override
-    public boolean hasAwtSupport() {
-        return !LoaderUtil.hasMacOs();
     }
 
     @Override
@@ -193,15 +258,5 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
         } catch (ReflectiveOperationException e) {
             throw new FormattedException("Failed to start Curved Spacetime", e);
         }
-    }
-
-    @Override
-    public Arguments getArguments() {
-        return this.arguments;
-    }
-
-    @Override
-    public String[] getLaunchArguments(boolean sanitize) {
-        return arguments == null ? new String[0] : arguments.toArray();
     }
 }

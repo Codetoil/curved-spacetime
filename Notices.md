@@ -1,13 +1,13 @@
 # Notices
 
-## VulkanBook
+## Vulkan Book
 
-https://github.com/lwjglgamedev/vulkanbook
+https://github.com/lwjglgamedev/vulkanbook/tree/38455088386f058f96576c3e0ce925f935525d96
 
 ```
 MIT License
 
-Copyright (c) 2023 Antonio Hernández Bejarano
+Copyright (c) 2024 Antonio Hernández Bejarano
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ SOFTWARE.
 
 ## Quilt Loader
 
-https://github.com/QuiltMC/quilt-loader/tree/0.22.0
+https://github.com/QuiltMC/quilt-loader/tree/0.29.0-beta.5
 
 ```
                                  Apache License

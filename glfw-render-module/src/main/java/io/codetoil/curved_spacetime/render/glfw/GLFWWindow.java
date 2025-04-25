@@ -49,7 +49,7 @@ public abstract class GLFWWindow extends Window {
     }
 
     public void init() {
-        // Setup an error callback. The default implementation
+        // Set up an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -75,7 +75,8 @@ public abstract class GLFWWindow extends Window {
         if ( this.windowHandle == MemoryUtil.NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        // Set up a key callback. It will be called every time a key is pressed, repeated or released.
+
         GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> {
             if ( key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE )
                 GLFW.glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop

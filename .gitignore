@@ -43,7 +43,7 @@ run
 run_prod/**
 !run_prod/libs/**
 !run_prod/loader-module.jar
-!run_prod/main-module.jar
-!run_prod/quilt-tweaker-agent.jar
-!run_prod/remapClasspathFile.txt
+!loader-module/main-module.jar
+!loader-module/quilt-tweaker-agent.jar
+!loader-module/remapClasspathFile.txt
 !run_prod/run.bat

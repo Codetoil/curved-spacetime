@@ -10,7 +10,7 @@ version = '0.1.0-SNAPSHOT'
 project.ext.asmVersion = "9.8"
 project.ext.lwjglVersion = "3.3.6"
 project.ext.junitVersion = "5.12.2"
-project.ext.jomlVersion = "1.10.8";
+project.ext.jomlVersion = "1.10.8"
 project.ext.tinyLoggerVersion = "2.7.0"
 project.ext.quiltLoaderVersion = "0.29.0-beta.5"
 project.ext.tinyMappingsParserVersion = "0.3.0+build.17"
@@ -27,7 +27,7 @@ project.ext.modLauncherVersion = "11.0.4"
 
 static String getLWJGLNativesName()
 {
-    String lwjglNatives = null;
+    String lwjglNatives = null
 
     if (DefaultNativePlatform.currentOperatingSystem.linux) {
         def osArch = System.getProperty("os.arch")
@@ -44,7 +44,7 @@ static String getLWJGLNativesName()
                 ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}"
                 : "natives-windows-x86"
     }
-    return lwjglNatives;
+    return lwjglNatives
 }
 
 subprojects {

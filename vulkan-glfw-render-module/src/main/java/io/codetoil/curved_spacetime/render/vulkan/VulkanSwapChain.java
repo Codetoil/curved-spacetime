@@ -143,19 +143,19 @@ public class VulkanSwapChain {
         return new VulkanSwapChain.VulkanSurfaceFormat(imageFormat, colorSpace);
     }
 
-    private VkExtent2D calcSwapChainExtent(VulkanWindow window, VkSurfaceCapabilitiesKHR surfCapabilies) {
+    private VkExtent2D calcSwapChainExtent(VulkanWindow window, VkSurfaceCapabilitiesKHR surfCapabilities) {
         VkExtent2D result = VkExtent2D.calloc();
-        if (surfCapabilies.currentExtent().width() == 0xFFFFFFFF) {
+        if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF) {
             // Surface size undefined. Set to the window size if within bounds
-            int width = Math.min(window.getWidth(), surfCapabilies.maxImageCount());
-            width = Math.max(width, surfCapabilies.minImageExtent().width());
+            int width = Math.min(window.getWidth(), surfCapabilities.maxImageCount());
+            width = Math.max(width, surfCapabilities.minImageExtent().width());
 
-            int height = Math.min(window.getHeight(), surfCapabilies.maxImageExtent().height());
-            height = Math.max(height, surfCapabilies.minImageExtent().height());
+            int height = Math.min(window.getHeight(), surfCapabilities.maxImageExtent().height());
+            height = Math.max(height, surfCapabilities.minImageExtent().height());
 
             result.set(width, height);
         } else {
-            result.set(surfCapabilies.currentExtent());
+            result.set(surfCapabilities.currentExtent());
         }
         return result;
     }

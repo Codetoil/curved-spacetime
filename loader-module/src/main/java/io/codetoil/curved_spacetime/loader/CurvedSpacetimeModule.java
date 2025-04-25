@@ -38,9 +38,6 @@ enum CurvedSpacetimeModule implements LibClassifier.LibraryType {
         return env == KnotCurvedSpacetime.CURVED_SPACETIME;
     }
 
-    /**
-     * @return
-     */
     @Override
     public String[] getPaths() {
         return this.paths;
