@@ -81,6 +81,7 @@ tasks.register('runSingle', JavaExec) {
 
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
     jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
+               '-Dloader.development=true',
                '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
                '-Dfile.encoding=UTF-8',
                '-Dsun.stdout.encoding=UTF-8',
@@ -95,6 +96,7 @@ tasks.register('runWithVulkanGLFW', JavaExec) {
 
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
     jvmArgs = ['-Dloader.gameJarPath=../main-module/build/libs/main-module.jar',
+               '-Dloader.development=true',
                '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar',
                '-Dfile.encoding=UTF-8',
                '-Dsun.stdout.encoding=UTF-8',

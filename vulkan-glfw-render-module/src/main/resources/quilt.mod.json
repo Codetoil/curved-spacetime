@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "io.github.codetoil.curved_spacetime.render.vulkan",
+    "group": "io.codetoil.curved_spacetime.render.vulkan",
     "id": "curved_spacetime_vulkan_glfw_render_module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {
@@ -11,7 +11,7 @@
         "Codetoil": "Owner"
       },
       "contact": {
-        "homepage": "https://codetoil.github.io",
+        "homepage": "https://codetoil.io",
         "issues": "https://github.com/Codetoil/curved_spacetime/issues",
         "sources": "https://github.com/Codetoil/curved_spacetime"
       },
@@ -19,12 +19,12 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.github.codetoil.curved_spacetime.render.vulkan.VulkanGLFWRendererModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.render.vulkan.VulkanGLFWRendererModuleEntrypoint"
     },
     "depends": [
       {
         "id": "quilt_loader",
-        "versions": ">=0.23.0-beta.1"
+        "versions": ">=0.29.0-beta.5"
       },
       {
         "id": "curved_spacetime_main_module",
