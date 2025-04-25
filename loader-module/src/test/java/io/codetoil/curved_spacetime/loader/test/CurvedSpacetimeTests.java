@@ -21,6 +21,7 @@
 package io.codetoil.curved_spacetime.loader.test;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class CurvedSpacetimeTests {
     static CurvedSpacetimeLaunchSessionListener curvedSpacetimeLaunchSessionListener;
@@ -31,7 +32,8 @@ public class CurvedSpacetimeTests {
         curvedSpacetimeLaunchSessionListener = new CurvedSpacetimeLaunchSessionListener();
     }
 
-    // @Test
-    // void test1() {
-    // }
+    @Test
+    void test1() {
+        System.out.println("test1");
+    }
 }

@@ -29,6 +29,10 @@
       {
         "id": "curved_spacetime_main_module",
         "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "java",
+        "versions": ">=21"
       }
     ]
   },

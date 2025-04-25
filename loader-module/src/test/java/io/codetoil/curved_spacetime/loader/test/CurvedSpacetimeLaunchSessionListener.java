@@ -25,6 +25,7 @@ import net.fabricmc.api.EnvType;
 
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
+import org.quiltmc.loader.impl.QuiltLoaderImpl;
 import org.quiltmc.loader.impl.launch.knot.Knot;
 import org.quiltmc.loader.impl.util.SystemProperties;
 
@@ -36,20 +37,22 @@ public class CurvedSpacetimeLaunchSessionListener implements LauncherSessionList
         System.setProperty(SystemProperties.UNIT_TEST, "true");
     }
 
-    private final ClassLoader classLoader;
+    private static ClassLoader classLoader;
 
     private ClassLoader launcherSessionClassLoader;
 
     public CurvedSpacetimeLaunchSessionListener() {
-        final Thread currentThread = Thread.currentThread();
-        final ClassLoader originalClassLoader = currentThread.getContextClassLoader();
+        if (QuiltLoaderImpl.INSTANCE.tryGetGameProvider() == null) {
+            final Thread currentThread = Thread.currentThread();
+            final ClassLoader originalClassLoader = currentThread.getContextClassLoader();
 
-        try {
-            Knot knot = new Knot(EnvType.valueOf("CURVED_SPACETIME"));
-            classLoader = knot.init(new String[]{});
-        } finally {
-            // Knot.init sets the context class loader, revert it back for now.
-            currentThread.setContextClassLoader(originalClassLoader);
+            try {
+                Knot knot = new Knot(EnvType.valueOf("CURVED_SPACETIME"));
+                classLoader = knot.init(new String[]{});
+            } finally {
+                // Knot.init sets the context class loader, revert it back for now.
+                currentThread.setContextClassLoader(originalClassLoader);
+            }
         }
     }
 

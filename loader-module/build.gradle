@@ -115,3 +115,10 @@ jar {
         )
     }
 }
+
+test {
+    jvmArgs '-javaagent:../quilt-tweaker-agent/build/libs/quilt-tweaker-agent.jar'
+    setWorkingDir(Paths.get(getWorkingDir().parent, "test").toFile().exists() ?
+            Paths.get(getWorkingDir().parent, "test").toFile() :
+            Paths.get(getWorkingDir().parent, "test").toFile().mkdirs())
+}

@@ -37,6 +37,10 @@
       {
         "id": "curved_spacetime_vulkan_module",
         "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "java",
+        "versions": ">=21"
       }
     ]
   },
