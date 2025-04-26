@@ -23,7 +23,7 @@ package io.codetoil.curved_spacetime.vulkan;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VK14;
 import org.lwjgl.vulkan.VkQueue;
 import org.tinylog.Logger;
 
@@ -36,7 +36,7 @@ public class VulkanQueue {
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             PointerBuffer pQueue = stack.mallocPointer(1);
-            VK13.vkGetDeviceQueue(vulkanLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
+            VK14.vkGetDeviceQueue(vulkanLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
             long queue = pQueue.get(0);
             this.vkQueue = new VkQueue(queue, vulkanLogicalDevice.getVkDevice());
         }
@@ -47,6 +47,6 @@ public class VulkanQueue {
     }
 
     public void waitIdle() {
-        VK13.vkQueueWaitIdle(this.vkQueue);
+        VK14.vkQueueWaitIdle(this.vkQueue);
     }
 }

@@ -44,10 +44,10 @@ public class VulkanConfig {
     public VulkanConfig load() throws IOException {
         Properties props = new Properties();
 
-        try (FileReader reader = new FileReader(FILENAME)) {
+        try (FileReader reader = new FileReader(VulkanConfig.FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn(ex, "Could not find config file " + FILENAME);
+            Logger.warn(ex, "Could not find config file " + VulkanConfig.FILENAME);
             this.dirty = true;
         }
 
@@ -57,8 +57,8 @@ public class VulkanConfig {
             this._validation = Boolean.parseBoolean(validatePropValue.toString());
         } else {
             Logger.warn("Could not find required key validation, resetting to default {}",
-                    DEFAULT_VALIDATE);
-            this._validation = DEFAULT_VALIDATE;
+                    VulkanConfig.DEFAULT_VALIDATE);
+            this._validation = VulkanConfig.DEFAULT_VALIDATE;
             this.dirty = true;
         }
 
@@ -67,7 +67,7 @@ public class VulkanConfig {
         {
             this.preferredDeviceName = preferredDeviceNamePropValue.toString();
         } else {
-            this.preferredDeviceName = DEFAULT_PREFERRED_DEVICE_NAME;
+            this.preferredDeviceName = VulkanConfig.DEFAULT_PREFERRED_DEVICE_NAME;
         }
 
 
@@ -96,6 +96,6 @@ public class VulkanConfig {
 
     public String getPreferredDeviceName()
     {
-        return preferredDeviceName;
+        return this.preferredDeviceName;
     }
 }

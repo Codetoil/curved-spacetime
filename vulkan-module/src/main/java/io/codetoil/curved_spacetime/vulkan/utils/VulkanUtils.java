@@ -21,7 +21,7 @@
 
 package io.codetoil.curved_spacetime.vulkan.utils;
 
-import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VK14;
 
 import java.util.Locale;
 
@@ -47,7 +47,7 @@ public class VulkanUtils {
     }
 
     public static void vkCheck(int err, String errMsg) {
-        if (err != VK13.VK_SUCCESS) {
+        if (err != VK14.VK_SUCCESS) {
             throw new AssertionError(errMsg + ": " + err);
         }
     }

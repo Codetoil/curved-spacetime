@@ -24,8 +24,13 @@ package io.codetoil.curved_spacetime.render.vulkan;
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanQueue;
-import org.lwjgl.vulkan.VK13;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.KHRSurface;
+import org.lwjgl.vulkan.VK14;
+import org.lwjgl.vulkan.VK14;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
+
+import java.nio.IntBuffer;
 
 public class VulkanGraphicsQueue extends VulkanQueue {
 
@@ -40,7 +45,7 @@ public class VulkanGraphicsQueue extends VulkanQueue {
         int numQueuesFamilies = queuePropsBuff.capacity();
         for (int index = 0; index < numQueuesFamilies; index++) {
             VkQueueFamilyProperties props = queuePropsBuff.get(index);
-            boolean graphicsQueue = (props.queueFlags() & VK13.VK_QUEUE_GRAPHICS_BIT) != 0;
+            boolean graphicsQueue = (props.queueFlags() & VK14.VK_QUEUE_GRAPHICS_BIT) != 0;
             if (graphicsQueue) {
                 result = index;
                 break;
@@ -51,5 +56,37 @@ public class VulkanGraphicsQueue extends VulkanQueue {
             throw new RuntimeException("Failed to get graphics Queue family index.");
         }
         return result;
+    }
+
+    public static class VulkanGraphicsPresentQueue extends VulkanGraphicsQueue {
+
+        public VulkanGraphicsPresentQueue(VulkanLogicalDevice logicalDevice, VulkanSurface surface,
+                                          int queueIndex) {
+            super(logicalDevice, getPresentQueueFamilyIndex(logicalDevice, surface), queueIndex);
+        }
+
+        private static int getPresentQueueFamilyIndex(VulkanLogicalDevice logicalDevice, VulkanSurface surface) {
+            int index = -1;
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                VulkanPhysicalDevice physicalDevice = logicalDevice.getPhysicalDevice();
+                VkQueueFamilyProperties.Buffer queuePropsBuff = physicalDevice.getVkQueueFamilyProps();
+                int numQueuesFamilies = queuePropsBuff.capacity();
+                IntBuffer intBuffer = stack.mallocInt(1);
+                for (int i = 0; i < numQueuesFamilies; i++) {
+                    KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(),
+                            i, surface.getVkSurface(), intBuffer);
+                    boolean supportsPresentation = intBuffer.get(0) == VK14.VK_TRUE;
+                    if (supportsPresentation) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index < 0) {
+                    throw new RuntimeException("Failed to get Presentation Queue family index.");
+                }
+                return index;
+            }
+        }
     }
 }

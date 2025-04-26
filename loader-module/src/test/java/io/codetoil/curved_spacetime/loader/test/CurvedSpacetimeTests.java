@@ -29,7 +29,7 @@ public class CurvedSpacetimeTests {
     @BeforeAll
     static void init()
     {
-        curvedSpacetimeLaunchSessionListener = new CurvedSpacetimeLaunchSessionListener();
+        CurvedSpacetimeTests.curvedSpacetimeLaunchSessionListener = new CurvedSpacetimeLaunchSessionListener();
     }
 
     @Test

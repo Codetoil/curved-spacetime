@@ -39,15 +39,16 @@ public class VulkanSurface {
         this.vulkanPhysicalDevice = vulkanPhysicalDevice;
         try (MemoryStack stack = MemoryStack.stackPush()) {
             LongBuffer pSurface = stack.mallocLong(1);
-            GLFWVulkan.glfwCreateWindowSurface(this.vulkanPhysicalDevice.getVkPhysicalDevice().getInstance(), windowHandle,
-                    null, pSurface);
+            GLFWVulkan.glfwCreateWindowSurface(this.vulkanPhysicalDevice.getVkPhysicalDevice().getInstance(),
+                    windowHandle, null, pSurface);
             this.vkSurface = pSurface.get(0);
         }
     }
 
     public void cleanup() {
         Logger.debug("Destroying Vulkan surface");
-        KHRSurface.vkDestroySurfaceKHR(vulkanPhysicalDevice.getVkPhysicalDevice().getInstance(), vkSurface, null);
+        KHRSurface.vkDestroySurfaceKHR(vulkanPhysicalDevice.getVkPhysicalDevice().getInstance(), this.vkSurface,
+                null);
     }
 
     public long getVkSurface() {

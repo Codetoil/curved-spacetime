@@ -25,6 +25,7 @@ import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.render.Renderer;
 import io.codetoil.curved_spacetime.vulkan.VulkanInstance;
+import io.codetoil.curved_spacetime.vulkan.VulkanQueue;
 import org.lwjgl.glfw.GLFWVulkan;
 
 import java.io.IOException;
@@ -37,7 +38,9 @@ public class VulkanRenderer extends Renderer {
     protected final VulkanGraphicsQueue vulkanGraphicsQueue;
     protected final VulkanSurface vulkanSurface;
     protected final VulkanSwapChain vulkanSwapChain;
-
+    protected final VulkanCommandPool vulkanCommandPool;
+    protected final VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanGraphicsPresentQueue;
+    protected final VulkanForwardRenderActivity vulkanForwardRenderActivity;
 
     public VulkanRenderer(Engine engine, Scene scene) {
         super(engine, scene);
@@ -56,13 +59,14 @@ public class VulkanRenderer extends Renderer {
         this.window.showWindow();
 
         this.vulkanInstance = new VulkanInstance(GLFWVulkan::glfwGetRequiredInstanceExtensions);
-        this.vulkanSurface = new VulkanSurface(this.vulkanInstance.getVulkanPhysicalDevice(), ((VulkanWindow) window)
-                .getWindowHandle());
+        this.vulkanSurface = new VulkanSurface(this.vulkanInstance.getVulkanPhysicalDevice(),
+                ((VulkanWindow) this.window).getWindowHandle());
         this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanInstance.getVulkanLogicalDevice(), 0);
 
         this.vulkanSwapChain = new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface,
                 (VulkanWindow) this.window, this.vulkanRenderConfig.getRequestedImages(),
-                this.vulkanRenderConfig.hasVSync());
+                this.vulkanRenderConfig.hasVSync(), this.vulkanGraphicsPresentQueue,
+                new VulkanGraphicsQueue[] {graphQueue});
 
         this.frameHandler = this.executor.scheduleAtFixedRate(this.window::loop,
                 1_000 / this.vulkanRenderConfig.getFPS(), 1_000 / this.vulkanRenderConfig.getFPS(),
@@ -71,12 +75,20 @@ public class VulkanRenderer extends Renderer {
 
     public void clean() {
         super.clean();
+        this.vulkanGraphicsPresentQueue.waitIdle();
         this.vulkanSwapChain.cleanup();
         this.vulkanSurface.cleanup();
         this.vulkanInstance.cleanup();
+        this.vulkanForwardRenderActivity.cleanup();
+        this.vulkanCommandPool.cleanup();
     }
 
     public void render() {
-        // TODO: Add Implementation
+        this.vulkanForwardRenderActivity.waitForFence();
+        int imageIndex = vulkanSwapChain.acquireNextImage();
+        if (imageIndex < 0) return;
+
+        this.vulkanForwardRenderActivity.submit(graphQueue);
+        this.vulkanSwapChain.presentImage(vulkanGraphicsPresentQueue, imageIndex);
     }
 }

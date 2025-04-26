@@ -57,10 +57,10 @@ public class VulkanRenderConfig {
     public VulkanRenderConfig load() throws IOException {
         Properties props = new Properties();
 
-        try (FileReader reader = new FileReader(FILENAME)) {
+        try (FileReader reader = new FileReader(VulkanRenderConfig.FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn(ex, "Could not find config file " + FILENAME);
+            Logger.warn(ex, "Could not find config file " + VulkanRenderConfig.FILENAME);
             this.dirty = true;
         }
 
@@ -72,21 +72,21 @@ public class VulkanRenderConfig {
             } catch (NumberFormatException ex)
             {
                 Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-                        fpsPropValue, DEFAULT_FPS);
-                this.fps = DEFAULT_FPS;
+                        fpsPropValue, VulkanRenderConfig.DEFAULT_FPS);
+                this.fps = VulkanRenderConfig.DEFAULT_FPS;
                 this.dirty = true;
             }
             if (this.fps < 1 || this.fps > 1000)
             {
                 Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-                        this.fps, DEFAULT_FPS);
-                this.fps = DEFAULT_FPS;
+                        this.fps, VulkanRenderConfig.DEFAULT_FPS);
+                this.fps = VulkanRenderConfig.DEFAULT_FPS;
                 this.dirty = true;
             }
         } else {
             Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
-                    DEFAULT_FPS);
-            this.fps = DEFAULT_FPS;
+                    VulkanRenderConfig.DEFAULT_FPS);
+            this.fps = VulkanRenderConfig.DEFAULT_FPS;
             this.dirty = true;
         }
 
@@ -96,8 +96,8 @@ public class VulkanRenderConfig {
             this.vsync = Boolean.parseBoolean(vsyncPropValue.toString());
         } else {
             Logger.warn("Could not find required key vsync, resetting to default {}",
-                    DEFAULT_VSYNC);
-            this.vsync = DEFAULT_VSYNC;
+                    VulkanRenderConfig.DEFAULT_VSYNC);
+            this.vsync = VulkanRenderConfig.DEFAULT_VSYNC;
             this.dirty = true;
         }
 
@@ -110,23 +110,23 @@ public class VulkanRenderConfig {
             {
                 Logger.warn(ex, "Invalid value for key requestedImages: {}, " +
                                 "lower bound 2, resetting to default {}",
-                        requestedImagesPropValue, DEFAULT_REQUESTED_IMAGES);
-                this.requestedImages = DEFAULT_REQUESTED_IMAGES;
+                        requestedImagesPropValue, VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
+                this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
                 this.dirty = true;
             }
             if (this.requestedImages < 2)
             {
                 Logger.warn("Invalid value for key requestedImages: {}, " +
                                 "lower bound 2, resetting to default {}",
-                        this.requestedImages, DEFAULT_REQUESTED_IMAGES);
-                this.requestedImages = DEFAULT_REQUESTED_IMAGES;
+                        this.requestedImages, VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
+                this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
                 this.dirty = true;
             }
         } else {
             Logger.warn("Could not find required key requestedImages, " +
                             "lower bound 2, resetting to default {}",
-                    DEFAULT_REQUESTED_IMAGES);
-            this.requestedImages = DEFAULT_REQUESTED_IMAGES;
+                    VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
+            this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
             this.dirty = true;
         }
 
@@ -139,7 +139,7 @@ public class VulkanRenderConfig {
         props.put("vsync", String.valueOf(this.vsync));
         props.put("requestedImages", String.valueOf(this.requestedImages));
 
-        try (FileWriter writer = new FileWriter(FILENAME)) {
+        try (FileWriter writer = new FileWriter(VulkanRenderConfig.FILENAME)) {
             props.store(writer, "Config for the Vulkan Render Module.");
         }
         this.dirty = false;

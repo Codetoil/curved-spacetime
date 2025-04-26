@@ -66,12 +66,12 @@ public class VulkanInstance {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             ByteBuffer appShortName = stack.UTF8("CurvedSpacetime");
             VkApplicationInfo appInfo = VkApplicationInfo.calloc(stack)
-                    .sType(VK13.VK_STRUCTURE_TYPE_APPLICATION_INFO)
+                    .sType(VK14.VK_STRUCTURE_TYPE_APPLICATION_INFO)
                     .pApplicationName(appShortName)
                     .applicationVersion(0)
                     .pEngineName(appShortName)
                     .engineVersion(0)
-                    .apiVersion(VK13.VK_API_VERSION_1_3);
+                    .apiVersion(VK14.VK_API_VERSION_1_4);
 
             // Validation layers
             boolean supportsValidation = this.vulkanConfig.validation();
@@ -132,13 +132,13 @@ public class VulkanInstance {
 
             long extension = MemoryUtil.NULL;
             if (supportsValidation) {
-                debugUtils = createDebugCallback();
-                extension = debugUtils.address();
+                this.debugUtils = createDebugCallback();
+                extension = this.debugUtils.address();
             }
 
             // Create instance info
             VkInstanceCreateInfo instanceInfo = VkInstanceCreateInfo.calloc(stack)
-                    .sType(VK13.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
+                    .sType(VK14.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
                     .pNext(extension)
                     .pApplicationInfo(appInfo)
                     .ppEnabledLayerNames(requiredLayers)
@@ -148,16 +148,16 @@ public class VulkanInstance {
             }
 
             PointerBuffer pInstance = stack.mallocPointer(1);
-            VulkanUtils.vkCheck(VK13.vkCreateInstance(instanceInfo, null, pInstance),
+            VulkanUtils.vkCheck(VK14.vkCreateInstance(instanceInfo, null, pInstance),
                     "Error creating instance");
-            vkInstance = new VkInstance(pInstance.get(0), instanceInfo);
-            vkDebugHandle = VK13.VK_NULL_HANDLE;
+            this.vkInstance = new VkInstance(pInstance.get(0), instanceInfo);
+            this.vkDebugHandle = VK14.VK_NULL_HANDLE;
             if (supportsValidation) {
                 LongBuffer longBuff = stack.mallocLong(1);
                 VulkanUtils.vkCheck(EXTDebugUtils
-                        .vkCreateDebugUtilsMessengerEXT(vkInstance, debugUtils, null, longBuff),
+                        .vkCreateDebugUtilsMessengerEXT(this.vkInstance, this.debugUtils, null, longBuff),
                         "Error creating debug utils");
-                vkDebugHandle = longBuff.get(0);
+                this.vkDebugHandle = longBuff.get(0);
             }
         }
 
@@ -170,11 +170,11 @@ public class VulkanInstance {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             // Validation Layers
             IntBuffer numLayersArray = stack.callocInt(1);
-            VK13.vkEnumerateInstanceLayerProperties(numLayersArray, null);
+            VK14.vkEnumerateInstanceLayerProperties(numLayersArray, null);
             int numLayers = numLayersArray.get(0);
             Logger.debug("Instance supports [{}] layers", numLayers);
             VkLayerProperties.Buffer propsBuffer = VkLayerProperties.calloc(numLayers, stack);
-            VK13.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
+            VK14.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
             List<String> supportedLayers = new ArrayList<>();
             for (int index = 0; index < numLayers; index++) {
                 VkLayerProperties props = propsBuffer.get(index);
@@ -212,12 +212,12 @@ public class VulkanInstance {
         Set<String> instanceExtensions = new HashSet<>();
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer numExtensionsBuf = stack.callocInt(1);
-            VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, null);
+            VK14.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, null);
             int numExtensions = numExtensionsBuf.get(0);
             Logger.debug("Instance supports [{}] extensions", numExtensions);
 
             VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions, stack);
-            VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
+            VK14.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
             for (int index = 0; index < numExtensions; index++) {
                 VkExtensionProperties props = instanceExtensionProps.get(index);
                 String extensionName = props.extensionNameString();
@@ -231,8 +231,8 @@ public class VulkanInstance {
     private static VkDebugUtilsMessengerCreateInfoEXT createDebugCallback() {
         return VkDebugUtilsMessengerCreateInfoEXT.calloc()
                 .sType(EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT)
-                .messageSeverity(MESSAGE_SEVERITY_BITMASK)
-                .messageType(MESSAGE_TYPE_BITMASK)
+                .messageSeverity(VulkanInstance.MESSAGE_SEVERITY_BITMASK)
+                .messageType(VulkanInstance.MESSAGE_TYPE_BITMASK)
                 .pfnUserCallback((messageSeverity, messageTypes, callbackDataAddress, userData) -> {
                     VkDebugUtilsMessengerCallbackDataEXT callbackData =
                             VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);
@@ -245,7 +245,7 @@ public class VulkanInstance {
                     } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) != 0) {
                         Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
                     }
-                    return VK13.VK_FALSE;
+                    return VK14.VK_FALSE;
                 });
     }
 
@@ -253,25 +253,25 @@ public class VulkanInstance {
         this.vulkanLogicalDevice.cleanup();
         this.vulkanPhysicalDevice.cleanup();
         Logger.debug("Destroying Vulkan Instance");
-        if (vkDebugHandle != VK13.VK_NULL_HANDLE) {
-            EXTDebugUtils.vkDestroyDebugUtilsMessengerEXT(vkInstance, vkDebugHandle, null);
+        if (this.vkDebugHandle != VK14.VK_NULL_HANDLE) {
+            EXTDebugUtils.vkDestroyDebugUtilsMessengerEXT(this.vkInstance, this.vkDebugHandle, null);
         }
-        if (debugUtils != null) {
-            debugUtils.pfnUserCallback().free();
-            debugUtils.free();
+        if (this.debugUtils != null) {
+            this.debugUtils.pfnUserCallback().free();
+            this.debugUtils.free();
         }
-        VK13.vkDestroyInstance(vkInstance, null);
+        VK14.vkDestroyInstance(this.vkInstance, null);
     }
 
     public VkInstance getVkInstance() {
-        return vkInstance;
+        return this.vkInstance;
     }
 
     public VulkanLogicalDevice getVulkanLogicalDevice() {
-        return vulkanLogicalDevice;
+        return this.vulkanLogicalDevice;
     }
 
     public VulkanPhysicalDevice getVulkanPhysicalDevice() {
-        return vulkanPhysicalDevice;
+        return this.vulkanPhysicalDevice;
     }
 }

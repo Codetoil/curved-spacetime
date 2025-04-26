@@ -64,12 +64,12 @@ public class VulkanSwapChain {
                     .sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
                     .surface(surface.getVkSurface())
                     .minImageCount(numImages)
-                    .imageFormat(vulkanSurfaceFormat.imageFormat())
-                    .imageColorSpace(vulkanSurfaceFormat.colorSpace())
-                    .imageExtent(swapChainExtent)
+                    .imageFormat(this.vulkanSurfaceFormat.imageFormat())
+                    .imageColorSpace(this.vulkanSurfaceFormat.colorSpace())
+                    .imageExtent(this.swapChainExtent)
                     .imageArrayLayers(1)
-                    .imageUsage(VK13.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
-                    .imageSharingMode(VK13.VK_SHARING_MODE_EXCLUSIVE)
+                    .imageUsage(VK14.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+                    .imageSharingMode(VK14.VK_SHARING_MODE_EXCLUSIVE)
                     .preTransform(surfCapabilities.currentTransform())
                     .compositeAlpha(KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
                     .clipped(true)
@@ -80,16 +80,16 @@ public class VulkanSwapChain {
                     vkSwapchainCreateInfo, null, lp), "Failed to create swap chain");
             this.vkSwapChain = lp.get(0);
 
-            this.imageViews = createImageViews(stack, vulkanLogicalDevice, vkSwapChain,
-                    vulkanSurfaceFormat.imageFormat);
+            this.imageViews = createImageViews(stack, vulkanLogicalDevice, this.vkSwapChain,
+                    this.vulkanSurfaceFormat.imageFormat);
         }
     }
 
     public void cleanup() {
         Logger.debug("Destroying Vulkan SwapChain");
-        swapChainExtent.free();
-        Arrays.asList(imageViews).forEach(VulkanImageView::cleanup);
-        KHRSwapchain.vkDestroySwapchainKHR(vulkanLogicalDevice.getVkDevice(), vkSwapChain, null);
+        this.swapChainExtent.free();
+        Arrays.asList(this.imageViews).forEach(VulkanImageView::cleanup);
+        KHRSwapchain.vkDestroySwapchainKHR(this.vulkanLogicalDevice.getVkDevice(), this.vkSwapChain, null);
     }
 
     private int calcNumImages(VkSurfaceCapabilitiesKHR surfCapabilities, int requestedImages) {
@@ -132,7 +132,7 @@ public class VulkanSwapChain {
             for (int index = 0; index < numFormats; index++)
             {
                 VkSurfaceFormatKHR surfaceFormatKHR = surfaceFormats.get(index);
-                if (surfaceFormatKHR.format() == VK13.VK_FORMAT_B8G8R8_SRGB &&
+                if (surfaceFormatKHR.format() == VK14.VK_FORMAT_B8G8R8_SRGB &&
                     surfaceFormatKHR.colorSpace() == KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
                     imageFormat = surfaceFormatKHR.format();
                     colorSpace = surfaceFormatKHR.colorSpace();
@@ -174,7 +174,7 @@ public class VulkanSwapChain {
 
         result = new VulkanImageView[numImages];
         VulkanImageView.VulkanImageViewData imageViewData = new VulkanImageView.VulkanImageViewData().format(format)
-                .aspectMask(VK13.VK_IMAGE_ASPECT_COLOR_BIT);
+                .aspectMask(VK14.VK_IMAGE_ASPECT_COLOR_BIT);
         for (int index = 0; index < numImages; index++) {
             result[index] = new VulkanImageView(vulkanLogicalDevice, swapChainImages.get(0), imageViewData);
         }
@@ -184,4 +184,12 @@ public class VulkanSwapChain {
     }
 
     public record VulkanSurfaceFormat(int imageFormat, int colorSpace) {}
+
+    public VulkanSurfaceFormat getVulkanSurfaceFormat() {
+        return this.vulkanSurfaceFormat;
+    }
+
+    public VulkanLogicalDevice getVulkanLogicalDevice() {
+        return this.vulkanLogicalDevice;
+    }
 }

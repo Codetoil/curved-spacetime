@@ -24,7 +24,7 @@ package io.codetoil.curved_spacetime.render.vulkan;
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VK14;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 
 import java.nio.LongBuffer;
@@ -44,7 +44,7 @@ public class VulkanImageView {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             LongBuffer lp = stack.mallocLong(1);
             VkImageViewCreateInfo viewCreateInfo = VkImageViewCreateInfo.calloc(stack)
-                    .sType(VK13.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
+                    .sType(VK14.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
                     .image(vkImage)
                     .viewType(vulkanImageViewData.viewType)
                     .format(vulkanImageViewData.format)
@@ -54,14 +54,14 @@ public class VulkanImageView {
                             .levelCount(this.mipLevels)
                             .baseMipLevel(vulkanImageViewData.baseArrayLayer)
                             .layerCount(vulkanImageViewData.layerCount));
-            VulkanUtils.vkCheck(VK13.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo,
+            VulkanUtils.vkCheck(VK14.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo,
                     null, lp), "Failed to create image view");
             this.vkImageView = lp.get(0);
         }
     }
 
     public void cleanup() {
-        VK13.vkDestroyImageView(vulkanLogicalDevice.getVkDevice(), vkImageView, null);
+        VK14.vkDestroyImageView(this.vulkanLogicalDevice.getVkDevice(), this.vkImageView, null);
     }
 
     public long getVkImageView() {
@@ -80,7 +80,7 @@ public class VulkanImageView {
             this.baseArrayLayer = 0;
             this.layerCount = 1;
             this.mipLevels = 1;
-            this.viewType = VK13.VK_IMAGE_VIEW_TYPE_2D;
+            this.viewType = VK14.VK_IMAGE_VIEW_TYPE_2D;
         }
 
         public VulkanImageView.VulkanImageViewData aspectMask(int aspectMask) {

@@ -46,27 +46,27 @@ public class VulkanPhysicalDevice {
             IntBuffer intBuffer = stack.mallocInt(1);
 
             // Get device properties
-            vkPhysicalDeviceProperties = VkPhysicalDeviceProperties.calloc();
-            VK13.vkGetPhysicalDeviceProperties(vkPhysicalDevice, vkPhysicalDeviceProperties);
+            this.vkPhysicalDeviceProperties = VkPhysicalDeviceProperties.calloc();
+            VK14.vkGetPhysicalDeviceProperties(vkPhysicalDevice, this.vkPhysicalDeviceProperties);
 
             // Get device extensions
-            VulkanUtils.vkCheck(VK13.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, (String) null, intBuffer,
+            VulkanUtils.vkCheck(VK14.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, (String) null, intBuffer,
                             null), "Failed to get number of device extension properties");
-            vkDeviceExtensions = VkExtensionProperties.calloc(intBuffer.get(0));
-            VulkanUtils.vkCheck(VK13.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, (String) null, intBuffer,
-                            vkDeviceExtensions), "Failed to get extension properties");
+            this.vkDeviceExtensions = VkExtensionProperties.calloc(intBuffer.get(0));
+            VulkanUtils.vkCheck(VK14.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, (String) null, intBuffer,
+                    this.vkDeviceExtensions), "Failed to get extension properties");
 
             // Get Queue family properties
-            VK13.vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, intBuffer, null);
-            vkQueueFamilyProps = VkQueueFamilyProperties.calloc(intBuffer.get(0));
-            VK13.vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, intBuffer, vkQueueFamilyProps);
+            VK14.vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, intBuffer, null);
+            this.vkQueueFamilyProps = VkQueueFamilyProperties.calloc(intBuffer.get(0));
+            VK14.vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, intBuffer, this.vkQueueFamilyProps);
 
-            vkPhysicalDeviceFeatures = VkPhysicalDeviceFeatures.calloc();
-            VK13.vkGetPhysicalDeviceFeatures(vkPhysicalDevice, vkPhysicalDeviceFeatures);
+            this.vkPhysicalDeviceFeatures = VkPhysicalDeviceFeatures.calloc();
+            VK14.vkGetPhysicalDeviceFeatures(vkPhysicalDevice, this.vkPhysicalDeviceFeatures);
 
             // Get Memory information and properties
-            vkMemoryProperties = VkPhysicalDeviceMemoryProperties.calloc();
-            VK13.vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, vkMemoryProperties);
+            this.vkMemoryProperties = VkPhysicalDeviceMemoryProperties.calloc();
+            VK14.vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, this.vkMemoryProperties);
         }
     }
 
@@ -121,58 +121,58 @@ public class VulkanPhysicalDevice {
     }
 
     public void cleanup() {
-        Logger.debug("Destroying physical device [{}]", vkPhysicalDeviceProperties.deviceNameString());
-        vkMemoryProperties.free();
-        vkPhysicalDeviceFeatures.free();
-        vkQueueFamilyProps.free();
-        vkDeviceExtensions.free();
-        vkPhysicalDeviceProperties.free();
+        Logger.debug("Destroying physical device [{}]", this.vkPhysicalDeviceProperties.deviceNameString());
+        this.vkMemoryProperties.free();
+        this.vkPhysicalDeviceFeatures.free();
+        this.vkQueueFamilyProps.free();
+        this.vkDeviceExtensions.free();
+        this.vkPhysicalDeviceProperties.free();
     }
 
     protected static PointerBuffer getPhysicalDevices(VulkanInstance instance, MemoryStack stack) {
         PointerBuffer pPhysicalDevices;
         // Get number of physical devices
         IntBuffer intBuffer = stack.mallocInt(1);
-        VulkanUtils.vkCheck(VK13.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, null),
+        VulkanUtils.vkCheck(VK14.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, null),
                 "Failed to get number of physical devices");
         int numDevices = intBuffer.get(0);
         Logger.debug("Detected {} physical device(s)", numDevices);
 
         // Populate physical devices list pointer
         pPhysicalDevices = stack.mallocPointer(numDevices);
-        VulkanUtils.vkCheck(VK13.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, pPhysicalDevices),
+        VulkanUtils.vkCheck(VK14.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, pPhysicalDevices),
                 "Failed to get physical devices");
         return pPhysicalDevices;
     }
     public String getDeviceName() {
-        return vkPhysicalDeviceProperties.deviceNameString();
+        return this.vkPhysicalDeviceProperties.deviceNameString();
     }
 
     public VkPhysicalDeviceMemoryProperties getVkMemoryProperties() {
-        return vkMemoryProperties;
+        return this.vkMemoryProperties;
     }
 
     public VkPhysicalDevice getVkPhysicalDevice() {
-        return vkPhysicalDevice;
+        return this.vkPhysicalDevice;
     }
 
     public VkPhysicalDeviceFeatures getVkPhysicalDeviceFeatures() {
-        return vkPhysicalDeviceFeatures;
+        return this.vkPhysicalDeviceFeatures;
     }
 
     public VkPhysicalDeviceProperties getVkPhysicalDeviceProperties() {
-        return vkPhysicalDeviceProperties;
+        return this.vkPhysicalDeviceProperties;
     }
 
     public VkQueueFamilyProperties.Buffer getVkQueueFamilyProps() {
-        return vkQueueFamilyProps;
+        return this.vkQueueFamilyProps;
     }
 
     private boolean hasKHRSwapChainExtension() {
         boolean result = false;
-        int numExtensions = vkDeviceExtensions != null ? vkDeviceExtensions.capacity() : 0;
+        int numExtensions = this.vkDeviceExtensions != null ? this.vkDeviceExtensions.capacity() : 0;
         for (int i = 0; i < numExtensions; i++) {
-            String extensionName = vkDeviceExtensions.get(i).extensionNameString();
+            String extensionName = this.vkDeviceExtensions.get(i).extensionNameString();
             if (KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME.equals(extensionName)) {
                 result = true;
                 break;
@@ -183,10 +183,10 @@ public class VulkanPhysicalDevice {
 
     private boolean hasGraphicsQueueFamily() {
         boolean result = false;
-        int numQueueFamilies = vkQueueFamilyProps != null ? vkQueueFamilyProps.capacity() : 0;
+        int numQueueFamilies = this.vkQueueFamilyProps != null ? this.vkQueueFamilyProps.capacity() : 0;
         for (int i = 0; i < numQueueFamilies; i++) {
-            VkQueueFamilyProperties familyProps = vkQueueFamilyProps.get(i);
-            if ((familyProps.queueFlags() & VK13.VK_QUEUE_GRAPHICS_BIT) != 0) {
+            VkQueueFamilyProperties familyProps = this.vkQueueFamilyProps.get(i);
+            if ((familyProps.queueFlags() & VK14.VK_QUEUE_GRAPHICS_BIT) != 0) {
                 result = true;
                 break;
             }

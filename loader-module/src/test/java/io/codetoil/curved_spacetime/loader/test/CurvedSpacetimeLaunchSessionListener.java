@@ -48,7 +48,7 @@ public class CurvedSpacetimeLaunchSessionListener implements LauncherSessionList
 
             try {
                 Knot knot = new Knot(EnvType.valueOf("CURVED_SPACETIME"));
-                classLoader = knot.init(new String[]{});
+                CurvedSpacetimeLaunchSessionListener.classLoader = knot.init(new String[]{});
             } finally {
                 // Knot.init sets the context class loader, revert it back for now.
                 currentThread.setContextClassLoader(originalClassLoader);
@@ -59,13 +59,13 @@ public class CurvedSpacetimeLaunchSessionListener implements LauncherSessionList
     @Override
     public void launcherSessionOpened(LauncherSession session) {
         final Thread currentThread = Thread.currentThread();
-        launcherSessionClassLoader = currentThread.getContextClassLoader();
-        currentThread.setContextClassLoader(classLoader);
+        this.launcherSessionClassLoader = currentThread.getContextClassLoader();
+        currentThread.setContextClassLoader(CurvedSpacetimeLaunchSessionListener.classLoader);
     }
 
     @Override
     public void launcherSessionClosed(LauncherSession session) {
         final Thread currentThread = Thread.currentThread();
-        currentThread.setContextClassLoader(launcherSessionClassLoader);
+        currentThread.setContextClassLoader(this.launcherSessionClassLoader);
     }
 }

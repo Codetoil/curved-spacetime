@@ -40,10 +40,10 @@ public class GLFWRenderConfig {
     public GLFWRenderConfig load() throws IOException {
         Properties props = new Properties();
 
-        try (FileReader reader = new FileReader(FILENAME)) {
+        try (FileReader reader = new FileReader(GLFWRenderConfig.FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn(ex, "Could not find config file " + FILENAME);
+            Logger.warn(ex, "Could not find config file " + GLFWRenderConfig.FILENAME);
             this.dirty = true;
         }
 
@@ -53,7 +53,7 @@ public class GLFWRenderConfig {
     public void save() throws IOException {
         Properties props = new Properties();
 
-        try (FileWriter writer = new FileWriter(FILENAME)) {
+        try (FileWriter writer = new FileWriter(GLFWRenderConfig.FILENAME)) {
             props.store(writer, "Config for the GLFW Render Module.");
         }
         this.dirty = false;

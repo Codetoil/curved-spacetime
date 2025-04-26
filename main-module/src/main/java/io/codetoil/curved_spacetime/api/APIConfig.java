@@ -37,10 +37,10 @@ public class APIConfig {
     public APIConfig load() throws IOException {
         Properties props = new Properties();
 
-        try (FileReader reader = new FileReader(FILENAME)) {
+        try (FileReader reader = new FileReader(APIConfig.FILENAME)) {
             props.load(reader);
         } catch (FileNotFoundException ex) {
-            Logger.warn(ex, "Could not find config file " + FILENAME);
+            Logger.warn(ex, "Could not find config file " + APIConfig.FILENAME);
             this.dirty = true;
         }
 
@@ -50,7 +50,7 @@ public class APIConfig {
     public void save() throws IOException {
         Properties props = new Properties();
 
-        try (FileWriter writer = new FileWriter(FILENAME)) {
+        try (FileWriter writer = new FileWriter(APIConfig.FILENAME)) {
             props.store(writer, "Config for the API Module.");
         }
         this.dirty = false;
