@@ -42,3 +42,10 @@ lwjgl-natives
 runSingle
 runWithVulkanGLFW
 test
+
+curved-spacetime-installer-trivial/target/**
+!curved-spacetime-installer-trivial/apache-maven-3.9.9/bin
+curved-spacetime-installer-trivial/curved-spacetime-installer-trivial.iml
+curved-spacetime-installer-vulkan-glfw/target/**
+!curved-spacetime-installer-vulkan-glfw/apache-maven-3.9.9/bin
+curved-spacetime-installer-vulkan-glfw/curved-spacetime-installer-vulkan-glfw.iml
