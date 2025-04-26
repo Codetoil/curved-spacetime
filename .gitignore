@@ -39,8 +39,8 @@ bin/
 .DS_Store
 
 lwjgl-natives
-runSingle
-runWithVulkanGLFW
+runTrivial
+runTrivialWithVulkanGLFW
 test
 
 curved-spacetime-installer-trivial/target/**

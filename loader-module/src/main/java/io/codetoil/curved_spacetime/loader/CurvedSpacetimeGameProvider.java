@@ -112,39 +112,6 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
                 return ModDependencyIdentifier.of("", "java");
             }
         });
-        VersionRange vulkanRange =
-                VersionRange.ofInterval(Version.of("1.4"), true, null, false);
-        metadata.depends.add(new ModDependency.Only() {
-            @Override
-            public boolean shouldIgnore() {
-                return false;
-            }
-
-            @Override
-            public VersionRange versionRange() {
-                return vulkanRange;
-            }
-
-            @Override
-            public ModDependency unless() {
-                return null;
-            }
-
-            @Override
-            public String reason() {
-                return "";
-            }
-
-            @Override
-            public boolean optional() {
-                return false;
-            }
-
-            @Override
-            public ModDependencyIdentifier id() {
-                return ModDependencyIdentifier.of("", "vulkan");
-            }
-        });
         List<Path> paths = new ArrayList<>(this.gameJars);
         return Collections.singletonList(new BuiltinMod(paths, metadata.build()));
     }

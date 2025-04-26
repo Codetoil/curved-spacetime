@@ -92,7 +92,7 @@ test {
                     Paths.get(getWorkingDir().parent, "test").toFile() : null)
 }
 
-tasks.register('runSingle', JavaExec) {
+tasks.register('runTrivial', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
@@ -102,14 +102,14 @@ tasks.register('runSingle', JavaExec) {
                '-Dfile.encoding=UTF-8',
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runSingle").toFile().exists() ?
-            Paths.get(getWorkingDir().parent, "runSingle").toFile() :
-            Paths.get(getWorkingDir().parent, "runSingle").toFile().mkdirs() ?
-                    Paths.get(getWorkingDir().parent, "runSingle").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivial").toFile().exists() ?
+            Paths.get(getWorkingDir().parent, "runTrivial").toFile() :
+            Paths.get(getWorkingDir().parent, "runTrivial").toFile().mkdirs() ?
+                    Paths.get(getWorkingDir().parent, "runTrivial").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
 }
 
-tasks.register('runWithVulkanGLFW', JavaExec) {
+tasks.register('runTrivialWithVulkanGLFW', JavaExec) {
     classpath = configurations.runtimeClasspathWithVulkanGLFWRenderModule + sourceSets.main.runtimeClasspath
 
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
@@ -120,10 +120,10 @@ tasks.register('runWithVulkanGLFW', JavaExec) {
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
 
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile().exists() ?
-            Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile() :
-            Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile().mkdirs() ?
-                    Paths.get(getWorkingDir().parent, "runWithVulkanGLFW").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().exists() ?
+            Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() :
+            Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().mkdirs() ?
+                    Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
 }
 

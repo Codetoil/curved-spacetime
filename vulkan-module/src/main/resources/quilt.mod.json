@@ -33,6 +33,10 @@
       {
         "id": "java",
         "versions": ">=21"
+      },
+      {
+        "id": "vulkan",
+        "versions": ">=1.4"
       }
     ]
   },
