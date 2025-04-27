@@ -36,7 +36,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/Codetoil/curved_spacetime</url>
+            <url>https://maven.pkg.github.com/Codetoil/curved-spacetime</url>
         </repository>
         <repository>
             <id>fabricmc</id>
