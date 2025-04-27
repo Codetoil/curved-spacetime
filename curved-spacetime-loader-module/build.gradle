@@ -7,6 +7,10 @@ plugins {
     id 'maven-publish'
 }
 
+java {
+    withSourcesJar()
+}
+
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
