@@ -15,7 +15,7 @@ on:
     types: [created]
 
 jobs:
-  publish-glfw-render-module:
+  publish-curved-spacetime-glfw-render-module:
 
     runs-on: ubuntu-24.04
     permissions:
@@ -46,7 +46,7 @@ jobs:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-loader-module:
+  publish-curved-spacetime-loader-module:
 
     runs-on: ubuntu-24.04
     permissions:
@@ -77,7 +77,7 @@ jobs:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-main-module:
+  publish-curved-spacetime-main-module:
 
     runs-on: ubuntu-24.04
     permissions:
@@ -108,7 +108,7 @@ jobs:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-quilt-loader-patches:
+  build-curved-spacetime-quilt-loader-patches:
 
     runs-on: ubuntu-24.04
     permissions:
@@ -132,7 +132,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-quilt-loader-patches:jar
 
-  publish-quilt-tweaker-agent:
+  publish-curved-spacetime-quilt-tweaker-agent:
 
     runs-on: ubuntu-24.04
     permissions:
@@ -163,7 +163,7 @@ jobs:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-vulkan-glfw-render-module:
+  publish-curved-spacetime-vulkan-glfw-render-module:
 
     runs-on: ubuntu-24.04
     permissions:
@@ -194,7 +194,7 @@ jobs:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-vulkan-module:
+  publish-curved-spacetime-vulkan-module:
 
     runs-on: ubuntu-24.04
     permissions:
