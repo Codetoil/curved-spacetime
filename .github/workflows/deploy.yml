@@ -1,6 +1,9 @@
 name: Deploy
 
 on:
+  push:
+    branches:
+      - pages
   workflow_run:
     types:
       - completed
