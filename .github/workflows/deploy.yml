@@ -48,6 +48,7 @@ jobs:
         uses: actions/deploy-pages@v4
       - name: Commit maven
         run: |
+          git add .
           git config --global user.name 'Codetoil'
           git config --global user.email 'codetoil@users.noreply.github.com'
           git commit -am "Automated maven update"
