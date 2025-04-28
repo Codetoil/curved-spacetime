@@ -224,4 +224,19 @@ jobs:
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  archive-curved-spacetime-installer-trivial:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "curved-spacetime-installer-trivial"
+          path: "curved-spacetime-installer-trivial/**"
+  archive-curved-spacetime-installer-vulkan-glfw:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "curved-spacetime-installer-vulkan-glfw"
+          path: "curved-spacetime-installer-vulkan-glfw/**"
