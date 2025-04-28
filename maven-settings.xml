@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <activeProfiles>
+        <activeProfile>main-profile</activeProfile>
+    </activeProfiles>
+    <profiles>
+        <profile>
+            <id>main-profile</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Central</name>
+                    <url>https://repo1.maven.org/maven2</url>
+                </repository>
+                <repository>
+                    <id>github-packages</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/Codetoil/curved-spacetime</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+                <repository>
+                    <id>fabricmc</id>
+                    <name>FabricMC Maven</name>
+                    <url>https://maven.fabricmc.net/</url>
+                </repository>
+                <repository>
+                    <id>quiltmc</id>
+                    <name>QuiltMC Maven</name>
+                    <url>https://maven.quiltmc.org/repository/release/</url>
+                </repository>
+                <repository>
+                    <id>neoforge</id>
+                    <name>NeoForge Maven</name>
+                    <url>https://maven.neoforged.net/releases</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
+    <servers>
+        <server>
+            <id>github</id>
+            <username>Codetoil</username>
+            <password>${env.CURVED_SPACETIME_GHA_PAT}</password>
+        </server>
+    </servers>
+
+</settings>
