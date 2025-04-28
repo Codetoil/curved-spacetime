@@ -262,7 +262,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - run: mvn -Dmaven.repo.local=${{ github.workspace }}/curved-spacetime/curved-spacetime-website/maven/ install
+      - run: mvn -Dmaven.repo.local=${{ github.workspace }}/curved-spacetime-website/maven/ install
+        working-directory: curved-spacetime-website
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
