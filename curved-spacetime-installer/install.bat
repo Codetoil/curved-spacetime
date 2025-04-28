@@ -1,3 +1,4 @@
-apache-maven-3.9.9/bin/mvn.cmd install
+@echo off
+cmd /c ""apache-maven-3.9.9/bin/mvn.cmd" -q install"
 echo Please press ENTER to exit.
 pause >nul
