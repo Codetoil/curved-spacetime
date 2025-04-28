@@ -1,0 +1,12 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Apr 28 20:41:36 UTC 2025
+https\://maven.quiltmc.org/repository/release/.lastUpdated=1745872895469
+https\://repo1.maven.org/maven2/.error=
+@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745872894713
+https\://maven.quiltmc.org/repository/release/.error=
+https\://maven.fabricmc.net/.lastUpdated=1745872895269
+https\://repo1.maven.org/maven2/.lastUpdated=1745872894627
+https\://maven.fabricmc.net/.error=
+https\://maven.pkg.github.com/Codetoil/curved-spacetime/.error=Could not transfer artifact io.codetoil\:curved-spacetime-main-module\:pom\:0.1.0-SNAPSHOT from/to github-packages (https\://maven.pkg.github.com/Codetoil/curved-spacetime)\: status code\: 401, reason phrase\: Unauthorized (401)
+https\://maven.neoforged.net/releases/.error=
+https\://maven.neoforged.net/releases/.lastUpdated=1745872896050
