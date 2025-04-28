@@ -9,7 +9,7 @@ on:
     types:
       - completed
     workflows:
-      - Gradle Publish
+      - Build
   workflow_dispatch:
 
 permissions:
@@ -36,10 +36,11 @@ jobs:
         env:
           CURVED_SPACETIME_GHA_PAT: ${{ secrets.CURVED_SPACETIME_GHA_PAT }}
       - name: Download the latest installer
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v9
         with:
           name: curved-spacetime-installer-0.1.0-SNAPSHOT
-          github-token: ${{ secrets.CURVED_SPACETIME_GHA_PAT }}
+          workflow: build.yml
+          search_artifacts: true
       - name: Copy installer
         run: cp curved-spacetime-installer-0.1.0-SNAPSHOT.zip "curved-spacetime-installer-0.1.0-$(date +'%Y-%m-%dT%H:%M:%S').zip"
       - name: Preform Update
