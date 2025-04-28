@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: pages
-      - run: mvn -s maven-settings.xml -Dmaven.repo.local=${{ github.workspace }}/maven/ install
+      - run: mvn -s maven-settings.xml -Dmaven.repo.local=${{ github.workspace }}/maven/ -fn install
         env:
           CURVED_SPACETIME_GHA_PAT: ${{ secrets.CURVED_SPACETIME_GHA_PAT }}
       - name: Setup Pages
@@ -42,3 +42,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Commit maven
+        run: |
+          git config --global user.name 'Codetoil'
+          git config --global user.email 'codetoil@users.noreply.github.com'
+          git commit -am "Automated maven update"
+          git push
