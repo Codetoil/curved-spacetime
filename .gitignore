@@ -1,9 +1,3 @@
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
 ### IntelliJ IDEA ###
 .idea/**
 *.iws
@@ -37,12 +31,3 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-
-lwjgl-natives
-runTrivial
-runTrivialWithVulkanGLFW
-test
-
-curved-spacetime-installer/target/**
-!curved-spacetime-installer/apache-maven-3.9.9/bin
-curved-spacetime-installer/curved-spacetime-installer.iml
