@@ -1,9 +1,6 @@
-name: Deploy
+name: Deploy Maven
 
 on:
-  push:
-    branches:
-      - pages
   workflow_run:
     types:
       - completed
