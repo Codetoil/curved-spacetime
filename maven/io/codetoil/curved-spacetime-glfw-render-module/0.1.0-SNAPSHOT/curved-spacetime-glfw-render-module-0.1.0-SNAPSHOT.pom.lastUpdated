@@ -1,8 +1,8 @@
 #NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon Apr 28 20:09:29 UTC 2025
+#Mon Apr 28 20:12:17 UTC 2025
 https\://maven.quiltmc.org/repository/release/.lastUpdated=1745867161660
 https\://repo1.maven.org/maven2/.error=
-@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745870969594
+@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745871137218
 https\://maven.quiltmc.org/repository/release/.error=
 https\://maven.fabricmc.net/.lastUpdated=1745867161456
 https\://maven.fabricmc.net/.error=
