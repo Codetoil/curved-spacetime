@@ -30,7 +30,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: pages
-      - run: mvn -s maven-settings.xml -Dmaven.repo.local=${{ github.workspace }}/maven/ -fn install
+      - run: mvn -s maven-settings.xml -Dmaven.repo.local=${{ github.workspace }}/maven/ install
+        continue-on-error: true
         env:
           CURVED_SPACETIME_GHA_PAT: ${{ secrets.CURVED_SPACETIME_GHA_PAT }}
       - name: Setup Pages
