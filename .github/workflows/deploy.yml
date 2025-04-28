@@ -35,6 +35,13 @@ jobs:
         continue-on-error: true
         env:
           CURVED_SPACETIME_GHA_PAT: ${{ secrets.CURVED_SPACETIME_GHA_PAT }}
+      - name: Download the latest installer
+        uses: actions/download-artifact@v4
+        with:
+          name: curved-spacetime-installer-0.1.0-SNAPSHOT
+          github-token: ${{ secrets.CURVED_SPACETIME_GHA_PAT }}
+      - name: Copy installer
+        run: cp curved-spacetime-installer-0.1.0-SNAPSHOT.zip "curved-spacetime-installer-0.1.0-$(date +'%Y-%m-%dT%H:%M:%S').zip"
       - name: Preform Update
         run: |
           git add .
