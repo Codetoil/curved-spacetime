@@ -1,16 +1,16 @@
 #NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Tue Apr 29 12:28:20 EDT 2025
-62ecf27d0b3ff1d93a6dbf325c76c4b15150a66c@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745944099301
-@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745872900982
-file\://file\:///home/codetoil/.m2/repository/.lastUpdated=1745939665787
-file\://file\://~/.m2/repository/.error=
-file\://file\://~/.m2/repository/.lastUpdated=1745939652698
-https\://maven.fabricmc.net/.error=
-https\://maven.fabricmc.net/.lastUpdated=1745944099782
-https\://maven.neoforged.net/releases/.error=
-https\://maven.neoforged.net/releases/.lastUpdated=1745944100600
-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.error=Could not transfer artifact io.codetoil\:curved-spacetime-vulkan-glfw-render-module\:pom\:0.1.0-SNAPSHOT from/to github-packages (https\://maven.pkg.github.com/Codetoil/curved-spacetime)\: status code\: 401, reason phrase\: Unauthorized (401)
-https\://maven.quiltmc.org/repository/release/.error=
-https\://maven.quiltmc.org/repository/release/.lastUpdated=1745944099939
+#Tue Apr 29 16:49:55 UTC 2025
+62ecf27d0b3ff1d93a6dbf325c76c4b15150a66c@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745945394431
+https\://maven.quiltmc.org/repository/release/.lastUpdated=1745945394944
 https\://repo1.maven.org/maven2/.error=
-https\://repo1.maven.org/maven2/.lastUpdated=1745944099143
+@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745872900982
+file\://file\://~/.m2/repository/.lastUpdated=1745939652698
+https\://maven.fabricmc.net/.lastUpdated=1745945394811
+https\://maven.fabricmc.net/.error=
+https\://repo1.maven.org/maven2/.lastUpdated=1745945394395
+https\://maven.pkg.github.com/Codetoil/curved-spacetime/.error=Could not transfer artifact io.codetoil\:curved-spacetime-vulkan-glfw-render-module\:pom\:0.1.0-SNAPSHOT from/to github-packages (https\://maven.pkg.github.com/Codetoil/curved-spacetime)\: status code\: 401, reason phrase\: Unauthorized (401)
+https\://maven.neoforged.net/releases/.error=
+https\://maven.neoforged.net/releases/.lastUpdated=1745945395469
+https\://maven.quiltmc.org/repository/release/.error=
+file\://file\://~/.m2/repository/.error=
+file\://file\:///home/codetoil/.m2/repository/.lastUpdated=1745939665787
