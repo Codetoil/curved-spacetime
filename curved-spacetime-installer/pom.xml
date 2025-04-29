@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.codetoil</groupId>
-    <artifactId>curved-spacetime-installer</artifactId>
+    <artifactId>curved-spacetime-installer-pomxml</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <dependencies>
         <dependency>
