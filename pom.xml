@@ -2,6 +2,7 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>io.codetoil</groupId>
     <artifactId>curved-spacetime-website-maven</artifactId>
     <version>0.1.0-SNAPSHOT</version>
@@ -32,4 +33,79 @@
             <version>0.1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <name>Curved Spacetime Website Maven Downloader</name>
+    <url>https://codetoil.io/curved-spacetime</url>
+    <inceptionYear>2025</inceptionYear>
+    <licenses>
+        <license>
+            <name>GPL-3.0-or-later</name>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>codetoil</id>
+            <name>Anthony Michalek (Codetoil)</name>
+            <email>ianthisawesomee@gmail.com</email>
+            <url>https://codetoil.io</url>
+            <roles>
+                <role>owner</role>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/Codetoil/curved-spacetime/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>GitHub Actions</system>
+        <url>https://github.com/Codetoil/curved-spacetime/actions</url>
+    </ciManagement>
+    <scm>
+        <connection>scm:git:git://github.com/Codetoil/curved-spacetime.git</connection>
+        <developerConnection>scm:git:ssh://github.com/Codetoil/curved-spacetime.git</developerConnection>
+        <url>https://github.com/Codetoil/curved-spacetime</url>
+    </scm>
+    <profiles>
+        <profile>
+            <id>main-profile</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Central</name>
+                    <url>https://repo1.maven.org/maven2</url>
+                </repository>
+                <repository>
+                    <id>github-packages</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/Codetoil/curved-spacetime</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+                <repository>
+                    <id>fabricmc</id>
+                    <name>FabricMC Maven</name>
+                    <url>https://maven.fabricmc.net/</url>
+                </repository>
+                <repository>
+                    <id>quiltmc</id>
+                    <name>QuiltMC Maven</name>
+                    <url>https://maven.quiltmc.org/repository/release/</url>
+                </repository>
+                <repository>
+                    <id>neoforge</id>
+                    <name>NeoForge Maven</name>
+                    <url>https://maven.neoforged.net/releases</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
 </project>

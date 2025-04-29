@@ -1,13 +1,16 @@
 #NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon Apr 28 20:48:52 UTC 2025
-62ecf27d0b3ff1d93a6dbf325c76c4b15150a66c@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745873332287
-https\://maven.quiltmc.org/repository/release/.lastUpdated=1745872897666
-https\://repo1.maven.org/maven2/.error=
+#Tue Apr 29 12:28:15 EDT 2025
+62ecf27d0b3ff1d93a6dbf325c76c4b15150a66c@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745944093565
 @default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745872896884
-https\://maven.quiltmc.org/repository/release/.error=
-https\://maven.fabricmc.net/.lastUpdated=1745872897450
-https\://repo1.maven.org/maven2/.lastUpdated=1745872896787
+file\://file\:///home/codetoil/.m2/repository/.lastUpdated=1745939665451
+file\://file\://~/.m2/repository/.error=
+file\://file\://~/.m2/repository/.lastUpdated=1745939651518
 https\://maven.fabricmc.net/.error=
-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.error=Could not transfer artifact io.codetoil\:curved-spacetime-vulkan-module\:pom\:0.1.0-SNAPSHOT from/to github-packages (https\://maven.pkg.github.com/Codetoil/curved-spacetime)\: status code\: 401, reason phrase\: Unauthorized (401)
+https\://maven.fabricmc.net/.lastUpdated=1745944093955
 https\://maven.neoforged.net/releases/.error=
-https\://maven.neoforged.net/releases/.lastUpdated=1745872898323
+https\://maven.neoforged.net/releases/.lastUpdated=1745944095685
+https\://maven.pkg.github.com/Codetoil/curved-spacetime/.error=Could not transfer artifact io.codetoil\:curved-spacetime-vulkan-module\:pom\:0.1.0-SNAPSHOT from/to github-packages (https\://maven.pkg.github.com/Codetoil/curved-spacetime)\: status code\: 401, reason phrase\: Unauthorized (401)
+https\://maven.quiltmc.org/repository/release/.error=
+https\://maven.quiltmc.org/repository/release/.lastUpdated=1745944094888
+https\://repo1.maven.org/maven2/.error=
+https\://repo1.maven.org/maven2/.lastUpdated=1745944093393
