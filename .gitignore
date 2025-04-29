@@ -32,3 +32,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+target/curved-spacetime-website-maven-0.1.0-SNAPSHOT.jar
+target/maven-archiver/maven-archiver
