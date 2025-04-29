@@ -1,13 +1,13 @@
 #NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon Apr 28 20:48:52 UTC 2025
-62ecf27d0b3ff1d93a6dbf325c76c4b15150a66c@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745873332062
-https\://maven.quiltmc.org/repository/release/.lastUpdated=1745872893214
+#Tue Apr 29 16:32:13 UTC 2025
+62ecf27d0b3ff1d93a6dbf325c76c4b15150a66c@default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745944332474
+https\://maven.quiltmc.org/repository/release/.lastUpdated=1745944332826
 https\://repo1.maven.org/maven2/.error=
 @default-github-packages-https\://maven.pkg.github.com/Codetoil/curved-spacetime/.lastUpdated=1745872892792
 https\://maven.quiltmc.org/repository/release/.error=
-https\://maven.fabricmc.net/.lastUpdated=1745872892990
-https\://repo1.maven.org/maven2/.lastUpdated=1745872892710
+https\://maven.fabricmc.net/.lastUpdated=1745944332689
+https\://repo1.maven.org/maven2/.lastUpdated=1745944332415
 https\://maven.fabricmc.net/.error=
 https\://maven.pkg.github.com/Codetoil/curved-spacetime/.error=Could not transfer artifact io.codetoil\:curved-spacetime-loader-module\:pom\:0.1.0-SNAPSHOT from/to github-packages (https\://maven.pkg.github.com/Codetoil/curved-spacetime)\: status code\: 401, reason phrase\: Unauthorized (401)
 https\://maven.neoforged.net/releases/.error=
-https\://maven.neoforged.net/releases/.lastUpdated=1745872893803
+https\://maven.neoforged.net/releases/.lastUpdated=1745944333316
