@@ -32,7 +32,7 @@ jobs:
         env:
           CURVED_SPACETIME_GHA_PAT: ${{ secrets.CURVED_SPACETIME_GHA_PAT }}
       - name: Download the latest installer
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v10
         with:
           name: curved-spacetime-installer-0.1.0-SNAPSHOT
           workflow: build.yml
