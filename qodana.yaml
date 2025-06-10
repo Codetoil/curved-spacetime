@@ -9,8 +9,10 @@ profile:
   name: qodana.starter
 
 #Enable inspections
-#include:
-#  - name: <SomeEnabledInspectionId>
+include:
+  - name: JvmTaintAnalysis
+  - name: VulnerableLibrariesGlobal
+  - name: IncorrectFormatting
 
 #Disable inspections
 #exclude:
