@@ -68,6 +68,6 @@ subprojects { Project project ->
 dependencies {}
 
 qodanaScan {
-    resultsDir.set(rootDir)
+    System.out.println(rootDir.toPath())
     projectDir.set(rootDir)
 }
