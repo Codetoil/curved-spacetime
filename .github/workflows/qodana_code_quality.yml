@@ -25,5 +25,7 @@ jobs:
           distribution: 'temurin'
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2025.1
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          github-token: ${{ github.token }}
+          push-fixes: pull-request
+          upload-result: true
