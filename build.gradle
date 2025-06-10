@@ -4,23 +4,22 @@ plugins {
 
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
-project.ext.asmVersion = "9.8"
-project.ext.lwjglVersion = "3.3.6"
-project.ext.junitVersion = "5.12.2"
-project.ext.jomlVersion = "1.10.8"
-project.ext.tinyLoggerVersion = "2.7.0"
-project.ext.quiltLoaderVersion = "0.29.0-beta.5"
-project.ext.tinyMappingsParserVersion = "0.3.0+build.17"
-project.ext.tinyRemapperVersion = "0.11.1"
-project.ext.accessWidenerVersion = "2.1.0"
-project.ext.spongeMixinVersion = "0.15.5+mixin.0.8.7"
-project.ext.gsonVersion = "2.13.1"
-project.ext.guavaVersion = "33.4.8-jre"
-project.ext.quiltJson5Version = "1.0.4+final"
-project.ext.quiltConfigVersion = "1.3.2"
-project.ext.quiltLoaderJUnitVersion = "0.29.0-beta.5"
-project.ext.mixinExtrasVersion = "0.4.1"
-project.ext.modLauncherVersion = "11.0.4"
+project.ext.asmVersion = "9.8" // org.ow2.asm:asm, org.ow2.asm:asm-util, org.ow2.asm:asm-commons, org.ow2.asm:asm-analysis, org.ow2.asm:asm-tree
+project.ext.lwjglVersion = "3.3.6" // org.lwjgl:lwjgl, org.lwjgl:lwjgl-glfw, org.lwjgl:lwjgl-vulkan
+project.ext.junitVersion = "5.13.1" // org.junit:junit-bom
+project.ext.jomlVersion = "1.10.8" // org.joml:joml
+project.ext.tinyLoggerVersion = "2.7.0" // org.tinylog:tinylog-impl
+project.ext.quiltLoaderVersion = "0.29.0-beta.8" // org.quiltmc:quilt-loader
+project.ext.tinyMappingsParserVersion = "0.3.0+build.17" // net.fabricmc:tiny-mappings-parser
+project.ext.tinyRemapperVersion = "0.11.1" // net.fabricmc:tiny-remapper
+project.ext.accessWidenerVersion = "2.1.0" // net.fabricmc:access-widener
+project.ext.spongeMixinVersion = "0.15.5+mixin.0.8.7" // net.fabricmc:sponge-mixin
+project.ext.gsonVersion = "2.13.1" // com.google.code.gson:gson
+project.ext.guavaVersion = "33.4.8-jre" // com.google.guava:guava
+project.ext.quiltJson5Version = "1.0.4+final" // org.quiltmc:quilt-json5
+project.ext.quiltConfigVersion = "1.3.2" // org.quiltmc:quilt-config
+project.ext.mixinExtrasVersion = "0.5.0-rc.3" // io.github.llamalad7:mixinextras-fabric
+project.ext.modLauncherVersion = "11.0.5" // cpw.mods:modlauncher
 
 static String getLWJGLNativesName()
 {
