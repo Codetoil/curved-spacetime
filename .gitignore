@@ -12,6 +12,8 @@ build/
 !.idea/codeStyles
 !.idea/codeStyles/codeStyleConfig.xml
 !.idea/codeStyles/Project.xml
+!.idea/inspectionProfiles
+!.idea/inspectionProfiles/Project_Default.xml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -47,5 +49,5 @@ runTrivialWithVulkanGLFW
 test
 
 curved-spacetime-installer/target/**
-!curved-spacetime-installer/apache-maven-3.9.9/bin
+!curved-spacetime-installer/apache-maven-3.9.10/bin
 curved-spacetime-installer/curved-spacetime-installer.iml
