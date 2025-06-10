@@ -33,7 +33,7 @@ jobs:
         uses: JetBrains/qodana-action@v2025.1
         with:
           github-token: ${{ github.token }}
-          push-fixes: pull-request
+          pr-mode: false
           upload-result: true
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
