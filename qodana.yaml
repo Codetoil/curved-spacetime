@@ -15,10 +15,10 @@ include:
   - name: IncorrectFormatting
 
 #Disable inspections
-#exclude:
-#  - name: <SomeDisabledInspectionId>
-#    paths:
-#      - <path/where/not/run/inspection>
+exclude:
+  - name: IncorrectFormatting
+    paths:
+      - curved-spacetime-installer/apache-maven-3.9.10
 
 projectJDK: "21" #(Applied in CI/CD pipeline)
 

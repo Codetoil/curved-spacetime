@@ -9,6 +9,8 @@ build/
 *.iws
 *.iml
 *.ipr
+!.idea/codeStyles/codeStyleConfig.xml
+!.idea/codeStyles/Project.xml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
