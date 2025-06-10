@@ -66,3 +66,8 @@ subprojects { Project project ->
 }
 
 dependencies {}
+
+qodanaScan {
+    resultsDir.set(rootDir)
+    qodanaPath.set(rootDir)
+}
