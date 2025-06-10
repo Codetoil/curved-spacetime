@@ -16,7 +16,7 @@
  * GNU General Public License for more details.<br>
  * <br>
  * You should have received a copy of the GNU General Public License<br>
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
+ * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
 package io.codetoil.curved_spacetime.render.vulkan;
@@ -70,10 +70,10 @@ public class VulkanImageView {
 
     public static class VulkanImageViewData {
         private int aspectMask;
-        private int baseArrayLayer;
+        private final int baseArrayLayer;
         private int format;
         private int layerCount;
-        private int mipLevels;
+        private final int mipLevels;
         private int viewType;
 
         public VulkanImageViewData() {

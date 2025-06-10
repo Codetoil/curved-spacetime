@@ -16,7 +16,7 @@
  * GNU General Public License for more details.<br>
  * <br>
  * You should have received a copy of the GNU General Public License<br>
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
+ * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
 package io.codetoil.curved_spacetime.vulkan;
@@ -86,7 +86,7 @@ public class VulkanPhysicalDevice {
             for (int index = 0; index < numDevices; index++) {
                 VkPhysicalDevice vkPhysicalDevice = new VkPhysicalDevice(pPhysicalDevices.get(index),
                         instance.getVkInstance());
-                VulkanPhysicalDevice vulkanPhysicalDevice = new VulkanPhysicalDevice(vkPhysicalDevice);;
+                VulkanPhysicalDevice vulkanPhysicalDevice = new VulkanPhysicalDevice(vkPhysicalDevice);
 
                 String deviceName = vulkanPhysicalDevice.getDeviceName();
                 if (vulkanPhysicalDevice.hasGraphicsQueueFamily() && vulkanPhysicalDevice.hasKHRSwapChainExtension()) {

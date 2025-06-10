@@ -16,7 +16,7 @@
  * GNU General Public License for more details.<br>
  * <br>
  * You should have received a copy of the GNU General Public License<br>
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
+ * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
 package io.codetoil.curved_spacetime.loader;
@@ -50,7 +50,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider {
     private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
     private final List<Path> miscGameLibraries = new ArrayList<>();
     private final GameTransformer transformer = new GameTransformer();
-    private MappingConfiguration mappingConfiguration = new MappingConfigurationCurvedSpacetime();
+    private final MappingConfiguration mappingConfiguration = new MappingConfigurationCurvedSpacetime();
 
     @Override
     public String getGameId() {

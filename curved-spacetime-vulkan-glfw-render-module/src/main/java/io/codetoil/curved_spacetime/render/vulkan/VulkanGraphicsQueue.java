@@ -16,7 +16,7 @@
  * GNU General Public License for more details.<br>
  * <br>
  * You should have received a copy of the GNU General Public License<br>
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
+ * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
 package io.codetoil.curved_spacetime.render.vulkan;
@@ -24,16 +24,12 @@ package io.codetoil.curved_spacetime.render.vulkan;
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanQueue;
-import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
 import org.lwjgl.vulkan.VK14;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
-import org.lwjgl.vulkan.VkSubmitInfo;
 
 import java.nio.IntBuffer;
-import java.nio.LongBuffer;
 
 public class VulkanGraphicsQueue extends VulkanQueue {
 

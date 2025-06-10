@@ -15,7 +15,7 @@
  * GNU General Public License for more details.<br>
  * <br>
  * You should have received a copy of the GNU General Public License<br>
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
+ * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
 package io.codetoil.curved_spacetime.log;
@@ -31,21 +31,11 @@ public class TinyLogHandler implements LogHandler {
                     boolean wasSuppressed) {
         switch (level)
         {
-            case LogLevel.TRACE -> {
-                Logger.trace(exc, "[{}] {}", category.toString(), msg);
-            }
-            case LogLevel.DEBUG -> {
-                Logger.debug(exc, "[{}] {}", category.toString(), msg);
-            }
-            case LogLevel.INFO -> {
-                Logger.info(exc, "[{}] {}", category.toString(), msg);
-            }
-            case LogLevel.WARN -> {
-                Logger.warn(exc, "[{}] {}", category.toString(), msg);
-            }
-            case LogLevel.ERROR -> {
-                Logger.error(exc, "[{}] {}", category.toString(), msg);
-            }
+            case LogLevel.TRACE -> Logger.trace(exc, "[{}] {}", category.toString(), msg);
+            case LogLevel.DEBUG -> Logger.debug(exc, "[{}] {}", category.toString(), msg);
+            case LogLevel.INFO -> Logger.info(exc, "[{}] {}", category.toString(), msg);
+            case LogLevel.WARN -> Logger.warn(exc, "[{}] {}", category.toString(), msg);
+            case LogLevel.ERROR -> Logger.error(exc, "[{}] {}", category.toString(), msg);
         }
     }
 

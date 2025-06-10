@@ -15,7 +15,7 @@
  * GNU General Public License for more details.<br>
  * <br>
  * You should have received a copy of the GNU General Public License<br>
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.<br>
+ * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
 package io.codetoil.curved_spacetime.api.render;
@@ -23,7 +23,7 @@ package io.codetoil.curved_spacetime.api.render;
 import io.codetoil.curved_spacetime.api.engine.Engine;
 
 public abstract class Window {
-    protected Engine engine;
+    protected final Engine engine;
 
     protected Window(Engine engine)
     {

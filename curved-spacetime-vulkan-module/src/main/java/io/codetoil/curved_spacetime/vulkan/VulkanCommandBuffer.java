@@ -10,7 +10,7 @@ public class VulkanCommandBuffer {
     private final VulkanCommandPool commandPool;
     private final boolean oneTimeSubmit;
     private final VkCommandBuffer vkCommandBuffer;
-    private boolean primary;
+    private final boolean primary;
 
     public VulkanCommandBuffer(VulkanCommandPool commandPool, boolean primary, boolean oneTimeSubmit) {
         Logger.trace("Creating command buffer");
