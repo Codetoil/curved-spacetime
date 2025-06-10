@@ -9,6 +9,7 @@ build/
 *.iws
 *.iml
 *.ipr
+!.idea/codeStyles
 !.idea/codeStyles/codeStyleConfig.xml
 !.idea/codeStyles/Project.xml
 out/
