@@ -234,16 +234,16 @@ public class VulkanInstance {
                 .messageSeverity(VulkanInstance.MESSAGE_SEVERITY_BITMASK)
                 .messageType(VulkanInstance.MESSAGE_TYPE_BITMASK)
                 .pfnUserCallback((messageSeverity, messageTypes, callbackDataAddress, userData) -> {
-                    VkDebugUtilsMessengerCallbackDataEXT callbackData =
-                            VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);
-                    if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0) {
-                        Logger.info("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0) {
-                        Logger.warn("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
-                        Logger.error("VkDebugUtilsCallback, {}", callbackData.pMessageString());
-                    } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) != 0) {
-                        Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                    try (VkDebugUtilsMessengerCallbackDataEXT callbackData = VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress)) {
+                        if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0) {
+                            Logger.info("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0) {
+                            Logger.warn("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
+                            Logger.error("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        } else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) != 0) {
+                            Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
+                        }
                     }
                     return VK14.VK_FALSE;
                 });

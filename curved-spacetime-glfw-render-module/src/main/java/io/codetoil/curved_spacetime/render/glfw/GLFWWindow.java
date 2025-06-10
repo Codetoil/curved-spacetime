@@ -30,6 +30,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public abstract class GLFWWindow extends Window {
     public final GLFWRenderConfig GLFWRenderConfig;
@@ -116,7 +117,7 @@ public abstract class GLFWWindow extends Window {
     public void clean() {
         Callbacks.glfwFreeCallbacks(this.windowHandle);
         GLFW.glfwTerminate();
-        GLFW.glfwSetErrorCallback(null).free();
+        Objects.requireNonNull(GLFW.glfwSetErrorCallback(null)).free();
     }
 
     public long getWindowHandle() {

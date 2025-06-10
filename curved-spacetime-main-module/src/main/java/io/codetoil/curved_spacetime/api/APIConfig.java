@@ -35,6 +35,7 @@ public class APIConfig {
     }
 
     public APIConfig load() throws IOException {
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         Properties props = new Properties();
 
         try (FileReader reader = new FileReader(APIConfig.FILENAME)) {
@@ -48,6 +49,7 @@ public class APIConfig {
     }
 
     public void save() throws IOException {
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         Properties props = new Properties();
 
         try (FileWriter writer = new FileWriter(APIConfig.FILENAME)) {
