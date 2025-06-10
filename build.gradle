@@ -68,6 +68,5 @@ subprojects { Project project ->
 dependencies {}
 
 qodanaScan {
-    System.out.println(rootDir.toPath())
-    projectDir.set(rootDir)
+    arguments = ["--ide", "QDJVMC"]
 }
