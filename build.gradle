@@ -69,5 +69,5 @@ dependencies {}
 
 qodanaScan {
     resultsDir.set(rootDir)
-    qodanaPath.set(rootDir)
+    projectDir.set(rootDir)
 }
