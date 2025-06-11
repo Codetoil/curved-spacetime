@@ -62,8 +62,7 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
     runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${getLWJGLNativesName()}"
     runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
-    if (DefaultNativePlatform.currentOperatingSystem.macOsX)
-    {
+    if (DefaultNativePlatform.currentOperatingSystem.macOsX) {
         runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
     }
 

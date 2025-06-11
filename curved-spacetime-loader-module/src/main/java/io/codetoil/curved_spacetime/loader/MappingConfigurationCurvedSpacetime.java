@@ -6,19 +6,23 @@ import org.quiltmc.loader.impl.lib.mappingio.tree.MappingTreeView;
 
 import java.util.List;
 
-public class MappingConfigurationCurvedSpacetime implements MappingConfiguration {
-    @Override
-    public @Nullable MappingTreeView getMappings() {
-        return null;
-    }
+public class MappingConfigurationCurvedSpacetime implements MappingConfiguration
+{
+	@Override
+	public @Nullable MappingTreeView getMappings()
+	{
+		return null;
+	}
 
-    @Override
-    public List<String> getNamespaces() {
-        return List.of();
-    }
+	@Override
+	public List<String> getNamespaces()
+	{
+		return List.of();
+	}
 
-    @Override
-    public String getTargetNamespace() {
-        return "curved-spacetime";
-    }
+	@Override
+	public String getTargetNamespace()
+	{
+		return "curved-spacetime";
+	}
 }

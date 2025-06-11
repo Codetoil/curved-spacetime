@@ -22,8 +22,7 @@ dependencies {
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 
     api "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
-    if (DefaultNativePlatform.currentOperatingSystem.macOsX)
-    {
+    if (DefaultNativePlatform.currentOperatingSystem.macOsX) {
         runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
     }
 }

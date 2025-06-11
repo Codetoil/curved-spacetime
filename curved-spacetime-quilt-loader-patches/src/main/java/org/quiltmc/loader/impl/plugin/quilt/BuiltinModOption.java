@@ -34,39 +34,49 @@ import org.quiltmc.loader.impl.util.QuiltLoaderInternal;
 import org.quiltmc.loader.impl.util.QuiltLoaderInternalType;
 
 @QuiltLoaderInternal(QuiltLoaderInternalType.NEW_INTERNAL)
-public class BuiltinModOption extends InternalModOptionBase {
+public class BuiltinModOption extends InternalModOptionBase
+{
 
-	public BuiltinModOption(QuiltPluginContext pluginContext, InternalModMetadata meta, Path from, Path resourceRoot) {
+	public BuiltinModOption(QuiltPluginContext pluginContext, InternalModMetadata meta, Path from, Path resourceRoot)
+	{
 		super(pluginContext, meta, from, GuiManagerImpl.ICON_JAVA_PACKAGE, resourceRoot, true,
 				false);
 	}
 
 	@Override
-	public boolean needsTransforming() {
+	public boolean needsTransforming()
+	{
 		return false;
 	}
 
 	@Override
-	public QuiltLoaderIcon modTypeIcon() {
+	public QuiltLoaderIcon modTypeIcon()
+	{
 		return GuiManagerImpl.ICON_JAVA_PACKAGE;
 	}
 
 	@Override
-	public QuiltLoaderIcon modCompleteIcon() {
+	public QuiltLoaderIcon modCompleteIcon()
+	{
 		return GuiManagerImpl.ICON_JAVA_PACKAGE;
 	}
 
 	@Override
-	protected String nameOfType() {
+	protected String nameOfType()
+	{
 		return "builtin";
 	}
 
 	@Override
-	public ModContainerExt convertToMod(Path transformedResourceRoot) {
-		if (!transformedResourceRoot.equals(resourceRoot)) {
-			try {
+	public ModContainerExt convertToMod(Path transformedResourceRoot)
+	{
+		if (!transformedResourceRoot.equals(resourceRoot))
+		{
+			try
+			{
 				resourceRoot.getFileSystem().close();
-			} catch (IOException e) {
+			} catch (IOException e)
+			{
 				throw new RuntimeException(e);
 			}
 		}
