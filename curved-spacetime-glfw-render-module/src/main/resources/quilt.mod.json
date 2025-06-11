@@ -23,10 +23,18 @@
     "depends": [
       {
         "id": "quilt_loader",
-        "versions": ">=0.29.0-beta.5"
+        "versions": ">=0.29.0-beta.8"
       },
       {
         "id": "curved-spacetime-main-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-glfw-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-render-module",
         "versions": ">=0.1.0-SNAPSHOT"
       },
       {

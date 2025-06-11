@@ -50,8 +50,9 @@ public class VulkanPhysicalDevice
 			VK14.vkGetPhysicalDeviceProperties(vkPhysicalDevice, this.vkPhysicalDeviceProperties);
 
 			// Get device extensions
-			VulkanUtils.vkCheck(VK14.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, (String) null, intBuffer,
-					null), "Failed to get number of device extension properties");
+			VulkanUtils.vkCheck(
+					VK14.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, (String) null, intBuffer, null),
+					"Failed to get number of device extension properties");
 			this.vkDeviceExtensions = VkExtensionProperties.calloc(intBuffer.get(0));
 			VulkanUtils.vkCheck(VK14.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, (String) null, intBuffer,
 					this.vkDeviceExtensions), "Failed to get extension properties");
@@ -88,8 +89,8 @@ public class VulkanPhysicalDevice
 			List<VulkanPhysicalDevice> devices = new ArrayList<>();
 			for (int index = 0; index < numDevices; index++)
 			{
-				VkPhysicalDevice vkPhysicalDevice = new VkPhysicalDevice(pPhysicalDevices.get(index),
-						instance.getVkInstance());
+				VkPhysicalDevice vkPhysicalDevice =
+						new VkPhysicalDevice(pPhysicalDevices.get(index), instance.getVkInstance());
 				VulkanPhysicalDevice vulkanPhysicalDevice = new VulkanPhysicalDevice(vkPhysicalDevice);
 
 				String deviceName = vulkanPhysicalDevice.getDeviceName();
@@ -109,8 +110,9 @@ public class VulkanPhysicalDevice
 				}
 
 				// No preferred device, or it does not meet requirements. Just pick the first one.
-				selectedVulkanPhysicalDevice = selectedVulkanPhysicalDevice == null && !devices.isEmpty()
-						? devices.removeFirst() : selectedVulkanPhysicalDevice;
+				selectedVulkanPhysicalDevice =
+						selectedVulkanPhysicalDevice == null && !devices.isEmpty() ? devices.removeFirst() :
+								selectedVulkanPhysicalDevice;
 
 				// Clean up non-selected devices
 				for (VulkanPhysicalDevice vulkanPhysicalDevice1 : devices)

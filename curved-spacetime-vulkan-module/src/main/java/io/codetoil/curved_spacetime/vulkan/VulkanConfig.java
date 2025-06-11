@@ -82,8 +82,7 @@ public class VulkanConfig
 	{
 		Properties props = new Properties();
 		props.put("validation", String.valueOf(this._validation));
-		if (this.preferredDeviceName != null)
-			props.put("preferredDeviceName", this.preferredDeviceName);
+		if (this.preferredDeviceName != null) props.put("preferredDeviceName", this.preferredDeviceName);
 
 		try (FileWriter writer = new FileWriter(FILENAME))
 		{

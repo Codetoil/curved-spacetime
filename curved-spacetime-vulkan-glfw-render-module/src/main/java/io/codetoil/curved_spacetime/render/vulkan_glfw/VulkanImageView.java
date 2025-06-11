@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
@@ -43,19 +43,15 @@ public class VulkanImageView
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			LongBuffer lp = stack.mallocLong(1);
-			VkImageViewCreateInfo viewCreateInfo = VkImageViewCreateInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
-					.image(vkImage)
-					.viewType(vulkanImageViewData.viewType)
-					.format(vulkanImageViewData.format)
-					.subresourceRange(it -> it
-							.aspectMask(this.aspectMask)
-							.baseMipLevel(0)
-							.levelCount(this.mipLevels)
-							.baseMipLevel(vulkanImageViewData.baseArrayLayer)
-							.layerCount(vulkanImageViewData.layerCount));
-			VulkanUtils.vkCheck(VK14.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo,
-					null, lp), "Failed to create image view");
+			VkImageViewCreateInfo viewCreateInfo =
+					VkImageViewCreateInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
+							.image(vkImage).viewType(vulkanImageViewData.viewType).format(vulkanImageViewData.format)
+							.subresourceRange(
+									it -> it.aspectMask(this.aspectMask).baseMipLevel(0).levelCount(this.mipLevels)
+											.baseMipLevel(vulkanImageViewData.baseArrayLayer)
+											.layerCount(vulkanImageViewData.layerCount));
+			VulkanUtils.vkCheck(VK14.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),
+					"Failed to create image view");
 			this.vkImageView = lp.get(0);
 		}
 	}

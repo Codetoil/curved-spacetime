@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import org.tinylog.Logger;
 
@@ -84,8 +84,8 @@ public class VulkanRenderConfig
 			}
 			if (this.fps < 1 || this.fps > 1000)
 			{
-				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-						this.fps, VulkanRenderConfig.DEFAULT_FPS);
+				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
+						VulkanRenderConfig.DEFAULT_FPS);
 				this.fps = VulkanRenderConfig.DEFAULT_FPS;
 				this.dirty = true;
 			}
@@ -103,8 +103,7 @@ public class VulkanRenderConfig
 			this.vsync = Boolean.parseBoolean(vsyncPropValue.toString());
 		} else
 		{
-			Logger.warn("Could not find required key vsync, resetting to default {}",
-					VulkanRenderConfig.DEFAULT_VSYNC);
+			Logger.warn("Could not find required key vsync, resetting to default {}", VulkanRenderConfig.DEFAULT_VSYNC);
 			this.vsync = VulkanRenderConfig.DEFAULT_VSYNC;
 			this.dirty = true;
 		}
@@ -117,24 +116,22 @@ public class VulkanRenderConfig
 				this.requestedImages = Integer.parseInt(requestedImagesPropValue.toString());
 			} catch (NumberFormatException ex)
 			{
-				Logger.warn(ex, "Invalid value for key requestedImages: {}, " +
-								"lower bound 2, resetting to default {}",
+				Logger.warn(ex,
+						"Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
 						requestedImagesPropValue, VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
 				this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 			if (this.requestedImages < 2)
 			{
-				Logger.warn("Invalid value for key requestedImages: {}, " +
-								"lower bound 2, resetting to default {}",
+				Logger.warn("Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
 						this.requestedImages, VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
 				this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 		} else
 		{
-			Logger.warn("Could not find required key requestedImages, " +
-							"lower bound 2, resetting to default {}",
+			Logger.warn("Could not find required key requestedImages, " + "lower bound 2, resetting to default {}",
 					VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
 			this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
 			this.dirty = true;

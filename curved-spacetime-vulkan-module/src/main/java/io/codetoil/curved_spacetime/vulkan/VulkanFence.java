@@ -17,9 +17,9 @@ public class VulkanFence
 		this.logicalDevice = logicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkFenceCreateInfo fenceCreateInfo = VkFenceCreateInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO)
-					.flags(signaled ? VK14.VK_FENCE_CREATE_SIGNALED_BIT : 0);
+			VkFenceCreateInfo fenceCreateInfo =
+					VkFenceCreateInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO)
+							.flags(signaled ? VK14.VK_FENCE_CREATE_SIGNALED_BIT : 0);
 
 			LongBuffer lp = stack.mallocLong(1);
 			VulkanUtils.vkCheck(VK14.vkCreateFence(logicalDevice.getVkDevice(), fenceCreateInfo, null, lp),

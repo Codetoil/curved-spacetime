@@ -23,11 +23,11 @@ public class VulkanCommandBuffer
 
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkCommandBufferAllocateInfo cmdBufAllocateInfo = VkCommandBufferAllocateInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
-					.commandPool(commandPool.getVkCommandPool())
-					.level(primary ? VK14.VK_COMMAND_BUFFER_LEVEL_PRIMARY : VK14.VK_COMMAND_BUFFER_LEVEL_SECONDARY)
-					.commandBufferCount(1);
+			VkCommandBufferAllocateInfo cmdBufAllocateInfo =
+					VkCommandBufferAllocateInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
+							.commandPool(commandPool.getVkCommandPool())
+							.level(primary ? VK14.VK_COMMAND_BUFFER_LEVEL_PRIMARY :
+									VK14.VK_COMMAND_BUFFER_LEVEL_SECONDARY).commandBufferCount(1);
 			PointerBuffer pb = stack.mallocPointer(1);
 			VulkanUtils.vkCheck(VK14.vkAllocateCommandBuffers(vkDevice, cmdBufAllocateInfo, pb),
 					"Failed to allocate render command buffer");
@@ -45,8 +45,8 @@ public class VulkanCommandBuffer
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkCommandBufferBeginInfo cmdBufInfo = VkCommandBufferBeginInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+			VkCommandBufferBeginInfo cmdBufInfo =
+					VkCommandBufferBeginInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
 			if (this.oneTimeSubmit)
 			{
@@ -60,8 +60,7 @@ public class VulkanCommandBuffer
 				}
 				VkCommandBufferInheritanceInfo vkInheritanceInfo = VkCommandBufferInheritanceInfo.calloc(stack)
 						.sType(VK14.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
-						.renderPass(inheritanceInfo.renderPass())
-						.subpass(inheritanceInfo.subpass())
+						.renderPass(inheritanceInfo.renderPass()).subpass(inheritanceInfo.subpass())
 						.framebuffer(inheritanceInfo.framebuffer());
 				cmdBufInfo.pInheritanceInfo(vkInheritanceInfo);
 				cmdBufInfo.flags(VK14.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
@@ -75,8 +74,7 @@ public class VulkanCommandBuffer
 	{
 		Logger.trace("Destroying command buffer");
 		VK14.vkFreeCommandBuffers(this.commandPool.getVulkanLogicalDevice().getVkDevice(),
-				this.commandPool.getVkCommandPool(),
-				this.vkCommandBuffer);
+				this.commandPool.getVkCommandPool(), this.vkCommandBuffer);
 	}
 
 	public void endRecording()

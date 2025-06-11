@@ -38,8 +38,7 @@ public class GLFWRenderConfig
 
 	public GLFWRenderConfig load() throws IOException
 	{
-		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-		Properties props = new Properties();
+		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
 		try (FileReader reader = new FileReader(GLFWRenderConfig.FILENAME))
 		{
@@ -55,8 +54,7 @@ public class GLFWRenderConfig
 
 	public void save() throws IOException
 	{
-		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-		Properties props = new Properties();
+		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
 		try (FileWriter writer = new FileWriter(GLFWRenderConfig.FILENAME))
 		{

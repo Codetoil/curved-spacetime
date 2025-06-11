@@ -66,12 +66,8 @@ public class VulkanInstance
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			ByteBuffer appShortName = stack.UTF8("CurvedSpacetime");
-			VkApplicationInfo appInfo = VkApplicationInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_APPLICATION_INFO)
-					.pApplicationName(appShortName)
-					.applicationVersion(0)
-					.pEngineName(appShortName)
-					.engineVersion(0)
+			VkApplicationInfo appInfo = VkApplicationInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_APPLICATION_INFO)
+					.pApplicationName(appShortName).applicationVersion(0).pEngineName(appShortName).engineVersion(0)
 					.apiVersion(VK14.VK_API_VERSION_1_4);
 
 			// Validation layers
@@ -114,8 +110,8 @@ public class VulkanInstance
 
 			PointerBuffer requiredExtensions;
 
-			boolean usePortability = instanceExtensions
-					.contains(KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME) &&
+			boolean usePortability = instanceExtensions.contains(
+					KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME) &&
 					VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
 			if (supportsValidation)
 			{
@@ -126,8 +122,8 @@ public class VulkanInstance
 				requiredExtensions.put(windowExtensions).put(vkDebugUtilsExtension);
 				if (usePortability)
 				{
-					requiredExtensions.put(stack
-							.UTF8(KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME));
+					requiredExtensions.put(
+							stack.UTF8(KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME));
 				}
 			} else
 			{
@@ -149,34 +145,31 @@ public class VulkanInstance
 			}
 
 			// Create instance info
-			VkInstanceCreateInfo instanceInfo = VkInstanceCreateInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
-					.pNext(extension)
-					.pApplicationInfo(appInfo)
-					.ppEnabledLayerNames(requiredLayers)
-					.ppEnabledExtensionNames(requiredExtensions);
+			VkInstanceCreateInfo instanceInfo =
+					VkInstanceCreateInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
+							.pNext(extension).pApplicationInfo(appInfo).ppEnabledLayerNames(requiredLayers)
+							.ppEnabledExtensionNames(requiredExtensions);
 			if (usePortability)
 			{
 				instanceInfo.flags(KHRPortabilityEnumeration.VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR);
 			}
 
 			PointerBuffer pInstance = stack.mallocPointer(1);
-			VulkanUtils.vkCheck(VK14.vkCreateInstance(instanceInfo, null, pInstance),
-					"Error creating instance");
+			VulkanUtils.vkCheck(VK14.vkCreateInstance(instanceInfo, null, pInstance), "Error creating instance");
 			this.vkInstance = new VkInstance(pInstance.get(0), instanceInfo);
 			this.vkDebugHandle = VK14.VK_NULL_HANDLE;
 			if (supportsValidation)
 			{
 				LongBuffer longBuff = stack.mallocLong(1);
-				VulkanUtils.vkCheck(EXTDebugUtils
-								.vkCreateDebugUtilsMessengerEXT(this.vkInstance, this.debugUtils, null, longBuff),
+				VulkanUtils.vkCheck(
+						EXTDebugUtils.vkCreateDebugUtilsMessengerEXT(this.vkInstance, this.debugUtils, null, longBuff),
 						"Error creating debug utils");
 				this.vkDebugHandle = longBuff.get(0);
 			}
 		}
 
-		this.vulkanPhysicalDevice = VulkanPhysicalDevice.createPhysicalDevice(this,
-				this.vulkanConfig.getPreferredDeviceName());
+		this.vulkanPhysicalDevice =
+				VulkanPhysicalDevice.createPhysicalDevice(this, this.vulkanConfig.getPreferredDeviceName());
 		this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);
 	}
 

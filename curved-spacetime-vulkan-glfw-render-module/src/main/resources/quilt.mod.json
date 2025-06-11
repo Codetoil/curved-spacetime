@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "io.codetoil.curved_spacetime.render.vulkan",
+    "group": "io.codetoil.curved_spacetime.render.vulkan_glfw",
     "id": "curved-spacetime-vulkan-glfw-render-module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {
@@ -19,19 +19,15 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.vulkan.VulkanGLFWRendererModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRendererModuleEntrypoint"
     },
     "depends": [
       {
         "id": "quilt_loader",
-        "versions": ">=0.29.0-beta.5"
+        "versions": ">=0.29.0-beta.8"
       },
       {
         "id": "curved-spacetime-main-module",
-        "versions": ">=0.1.0-SNAPSHOT"
-      },
-      {
-        "id": "curved-spacetime-glfw-render-module",
         "versions": ">=0.1.0-SNAPSHOT"
       },
       {
@@ -39,12 +35,24 @@
         "versions": ">=0.1.0-SNAPSHOT"
       },
       {
-        "id": "java",
-        "versions": ">=21"
+        "id": "curved-spacetime-render-module",
+        "versions": ">=0.1.0-SNAPSHOT"
       },
       {
-        "id": "vulkan",
-        "versions": ">=1.4"
+        "id": "curved-spacetime-glfw-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-glfw-render-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-vulkan-render-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "java",
+        "versions": ">=21"
       }
     ]
   },

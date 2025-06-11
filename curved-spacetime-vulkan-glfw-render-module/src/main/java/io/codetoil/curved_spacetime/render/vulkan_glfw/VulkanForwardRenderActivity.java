@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License<br> along with this program.  If not, see <a
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
-package io.codetoil.curved_spacetime.render.vulkan;
+
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.vulkan.VulkanCommandBuffer;
 import io.codetoil.curved_spacetime.vulkan.VulkanCommandPool;
@@ -92,15 +93,11 @@ public class VulkanForwardRenderActivity
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkClearValue.Buffer clearValues = VkClearValue.calloc(1, stack);
-			clearValues.apply(0, v -> v.color()
-					.float32(0, 0.5f)
-					.float32(1, 0.7f)
-					.float32(2, 1.0f));
-			VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
-					.pClearValues(clearValues)
-					.renderArea(a -> a.extent().set(width, height))
-					.framebuffer(vulkanFrameBuffer.getVkFrameBuffer());
+			clearValues.apply(0, v -> v.color().float32(0, 0.5f).float32(1, 0.7f).float32(2, 1.0f));
+			VkRenderPassBeginInfo renderPassBeginInfo =
+					VkRenderPassBeginInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
+							.pClearValues(clearValues).renderArea(a -> a.extent().set(width, height))
+							.framebuffer(vulkanFrameBuffer.getVkFrameBuffer());
 
 			vulkanCommandBuffer.beginRecording();
 			VK14.vkCmdBeginRenderPass(vulkanCommandBuffer.getVkCommandBuffer(), renderPassBeginInfo,

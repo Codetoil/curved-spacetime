@@ -27,18 +27,14 @@ static String getLWJGLNativesName() {
 
     if (DefaultNativePlatform.currentOperatingSystem.linux) {
         def osArch = System.getProperty("os.arch")
-        lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
-                ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
-                : "natives-linux"
+        lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64") ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}" : "natives-linux"
     }
     if (DefaultNativePlatform.currentOperatingSystem.macOsX) {
         lwjglNatives = System.getProperty("os.arch").startsWith("aarch64") ? "natives-macos-arm64" : "natives-macos"
     }
     if (DefaultNativePlatform.currentOperatingSystem.windows) {
         def osArch = System.getProperty("os.arch")
-        lwjglNatives = osArch.contains("64")
-                ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}"
-                : "natives-windows-x86"
+        lwjglNatives = osArch.contains("64") ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}" : "natives-windows-x86"
     }
     return lwjglNatives
 }

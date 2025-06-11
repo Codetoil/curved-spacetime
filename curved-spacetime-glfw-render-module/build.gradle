@@ -13,6 +13,8 @@ version = "0.1.0-SNAPSHOT"
 
 dependencies {
     api project(":curved-spacetime-main-module")
+    api project(":curved-spacetime-glfw-module")
+    api project(":curved-spacetime-render-module")
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"

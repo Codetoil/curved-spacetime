@@ -31,7 +31,7 @@ import java.util.Objects;
 
 public abstract class GLFWWindow extends Window
 {
-	public final GLFWRenderConfig GLFWRenderConfig;
+	public final GLFWRenderConfig config;
 	protected long windowHandle;
 	protected int width;
 	protected int height;
@@ -41,8 +41,8 @@ public abstract class GLFWWindow extends Window
 		super(engine);
 		try
 		{
-			this.GLFWRenderConfig = new GLFWRenderConfig().load();
-			if (this.GLFWRenderConfig.isDirty()) this.GLFWRenderConfig.save();
+			this.config = new GLFWRenderConfig().load();
+			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
 			throw new RuntimeException("Failed to load GLFW Render Config", ex);
@@ -56,8 +56,7 @@ public abstract class GLFWWindow extends Window
 		GLFWErrorCallback.createPrint(System.err).set();
 
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
-		if (!GLFW.glfwInit())
-			throw new IllegalStateException("Unable to initialize GLFW");
+		if (!GLFW.glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
 
 		GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
 		assert vidMode != null;
@@ -73,10 +72,8 @@ public abstract class GLFWWindow extends Window
 		setWindowHints();
 
 		// Create the window
-		this.windowHandle = GLFW.glfwCreateWindow(620, 480, "Curved Spacetime",
-				MemoryUtil.NULL, MemoryUtil.NULL);
-		if (this.windowHandle == MemoryUtil.NULL)
-			throw new RuntimeException("Failed to create the GLFW window");
+		this.windowHandle = GLFW.glfwCreateWindow(620, 480, "Curved Spacetime", MemoryUtil.NULL, MemoryUtil.NULL);
+		if (this.windowHandle == MemoryUtil.NULL) throw new RuntimeException("Failed to create the GLFW window");
 
 		// Set up a key callback. It will be called every time a key is pressed, repeated or released.
 

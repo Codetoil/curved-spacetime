@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.scene.Scene;
@@ -73,12 +73,11 @@ public class VulkanRenderer extends Renderer
 		this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
 		this.vulkanForwardRenderActivity =
-				new VulkanForwardRenderActivity(this.vulkanSwapChain,
-						this.vulkanGraphicsCommandPool);
+				new VulkanForwardRenderActivity(this.vulkanSwapChain, this.vulkanGraphicsCommandPool);
 
-		this.frameHandler = this.executor.scheduleAtFixedRate(this.window::loop,
-				1_000 / this.vulkanRenderConfig.getFPS(), 1_000 / this.vulkanRenderConfig.getFPS(),
-				TimeUnit.MILLISECONDS);
+		this.frameHandler =
+				this.executor.scheduleAtFixedRate(this.window::loop, 1_000 / this.vulkanRenderConfig.getFPS(),
+						1_000 / this.vulkanRenderConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
 
 	public void clean()

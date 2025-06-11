@@ -43,8 +43,9 @@ public class VulkanLogicalDevice
 		{
 			// Define required extensions
 			Set<String> deviceExtensions = getDeviceExtensions();
-			boolean usePortability = deviceExtensions.contains(KHRPortabilitySubset.
-					VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME) && VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
+			boolean usePortability =
+					deviceExtensions.contains(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME) &&
+							VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
 			int numExtensions = usePortability ? 2 : 1;
 			PointerBuffer requiredExtensions = stack.mallocPointer(numExtensions);
 			requiredExtensions.put(stack.ASCII(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME));
@@ -60,26 +61,24 @@ public class VulkanLogicalDevice
 			// Enable all the queue families
 			VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanPhysicalDevice.getVkQueueFamilyProps();
 			int numQueueFamilies = queuePropsBuff.capacity();
-			VkDeviceQueueCreateInfo.Buffer queueCreationInfoBuf = VkDeviceQueueCreateInfo.calloc(numQueueFamilies,
-					stack);
+			VkDeviceQueueCreateInfo.Buffer queueCreationInfoBuf =
+					VkDeviceQueueCreateInfo.calloc(numQueueFamilies, stack);
 			for (int index = 0; index < numQueueFamilies; index++)
 			{
 				FloatBuffer priorities = stack.callocFloat(queuePropsBuff.get(index).queueCount());
-				queueCreationInfoBuf.get(index)
-						.sType(VK14.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
-						.queueFamilyIndex(index)
-						.pQueuePriorities(priorities);
+				queueCreationInfoBuf.get(index).sType(VK14.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
+						.queueFamilyIndex(index).pQueuePriorities(priorities);
 			}
 
-			VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
-					.ppEnabledExtensionNames(requiredExtensions)
-					.pEnabledFeatures(features)
-					.pQueueCreateInfos(queueCreationInfoBuf);
+			VkDeviceCreateInfo deviceCreateInfo =
+					VkDeviceCreateInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
+							.ppEnabledExtensionNames(requiredExtensions).pEnabledFeatures(features)
+							.pQueueCreateInfos(queueCreationInfoBuf);
 
 			PointerBuffer pp = stack.mallocPointer(1);
-			VulkanUtils.vkCheck(VK14.vkCreateDevice(vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo,
-					null, pp), "Failed to create device");
+			VulkanUtils.vkCheck(
+					VK14.vkCreateDevice(vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo, null, pp),
+					"Failed to create device");
 			this.vkDevice = new VkDevice(pp.get(0), vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo);
 		}
 	}

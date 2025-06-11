@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
@@ -58,9 +58,9 @@ public class VulkanSwapChain
 
 			// Get surface capabilities
 			VkSurfaceCapabilitiesKHR surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack);
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
-							vulkanPhysicalDevice.getVkPhysicalDevice(), surface.getVkSurface(), surfCapabilities),
-					"Failed to get surface capabilities");
+			VulkanUtils.vkCheck(
+					KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanPhysicalDevice.getVkPhysicalDevice(),
+							surface.getVkSurface(), surfCapabilities), "Failed to get surface capabilities");
 
 			int numImages = calcNumImages(surfCapabilities, requestedImages);
 			this.synchronizationVulkanSemaphoresList = new SynchronizationVulkanSemaphores[numImages];
@@ -73,17 +73,12 @@ public class VulkanSwapChain
 			this.vulkanSwapChainExtent = calcSwapChainExtent(vulkanWindow, surfCapabilities);
 
 			VkSwapchainCreateInfoKHR vkSwapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc(stack)
-					.sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
-					.surface(surface.getVkSurface())
-					.minImageCount(numImages)
-					.imageFormat(this.vulkanSurfaceFormat.imageFormat())
-					.imageColorSpace(this.vulkanSurfaceFormat.colorSpace())
-					.imageExtent(this.vulkanSwapChainExtent)
-					.imageArrayLayers(1)
-					.imageUsage(VK14.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+					.sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR).surface(surface.getVkSurface())
+					.minImageCount(numImages).imageFormat(this.vulkanSurfaceFormat.imageFormat())
+					.imageColorSpace(this.vulkanSurfaceFormat.colorSpace()).imageExtent(this.vulkanSwapChainExtent)
+					.imageArrayLayers(1).imageUsage(VK14.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
 					.preTransform(surfCapabilities.currentTransform())
-					.compositeAlpha(KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
-					.clipped(true);
+					.compositeAlpha(KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR).clipped(true);
 			int numQueues = vulkanConcurrentQueues != null ? vulkanConcurrentQueues.length : 0;
 			List<Integer> indices = new ArrayList<>();
 			for (int i = 0; i < numQueues; i++)
@@ -100,15 +95,15 @@ public class VulkanSwapChain
 				indices.forEach(intBuffer::put);
 				intBuffer.put(vulkanPresentationQueue.getQueueFamilyIndex()).flip();
 				vkSwapchainCreateInfo.imageSharingMode(VK14.VK_SHARING_MODE_CONCURRENT)
-						.queueFamilyIndexCount(intBuffer.capacity())
-						.pQueueFamilyIndices(intBuffer);
+						.queueFamilyIndexCount(intBuffer.capacity()).pQueueFamilyIndices(intBuffer);
 			} else
 			{
 				vkSwapchainCreateInfo.imageSharingMode(VK14.VK_SHARING_MODE_EXCLUSIVE);
 			}
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(KHRSwapchain.vkCreateSwapchainKHR(vulkanLogicalDevice.getVkDevice(),
-					vkSwapchainCreateInfo, null, lp), "Failed to create swap chain");
+			VulkanUtils.vkCheck(
+					KHRSwapchain.vkCreateSwapchainKHR(vulkanLogicalDevice.getVkDevice(), vkSwapchainCreateInfo, null,
+							lp), "Failed to create swap chain");
 			this.vkSwapChain = lp.get(0);
 
 			this.vulkanImageViews = createImageViews(stack, vulkanLogicalDevice, this.vkSwapChain,
@@ -135,8 +130,9 @@ public class VulkanSwapChain
 			result = Math.min(requestedImages, maxImages);
 		}
 		result = Math.max(result, minImages);
-		Logger.debug("Requested [{}] images, got [{}] images. Surface capabilities, maxImages: [{}], " +
-				"minImages: [{}]", requestedImages, result, maxImages, minImages);
+		Logger.debug(
+				"Requested [{}] images, got [{}] images. Surface capabilities, maxImages: [{}], " + "minImages: [{}]",
+				requestedImages, result, maxImages, minImages);
 		return result;
 	}
 
@@ -150,9 +146,9 @@ public class VulkanSwapChain
 		{
 
 			IntBuffer ip = stack.mallocInt(1);
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
-							vulkanPhysicalDevice.getVkPhysicalDevice(), vulkanSurface.getVkSurface(), ip, null),
-					"Failed to get the number of surface formats");
+			VulkanUtils.vkCheck(
+					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice.getVkPhysicalDevice(),
+							vulkanSurface.getVkSurface(), ip, null), "Failed to get the number of surface formats");
 			int numFormats = ip.get(0);
 			if (numFormats <= 0)
 			{
@@ -160,10 +156,9 @@ public class VulkanSwapChain
 			}
 
 			VkSurfaceFormatKHR.Buffer surfaceFormats = VkSurfaceFormatKHR.calloc(numFormats, stack);
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
-					vulkanPhysicalDevice.getVkPhysicalDevice(), vulkanSurface.getVkSurface(),
-					ip, surfaceFormats), "Failed to get surface formats"
-			);
+			VulkanUtils.vkCheck(
+					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice.getVkPhysicalDevice(),
+							vulkanSurface.getVkSurface(), ip, surfaceFormats), "Failed to get surface formats");
 
 			imageFormat = surfaceFormats.get(0).format();
 			colorSpace = surfaceFormats.get(0).colorSpace();
@@ -208,17 +203,19 @@ public class VulkanSwapChain
 		VulkanImageView[] result;
 
 		IntBuffer ip = stack.mallocInt(1);
-		VulkanUtils.vkCheck(KHRSwapchain.vkGetSwapchainImagesKHR(vulkanLogicalDevice.getVkDevice(), swapChain, ip,
-				null), "Failed to get number of surface images");
+		VulkanUtils.vkCheck(
+				KHRSwapchain.vkGetSwapchainImagesKHR(vulkanLogicalDevice.getVkDevice(), swapChain, ip, null),
+				"Failed to get number of surface images");
 		int numImages = ip.get(0);
 
 		LongBuffer swapChainImages = stack.mallocLong(numImages);
-		VulkanUtils.vkCheck(KHRSwapchain.vkGetSwapchainImagesKHR(vulkanLogicalDevice.getVkDevice(), swapChain, ip,
-				swapChainImages), "Failed to get surface images");
+		VulkanUtils.vkCheck(
+				KHRSwapchain.vkGetSwapchainImagesKHR(vulkanLogicalDevice.getVkDevice(), swapChain, ip, swapChainImages),
+				"Failed to get surface images");
 
 		result = new VulkanImageView[numImages];
-		VulkanImageView.VulkanImageViewData imageViewData = new VulkanImageView.VulkanImageViewData().format(format)
-				.aspectMask(VK14.VK_IMAGE_ASPECT_COLOR_BIT);
+		VulkanImageView.VulkanImageViewData imageViewData =
+				new VulkanImageView.VulkanImageViewData().format(format).aspectMask(VK14.VK_IMAGE_ASPECT_COLOR_BIT);
 		for (int index = 0; index < numImages; index++)
 		{
 			result[index] = new VulkanImageView(vulkanLogicalDevice, swapChainImages.get(0), imageViewData);
@@ -268,15 +265,14 @@ public class VulkanSwapChain
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			IntBuffer ip = stack.mallocInt(1);
-			int err = KHRSwapchain.vkAcquireNextImageKHR(this.vulkanLogicalDevice.getVkDevice(), this.vkSwapChain,
-					~0L, this.synchronizationVulkanSemaphoresList[currentFrame].imageAcquisitionVulkanSemaphore()
-							.getVkSemaphore(),
-					MemoryUtil.NULL, ip);
+			int err = KHRSwapchain.vkAcquireNextImageKHR(this.vulkanLogicalDevice.getVkDevice(), this.vkSwapChain, ~0L,
+					this.synchronizationVulkanSemaphoresList[currentFrame].imageAcquisitionVulkanSemaphore()
+							.getVkSemaphore(), MemoryUtil.NULL, ip);
 			if (err == KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR)
 			{
 				return -1;
-			} else if (err != VK14.VK_SUCCESS
-					&& err != KHRSwapchain.VK_SUBOPTIMAL_KHR) // If false, not optimal but swapchain can still be used.
+			} else if (err != VK14.VK_SUCCESS &&
+					err != KHRSwapchain.VK_SUBOPTIMAL_KHR) // If false, not optimal but swapchain can still be used.
 			{
 				throw new RuntimeException("Failed to acquire image: " + err);
 			}
@@ -291,13 +287,12 @@ public class VulkanSwapChain
 		boolean resize = false;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkPresentInfoKHR vkPresentInfo = VkPresentInfoKHR.calloc(stack)
-					.sType(KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR)
-					.pWaitSemaphores(stack.longs(synchronizationVulkanSemaphoresList[currentFrame]
-							.renderCompleteVulkanSemaphore().getVkSemaphore()))
-					.swapchainCount(1)
-					.pSwapchains(stack.longs(vkSwapChain))
-					.pImageIndices(stack.ints(imageIndex));
+			VkPresentInfoKHR vkPresentInfo =
+					VkPresentInfoKHR.calloc(stack).sType(KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR)
+							.pWaitSemaphores(stack.longs(
+									synchronizationVulkanSemaphoresList[currentFrame].renderCompleteVulkanSemaphore()
+											.getVkSemaphore())).swapchainCount(1).pSwapchains(stack.longs(vkSwapChain))
+							.pImageIndices(stack.ints(imageIndex));
 
 			int err = KHRSwapchain.vkQueuePresentKHR(vulkanGraphicsQueue.getVkQueue(), vkPresentInfo);
 			if (err == KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR)

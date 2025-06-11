@@ -37,9 +37,9 @@ public class VulkanQueue
 
 	public VulkanQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueFamilyIndex, int queueIndex)
 	{
-		Logger.debug("Creating queue for " + vulkanLogicalDevice
-				+ " queueFamilyIndex " + queueFamilyIndex
-				+ " queueIndex " + queueIndex);
+		Logger.debug(
+				"Creating queue for " + vulkanLogicalDevice + " queueFamilyIndex " + queueFamilyIndex + " queueIndex " +
+						queueIndex);
 
 		this.queueFamilyIndex = queueFamilyIndex;
 		try (MemoryStack stack = MemoryStack.stackPush())
@@ -66,14 +66,11 @@ public class VulkanQueue
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkSubmitInfo vkSubmitInfo = VkSubmitInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_SUBMIT_INFO)
-					.pCommandBuffers(vulkanCommandBuffers)
-					.pSignalSemaphores(signalVulkanSemaphores);
+			VkSubmitInfo vkSubmitInfo = VkSubmitInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_SUBMIT_INFO)
+					.pCommandBuffers(vulkanCommandBuffers).pSignalSemaphores(signalVulkanSemaphores);
 			if (waitVulkanSemapores != null)
 			{
-				vkSubmitInfo.waitSemaphoreCount(waitVulkanSemapores.capacity())
-						.pWaitSemaphores(waitVulkanSemapores)
+				vkSubmitInfo.waitSemaphoreCount(waitVulkanSemapores.capacity()).pWaitSemaphores(waitVulkanSemapores)
 						.pWaitDstStageMask(waitVulkanDstStageMasks);
 			} else
 			{

@@ -20,14 +20,14 @@ public class VulkanCommandPool
 		this.vulkanLogicalDevice = vulkanLogicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkCommandPoolCreateInfo cmdPoolInfo = VkCommandPoolCreateInfo.calloc(stack)
-					.sType(VK14.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
-					.flags(VK14.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT)
-					.queueFamilyIndex(queueFamilyIndex);
+			VkCommandPoolCreateInfo cmdPoolInfo =
+					VkCommandPoolCreateInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
+							.flags(VK14.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT)
+							.queueFamilyIndex(queueFamilyIndex);
 
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK14.vkCreateCommandPool(vulkanLogicalDevice.getVkDevice(), cmdPoolInfo,
-					null, lp), "failed to create command pool");
+			VulkanUtils.vkCheck(VK14.vkCreateCommandPool(vulkanLogicalDevice.getVkDevice(), cmdPoolInfo, null, lp),
+					"failed to create command pool");
 
 			this.vkCommandPool = lp.get(0);
 		}

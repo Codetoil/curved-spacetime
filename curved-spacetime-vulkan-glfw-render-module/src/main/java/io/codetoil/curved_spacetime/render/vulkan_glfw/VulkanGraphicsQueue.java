@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
@@ -68,8 +68,7 @@ public class VulkanGraphicsQueue extends VulkanQueue
 	public static class VulkanGraphicsPresentQueue extends VulkanGraphicsQueue
 	{
 
-		public VulkanGraphicsPresentQueue(VulkanLogicalDevice logicalDevice, VulkanSurface surface,
-										  int queueIndex)
+		public VulkanGraphicsPresentQueue(VulkanLogicalDevice logicalDevice, VulkanSurface surface, int queueIndex)
 		{
 			super(logicalDevice, getPresentQueueFamilyIndex(logicalDevice, surface), queueIndex);
 		}
@@ -85,8 +84,8 @@ public class VulkanGraphicsQueue extends VulkanQueue
 				IntBuffer intBuffer = stack.mallocInt(1);
 				for (int i = 0; i < numQueuesFamilies; i++)
 				{
-					KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(),
-							i, surface.getVkSurface(), intBuffer);
+					KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(), i,
+							surface.getVkSurface(), intBuffer);
 					boolean supportsPresentation = intBuffer.get(0) == VK14.VK_TRUE;
 					if (supportsPresentation)
 					{
