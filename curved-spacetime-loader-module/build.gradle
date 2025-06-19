@@ -93,10 +93,7 @@ tasks.named('test') {
 
 test {
     jvmArgs '-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar'
-    setWorkingDir(Paths.get(getWorkingDir().parent, "test").toFile().exists() ?
-            Paths.get(getWorkingDir().parent, "test").toFile() :
-            Paths.get(getWorkingDir().parent, "test").toFile().mkdirs() ?
-                    Paths.get(getWorkingDir().parent, "test").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "test").toFile().exists() ? Paths.get(getWorkingDir().parent, "test").toFile() : Paths.get(getWorkingDir().parent, "test").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "test").toFile() : null)
 }
 
 tasks.register('runTrivial', JavaExec) {
@@ -109,10 +106,7 @@ tasks.register('runTrivial', JavaExec) {
                '-Dfile.encoding=UTF-8',
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivial").toFile().exists() ?
-            Paths.get(getWorkingDir().parent, "runTrivial").toFile() :
-            Paths.get(getWorkingDir().parent, "runTrivial").toFile().mkdirs() ?
-                    Paths.get(getWorkingDir().parent, "runTrivial").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivial").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivial").toFile() : Paths.get(getWorkingDir().parent, "runTrivial").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivial").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
 }
 
@@ -127,19 +121,14 @@ tasks.register('runTrivialWithVulkanGLFW', JavaExec) {
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
 
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().exists() ?
-            Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() :
-            Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().mkdirs() ?
-                    Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
 }
 
 
 jar {
     manifest {
-        attributes(
-                'Main-Class': 'io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
-        )
+        attributes('Main-Class': 'io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime')
     }
 }
 

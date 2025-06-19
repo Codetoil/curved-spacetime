@@ -21,10 +21,8 @@ tasks.named('test') {
 
 jar {
     manifest {
-        attributes(
-                'Premain-Class': 'QuiltTweakerAgent',
-                'Can-Retransform-Classes': true
-        )
+        attributes('Premain-Class': 'QuiltTweakerAgent',
+                'Can-Retransform-Classes': true)
     }
 }
 

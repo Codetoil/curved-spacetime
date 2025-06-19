@@ -70,10 +70,10 @@ public class VulkanGLFWRenderer extends Renderer
 		this.vulkanGraphicsPresentQueue =
 				new VulkanGraphicsQueue.VulkanGraphicsPresentQueue(this.vulkanInstance.getVulkanLogicalDevice(),
 						this.vulkanSurface, 0);
-		this.vulkanSwapChain = new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface,
-				(VulkanGLFWWindow) this.window, this.vulkanRenderConfig.getRequestedImages(),
-				this.vulkanRenderConfig.hasVSync(), this.vulkanGraphicsPresentQueue,
-				new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
+		this.vulkanSwapChain =
+				new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface, this.window,
+						this.vulkanRenderConfig.getRequestedImages(), this.vulkanRenderConfig.hasVSync(),
+						this.vulkanGraphicsPresentQueue, new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
 		this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
 		this.vulkanForwardRenderActivity =

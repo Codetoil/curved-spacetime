@@ -87,8 +87,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 		metadata.contactInformation.put("issues", "https://github.com/Codetoil/curved-spacetime/issues");
 		metadata.contactInformation.put("sources", "https://github.com/Codetoil/curved-spacetime.git");
 		metadata.setIcons(new Icons.Single("assets/curved-spacetime-main-module/icon.png"));
-		VersionRange javaRange =
-				VersionRange.ofInterval(Version.of("21"), true, null, false);
+		VersionRange javaRange = VersionRange.ofInterval(Version.of("21"), true, null, false);
 		metadata.depends.add(new ModDependency.Only()
 		{
 			@Override
@@ -184,8 +183,8 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 
 		try
 		{
-			LibClassifier<CurvedSpacetimeModule> classifier = new LibClassifier<>(CurvedSpacetimeModule.class,
-					KnotCurvedSpacetime.CURVED_SPACETIME, this);
+			LibClassifier<CurvedSpacetimeModule> classifier =
+					new LibClassifier<>(CurvedSpacetimeModule.class, KnotCurvedSpacetime.CURVED_SPACETIME, this);
 			Path gameJar = GameProviderHelper.getCommonGameJar();
 			if (gameJar != null)
 			{
@@ -207,8 +206,8 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 
 			this.gameJars.add(gameJar);
 
-			this.miscGameLibraries.addAll(classifier.getUnmatchedOrigins()
-					.stream().filter(this.gameJars::contains).toList());
+			this.miscGameLibraries.addAll(
+					classifier.getUnmatchedOrigins().stream().filter(this.gameJars::contains).toList());
 		} catch (IOException e)
 		{
 			throw ExceptionUtil.wrap(e);

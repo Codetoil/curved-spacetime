@@ -103,7 +103,8 @@ public class VulkanGLFWRenderConfig
 			this.vsync = Boolean.parseBoolean(vsyncPropValue.toString());
 		} else
 		{
-			Logger.warn("Could not find required key vsync, resetting to default {}", VulkanGLFWRenderConfig.DEFAULT_VSYNC);
+			Logger.warn("Could not find required key vsync, resetting to default {}",
+					VulkanGLFWRenderConfig.DEFAULT_VSYNC);
 			this.vsync = VulkanGLFWRenderConfig.DEFAULT_VSYNC;
 			this.dirty = true;
 		}
