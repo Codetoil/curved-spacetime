@@ -76,7 +76,7 @@ public class VulkanSwapChain
 					.sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR).surface(surface.getVkSurface())
 					.minImageCount(numImages).imageFormat(this.vulkanSurfaceFormat.imageFormat())
 					.imageColorSpace(this.vulkanSurfaceFormat.colorSpace()).imageExtent(this.vulkanSwapChainExtent)
-					.imageArrayLayers(1).imageUsage(VK14.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+					.imageArrayLayers(1).imageUsage(VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
 					.preTransform(surfCapabilities.currentTransform())
 					.compositeAlpha(KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR).clipped(true);
 			int numQueues = vulkanConcurrentQueues != null ? vulkanConcurrentQueues.length : 0;
@@ -94,11 +94,11 @@ public class VulkanSwapChain
 				IntBuffer intBuffer = stack.mallocInt(indices.size() + 1);
 				indices.forEach(intBuffer::put);
 				intBuffer.put(vulkanPresentationQueue.getQueueFamilyIndex()).flip();
-				vkSwapchainCreateInfo.imageSharingMode(VK14.VK_SHARING_MODE_CONCURRENT)
+				vkSwapchainCreateInfo.imageSharingMode(VK10.VK_SHARING_MODE_CONCURRENT)
 						.queueFamilyIndexCount(intBuffer.capacity()).pQueueFamilyIndices(intBuffer);
 			} else
 			{
-				vkSwapchainCreateInfo.imageSharingMode(VK14.VK_SHARING_MODE_EXCLUSIVE);
+				vkSwapchainCreateInfo.imageSharingMode(VK10.VK_SHARING_MODE_EXCLUSIVE);
 			}
 			LongBuffer lp = stack.mallocLong(1);
 			VulkanUtils.vkCheck(
@@ -165,7 +165,7 @@ public class VulkanSwapChain
 			for (int index = 0; index < numFormats; index++)
 			{
 				VkSurfaceFormatKHR surfaceFormatKHR = surfaceFormats.get(index);
-				if (surfaceFormatKHR.format() == VK14.VK_FORMAT_B8G8R8_SRGB &&
+				if (surfaceFormatKHR.format() == VK10.VK_FORMAT_B8G8R8_SRGB &&
 						surfaceFormatKHR.colorSpace() == KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 				{
 					imageFormat = surfaceFormatKHR.format();
@@ -215,7 +215,7 @@ public class VulkanSwapChain
 
 		result = new VulkanImageView[numImages];
 		VulkanImageView.VulkanImageViewData imageViewData =
-				new VulkanImageView.VulkanImageViewData().format(format).aspectMask(VK14.VK_IMAGE_ASPECT_COLOR_BIT);
+				new VulkanImageView.VulkanImageViewData().format(format).aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT);
 		for (int index = 0; index < numImages; index++)
 		{
 			result[index] = new VulkanImageView(vulkanLogicalDevice, swapChainImages.get(0), imageViewData);
@@ -271,7 +271,7 @@ public class VulkanSwapChain
 			if (err == KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR)
 			{
 				return -1;
-			} else if (err != VK14.VK_SUCCESS &&
+			} else if (err != VK10.VK_SUCCESS &&
 					err != KHRSwapchain.VK_SUBOPTIMAL_KHR) // If false, not optimal but swapchain can still be used.
 			{
 				throw new RuntimeException("Failed to acquire image: " + err);
@@ -298,7 +298,7 @@ public class VulkanSwapChain
 			if (err == KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR)
 			{
 				resize = true;
-			} else if (err != VK14.VK_SUCCESS && err != KHRSwapchain.VK_SUBOPTIMAL_KHR)
+			} else if (err != VK10.VK_SUCCESS && err != KHRSwapchain.VK_SUBOPTIMAL_KHR)
 			{
 				throw new RuntimeException("Failed to present KHR: " + err);
 			}

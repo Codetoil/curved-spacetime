@@ -66,9 +66,9 @@ public class VulkanInstance
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			ByteBuffer appShortName = stack.UTF8("CurvedSpacetime");
-			VkApplicationInfo appInfo = VkApplicationInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_APPLICATION_INFO)
+			VkApplicationInfo appInfo = VkApplicationInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO)
 					.pApplicationName(appShortName).applicationVersion(0).pEngineName(appShortName).engineVersion(0)
-					.apiVersion(VK14.VK_API_VERSION_1_4);
+					.apiVersion(VK10.VK_API_VERSION_1_0);
 
 			// Validation layers
 			boolean supportsValidation = this.vulkanConfig.validation();
@@ -146,7 +146,7 @@ public class VulkanInstance
 
 			// Create instance info
 			VkInstanceCreateInfo instanceInfo =
-					VkInstanceCreateInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
+					VkInstanceCreateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
 							.pNext(extension).pApplicationInfo(appInfo).ppEnabledLayerNames(requiredLayers)
 							.ppEnabledExtensionNames(requiredExtensions);
 			if (usePortability)
@@ -155,9 +155,9 @@ public class VulkanInstance
 			}
 
 			PointerBuffer pInstance = stack.mallocPointer(1);
-			VulkanUtils.vkCheck(VK14.vkCreateInstance(instanceInfo, null, pInstance), "Error creating instance");
+			VulkanUtils.vkCheck(VK10.vkCreateInstance(instanceInfo, null, pInstance), "Error creating instance");
 			this.vkInstance = new VkInstance(pInstance.get(0), instanceInfo);
-			this.vkDebugHandle = VK14.VK_NULL_HANDLE;
+			this.vkDebugHandle = VK10.VK_NULL_HANDLE;
 			if (supportsValidation)
 			{
 				LongBuffer longBuff = stack.mallocLong(1);
@@ -179,11 +179,11 @@ public class VulkanInstance
 		{
 			// Validation Layers
 			IntBuffer numLayersArray = stack.callocInt(1);
-			VK14.vkEnumerateInstanceLayerProperties(numLayersArray, null);
+			VK10.vkEnumerateInstanceLayerProperties(numLayersArray, null);
 			int numLayers = numLayersArray.get(0);
 			Logger.debug("Instance supports [{}] layers", numLayers);
 			VkLayerProperties.Buffer propsBuffer = VkLayerProperties.calloc(numLayers, stack);
-			VK14.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
+			VK10.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
 			List<String> supportedLayers = new ArrayList<>();
 			for (int index = 0; index < numLayers; index++)
 			{
@@ -226,12 +226,12 @@ public class VulkanInstance
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			IntBuffer numExtensionsBuf = stack.callocInt(1);
-			VK14.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, null);
+			VK10.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, null);
 			int numExtensions = numExtensionsBuf.get(0);
 			Logger.debug("Instance supports [{}] extensions", numExtensions);
 
 			VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions, stack);
-			VK14.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
+			VK10.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
 			for (int index = 0; index < numExtensions; index++)
 			{
 				VkExtensionProperties props = instanceExtensionProps.get(index);
@@ -269,7 +269,7 @@ public class VulkanInstance
 							Logger.debug("VkDebugUtilsCallback, {}", callbackData.pMessageString());
 						}
 					}
-					return VK14.VK_FALSE;
+					return VK10.VK_FALSE;
 				});
 	}
 
@@ -279,7 +279,7 @@ public class VulkanInstance
 		this.vulkanLogicalDevice.cleanup();
 		this.vulkanPhysicalDevice.cleanup();
 		Logger.debug("Destroying Vulkan Instance");
-		if (this.vkDebugHandle != VK14.VK_NULL_HANDLE)
+		if (this.vkDebugHandle != VK10.VK_NULL_HANDLE)
 		{
 			EXTDebugUtils.vkDestroyDebugUtilsMessengerEXT(this.vkInstance, this.vkDebugHandle, null);
 		}
@@ -288,7 +288,7 @@ public class VulkanInstance
 			this.debugUtils.pfnUserCallback().free();
 			this.debugUtils.free();
 		}
-		VK14.vkDestroyInstance(this.vkInstance, null);
+		VK10.vkDestroyInstance(this.vkInstance, null);
 	}
 
 	public VkInstance getVkInstance()

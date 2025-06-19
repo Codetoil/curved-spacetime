@@ -21,7 +21,7 @@ package io.codetoil.curved_spacetime.vulkan;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK14;
+import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import org.tinylog.Logger;
@@ -45,7 +45,7 @@ public class VulkanQueue
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			PointerBuffer pQueue = stack.mallocPointer(1);
-			VK14.vkGetDeviceQueue(vulkanLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
+			VK10.vkGetDeviceQueue(vulkanLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
 			long queue = pQueue.get(0);
 			this.vkQueue = new VkQueue(queue, vulkanLogicalDevice.getVkDevice());
 		}
@@ -58,7 +58,7 @@ public class VulkanQueue
 
 	public void waitIdle()
 	{
-		VK14.vkQueueWaitIdle(this.vkQueue);
+		VK10.vkQueueWaitIdle(this.vkQueue);
 	}
 
 	public void submit(PointerBuffer vulkanCommandBuffers, LongBuffer waitVulkanSemapores,
@@ -66,7 +66,7 @@ public class VulkanQueue
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkSubmitInfo vkSubmitInfo = VkSubmitInfo.calloc(stack).sType(VK14.VK_STRUCTURE_TYPE_SUBMIT_INFO)
+			VkSubmitInfo vkSubmitInfo = VkSubmitInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO)
 					.pCommandBuffers(vulkanCommandBuffers).pSignalSemaphores(signalVulkanSemaphores);
 			if (waitVulkanSemapores != null)
 			{
@@ -76,8 +76,8 @@ public class VulkanQueue
 			{
 				vkSubmitInfo.waitSemaphoreCount(0);
 			}
-			long vulkanFenceHandle = vulkanFence != null ? vulkanFence.getVkFence() : VK14.VK_NULL_HANDLE;
-			VulkanUtils.vkCheck(VK14.vkQueueSubmit(this.vkQueue, vkSubmitInfo, vulkanFenceHandle),
+			long vulkanFenceHandle = vulkanFence != null ? vulkanFence.getVkFence() : VK10.VK_NULL_HANDLE;
+			VulkanUtils.vkCheck(VK10.vkQueueSubmit(this.vkQueue, vkSubmitInfo, vulkanFenceHandle),
 					"Failed to submit command to queue");
 		}
 	}
