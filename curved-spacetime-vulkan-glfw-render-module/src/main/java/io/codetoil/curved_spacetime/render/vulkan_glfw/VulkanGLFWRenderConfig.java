@@ -31,7 +31,7 @@ public class VulkanGLFWRenderConfig
 	private static final int DEFAULT_FPS = 60;
 	private static final boolean DEFAULT_VSYNC = true;
 	private static final int DEFAULT_REQUESTED_IMAGES = 2;
-	private static final String FILENAME = "vulkan-render-module.config";
+	private static final String FILENAME = "vulkan-glfw-render-module.config";
 	private int fps;
 	private boolean vsync;
 	private int requestedImages;
@@ -150,7 +150,7 @@ public class VulkanGLFWRenderConfig
 
 		try (FileWriter writer = new FileWriter(VulkanGLFWRenderConfig.FILENAME))
 		{
-			props.store(writer, "Config for the Vulkan Render Module.");
+			props.store(writer, "Config for the Vulkan GLFW Render Module.");
 		}
 		this.dirty = false;
 	}
