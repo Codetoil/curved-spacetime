@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "io.codetoil.curved_spacetime.render.glfw",
-    "id": "curved-spacetime-glfw-render-module",
+    "group": "io.codetoil.curved_spacetime.render.vulkan",
+    "id": "curved-spacetime-vulkan-render-module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {
-      "name": "Curved Spacetime Render GLFW Module",
-      "description": "Implements GLFW Support for Curved Spacetime",
+      "name": "Curved Spacetime Render Vulkan Module",
+      "description": "Implements Vulkan Support for Curved Spacetime",
       "contributors": {
         "Codetoil": "Owner"
       },
@@ -15,7 +15,7 @@
         "issues": "https://github.com/Codetoil/curved-spacetime/issues",
         "sources": "https://github.com/Codetoil/curved-spacetime.git"
       },
-      "icon": "assets/curved-spacetime-render-glfw-module/icon.png"
+      "icon": "assets/curved-spacetime-render-vulkan-module/icon.png"
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
@@ -43,5 +43,5 @@
       }
     ]
   },
-  "mixin": "curved-spacetime-glfw-render-module.mixins.json"
+  "mixin": "curved-spacetime-vulkan-render-module.mixins.json"
 }

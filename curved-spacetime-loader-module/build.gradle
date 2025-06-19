@@ -66,7 +66,11 @@ dependencies {
         runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
     }
 
+
+    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-module")
+    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-render-module")
     vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-module")
+    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-render-module")
     vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-render-module")
     vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-render-module")
 }
