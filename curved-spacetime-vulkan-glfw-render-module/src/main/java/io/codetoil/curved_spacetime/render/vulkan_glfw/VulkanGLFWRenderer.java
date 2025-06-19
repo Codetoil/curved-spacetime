@@ -21,6 +21,10 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.render.Renderer;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanForwardRenderActivity;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanGraphicsQueue;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanSurface;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanSwapChain;
 import io.codetoil.curved_spacetime.vulkan.VulkanCommandPool;
 import io.codetoil.curved_spacetime.vulkan.VulkanInstance;
 import org.lwjgl.glfw.GLFWVulkan;
@@ -29,9 +33,9 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class VulkanRenderer extends Renderer
+public class VulkanGLFWRenderer extends Renderer
 {
-	public final VulkanRenderConfig vulkanRenderConfig;
+	public final VulkanGLFWRenderConfig vulkanRenderConfig;
 	protected final VulkanInstance vulkanInstance;
 	protected final VulkanCommandPool vulkanGraphicsCommandPool;
 	protected final VulkanGraphicsQueue vulkanGraphicsQueue;
@@ -40,34 +44,34 @@ public class VulkanRenderer extends Renderer
 	protected final VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanGraphicsPresentQueue;
 	protected final VulkanForwardRenderActivity vulkanForwardRenderActivity;
 
-	public VulkanRenderer(Engine engine, Scene scene)
+	public VulkanGLFWRenderer(Engine engine, Scene scene)
 	{
 		super(engine, scene);
 
 		try
 		{
-			this.vulkanRenderConfig = new VulkanRenderConfig().load();
+			this.vulkanRenderConfig = new VulkanGLFWRenderConfig().load();
 			if (this.vulkanRenderConfig.isDirty()) this.vulkanRenderConfig.save();
 		} catch (IOException ex)
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
 
-		this.window = new VulkanWindow(engine);
+		this.window = new VulkanGLFWWindow(engine);
 
 		this.executor = Executors.newSingleThreadScheduledExecutor();
 		this.window.init();
 		this.window.showWindow();
 
 		this.vulkanInstance = new VulkanInstance(GLFWVulkan::glfwGetRequiredInstanceExtensions);
-		this.vulkanSurface = new VulkanSurface(this.vulkanInstance.getVulkanPhysicalDevice(),
-				((VulkanWindow) this.window).getWindowHandle());
+		this.vulkanSurface = new VulkanGLFWSurface(this.vulkanInstance.getVulkanPhysicalDevice(),
+				((VulkanGLFWWindow) this.window).getWindowHandle());
 		this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanInstance.getVulkanLogicalDevice(), 0);
 		this.vulkanGraphicsPresentQueue =
 				new VulkanGraphicsQueue.VulkanGraphicsPresentQueue(this.vulkanInstance.getVulkanLogicalDevice(),
 						this.vulkanSurface, 0);
 		this.vulkanSwapChain = new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface,
-				(VulkanWindow) this.window, this.vulkanRenderConfig.getRequestedImages(),
+				(VulkanGLFWWindow) this.window, this.vulkanRenderConfig.getRequestedImages(),
 				this.vulkanRenderConfig.hasVSync(), this.vulkanGraphicsPresentQueue,
 				new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
 		this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),

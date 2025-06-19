@@ -26,7 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-public class VulkanRenderConfig
+public class VulkanGLFWRenderConfig
 {
 	private static final int DEFAULT_FPS = 60;
 	private static final boolean DEFAULT_VSYNC = true;
@@ -37,7 +37,7 @@ public class VulkanRenderConfig
 	private int requestedImages;
 	private boolean dirty = false;
 
-	public VulkanRenderConfig()
+	public VulkanGLFWRenderConfig()
 	{
 	}
 
@@ -56,16 +56,16 @@ public class VulkanRenderConfig
 		return this.requestedImages;
 	}
 
-	public VulkanRenderConfig load() throws IOException
+	public VulkanGLFWRenderConfig load() throws IOException
 	{
 		Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(VulkanRenderConfig.FILENAME))
+		try (FileReader reader = new FileReader(VulkanGLFWRenderConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + VulkanRenderConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + VulkanGLFWRenderConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -78,22 +78,22 @@ public class VulkanRenderConfig
 			} catch (NumberFormatException ex)
 			{
 				Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-						fpsPropValue, VulkanRenderConfig.DEFAULT_FPS);
-				this.fps = VulkanRenderConfig.DEFAULT_FPS;
+						fpsPropValue, VulkanGLFWRenderConfig.DEFAULT_FPS);
+				this.fps = VulkanGLFWRenderConfig.DEFAULT_FPS;
 				this.dirty = true;
 			}
 			if (this.fps < 1 || this.fps > 1000)
 			{
 				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
-						VulkanRenderConfig.DEFAULT_FPS);
-				this.fps = VulkanRenderConfig.DEFAULT_FPS;
+						VulkanGLFWRenderConfig.DEFAULT_FPS);
+				this.fps = VulkanGLFWRenderConfig.DEFAULT_FPS;
 				this.dirty = true;
 			}
 		} else
 		{
 			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
-					VulkanRenderConfig.DEFAULT_FPS);
-			this.fps = VulkanRenderConfig.DEFAULT_FPS;
+					VulkanGLFWRenderConfig.DEFAULT_FPS);
+			this.fps = VulkanGLFWRenderConfig.DEFAULT_FPS;
 			this.dirty = true;
 		}
 
@@ -103,8 +103,8 @@ public class VulkanRenderConfig
 			this.vsync = Boolean.parseBoolean(vsyncPropValue.toString());
 		} else
 		{
-			Logger.warn("Could not find required key vsync, resetting to default {}", VulkanRenderConfig.DEFAULT_VSYNC);
-			this.vsync = VulkanRenderConfig.DEFAULT_VSYNC;
+			Logger.warn("Could not find required key vsync, resetting to default {}", VulkanGLFWRenderConfig.DEFAULT_VSYNC);
+			this.vsync = VulkanGLFWRenderConfig.DEFAULT_VSYNC;
 			this.dirty = true;
 		}
 
@@ -118,22 +118,22 @@ public class VulkanRenderConfig
 			{
 				Logger.warn(ex,
 						"Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
-						requestedImagesPropValue, VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
-				this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
+						requestedImagesPropValue, VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES);
+				this.requestedImages = VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 			if (this.requestedImages < 2)
 			{
 				Logger.warn("Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
-						this.requestedImages, VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
-				this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
+						this.requestedImages, VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES);
+				this.requestedImages = VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 		} else
 		{
 			Logger.warn("Could not find required key requestedImages, " + "lower bound 2, resetting to default {}",
-					VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES);
-			this.requestedImages = VulkanRenderConfig.DEFAULT_REQUESTED_IMAGES;
+					VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES);
+			this.requestedImages = VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES;
 			this.dirty = true;
 		}
 
@@ -147,7 +147,7 @@ public class VulkanRenderConfig
 		props.put("vsync", String.valueOf(this.vsync));
 		props.put("requestedImages", String.valueOf(this.requestedImages));
 
-		try (FileWriter writer = new FileWriter(VulkanRenderConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(VulkanGLFWRenderConfig.FILENAME))
 		{
 			props.store(writer, "Config for the Vulkan Render Module.");
 		}

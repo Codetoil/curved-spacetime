@@ -33,6 +33,10 @@ public abstract class Window
 
 	public abstract void loop();
 
+	public abstract int getHeight();
+
+	public abstract int getWidth();
+
 	public abstract void showWindow();
 
 	public abstract void hideWindow();

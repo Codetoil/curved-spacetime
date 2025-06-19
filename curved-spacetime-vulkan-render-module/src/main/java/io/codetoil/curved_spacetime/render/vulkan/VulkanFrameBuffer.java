@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan_glfw;
+package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;

@@ -23,9 +23,9 @@ import io.codetoil.curved_spacetime.glfw.GLFWWindow;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
 
-public class VulkanWindow extends GLFWWindow
+public class VulkanGLFWWindow extends GLFWWindow
 {
-	public VulkanWindow(Engine engine)
+	public VulkanGLFWWindow(Engine engine)
 	{
 		super(engine);
 	}

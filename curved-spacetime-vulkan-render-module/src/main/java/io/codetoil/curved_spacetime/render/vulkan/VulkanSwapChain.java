@@ -16,8 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan_glfw;
+package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.api.render.Window;
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanSemaphore;
@@ -44,7 +45,7 @@ public class VulkanSwapChain
 	protected final SynchronizationVulkanSemaphores[] synchronizationVulkanSemaphoresList;
 	protected int currentFrame;
 
-	public VulkanSwapChain(VulkanLogicalDevice vulkanLogicalDevice, VulkanSurface surface, VulkanWindow vulkanWindow,
+	public VulkanSwapChain(VulkanLogicalDevice vulkanLogicalDevice, VulkanSurface surface, Window window,
 						   int requestedImages, boolean vsync,
 						   VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanPresentationQueue,
 						   VulkanGraphicsQueue[] vulkanConcurrentQueues)
@@ -70,7 +71,7 @@ public class VulkanSwapChain
 
 			this.vulkanSurfaceFormat = calcSurfaceFormat(vulkanPhysicalDevice, surface);
 
-			this.vulkanSwapChainExtent = calcSwapChainExtent(vulkanWindow, surfCapabilities);
+			this.vulkanSwapChainExtent = calcSwapChainExtent(window, surfCapabilities);
 
 			VkSwapchainCreateInfoKHR vkSwapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc(stack)
 					.sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR).surface(surface.getVkSurface())
@@ -177,7 +178,7 @@ public class VulkanSwapChain
 		return new VulkanSwapChain.VulkanSurfaceFormat(imageFormat, colorSpace);
 	}
 
-	private VkExtent2D calcSwapChainExtent(VulkanWindow window, VkSurfaceCapabilitiesKHR surfCapabilities)
+	private VkExtent2D calcSwapChainExtent(Window window, VkSurfaceCapabilitiesKHR surfCapabilities)
 	{
 		VkExtent2D result = VkExtent2D.calloc();
 		if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF)

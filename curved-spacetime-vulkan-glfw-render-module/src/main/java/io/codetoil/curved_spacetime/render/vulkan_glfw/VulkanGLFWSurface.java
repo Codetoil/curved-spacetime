@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
+import io.codetoil.curved_spacetime.render.vulkan.VulkanSurface;
 import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
 import org.lwjgl.glfw.GLFWVulkan;
 import org.lwjgl.system.MemoryStack;
@@ -26,13 +27,13 @@ import org.tinylog.Logger;
 
 import java.nio.LongBuffer;
 
-public class VulkanSurface
+public class VulkanGLFWSurface implements VulkanSurface
 {
 
 	private final VulkanPhysicalDevice vulkanPhysicalDevice;
 	private final long vkSurface;
 
-	public VulkanSurface(VulkanPhysicalDevice vulkanPhysicalDevice, long windowHandle)
+	public VulkanGLFWSurface(VulkanPhysicalDevice vulkanPhysicalDevice, long windowHandle)
 	{
 		Logger.debug("Creating vulkan surface");
 		this.vulkanPhysicalDevice = vulkanPhysicalDevice;

@@ -49,6 +49,7 @@ public abstract class GLFWWindow extends Window
 		}
 	}
 
+	@Override
 	public void init()
 	{
 		// Set up an error callback. The default implementation
@@ -83,6 +84,7 @@ public abstract class GLFWWindow extends Window
 		});
 	}
 
+	@Override
 	public void loop()
 	{
 		// Poll for window events. The key callback above will only be
@@ -100,26 +102,31 @@ public abstract class GLFWWindow extends Window
 
 	protected abstract void setWindowHints();
 
+	@Override
 	public int getHeight()
 	{
 		return this.height;
 	}
 
+	@Override
 	public int getWidth()
 	{
 		return this.width;
 	}
 
+	@Override
 	public void showWindow()
 	{
 		GLFW.glfwShowWindow(this.windowHandle);
 	}
 
+	@Override
 	public void hideWindow()
 	{
 		GLFW.glfwDestroyWindow(this.windowHandle);
 	}
 
+	@Override
 	public void clean()
 	{
 		Callbacks.glfwFreeCallbacks(this.windowHandle);

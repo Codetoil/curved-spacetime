@@ -29,6 +29,6 @@ public class VulkanGLFWRendererModuleEntrypoint implements ModuleInitializer
 	{
 		Engine engine = (Engine) QuiltLoader.getGameInstance();
 		assert engine != null;
-		engine.renderer = new VulkanRenderer(engine, engine.scene);
+		engine.renderer = new VulkanGLFWRenderer(engine, engine.scene);
 	}
 }
