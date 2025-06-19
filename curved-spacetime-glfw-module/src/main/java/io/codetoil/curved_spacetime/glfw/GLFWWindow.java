@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.glfw;
+package io.codetoil.curved_spacetime.glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.render.Window;
@@ -31,7 +31,7 @@ import java.util.Objects;
 
 public abstract class GLFWWindow extends Window
 {
-	public final GLFWRenderConfig config;
+	public final GLFWConfig config;
 	protected long windowHandle;
 	protected int width;
 	protected int height;
@@ -41,7 +41,7 @@ public abstract class GLFWWindow extends Window
 		super(engine);
 		try
 		{
-			this.config = new GLFWRenderConfig().load();
+			this.config = new GLFWConfig().load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

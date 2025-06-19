@@ -19,7 +19,7 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.render.glfw.GLFWWindow;
+import io.codetoil.curved_spacetime.glfw.GLFWWindow;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
 
