@@ -23,14 +23,10 @@ configurations {
 
 dependencies {
     implementation project(":curved-spacetime-main-module")
-    implementation "org.ow2.asm:asm:${asmVersion}"
-    implementation "org.ow2.asm:asm-util:${asmVersion}"
-    implementation "org.ow2.asm:asm-commons:${asmVersion}"
-    implementation "org.ow2.asm:asm-analysis:${asmVersion}"
-    implementation "org.ow2.asm:asm-tree:${asmVersion}"
     implementation("org.quiltmc:quilt-loader:${quiltLoaderVersion}") {
         exclude module: "annotations"
     }
+    implementation("org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}")
 
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
@@ -39,23 +35,9 @@ dependencies {
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 
     runtimeOnly project(":curved-spacetime-quilt-tweaker-agent")
-    runtimeOnly "net.fabricmc:tiny-mappings-parser:${tinyMappingsParserVersion}"
-    runtimeOnly "net.fabricmc:tiny-remapper:${tinyRemapperVersion}"
-    runtimeOnly "net.fabricmc:access-widener:${accessWidenerVersion}"
-    runtimeOnly("net.fabricmc:sponge-mixin:${spongeMixinVersion}") {
-        exclude group: "com.google.code.gson"
-        exclude group: "com.google.guava"
-    }
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
     runtimeOnly "cpw.mods:modlauncher:${modLauncherVersion}"
-    runtimeOnly("org.quiltmc:quilt-json5:${quiltJson5Version}") {
-        exclude module: "annotations"
-    }
-    runtimeOnly("org.quiltmc:quilt-config:${quiltConfigVersion}") {
-        exclude module: "annotations"
-    }
-    runtimeOnly "io.github.llamalad7:mixinextras-fabric:${mixinExtrasVersion}"
 
     runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}"
     runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:${getLWJGLNativesName()}"

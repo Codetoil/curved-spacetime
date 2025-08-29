@@ -10,4 +10,5 @@ java {
 
 dependencies {
     compileOnly "org.quiltmc:quilt-loader:${quiltLoaderVersion}"
+    compileOnly "org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}"
 }

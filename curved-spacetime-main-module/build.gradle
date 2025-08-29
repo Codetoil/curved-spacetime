@@ -12,7 +12,6 @@ group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
 dependencies {
-    api "org.joml:joml:${jomlVersion}"
     api "com.google.code.gson:gson:${gsonVersion}"
     api "com.google.guava:guava:${guavaVersion}"
 
@@ -22,12 +21,7 @@ dependencies {
     api("org.quiltmc:quilt-loader:${quiltLoaderVersion}") {
         exclude module: "annotations"
     }
-    api("net.fabricmc:sponge-mixin:${spongeMixinVersion}") {
-        exclude group: "com.google.code.gson"
-        exclude group: "com.google.guava"
-    }
-    api "com.google.code.gson:gson:${gsonVersion}"
-    api "com.google.guava:guava:${guavaVersion}"
+    implementation("org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}")
 }
 
 publishing {

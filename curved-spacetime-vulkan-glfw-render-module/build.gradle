@@ -24,10 +24,7 @@ dependencies {
 
     implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
 
-    implementation("net.fabricmc:sponge-mixin:${spongeMixinVersion}") {
-        exclude group: "com.google.code.gson"
-        exclude group: "com.google.guava"
-    }
+    implementation("org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}")
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
     runtimeOnly "cpw.mods:modlauncher:${modLauncherVersion}"
