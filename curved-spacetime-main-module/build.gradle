@@ -22,6 +22,7 @@ dependencies {
         exclude module: "annotations"
     }
     implementation("org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}")
+    implementation "net.fabricmc:sponge-mixin:${fabricMixinVersion}"
 }
 
 publishing {

@@ -11,4 +11,7 @@ java {
 dependencies {
     compileOnly "org.quiltmc:quilt-loader:${quiltLoaderVersion}"
     compileOnly "org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}"
+    compileOnly "com.google.code.gson:gson:${gsonVersion}"
+    compileOnly "com.google.guava:guava:${guavaVersion}"
+    compileOnly "net.fabricmc:sponge-mixin:${fabricMixinVersion}"
 }

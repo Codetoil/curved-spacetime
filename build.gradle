@@ -7,16 +7,16 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 // Maven Central - https://repo1.maven.org/maven2/
 project.ext.lwjglVersion = "3.3.6" // org.lwjgl:lwjgl, org.lwjgl:lwjgl-glfw, org.lwjgl:lwjgl-vulkan
-project.ext.junitVersion = "5.13.1" // org.junit:junit-bom
+project.ext.junitVersion = "6.0.0-RC2" // org.junit:junit-bom
 project.ext.tinyLoggerVersion = "2.8.0-M1" // org.tinylog:tinylog-impl
 project.ext.gsonVersion = "2.13.1" // com.google.code.gson:gson
 project.ext.guavaVersion = "33.4.8-jre" // com.google.guava:guava
 
+// FabricMC Maven - https://maven.fabricmc.net/
+project.ext.fabricMixinVersion = "0.16.4+mixin.0.8.7" // net.fabricmc:sponge-mixin
+
 // QuiltMC Maven - https://maven.quiltmc.org/repository/release/
 project.ext.quiltLoaderVersion = "0.29.2-beta.1" // org.quiltmc:quilt-loader, org.quiltmc:quilt-loader-dependencies
-
-// NeoForge Maven - https://maven.neoforged.net/releases
-project.ext.modLauncherVersion = "11.0.5" // cpw.mods:modlauncher
 
 static String getLWJGLNativesName() {
     String lwjglNatives = null
