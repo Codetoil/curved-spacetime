@@ -16,12 +16,12 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.api.render.vulkan;
 
-import io.codetoil.curved_spacetime.vulkan.VulkanCommandBuffer;
-import io.codetoil.curved_spacetime.vulkan.VulkanCommandPool;
-import io.codetoil.curved_spacetime.vulkan.VulkanFence;
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanCommandBuffer;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanCommandPool;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanFence;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkClearValue;

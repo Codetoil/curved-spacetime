@@ -1,6 +1,6 @@
-package io.codetoil.curved_spacetime.vulkan;
+package io.codetoil.curved_spacetime.api.vulkan;
 
-import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
+import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkFenceCreateInfo;

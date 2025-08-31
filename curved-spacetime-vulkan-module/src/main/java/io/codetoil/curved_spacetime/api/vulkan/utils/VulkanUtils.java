@@ -16,11 +16,50 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.api.vulkan.utils;
 
-public interface VulkanSurface
+import org.lwjgl.vulkan.VK10;
+
+import java.util.Locale;
+
+public class VulkanUtils
 {
-	void cleanup();
+	private VulkanUtils()
+	{
+		// Utility class
+	}
 
-	long getVkSurface();
+	public static OSType getOS()
+	{
+		OSType result;
+		String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+		if ((os.contains("mac")) || (os.contains("darwin")))
+		{
+			result = OSType.MACOS;
+		} else if (os.contains("win"))
+		{
+			result = OSType.WINDOWS;
+		} else if (os.contains("nux"))
+		{
+			result = OSType.LINUX;
+		} else
+		{
+			result = OSType.OTHER;
+		}
+
+		return result;
+	}
+
+	public static void vkCheck(int err, String errMsg)
+	{
+		if (err != VK10.VK_SUCCESS)
+		{
+			throw new AssertionError(errMsg + ": " + err);
+		}
+	}
+
+	public enum OSType
+	{
+		WINDOWS, LINUX, OTHER, MACOS
+	}
 }

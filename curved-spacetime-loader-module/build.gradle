@@ -131,7 +131,7 @@ tasks.register('runTrivialWithVulkanGLFW', JavaExec) {
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
 
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFW").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
 }
 
@@ -146,7 +146,7 @@ tasks.register('runTrivialWithWebserverOpenAPI', JavaExec) {
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
 
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPI").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPI").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPI").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPI").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPIModule").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPIModule").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPIModule").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithWebserverOpenAPIModule").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
 }
 
@@ -161,7 +161,7 @@ tasks.register('runTrivialWithVulkanGLFWModuleAndWebserverOpenAPI', JavaExec) {
                '-Dsun.stdout.encoding=UTF-8',
                '-Dsun.stderr.encoding=UTF-8']
 
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().exists() ? Paths.get(getWorkingDir().parent, "runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : Paths.get(getWorkingDir().parent, "runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : null)
+    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
 }
 

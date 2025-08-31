@@ -19,6 +19,7 @@
 module io.codetoil.curved_spacetime {
 	requires org.tinylog.api;
 	requires org.quiltmc.loader;
+	requires org.jetbrains.annotations;
 
 	exports io.codetoil.curved_spacetime;
 	exports io.codetoil.curved_spacetime.api;

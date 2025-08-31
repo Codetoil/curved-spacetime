@@ -16,38 +16,38 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan_glfw;
+package io.codetoil.curved_spacetime.api.scene;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.glfw.GLFWWindow;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWVulkan;
+import org.jetbrains.annotations.NotNull;
 
-public class VulkanGLFWWindow extends GLFWWindow
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+public abstract class SceneLooper
 {
-	public VulkanGLFWWindow(Engine engine)
+	protected final Engine engine;
+	protected ScheduledExecutorService executor;
+	protected ScheduledFuture<?> loopHandler;
+	protected final Scene scene;
+
+	protected SceneLooper(Engine engine, Scene scene, long delay, long period,
+						  @NotNull TimeUnit timeUnit)
 	{
-		super(engine);
+		this.engine = engine;
+		this.scene = scene;
+
+		this.executor = Executors.newSingleThreadScheduledExecutor();
+		this.loopHandler = this.executor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
 	}
 
-	@Override
-	public boolean doesDriverExist()
+	public void clean()
 	{
-		return GLFWVulkan.glfwVulkanSupported();
+		this.loopHandler.cancel(true);
+		this.executor.shutdown();
 	}
 
-	@Override
-	protected void throwDriverNotFoundException()
-	{
-		throw new IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)");
-	}
-
-	@Override
-	protected void setWindowHints()
-	{
-		GLFW.glfwDefaultWindowHints(); // optional, the current window hints are already the default
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE); // the window will stay hidden after creation
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE); // the window will be resizable
-		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API); // Do not use either OpenGL nor OpenGL ES
-	}
+	public abstract void loop();
 }

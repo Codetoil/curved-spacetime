@@ -16,9 +16,10 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.vulkan;
+package io.codetoil.curved_spacetime.api.vulkan;
 
-import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleConfig;
+import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;

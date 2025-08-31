@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.glfw;
+package io.codetoil.curved_spacetime.api.render.glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.render.Window;
@@ -26,12 +26,10 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public abstract class GLFWWindow extends Window
 {
-	public final GLFWModuleConfig config;
 	protected long windowHandle;
 	protected int width;
 	protected int height;
@@ -39,17 +37,8 @@ public abstract class GLFWWindow extends Window
 	protected GLFWWindow(Engine engine)
 	{
 		super(engine);
-		try
-		{
-			this.config = new GLFWModuleConfig().load();
-			if (this.config.isDirty()) this.config.save();
-		} catch (IOException ex)
-		{
-			throw new RuntimeException("Failed to load GLFW Render Config", ex);
-		}
 	}
 
-	@Override
 	public void init()
 	{
 		// Set up an error callback. The default implementation
@@ -84,7 +73,6 @@ public abstract class GLFWWindow extends Window
 		});
 	}
 
-	@Override
 	public void loop()
 	{
 		// Poll for window events. The key callback above will only be
@@ -102,31 +90,26 @@ public abstract class GLFWWindow extends Window
 
 	protected abstract void setWindowHints();
 
-	@Override
 	public int getHeight()
 	{
 		return this.height;
 	}
 
-	@Override
 	public int getWidth()
 	{
 		return this.width;
 	}
 
-	@Override
 	public void showWindow()
 	{
 		GLFW.glfwShowWindow(this.windowHandle);
 	}
 
-	@Override
 	public void hideWindow()
 	{
 		GLFW.glfwDestroyWindow(this.windowHandle);
 	}
 
-	@Override
 	public void clean()
 	{
 		Callbacks.glfwFreeCallbacks(this.windowHandle);

@@ -25,4 +25,5 @@ module io.codetoil.curved_spacetime.render.glfw {
 	requires org.lwjgl.glfw;
 
 	exports io.codetoil.curved_spacetime.render.glfw;
+	exports io.codetoil.curved_spacetime.api.render.glfw;
 }

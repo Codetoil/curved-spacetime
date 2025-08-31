@@ -30,4 +30,5 @@ module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
 	requires org.quiltmc.loader;
 
 	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
+	exports io.codetoil.curved_spacetime.api.render.vulkan_glfw;
 }

@@ -20,13 +20,17 @@ package io.codetoil.curved_spacetime.api.engine;
 
 import io.codetoil.curved_spacetime.api.APIConfig;
 import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.scene.SceneLooper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Engine
 {
 	public final APIConfig APIConfig;
 	public Scene scene;
+	private Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
 
 	public Engine()
 	{
@@ -43,9 +47,12 @@ public class Engine
 
 	public void clean()
 	{
-		// TODO Implement in Event Bus
-		//this.renderer.getWindow().hideWindow();
-		//this.renderer.clean();
+		this.sceneLooperMap.forEach((value, sceneLooper) -> sceneLooper.clean());
+	}
+
+	public void registerSceneLooper(String id, SceneLooper sceneLooper)
+	{
+		this.sceneLooperMap.put(id, sceneLooper);
 	}
 
 	public void stop()

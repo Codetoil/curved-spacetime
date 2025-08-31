@@ -16,39 +16,38 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api.render;
+package io.codetoil.curved_spacetime.api.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.render.glfw.GLFWWindow;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWVulkan;
 
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-
-public abstract class Renderer
+public class VulkanGLFWWindow extends GLFWWindow
 {
-	protected final Engine engine;
-	protected ScheduledExecutorService executor;
-	protected ScheduledFuture<?> frameHandler;
-	protected final Scene scene;
-	protected Window window;
-
-	protected Renderer(Engine engine, Scene scene)
+	public VulkanGLFWWindow(Engine engine)
 	{
-		this.engine = engine;
-		this.scene = scene;
+		super(engine);
 	}
 
-	public void clean()
+	@Override
+	public boolean doesDriverExist()
 	{
-		this.frameHandler.cancel(true);
-		this.executor.shutdown();
-		this.window.clean();
+		return GLFWVulkan.glfwVulkanSupported();
 	}
 
-	public abstract void render();
-
-	public Window getWindow()
+	@Override
+	protected void throwDriverNotFoundException()
 	{
-		return this.window;
+		throw new IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)");
+	}
+
+	@Override
+	protected void setWindowHints()
+	{
+		GLFW.glfwDefaultWindowHints(); // optional, the current window hints are already the default
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE); // the window will stay hidden after creation
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE); // the window will be resizable
+		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API); // Do not use either OpenGL nor OpenGL ES
 	}
 }
