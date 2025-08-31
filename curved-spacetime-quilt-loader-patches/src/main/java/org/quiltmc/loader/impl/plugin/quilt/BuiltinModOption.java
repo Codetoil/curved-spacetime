@@ -34,6 +34,7 @@ import org.quiltmc.loader.impl.util.QuiltLoaderInternal;
 import org.quiltmc.loader.impl.util.QuiltLoaderInternalType;
 
 @QuiltLoaderInternal(QuiltLoaderInternalType.NEW_INTERNAL)
+@SuppressWarnings("unused")
 public class BuiltinModOption extends InternalModOptionBase
 {
 
