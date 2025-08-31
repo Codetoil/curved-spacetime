@@ -21,6 +21,7 @@ package io.codetoil.curved_spacetime.api.engine;
 import io.codetoil.curved_spacetime.api.APIConfig;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneLooper;
+import org.quiltmc.loader.api.QuiltLoader;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class Engine
 	public final APIConfig APIConfig;
 	public Scene scene;
 	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
+	private static Engine INSTANCE;
 
 	public Engine()
 	{
@@ -59,5 +61,12 @@ public class Engine
 	{
 		this.clean();
 		// TODO Send Stop Event to all mods
+	}
+
+	@SuppressWarnings("deprecation")
+	public static Engine getInstance()
+	{
+		if (INSTANCE == null) INSTANCE = (Engine) QuiltLoader.getGameInstance();
+		return INSTANCE;
 	}
 }

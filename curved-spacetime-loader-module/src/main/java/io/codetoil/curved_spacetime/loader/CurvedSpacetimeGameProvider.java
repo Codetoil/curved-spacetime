@@ -48,6 +48,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 	private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
 	private final List<Path> miscGameLibraries = new ArrayList<>();
 	private final GameTransformer transformer = new GameTransformer();
+	@SuppressWarnings("UnstableApiUsage")
 	private final MappingConfiguration mappingConfiguration = new MappingConfigurationCurvedSpacetime();
 
 	@Override
@@ -158,6 +159,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 	}
 
 	@Override
+	@SuppressWarnings("UnstableApiUsage")
 	public MappingConfiguration getMappingConfiguration()
 	{
 		return this.mappingConfiguration;

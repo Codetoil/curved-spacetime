@@ -30,6 +30,7 @@ package net.fabricmc.api;
  * @see Environment
  * @see EnvironmentInterface
  */
+@SuppressWarnings({"deprecation", "unused"})
 public enum EnvType
 {
 	/**

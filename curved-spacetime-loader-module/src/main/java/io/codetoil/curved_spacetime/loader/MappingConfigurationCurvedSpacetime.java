@@ -24,6 +24,7 @@ import org.quiltmc.loader.impl.lib.mappingio.tree.MappingTreeView;
 
 import java.util.List;
 
+@SuppressWarnings("UnstableApiUsage")
 public class MappingConfigurationCurvedSpacetime implements MappingConfiguration
 {
 	@Override

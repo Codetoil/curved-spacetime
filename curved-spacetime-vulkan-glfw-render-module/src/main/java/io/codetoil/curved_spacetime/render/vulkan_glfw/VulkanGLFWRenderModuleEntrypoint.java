@@ -22,7 +22,6 @@ import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.VulkanGLFWRenderer;
-import org.quiltmc.loader.api.QuiltLoader;
 
 import java.io.IOException;
 
@@ -42,8 +41,7 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
 
-		Engine engine = (Engine) QuiltLoader.getGameInstance();
-		assert engine != null;
+		Engine engine = Engine.getInstance();
 		engine.registerSceneLooper("vulkan_glfw_renderer", new VulkanGLFWRenderer(engine, engine.scene,
 				(VulkanGLFWRenderModuleConfig) this.config));
 	}
