@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.glfw;
 
+import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
@@ -26,26 +27,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-public class GLFWConfig
+public class GLFWModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "glfw-module.config";
 	private boolean dirty = false;
 
-	public GLFWConfig()
+	public GLFWModuleConfig()
 	{
 
 	}
 
-	public GLFWConfig load() throws IOException
+	public GLFWModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(GLFWConfig.FILENAME))
+		try (FileReader reader = new FileReader(GLFWModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + GLFWConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + GLFWModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -56,7 +57,7 @@ public class GLFWConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(GLFWConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(GLFWModuleConfig.FILENAME))
 		{
 			props.store(writer, "Config for the GLFW Module.");
 		}

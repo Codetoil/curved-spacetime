@@ -16,8 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.glfw;
 
+import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
@@ -26,26 +27,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-public class VulkanRenderConfig
+public class GLFWRenderModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "vulkan-render-module.config";
+	private static final String FILENAME = "glfw-render-module.config";
 	private boolean dirty = false;
 
-	public VulkanRenderConfig()
+	public GLFWRenderModuleConfig()
 	{
 
 	}
 
-	public VulkanRenderConfig load() throws IOException
+	public GLFWRenderModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(VulkanRenderConfig.FILENAME))
+		try (FileReader reader = new FileReader(GLFWRenderModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + VulkanRenderConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + GLFWRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -56,7 +57,7 @@ public class VulkanRenderConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(VulkanRenderConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(GLFWRenderModuleConfig.FILENAME))
 		{
 			props.store(writer, "Config for the GLFW Render Module.");
 		}

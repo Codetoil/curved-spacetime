@@ -16,19 +16,33 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan_glfw;
+package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
-import org.quiltmc.loader.api.QuiltLoader;
 
-public class VulkanGLFWRendererModuleEntrypoint implements ModuleInitializer
+import java.io.IOException;
+
+public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
+	private ModuleConfig config;
+
 	@Override
 	public void onInitialize()
 	{
-		Engine engine = (Engine) QuiltLoader.getGameInstance();
-		assert engine != null;
-		engine.renderer = new VulkanGLFWRenderer(engine, engine.scene);
+		try
+		{
+			this.config = new VulkanRenderModuleConfig().load();
+			if (this.config.isDirty()) this.config.save();
+		} catch (IOException ex)
+		{
+			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+		}
+	}
+
+	@Override
+	public ModuleConfig getConfig()
+	{
+		return config;
 	}
 }

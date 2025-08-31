@@ -43,7 +43,7 @@ public class VulkanInstance
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
-	public final VulkanConfig vulkanConfig;
+	public final VulkanModuleConfig vulkanModuleConfig;
 
 	private final VkInstance vkInstance;
 	protected final VulkanPhysicalDevice vulkanPhysicalDevice;
@@ -56,8 +56,8 @@ public class VulkanInstance
 	{
 		try
 		{
-			this.vulkanConfig = new VulkanConfig().load();
-			if (this.vulkanConfig.isDirty()) this.vulkanConfig.save();
+			this.vulkanModuleConfig = new VulkanModuleConfig().load();
+			if (this.vulkanModuleConfig.isDirty()) this.vulkanModuleConfig.save();
 		} catch (IOException ex)
 		{
 			throw new RuntimeException("Failed to load Vulkan Config", ex);
@@ -71,11 +71,11 @@ public class VulkanInstance
 					.apiVersion(VK10.VK_API_VERSION_1_0);
 
 			// Validation layers
-			boolean supportsValidation = this.vulkanConfig.validation();
+			boolean supportsValidation = this.vulkanModuleConfig.validation();
 			List<String> validationLayers = List.of();
 			int numValidationLayers = 0;
 
-			if (this.vulkanConfig.validation())
+			if (this.vulkanModuleConfig.validation())
 			{
 				validationLayers = getSupportedValidationLayers();
 				numValidationLayers = validationLayers.size();
@@ -169,7 +169,7 @@ public class VulkanInstance
 		}
 
 		this.vulkanPhysicalDevice =
-				VulkanPhysicalDevice.createPhysicalDevice(this, this.vulkanConfig.getPreferredDeviceName());
+				VulkanPhysicalDevice.createPhysicalDevice(this, this.vulkanModuleConfig.getPreferredDeviceName());
 		this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);
 	}
 

@@ -16,8 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.glfw;
+package io.codetoil.curved_spacetime.webserver;
 
+import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
@@ -26,26 +27,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-public class GLFWRenderConfig
+public class WebserverModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "glfw-render-module.config";
+	private static final String FILENAME = "webserver-module.config";
 	private boolean dirty = false;
 
-	public GLFWRenderConfig()
+	public WebserverModuleConfig()
 	{
 
 	}
 
-	public GLFWRenderConfig load() throws IOException
+	public WebserverModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(GLFWRenderConfig.FILENAME))
+		try (FileReader reader = new FileReader(WebserverModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + GLFWRenderConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + WebserverModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -56,7 +57,7 @@ public class GLFWRenderConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(GLFWRenderConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(WebserverModuleConfig.FILENAME))
 		{
 			props.store(writer, "Config for the GLFW Render Module.");
 		}

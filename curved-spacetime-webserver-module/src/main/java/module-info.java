@@ -1,6 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright 2022, 2023 QuiltMC<br>
+ * Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -16,19 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api.loader;
+module io.codetoil.curved_spacetime.webserver {
+	requires org.tinylog.api;
+	requires io.codetoil.curved_spacetime;
 
-import org.quiltmc.loader.api.entrypoint.GameEntrypoint;
-
-public interface ModuleInitializer extends GameEntrypoint
-{
-	/**
-	 * Runs the mod initializer.
-	 */
-	void onInitialize();
-
-	/**
-	 * Gets the config for this module.
-	 */
-	ModuleConfig getConfig();
+	exports io.codetoil.curved_spacetime.webserver;
 }

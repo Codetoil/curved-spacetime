@@ -31,7 +31,7 @@ import java.util.Objects;
 
 public abstract class GLFWWindow extends Window
 {
-	public final GLFWConfig config;
+	public final GLFWModuleConfig config;
 	protected long windowHandle;
 	protected int width;
 	protected int height;
@@ -41,7 +41,7 @@ public abstract class GLFWWindow extends Window
 		super(engine);
 		try
 		{
-			this.config = new GLFWConfig().load();
+			this.config = new GLFWModuleConfig().load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

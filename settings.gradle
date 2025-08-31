@@ -7,6 +7,8 @@ include 'curved-spacetime-quilt-tweaker-agent',
         'curved-spacetime-vulkan-glfw-render-module',
         'curved-spacetime-vulkan-render-module',
         'curved-spacetime-render-module',
+        'curved-spacetime-webserver-module',
+        'curved-spacetime-webserver-openapi-module',
         'curved-spacetime-main-module',
         'curved-spacetime-loader-module',
         'curved-spacetime-quilt-loader-patches'
@@ -17,6 +19,8 @@ project(":curved-spacetime-glfw-module").name = "curved-spacetime-glfw-module"
 project(":curved-spacetime-vulkan-glfw-render-module").name = "curved-spacetime-vulkan-glfw-render-module"
 project(":curved-spacetime-vulkan-render-module").name = "curved-spacetime-vulkan-render-module"
 project(":curved-spacetime-render-module").name = "curved-spacetime-render-module"
+project(":curved-spacetime-webserver-module").name = "curved-spacetime-webserver-module"
+project(":curved-spacetime-webserver-openapi-module").name = "curved-spacetime-webserver-openapi-module"
 project(":curved-spacetime-main-module").name = "curved-spacetime-main-module"
 project(":curved-spacetime-loader-module").name = "curved-spacetime-loader-module"
 project(":curved-spacetime-quilt-loader-patches").name = "curved-spacetime-quilt-loader-patches"

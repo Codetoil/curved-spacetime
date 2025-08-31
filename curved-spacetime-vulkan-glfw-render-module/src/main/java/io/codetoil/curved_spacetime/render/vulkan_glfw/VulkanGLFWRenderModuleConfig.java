@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
+import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
@@ -26,7 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-public class VulkanGLFWRenderConfig
+public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 {
 	private static final int DEFAULT_FPS = 60;
 	private static final boolean DEFAULT_VSYNC = true;
@@ -37,7 +38,7 @@ public class VulkanGLFWRenderConfig
 	private int requestedImages;
 	private boolean dirty = false;
 
-	public VulkanGLFWRenderConfig()
+	public VulkanGLFWRenderModuleConfig()
 	{
 	}
 
@@ -56,16 +57,16 @@ public class VulkanGLFWRenderConfig
 		return this.requestedImages;
 	}
 
-	public VulkanGLFWRenderConfig load() throws IOException
+	public VulkanGLFWRenderModuleConfig load() throws IOException
 	{
 		Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(VulkanGLFWRenderConfig.FILENAME))
+		try (FileReader reader = new FileReader(VulkanGLFWRenderModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + VulkanGLFWRenderConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + VulkanGLFWRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -78,22 +79,22 @@ public class VulkanGLFWRenderConfig
 			} catch (NumberFormatException ex)
 			{
 				Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-						fpsPropValue, VulkanGLFWRenderConfig.DEFAULT_FPS);
-				this.fps = VulkanGLFWRenderConfig.DEFAULT_FPS;
+						fpsPropValue, VulkanGLFWRenderModuleConfig.DEFAULT_FPS);
+				this.fps = VulkanGLFWRenderModuleConfig.DEFAULT_FPS;
 				this.dirty = true;
 			}
 			if (this.fps < 1 || this.fps > 1000)
 			{
 				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
-						VulkanGLFWRenderConfig.DEFAULT_FPS);
-				this.fps = VulkanGLFWRenderConfig.DEFAULT_FPS;
+						VulkanGLFWRenderModuleConfig.DEFAULT_FPS);
+				this.fps = VulkanGLFWRenderModuleConfig.DEFAULT_FPS;
 				this.dirty = true;
 			}
 		} else
 		{
 			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
-					VulkanGLFWRenderConfig.DEFAULT_FPS);
-			this.fps = VulkanGLFWRenderConfig.DEFAULT_FPS;
+					VulkanGLFWRenderModuleConfig.DEFAULT_FPS);
+			this.fps = VulkanGLFWRenderModuleConfig.DEFAULT_FPS;
 			this.dirty = true;
 		}
 
@@ -104,8 +105,8 @@ public class VulkanGLFWRenderConfig
 		} else
 		{
 			Logger.warn("Could not find required key vsync, resetting to default {}",
-					VulkanGLFWRenderConfig.DEFAULT_VSYNC);
-			this.vsync = VulkanGLFWRenderConfig.DEFAULT_VSYNC;
+					VulkanGLFWRenderModuleConfig.DEFAULT_VSYNC);
+			this.vsync = VulkanGLFWRenderModuleConfig.DEFAULT_VSYNC;
 			this.dirty = true;
 		}
 
@@ -119,22 +120,22 @@ public class VulkanGLFWRenderConfig
 			{
 				Logger.warn(ex,
 						"Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
-						requestedImagesPropValue, VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES);
-				this.requestedImages = VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES;
+						requestedImagesPropValue, VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+				this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 			if (this.requestedImages < 2)
 			{
 				Logger.warn("Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
-						this.requestedImages, VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES);
-				this.requestedImages = VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES;
+						this.requestedImages, VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+				this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 		} else
 		{
 			Logger.warn("Could not find required key requestedImages, " + "lower bound 2, resetting to default {}",
-					VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES);
-			this.requestedImages = VulkanGLFWRenderConfig.DEFAULT_REQUESTED_IMAGES;
+					VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+			this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 			this.dirty = true;
 		}
 
@@ -148,7 +149,7 @@ public class VulkanGLFWRenderConfig
 		props.put("vsync", String.valueOf(this.vsync));
 		props.put("requestedImages", String.valueOf(this.requestedImages));
 
-		try (FileWriter writer = new FileWriter(VulkanGLFWRenderConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(VulkanGLFWRenderModuleConfig.FILENAME))
 		{
 			props.store(writer, "Config for the Vulkan GLFW Render Module.");
 		}

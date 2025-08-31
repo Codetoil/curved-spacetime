@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
+ * (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -16,40 +16,33 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api.engine;
+package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.api.APIConfig;
-import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
+import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
 
 import java.io.IOException;
 
-public class Engine
+public class RenderModuleEntrypoint implements ModuleInitializer
 {
-	public final APIConfig APIConfig;
-	public Scene scene;
+	private ModuleConfig config;
 
-	public Engine()
+	@Override
+	public void onInitialize()
 	{
 		try
 		{
-			this.APIConfig = new APIConfig().load();
-			if (this.APIConfig.isDirty()) this.APIConfig.save();
+			this.config = new RenderModuleConfig().load();
+			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load API Config", ex);
+			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
-		this.scene = new Scene();
 	}
 
-	public void clean()
+	@Override
+	public ModuleConfig getConfig()
 	{
-		// TODO Implement in Event Bus
-		//this.renderer.getWindow().hideWindow();
-		//this.renderer.clean();
-	}
-
-	public void stop()
-	{
-		this.clean();
+		return config;
 	}
 }

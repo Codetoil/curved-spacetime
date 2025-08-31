@@ -28,6 +28,7 @@ import io.codetoil.curved_spacetime.render.vulkan.VulkanSwapChain;
 import io.codetoil.curved_spacetime.vulkan.VulkanCommandPool;
 import io.codetoil.curved_spacetime.vulkan.VulkanInstance;
 import org.lwjgl.glfw.GLFWVulkan;
+import org.quiltmc.loader.api.QuiltLoader;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -35,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 public class VulkanGLFWRenderer extends Renderer
 {
-	public final VulkanGLFWRenderConfig vulkanRenderConfig;
 	protected final VulkanInstance vulkanInstance;
 	protected final VulkanCommandPool vulkanGraphicsCommandPool;
 	protected final VulkanGraphicsQueue vulkanGraphicsQueue;
@@ -44,18 +44,9 @@ public class VulkanGLFWRenderer extends Renderer
 	protected final VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanGraphicsPresentQueue;
 	protected final VulkanForwardRenderActivity vulkanForwardRenderActivity;
 
-	public VulkanGLFWRenderer(Engine engine, Scene scene)
+	public VulkanGLFWRenderer(Engine engine, Scene scene, VulkanGLFWRenderModuleConfig vulkanGLFWRenderModuleConfig)
 	{
 		super(engine, scene);
-
-		try
-		{
-			this.vulkanRenderConfig = new VulkanGLFWRenderConfig().load();
-			if (this.vulkanRenderConfig.isDirty()) this.vulkanRenderConfig.save();
-		} catch (IOException ex)
-		{
-			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
-		}
 
 		this.window = new VulkanGLFWWindow(engine);
 
@@ -72,7 +63,7 @@ public class VulkanGLFWRenderer extends Renderer
 						this.vulkanSurface, 0);
 		this.vulkanSwapChain =
 				new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface, this.window,
-						this.vulkanRenderConfig.getRequestedImages(), this.vulkanRenderConfig.hasVSync(),
+						vulkanGLFWRenderModuleConfig.getRequestedImages(), vulkanGLFWRenderModuleConfig.hasVSync(),
 						this.vulkanGraphicsPresentQueue, new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
 		this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
@@ -80,8 +71,8 @@ public class VulkanGLFWRenderer extends Renderer
 				new VulkanForwardRenderActivity(this.vulkanSwapChain, this.vulkanGraphicsCommandPool);
 
 		this.frameHandler =
-				this.executor.scheduleAtFixedRate(this.window::loop, 1_000 / this.vulkanRenderConfig.getFPS(),
-						1_000 / this.vulkanRenderConfig.getFPS(), TimeUnit.MILLISECONDS);
+				this.executor.scheduleAtFixedRate(this.window::loop, 1_000 / vulkanGLFWRenderModuleConfig.getFPS(),
+						1_000 / vulkanGLFWRenderModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
 
 	public void clean()

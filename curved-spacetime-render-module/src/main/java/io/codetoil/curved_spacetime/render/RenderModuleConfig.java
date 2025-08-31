@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render;
 
+import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
@@ -26,26 +27,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-public class RenderConfig
+public class RenderModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "render-module.config";
 	private boolean dirty = false;
 
-	public RenderConfig()
+	public RenderModuleConfig()
 	{
 
 	}
 
-	public RenderConfig load() throws IOException
+	public RenderModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(RenderConfig.FILENAME))
+		try (FileReader reader = new FileReader(RenderModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + RenderConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + RenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -56,7 +57,7 @@ public class RenderConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(RenderConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(RenderModuleConfig.FILENAME))
 		{
 			props.store(writer, "Config for the GLFW Render Module.");
 		}
