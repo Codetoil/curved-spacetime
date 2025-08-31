@@ -18,10 +18,16 @@
 
 package io.codetoil.curved_spacetime.webserver;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
 import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
+import org.quiltmc.loader.impl.util.log.Log;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 
 public class WebserverModuleEntrypoint implements ModuleInitializer
 {
@@ -38,6 +44,23 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+
+		try { // from https://stackoverflow.com/questions/3732109/simple-http-server-in-java-using-only-java-se-api
+			HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+			server.createContext("/test", exchange -> {
+				String response = "This is the response";
+				exchange.sendResponseHeaders(200, response.length());
+				OutputStream os = exchange.getResponseBody();
+				os.write(response.getBytes());
+				os.close();
+			});
+			server.setExecutor(null);
+			server.start();
+		} catch (IOException ex)
+		{
+			throw new RuntimeException("Failed to load start test server", ex);
+		}
+		System.out.println("Started test server");
 	}
 
 	@Override

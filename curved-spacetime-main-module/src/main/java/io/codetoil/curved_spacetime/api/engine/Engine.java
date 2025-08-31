@@ -30,7 +30,7 @@ public class Engine
 {
 	public final APIConfig APIConfig;
 	public Scene scene;
-	private Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
+	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
 
 	public Engine()
 	{
@@ -58,5 +58,6 @@ public class Engine
 	public void stop()
 	{
 		this.clean();
+		// TODO Send Stop Event to all mods
 	}
 }
