@@ -16,20 +16,30 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
-	requires org.tinylog.api;
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.vulkan;
-	requires io.codetoil.curved_spacetime.render;
-	requires io.codetoil.curved_spacetime.glfw;
-	requires io.codetoil.curved_spacetime.render.vulkan;
-	requires io.codetoil.curved_spacetime.render.glfw;
-	requires io.codetoil.curved_spacetime.vulkan_glfw;
-	requires org.lwjgl;
-	requires org.lwjgl.vulkan;
-	requires org.lwjgl.glfw;
-	requires org.quiltmc.loader;
+package io.codetoil.curved_spacetime.api;
 
-	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
-	exports io.codetoil.curved_spacetime.api.render.vulkan_glfw;
+import io.codetoil.curved_spacetime.api.engine.Engine;
+
+public abstract class Window
+{
+	protected final Engine engine;
+
+	protected Window(Engine engine)
+	{
+		this.engine = engine;
+	}
+
+	public abstract void init();
+
+	public abstract void loop();
+
+	public abstract int getHeight();
+
+	public abstract int getWidth();
+
+	public abstract void showWindow();
+
+	public abstract void hideWindow();
+
+	public abstract void clean();
 }

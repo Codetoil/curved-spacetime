@@ -29,27 +29,13 @@ import java.util.Properties;
 
 public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 {
-	private static final int DEFAULT_FPS = 60;
-	private static final boolean DEFAULT_VSYNC = true;
 	private static final int DEFAULT_REQUESTED_IMAGES = 2;
 	private static final String FILENAME = "vulkan-glfw-render-module.config";
-	private int fps;
-	private boolean vsync;
 	private int requestedImages;
 	private boolean dirty = false;
 
 	public VulkanGLFWRenderModuleConfig()
 	{
-	}
-
-	public int getFPS()
-	{
-		return this.fps;
-	}
-
-	public boolean hasVSync()
-	{
-		return this.vsync;
 	}
 
 	public int getRequestedImages()
@@ -70,45 +56,7 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 			this.dirty = true;
 		}
 
-		Object fpsPropValue = props.get("fps");
-		if (fpsPropValue != null)
-		{
-			try
-			{
-				this.fps = Integer.parseInt(fpsPropValue.toString());
-			} catch (NumberFormatException ex)
-			{
-				Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-						fpsPropValue, VulkanGLFWRenderModuleConfig.DEFAULT_FPS);
-				this.fps = VulkanGLFWRenderModuleConfig.DEFAULT_FPS;
-				this.dirty = true;
-			}
-			if (this.fps < 1 || this.fps > 1000)
-			{
-				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
-						VulkanGLFWRenderModuleConfig.DEFAULT_FPS);
-				this.fps = VulkanGLFWRenderModuleConfig.DEFAULT_FPS;
-				this.dirty = true;
-			}
-		} else
-		{
-			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
-					VulkanGLFWRenderModuleConfig.DEFAULT_FPS);
-			this.fps = VulkanGLFWRenderModuleConfig.DEFAULT_FPS;
-			this.dirty = true;
-		}
 
-		Object vsyncPropValue = props.get("vsync");
-		if (vsyncPropValue != null)
-		{
-			this.vsync = Boolean.parseBoolean(vsyncPropValue.toString());
-		} else
-		{
-			Logger.warn("Could not find required key vsync, resetting to default {}",
-					VulkanGLFWRenderModuleConfig.DEFAULT_VSYNC);
-			this.vsync = VulkanGLFWRenderModuleConfig.DEFAULT_VSYNC;
-			this.dirty = true;
-		}
 
 		Object requestedImagesPropValue = props.get("requestedImages");
 		if (requestedImagesPropValue != null)
@@ -145,8 +93,6 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 	public void save() throws IOException
 	{
 		Properties props = new Properties();
-		props.put("fps", String.valueOf(this.fps));
-		props.put("vsync", String.valueOf(this.vsync));
 		props.put("requestedImages", String.valueOf(this.requestedImages));
 
 		try (FileWriter writer = new FileWriter(VulkanGLFWRenderModuleConfig.FILENAME))

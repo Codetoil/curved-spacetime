@@ -24,4 +24,5 @@ module io.codetoil.curved_spacetime.glfw {
 	requires java.desktop;
 
 	exports io.codetoil.curved_spacetime.glfw;
+	exports io.codetoil.curved_spacetime.api.glfw;
 }

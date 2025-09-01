@@ -16,20 +16,14 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
+module io.codetoil.curved_spacetime.vulkan_glfw {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.vulkan;
-	requires io.codetoil.curved_spacetime.render;
 	requires io.codetoil.curved_spacetime.glfw;
-	requires io.codetoil.curved_spacetime.render.vulkan;
 	requires io.codetoil.curved_spacetime.render.glfw;
-	requires io.codetoil.curved_spacetime.vulkan_glfw;
 	requires org.lwjgl;
-	requires org.lwjgl.vulkan;
 	requires org.lwjgl.glfw;
-	requires org.quiltmc.loader;
 
-	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
-	exports io.codetoil.curved_spacetime.api.render.vulkan_glfw;
+	exports io.codetoil.curved_spacetime.vulkan_glfw;
+	exports io.codetoil.curved_spacetime.api.vulkan_glfw;
 }

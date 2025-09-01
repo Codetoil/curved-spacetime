@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.api.render.vulkan;
 
-import io.codetoil.curved_spacetime.api.render.Window;
+import io.codetoil.curved_spacetime.api.Window;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanPhysicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanSemaphore;

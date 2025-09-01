@@ -1,6 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br>
+ * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -16,20 +16,20 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
-	requires org.tinylog.api;
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.vulkan;
-	requires io.codetoil.curved_spacetime.render;
-	requires io.codetoil.curved_spacetime.glfw;
-	requires io.codetoil.curved_spacetime.render.vulkan;
-	requires io.codetoil.curved_spacetime.render.glfw;
-	requires io.codetoil.curved_spacetime.vulkan_glfw;
-	requires org.lwjgl;
-	requires org.lwjgl.vulkan;
-	requires org.lwjgl.glfw;
-	requires org.quiltmc.loader;
+package io.codetoil.curved_spacetime.api.render.glfw;
 
-	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
-	exports io.codetoil.curved_spacetime.api.render.vulkan_glfw;
+import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.scene.SceneLooper;
+import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
+
+import java.util.concurrent.TimeUnit;
+
+public abstract class GLFWRenderer extends SceneLooper
+{
+	protected GLFWRenderer(Engine engine, Scene scene, GLFWRenderModuleConfig glfwRenderModuleConfig)
+	{
+		super(engine, scene, 1_000 / glfwRenderModuleConfig.getFPS(),
+				1_000 / glfwRenderModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
+	}
 }

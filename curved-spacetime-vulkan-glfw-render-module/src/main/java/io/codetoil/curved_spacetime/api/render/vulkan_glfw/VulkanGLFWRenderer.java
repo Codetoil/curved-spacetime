@@ -19,20 +19,21 @@
 package io.codetoil.curved_spacetime.api.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.api.render.glfw.GLFWRenderer;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneLooper;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanForwardRenderActivity;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanGraphicsQueue;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanSurface;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanSwapChain;
+import io.codetoil.curved_spacetime.api.vulkan_glfw.VulkanGLFWWindow;
+import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanCommandPool;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanInstance;
 import org.lwjgl.glfw.GLFWVulkan;
 
-import java.util.concurrent.TimeUnit;
-
-public class VulkanGLFWRenderer extends SceneLooper
+public class VulkanGLFWRenderer extends GLFWRenderer
 {
 	protected final VulkanGLFWWindow vulkanGLFWWindow;
 	protected final VulkanInstance vulkanInstance;
@@ -43,10 +44,11 @@ public class VulkanGLFWRenderer extends SceneLooper
 	protected final VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanGraphicsPresentQueue;
 	protected final VulkanForwardRenderActivity vulkanForwardRenderActivity;
 
-	public VulkanGLFWRenderer(Engine engine, Scene scene, VulkanGLFWRenderModuleConfig vulkanGLFWRenderModuleConfig)
+	public VulkanGLFWRenderer(Engine engine, Scene scene,
+							  VulkanGLFWRenderModuleConfig vulkanGLFWRenderModuleConfig,
+							  GLFWRenderModuleConfig glfwRenderModuleConfig)
 	{
-		super(engine, scene, 1_000 / vulkanGLFWRenderModuleConfig.getFPS(),
-				1_000 / vulkanGLFWRenderModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
+		super(engine, scene, glfwRenderModuleConfig);
 
 		this.vulkanGLFWWindow = new VulkanGLFWWindow(engine);
 
@@ -63,7 +65,7 @@ public class VulkanGLFWRenderer extends SceneLooper
 		this.vulkanSwapChain =
 				new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface,
 						this.vulkanGLFWWindow, vulkanGLFWRenderModuleConfig.getRequestedImages(),
-						vulkanGLFWRenderModuleConfig.hasVSync(), this.vulkanGraphicsPresentQueue,
+						glfwRenderModuleConfig.hasVSync(), this.vulkanGraphicsPresentQueue,
 						new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
 		this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());

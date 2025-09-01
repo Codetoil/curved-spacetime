@@ -51,6 +51,10 @@
         "versions": ">=0.1.0-SNAPSHOT"
       },
       {
+        "id": "curved-spacetime-vulkan-glfw-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
         "id": "java",
         "versions": ">=21"
       }
