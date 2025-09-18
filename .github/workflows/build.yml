@@ -10,6 +10,36 @@ on:
   workflow_dispatch:
 
 jobs:
+  publish-curved-spacetime-glfw-module:
+
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'zulu'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        run: ./gradlew :curved-spacetime-render-module:jar
+      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+      # the publishing section of your build.gradle
+      - name: Publish to GitHub Packages
+        run: ./gradlew :curved-spacetime-render-module:publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-curved-spacetime-glfw-render-module:
 
     runs-on: ubuntu-24.04
@@ -158,6 +188,66 @@ jobs:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  publish-curved-spacetime-render-module:
+
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'zulu'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        run: ./gradlew :curved-spacetime-render-module:jar
+      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+      # the publishing section of your build.gradle
+      - name: Publish to GitHub Packages
+        run: ./gradlew :curved-spacetime-render-module:publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish-curved-spacetime-vulkan-glfw-module:
+
+            runs-on: ubuntu-24.04
+            permissions:
+              contents: read
+              packages: write
+
+            steps:
+              - uses: actions/checkout@v5
+              - name: Set up JDK 8
+                uses: actions/setup-java@v5
+                with:
+                  java-version: '8'
+                  distribution: 'temurin'
+              - name: Set up JDK 25
+                uses: actions/setup-java@v5
+                with:
+                  java-version: '25'
+                  distribution: 'zulu'
+              - name: Setup Gradle
+                uses: gradle/actions/setup-gradle@v4
+              - name: Build
+                run: ./gradlew :curved-spacetime-vulkan-glfw-module:jar
+              # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+              # the publishing section of your build.gradle
+              - name: Publish to GitHub Packages
+                run: ./gradlew :curved-spacetime-vulkan-glfw-module:publish
+                env:
+                  USERNAME: ${{ github.actor }}
+                  TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-curved-spacetime-vulkan-glfw-render-module:
 
     runs-on: ubuntu-24.04
@@ -216,6 +306,100 @@ jobs:
       # the publishing section of your build.gradle
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-vulkan-module:publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+  publish-curved-spacetime-vulkan-render-module:
+
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'zulu'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        run: ./gradlew :curved-spacetime-vulkan-render-module:jar
+      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+      # the publishing section of your build.gradle
+      - name: Publish to GitHub Packages
+        run: ./gradlew :curved-spacetime-vulkan-render-module:publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-curved-spacetime-webserver-module:
+
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'zulu'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        run: ./gradlew :curved-spacetime-webserver-module:jar
+      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+      # the publishing section of your build.gradle
+      - name: Publish to GitHub Packages
+        run: ./gradlew :curved-spacetime-webserver-module:publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-curved-spacetime-webserver-openapi-module:
+
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'zulu'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        run: ./gradlew :curved-spacetime-webserver-openapi-module:jar
+      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+      # the publishing section of your build.gradle
+      - name: Publish to GitHub Packages
+        run: ./gradlew :curved-spacetime-webserver-openapi-module:publish
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
