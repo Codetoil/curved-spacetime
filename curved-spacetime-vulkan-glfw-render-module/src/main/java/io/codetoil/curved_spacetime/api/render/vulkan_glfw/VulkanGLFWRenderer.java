@@ -21,7 +21,6 @@ package io.codetoil.curved_spacetime.api.render.vulkan_glfw;
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.render.glfw.GLFWRenderer;
 import io.codetoil.curved_spacetime.api.scene.Scene;
-import io.codetoil.curved_spacetime.api.scene.SceneLooper;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanForwardRenderActivity;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanGraphicsQueue;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanSurface;

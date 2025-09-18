@@ -16,33 +16,33 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api;
+package io.codetoil.curved_spacetime;
 
 import org.tinylog.Logger;
 
 import java.io.*;
 import java.util.Properties;
 
-public class APIConfig
+public class MainModuleConfig
 {
-	private static final String FILENAME = "api-module.config";
+	private static final String FILENAME = "main-module.config";
 	private boolean dirty = false;
 
-	public APIConfig()
+	public MainModuleConfig()
 	{
 
 	}
 
-	public APIConfig load() throws IOException
+	public MainModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(APIConfig.FILENAME))
+		try (FileReader reader = new FileReader(MainModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + APIConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + MainModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -53,9 +53,9 @@ public class APIConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(APIConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(MainModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the API Module.");
+			props.store(writer, "Config for the Main Module.");
 		}
 		this.dirty = false;
 	}

@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.api.engine;
 
-import io.codetoil.curved_spacetime.api.APIConfig;
+import io.codetoil.curved_spacetime.MainModuleConfig;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneLooper;
 import org.quiltmc.loader.api.QuiltLoader;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class Engine
 {
-	public final APIConfig APIConfig;
+	public final MainModuleConfig mainModuleConfig;
 	public Scene scene;
 	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
 	private static Engine INSTANCE;
@@ -38,8 +38,8 @@ public class Engine
 	{
 		try
 		{
-			this.APIConfig = new APIConfig().load();
-			if (this.APIConfig.isDirty()) this.APIConfig.save();
+			this.mainModuleConfig = new MainModuleConfig().load();
+			if (this.mainModuleConfig.isDirty()) this.mainModuleConfig.save();
 		} catch (IOException ex)
 		{
 			throw new RuntimeException("Failed to load API Config", ex);
