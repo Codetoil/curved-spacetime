@@ -21,5 +21,4 @@ module io.codetoil.curved_spacetime.render {
 	requires io.codetoil.curved_spacetime;
 
 	exports io.codetoil.curved_spacetime.render;
-	exports io.codetoil.curved_spacetime.api.render;
 }

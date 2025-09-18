@@ -88,7 +88,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 		metadata.contactInformation.put("issues", "https://github.com/Codetoil/curved-spacetime/issues");
 		metadata.contactInformation.put("sources", "https://github.com/Codetoil/curved-spacetime.git");
 		metadata.setIcons(new Icons.Single("assets/curved-spacetime-main-module/icon.png"));
-		VersionRange javaRange = VersionRange.ofInterval(Version.of("21"), true, null, false);
+		VersionRange javaRange = VersionRange.ofInterval(Version.of("25"), true, null, false);
 		metadata.depends.add(new ModDependency.Only()
 		{
 			@Override

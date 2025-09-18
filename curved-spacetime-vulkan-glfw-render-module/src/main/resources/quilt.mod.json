@@ -56,7 +56,7 @@
       },
       {
         "id": "java",
-        "versions": ">=21"
+        "versions": ">=25"
       }
     ]
   },

@@ -20,7 +20,7 @@ exclude:
     paths:
       - curved-spacetime-installer/apache-maven-3.9.10
 
-projectJDK: "21" #(Applied in CI/CD pipeline)
+projectJDK: "25" #(Applied in CI/CD pipeline)
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
