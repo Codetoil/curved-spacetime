@@ -22,6 +22,7 @@ package io.codetoil.curved_spacetime.render.vulkan;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
 import org.quiltmc.loader.api.QuiltLoader;
 
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 	{
 		vulkanModuleConfig = (
 				(VulkanModuleDependentVulkanRenderModuleEntrypoint) QuiltLoader.getEntrypointContainers(
-								"vulkan_module_dependent", RenderModuleDependentModuleInitializer.class)
+								"vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class)
 						.stream().filter(VulkanModuleDependentVulkanRenderModuleEntrypoint.class::isInstance).findFirst()
 						.orElseThrow().getEntrypoint())
 				.getVulkanModuleEntrypoint().getConfig();
