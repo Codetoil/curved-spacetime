@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
@@ -25,7 +25,7 @@ import org.quiltmc.loader.api.QuiltLoader;
 
 import java.util.concurrent.SubmissionPublisher;
 
-public class VulkanModuleDependentVulkanRenderModuleEntrypoint implements VulkanModuleDependentModuleInitializer
+public class VulkanModuleDependentVulkanGLFWModuleEntrypoint implements VulkanModuleDependentModuleInitializer
 {
 
 	@Override
@@ -34,7 +34,7 @@ public class VulkanModuleDependentVulkanRenderModuleEntrypoint implements Vulkan
 		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
 		{
 			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+					.filter(VulkanGLFWModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
 			submissionPublisher.submit(vulkanModuleEntrypoint);
 		}

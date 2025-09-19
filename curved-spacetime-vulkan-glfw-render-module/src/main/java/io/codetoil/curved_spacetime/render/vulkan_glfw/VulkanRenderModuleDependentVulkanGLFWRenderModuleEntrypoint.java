@@ -16,27 +16,28 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
+import io.codetoil.curved_spacetime.api.render.vulkan.entrypoint.VulkanRenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
 import java.util.concurrent.SubmissionPublisher;
 
-public class VulkanModuleDependentVulkanRenderModuleEntrypoint implements VulkanModuleDependentModuleInitializer
+public class VulkanRenderModuleDependentVulkanGLFWRenderModuleEntrypoint
+		implements VulkanRenderModuleDependentModuleInitializer
 {
 
 	@Override
-	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint)
+	public void onInitialize(VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint)
 	{
 		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
 		{
 			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(vulkanModuleEntrypoint);
+			submissionPublisher.submit(vulkanRenderModuleEntrypoint);
 		}
 	}
 }

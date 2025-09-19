@@ -19,7 +19,9 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWModuleEntrypoint",
+      "glfw_module_dependent": "io.codetoil.curved_spacetime.vulkan_glfw.GLFWModuleDependentVulkanGLFWModuleEntrypoint",
+      "vulkan_module_dependent": "io.codetoil.curved_spacetime.vulkan_glfw.VulkanModuleDependentVulkanGLFWModuleEntrypoint"
     },
     "depends": [
       {

@@ -18,14 +18,52 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
+import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.render.glfw.entrypoint.GLFWRenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
+import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscriber;
 
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
+	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
+			= new ModuleDependentFlowSubscriber(
+			(Collection<ModuleInitializer> moduleInitializers) -> {
+				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
+					if (moduleInitializer instanceof GLFWModuleEntrypoint)
+					{
+						this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
+					}
+					if (moduleInitializer instanceof RenderModuleEntrypoint)
+					{
+						this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+					}
+				});
+				if (this.glfwModuleEntrypoint == null)
+				{
+					throw new RuntimeException("Couldn't find the Curved Spacetime GLFW Module, " +
+							"check if it exists!");
+				}
+				if (this.renderModuleEntrypoint == null)
+				{
+					throw new RuntimeException("Couldn't find the Curved Spacetime Render Module, " +
+							" check if it exists!");
+				}
+				EntrypointUtil.invoke("glfw_render_module_dependent",
+						GLFWRenderModuleDependentModuleInitializer.class,
+						(GLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
+								vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
+			});
+	private GLFWModuleEntrypoint glfwModuleEntrypoint = null;
+	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 
 	@Override
 	public void onInitialize()
@@ -44,5 +82,11 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return config;
+	}
+
+	@Override
+	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	{
+		return moduleDependentFlowSubscriber;
 	}
 }

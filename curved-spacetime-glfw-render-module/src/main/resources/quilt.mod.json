@@ -19,7 +19,9 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint",
+      "render_module_dependent": "io.codetoil.curved_spacetime.render.glfw.RenderModuleDependentGLFWRenderModuleEntrypoint",
+      "glfw_module_dependent": "io.codetoil.curved_spacetime.render.glfw.GLFWModuleDependentGLFWRenderModuleEntrypoint"
     },
     "depends": [
       {

@@ -33,10 +33,9 @@ public class RenderModuleDependentVulkanRenderModuleEntrypoint implements Render
 	{
 		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
 		{
-			submissionPublisher.subscribe(((VulkanRenderModuleEntrypoint)
-					(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-							.filter(VulkanRenderModuleEntrypoint.class::isInstance)
-							.findFirst().orElseThrow())).getVulkanRenderModuleDependentFlowSubscriber());
+			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
 			submissionPublisher.submit(renderModuleEntrypoint);
 		}
 	}

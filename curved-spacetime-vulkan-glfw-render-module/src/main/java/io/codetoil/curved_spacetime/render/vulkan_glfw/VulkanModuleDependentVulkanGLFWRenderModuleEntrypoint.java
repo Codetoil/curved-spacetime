@@ -16,16 +16,17 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
 import java.util.concurrent.SubmissionPublisher;
 
-public class VulkanModuleDependentVulkanRenderModuleEntrypoint implements VulkanModuleDependentModuleInitializer
+public class VulkanModuleDependentVulkanGLFWRenderModuleEntrypoint implements VulkanModuleDependentModuleInitializer
 {
 
 	@Override

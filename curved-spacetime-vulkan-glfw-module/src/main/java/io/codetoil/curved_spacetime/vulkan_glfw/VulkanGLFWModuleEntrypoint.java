@@ -18,14 +18,53 @@
 
 package io.codetoil.curved_spacetime.vulkan_glfw;
 
+import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleConfig;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
+import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscriber;
 
 public class VulkanGLFWModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
+	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
+			= new ModuleDependentFlowSubscriber(
+			(Collection<ModuleInitializer> moduleInitializers) -> {
+				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
+					if (moduleInitializer instanceof VulkanModuleEntrypoint)
+					{
+						this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
+					}
+					if (moduleInitializer instanceof GLFWModuleEntrypoint)
+					{
+						this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
+					}
+				});
+				if (this.vulkanModuleEntrypoint == null)
+				{
+					throw new RuntimeException("Couldn't find the Curved Spacetime Vulkan Module, " +
+							" check if it exists!");
+				}
+				if (this.glfwModuleEntrypoint == null)
+				{
+					throw new RuntimeException("Couldn't find the Curved Spacetime GLFW Module, " +
+							"check if it exists!");
+				}
+				EntrypointUtil.invoke("vulkan_glfw_module_dependent",
+						VulkanGLFWModuleDependentModuleInitializer.class,
+						(VulkanGLFWModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
+								vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
+			});
+	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
+	private GLFWModuleEntrypoint glfwModuleEntrypoint = null;
 
 	@Override
 	public void onInitialize()
@@ -44,5 +83,11 @@ public class VulkanGLFWModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return config;
+	}
+
+	@Override
+	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	{
+		return moduleDependentFlowSubscriber;
 	}
 }

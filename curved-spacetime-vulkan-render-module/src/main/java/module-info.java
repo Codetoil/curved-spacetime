@@ -27,4 +27,5 @@ module io.codetoil.curved_spacetime.render.vulkan {
 
 	exports io.codetoil.curved_spacetime.render.vulkan;
 	exports io.codetoil.curved_spacetime.api.render.vulkan;
+	exports io.codetoil.curved_spacetime.api.render.vulkan.entrypoint;
 }
