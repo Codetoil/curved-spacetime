@@ -23,7 +23,7 @@ module io.codetoil.curved_spacetime {
 
 	exports io.codetoil.curved_spacetime;
 	exports io.codetoil.curved_spacetime.api;
-	exports io.codetoil.curved_spacetime.api.loader;
+	exports io.codetoil.curved_spacetime.api.entrypoint;
 	exports io.codetoil.curved_spacetime.api.scene;
 	exports io.codetoil.curved_spacetime.api.engine;
 }

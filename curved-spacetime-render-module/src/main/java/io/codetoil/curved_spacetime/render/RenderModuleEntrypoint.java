@@ -1,6 +1,7 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
- * (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
+ * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
+ * Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,8 +19,10 @@
 
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
-import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
+import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
 
@@ -38,6 +41,9 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		EntrypointUtil.invoke("render_module_dependent", RenderModuleDependentModuleInitializer.class,
+				(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
+						renderModuleDependentModuleInitializer.onInitialize(this));
 	}
 
 	@Override

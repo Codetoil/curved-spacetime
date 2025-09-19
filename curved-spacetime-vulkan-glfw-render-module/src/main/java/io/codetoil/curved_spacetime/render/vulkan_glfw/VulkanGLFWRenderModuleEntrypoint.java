@@ -19,11 +19,10 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
-import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.VulkanGLFWRenderer;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
-import org.quiltmc.loader.api.QuiltLoader;
 
 import java.io.IOException;
 

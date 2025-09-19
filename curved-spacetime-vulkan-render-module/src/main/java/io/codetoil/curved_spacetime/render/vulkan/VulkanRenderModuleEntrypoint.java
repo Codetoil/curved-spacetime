@@ -1,6 +1,7 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
- * (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
+ * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
+ * Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,14 +19,21 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
-import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
+import org.quiltmc.loader.api.QuiltLoader;
 
 import java.io.IOException;
+import java.util.concurrent.Flow;
+import java.util.concurrent.SubmissionPublisher;
 
 public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
+	private Flow.Subscriber<ModuleConfig> vulkanRenderModuleConfigFlowSubscriber;
+	private ModuleConfig vulkanModuleConfig;
+	private ModuleConfig renderModuleConfig;
 
 	@Override
 	public void onInitialize()
@@ -38,11 +46,52 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		vulkanRenderModuleConfigFlowSubscriber = new Flow.Subscriber<>() {
+			@Override
+			public void onSubscribe(Flow.Subscription subscription)
+			{
+
+			}
+
+			@Override
+			public void onNext(ModuleConfig item)
+			{
+
+			}
+
+			@Override
+			public void onError(Throwable throwable)
+			{
+
+			}
+
+			@Override
+			public void onComplete()
+			{
+
+			}
+		};
 	}
 
 	@Override
 	public ModuleConfig getConfig()
 	{
 		return config;
+	}
+
+	public void initializeConfigs()
+	{
+		vulkanModuleConfig = (
+				(VulkanModuleDependentVulkanRenderModuleEntrypoint) QuiltLoader.getEntrypointContainers(
+								"vulkan_module_dependent", RenderModuleDependentModuleInitializer.class)
+						.stream().filter(VulkanModuleDependentVulkanRenderModuleEntrypoint.class::isInstance).findFirst()
+						.orElseThrow().getEntrypoint())
+				.getVulkanModuleEntrypoint().getConfig();
+		renderModuleConfig = (
+				(RenderModuleDependentVulkanRenderModuleEntrypoint) QuiltLoader.getEntrypointContainers(
+								"render_module_dependent", RenderModuleDependentModuleInitializer.class)
+						.stream().filter(RenderModuleDependentVulkanRenderModuleEntrypoint.class::isInstance).findFirst()
+						.orElseThrow().getEntrypoint())
+				.getRenderModuleEntrypoint().getConfig();
 	}
 }

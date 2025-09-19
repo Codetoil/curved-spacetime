@@ -18,8 +18,8 @@
 
 package io.codetoil.curved_spacetime.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.api.loader.ModuleConfig;
-import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 
 import java.io.IOException;
 

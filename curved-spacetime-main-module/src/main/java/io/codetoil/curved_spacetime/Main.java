@@ -19,7 +19,7 @@
 package io.codetoil.curved_spacetime;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.loader.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import org.quiltmc.loader.impl.QuiltLoaderImpl;
 import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
 import org.tinylog.Logger;

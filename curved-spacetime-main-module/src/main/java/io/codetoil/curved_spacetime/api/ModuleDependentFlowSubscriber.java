@@ -1,7 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -17,50 +16,36 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api.vulkan.utils;
+package io.codetoil.curved_spacetime.api;
 
-import org.lwjgl.vulkan.VK10;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleDependentModuleInitializer;
 
-import java.util.Locale;
+import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscription;
 
-public class VulkanUtils
+public class ModuleDependentFlowSubscriber implements Flow.Subscriber<ModuleDependentModuleInitializer>
 {
-	private VulkanUtils()
+	@Override
+	public void onSubscribe(Subscription subscription)
 	{
-		// Utility class
+
 	}
 
-	public static OSType getOS()
+	@Override
+	public void onNext(ModuleDependentModuleInitializer item)
 	{
-		OSType result;
-		String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-		if ((os.contains("mac")) || (os.contains("darwin")))
-		{
-			result = OSType.MACOS;
-		} else if (os.contains("win"))
-		{
-			result = OSType.WINDOWS;
-		} else if (os.contains("nux"))
-		{
-			result = OSType.LINUX;
-		} else
-		{
-			result = OSType.OTHER;
-		}
 
-		return result;
 	}
 
-	public static void vkCheck(int err, String errMsg)
+	@Override
+	public void onError(Throwable throwable)
 	{
-		if (err != VK10.VK_SUCCESS)
-		{
-			throw new AssertionError(errMsg + ": " + err);
-		}
+
 	}
 
-	public enum OSType
+	@Override
+	public void onComplete()
 	{
-		WINDOWS, LINUX, OTHER, MACOS
+
 	}
 }
