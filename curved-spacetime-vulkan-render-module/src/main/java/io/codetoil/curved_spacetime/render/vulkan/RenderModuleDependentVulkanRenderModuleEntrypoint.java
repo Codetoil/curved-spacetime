@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
+ * (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -31,11 +31,12 @@ public class RenderModuleDependentVulkanRenderModuleEntrypoint implements Render
 	@Override
 	public void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>()) {
+		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
+		{
 			submissionPublisher.subscribe(((VulkanRenderModuleEntrypoint)
 					(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow())).getVulkanRenderModuleDependentFlowSubscriber());
+							.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+							.findFirst().orElseThrow())).getVulkanRenderModuleDependentFlowSubscriber());
 			submissionPublisher.submit(renderModuleEntrypoint);
 		}
 	}

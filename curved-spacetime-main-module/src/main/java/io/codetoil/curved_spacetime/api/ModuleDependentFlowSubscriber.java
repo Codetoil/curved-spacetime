@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
+ * (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -32,6 +32,7 @@ public class ModuleDependentFlowSubscriber
 {
 	private final List<ModuleInitializer> moduleInitializers = new ArrayList<>();
 	private final Consumer<Collection<ModuleInitializer>> onFinish;
+
 	public ModuleDependentFlowSubscriber(Consumer<Collection<ModuleInitializer>> onFinish)
 	{
 		this.onFinish = onFinish;
