@@ -1,0 +1,108 @@
+baseProfile: "Project Default"
+name: "curved_spacetime"
+groups:
+  - groupId: JSRelatedInspections
+    inspections:
+      - JsCoverageInspection
+  - groupId: JSInspections
+    groups:
+      - "category:JavaScript and TypeScript"
+      - "category:Angular"
+      - "category:Vue"
+      - "category:MongoJS"
+      - "category:Pug_Jade"
+      - "JSRelatedInspections"
+
+  - groupId: AndroidInspections
+    groups:
+      - "category:Android Lint: Accessibility"
+      - "category:Android Lint: Compliance"
+      - "category:Android Lint: Correctness"
+      - "category:Android Lint: Internationalization"
+      - "category:Android Lint: Interoperability"
+      - "category:Android Lint: Performance"
+      - "category:Android Lint: Productivity"
+      - "category:Android Lint: Security"
+      - "category:Android Lint: Testing"
+      - "category:Android Lint: Usability"
+      - "category:Android"
+
+  - groupId: IncludedCategories # Qodana can run any inspection, but these categories are monitored by Qodana team
+    groups:
+      - "category:Java"
+      - "category:Kotlin"
+      - "category:JVM languages"
+      - "category:Spring"
+      - "category:CDI (Contexts and Dependency Injection)"
+      - "category:Bean Validation"
+      - "category:Reactive Streams"
+      - "category:RegExp"
+      - "category:PHP"
+      - "category:Go"
+      - "category:Python"
+      - "category:General"
+      - "category:TOML"
+      - "JSInspections"
+      - "category:Ruby"
+      - "category:RBS"
+      - "category:Security"
+
+      # qodana4cpp inspections
+      - "category:C_C++"
+      - "category:Objective-C"
+      - "category:CMake"
+      - "category:Clangd Inspections"
+
+  - groupId: CoverageInspections # list of Qodana-only inspections, responsible for coverage computation
+    inspections:
+      - JvmCoverageInspection
+      - GoCoverageInspection
+      - JsCoverageInspection
+      - PhpCoverageInspection
+      - PyCoverageInspection
+
+  - groupId: MetricsInspections # list of inspections responsible for calculating code quality metrics
+    inspections:
+      - JvmLinesOfCodeInspection
+      - CyclomaticComplexityInspection
+
+  - groupId: DependencyAnalysis # list of Qodana-only inspections, responsible for license audit
+    inspections:
+      - CheckDependencyLicenses
+
+inspections:
+  - group: ALL
+    ignore:
+      - "vendor/**"
+      - "build/**"
+      - "buildSrc/**"
+      - "builds/**"
+      - "dist/**"
+      - "tests/**"
+      - "tools/**"
+      - ".qodana/**"
+      - "**/node_modules/**"
+      - "**.test.ts"
+      - "scope#$gitignore" # $gitignore scope available only in qodana execution
+      - "scope#test:*..*"
+      - "scope#file:buildSrc/*"
+      - "**.md" # Provides lot's of false positives on embedded code examples
+  - group: "category:JavaScript and TypeScript"
+    ignore:
+      - "**/resources/**"
+  - inspection: JavadocReference
+    severity: WARNING # It has default ERROR severity. It's understandable for unresolved references in javadocs for editor but not on CI.
+  - inspection: KtorOpenAPIUpdate
+    enabled: true # This inspection is long running and designed for Qodana
+  - group: CoverageInspections
+    enabled: true # Explicitly enable all coverage inspections by default
+  - group: MetricsInspections
+    enabled: true
+  - group: DependencyAnalysis
+    enabled: true # Enable License Audit by default
+  - inspection: PyPep8Inspection
+    severity: WEAK WARNING # It has default INFORMATION severity because it makes a lot of noise during coding. For CI makes sense to enable it
+    enabled: true # Explicitly enable, because it is disabled by default INFORMATION severity.
+  - inspection: NullableProblems
+    options:
+      IGNORE_EXTERNAL_SUPER_NOTNULL: true

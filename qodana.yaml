@@ -6,13 +6,15 @@ version: "1.0"
 
 #Specify inspection profile for code analysis
 profile:
-  name: qodana.recommended
+  path: .qodana/curved_spacetime.yaml
 
-#Enable inspections
 include:
-  - name: JvmTaintAnalysis
-  - name: VulnerableLibrariesGlobal
-  - name: IncorrectFormatting
+  - name: "category:Java/Java language level migration aids"
+  - name: "GLOBAL"
+  - name: "severity:INFORMATION"
+  - name: "severity:TEXT ATTRIBUTES"
+  - name: "QodanaJavaSanity"
+  - name: "QodanaKotlinSanity"
 
 projectJDK: "25" #(Applied in CI/CD pipeline)
 
