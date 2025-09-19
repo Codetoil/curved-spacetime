@@ -14,12 +14,6 @@ include:
   - name: VulnerableLibrariesGlobal
   - name: IncorrectFormatting
 
-#Disable inspections
-exclude:
-  - name: IncorrectFormatting
-    paths:
-      - curved-spacetime-installer/apache-maven-3.9.10
-
 projectJDK: "25" #(Applied in CI/CD pipeline)
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
@@ -30,4 +24,5 @@ projectJDK: "25" #(Applied in CI/CD pipeline)
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
 
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
-ide: "QDJVMC"
+linter: qodana-jvm-community
+withinDocker: false
