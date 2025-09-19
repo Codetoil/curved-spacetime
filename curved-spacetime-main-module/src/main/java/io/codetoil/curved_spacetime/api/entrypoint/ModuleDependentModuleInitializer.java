@@ -19,7 +19,8 @@ package io.codetoil.curved_spacetime.api.entrypoint;
 
 import org.quiltmc.loader.api.entrypoint.GameEntrypoint;
 
-public interface ModuleDependentModuleInitializer extends GameEntrypoint
+@SuppressWarnings("NonExtendableApiUsage")
+public interface ModuleDependentModuleInitializer<T extends ModuleInitializer> extends GameEntrypoint
 {
-
+	void onInitialize(T moduleEntrypoint);
 }

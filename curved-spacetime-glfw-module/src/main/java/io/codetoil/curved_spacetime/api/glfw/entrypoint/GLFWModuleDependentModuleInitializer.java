@@ -18,10 +18,10 @@
 
 package io.codetoil.curved_spacetime.api.glfw.entrypoint;
 
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
-import org.quiltmc.loader.api.entrypoint.GameEntrypoint;
 
-public interface GLFWModuleDependentModuleInitializer extends GameEntrypoint
+public interface GLFWModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<GLFWModuleEntrypoint>
 {
 	/**
 	 * Runs the mod initializer.

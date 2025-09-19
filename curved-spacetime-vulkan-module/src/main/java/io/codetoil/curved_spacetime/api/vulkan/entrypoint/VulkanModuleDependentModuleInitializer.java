@@ -18,10 +18,10 @@
 
 package io.codetoil.curved_spacetime.api.vulkan.entrypoint;
 
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
-import org.quiltmc.loader.api.entrypoint.GameEntrypoint;
 
-public interface VulkanModuleDependentModuleInitializer extends GameEntrypoint
+public interface VulkanModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<VulkanModuleEntrypoint>
 {
 	/**
 	 * Runs the mod initializer.

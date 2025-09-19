@@ -21,7 +21,7 @@ package io.codetoil.curved_spacetime.api.render.entrypoint;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 
-public interface RenderModuleDependentModuleInitializer extends ModuleDependentModuleInitializer
+public interface RenderModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<RenderModuleEntrypoint>
 {
 	/**
 	 * Runs the mod initializer.
