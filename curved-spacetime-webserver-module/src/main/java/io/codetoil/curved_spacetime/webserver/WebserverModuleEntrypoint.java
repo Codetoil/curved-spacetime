@@ -20,16 +20,24 @@
 package io.codetoil.curved_spacetime.webserver;
 
 import com.sun.net.httpserver.HttpServer;
+import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.webserver.WebserverModuleDependentModuleInitializer;
+import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscriber;
 
 public class WebserverModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
+	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
+			= new ModuleDependentFlowSubscriber((Collection<ModuleInitializer> _) -> {});
 
 	@Override
 	public void onInitialize()
@@ -60,11 +68,20 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 			throw new RuntimeException("Failed to load start test server", ex);
 		}
 		System.out.println("Started test server");
+		EntrypointUtil.invoke("webserver_module_dependent", WebserverModuleDependentModuleInitializer.class,
+				(WebserverModuleDependentModuleInitializer webserverModuleDependentModuleInitializer) ->
+						webserverModuleDependentModuleInitializer.onInitialize(this));
 	}
 
 	@Override
 	public ModuleConfig getConfig()
 	{
-		return config;
+		return this.config;
+	}
+
+	@Override
+	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	{
+		return this.moduleDependentFlowSubscriber;
 	}
 }

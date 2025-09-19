@@ -23,4 +23,5 @@ module io.codetoil.curved_spacetime.webserver {
 	requires org.quiltmc.loader;
 
 	exports io.codetoil.curved_spacetime.webserver;
+	exports io.codetoil.curved_spacetime.api.webserver;
 }
