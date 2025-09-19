@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -56,7 +55,6 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 			Logger.warn(ex, "Could not find config file " + VulkanGLFWRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
-
 
 
 		Object requestedImagesPropValue = props.get("requestedImages");

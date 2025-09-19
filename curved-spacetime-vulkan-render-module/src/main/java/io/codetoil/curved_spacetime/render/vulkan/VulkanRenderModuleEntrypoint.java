@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
+ * (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -27,7 +26,6 @@ import org.quiltmc.loader.api.QuiltLoader;
 
 import java.io.IOException;
 import java.util.concurrent.Flow;
-import java.util.concurrent.SubmissionPublisher;
 
 public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
@@ -47,7 +45,8 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
-		vulkanRenderModuleConfigFlowSubscriber = new Flow.Subscriber<>() {
+		vulkanRenderModuleConfigFlowSubscriber = new Flow.Subscriber<>()
+		{
 			@Override
 			public void onSubscribe(Flow.Subscription subscription)
 			{
@@ -85,13 +84,15 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		vulkanModuleConfig = (
 				(VulkanModuleDependentVulkanRenderModuleEntrypoint) QuiltLoader.getEntrypointContainers(
 								"vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class)
-						.stream().filter(VulkanModuleDependentVulkanRenderModuleEntrypoint.class::isInstance).findFirst()
+						.stream().filter(VulkanModuleDependentVulkanRenderModuleEntrypoint.class::isInstance)
+						.findFirst()
 						.orElseThrow().getEntrypoint())
 				.getVulkanModuleEntrypoint().getConfig();
 		renderModuleConfig = (
 				(RenderModuleDependentVulkanRenderModuleEntrypoint) QuiltLoader.getEntrypointContainers(
 								"render_module_dependent", RenderModuleDependentModuleInitializer.class)
-						.stream().filter(RenderModuleDependentVulkanRenderModuleEntrypoint.class::isInstance).findFirst()
+						.stream().filter(RenderModuleDependentVulkanRenderModuleEntrypoint.class::isInstance)
+						.findFirst()
 						.orElseThrow().getEntrypoint())
 				.getRenderModuleEntrypoint().getConfig();
 	}
