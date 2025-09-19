@@ -18,21 +18,25 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
+import org.quiltmc.loader.api.QuiltLoader;
+
+import java.util.concurrent.SubmissionPublisher;
 
 public class RenderModuleDependentVulkanRenderModuleEntrypoint implements RenderModuleDependentModuleInitializer
 {
-	private RenderModuleEntrypoint renderModuleEntrypoint;
 
 	@Override
 	public void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint)
 	{
-		this.renderModuleEntrypoint = renderModuleEntrypoint;
-	}
-
-	public RenderModuleEntrypoint getRenderModuleEntrypoint()
-	{
-		return renderModuleEntrypoint;
+		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>()) {
+			submissionPublisher.subscribe(((VulkanRenderModuleEntrypoint)
+					(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+					.findFirst().orElseThrow())).getVulkanRenderModuleDependentFlowSubscriber());
+			submissionPublisher.submit(renderModuleEntrypoint);
+		}
 	}
 }

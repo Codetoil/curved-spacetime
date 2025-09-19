@@ -18,34 +18,46 @@
 
 package io.codetoil.curved_spacetime.api;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
+import java.util.function.Consumer;
 
-public class ModuleDependentFlowSubscriber implements Flow.Subscriber<ModuleDependentModuleInitializer>
+public class ModuleDependentFlowSubscriber
+		implements Flow.Subscriber<ModuleInitializer>
 {
-	@Override
-	public void onSubscribe(Subscription subscription)
+	private final List<ModuleInitializer> moduleInitializers = new ArrayList<>();
+	private final Consumer<Collection<ModuleInitializer>> onFinish;
+	public ModuleDependentFlowSubscriber(Consumer<Collection<ModuleInitializer>> onFinish)
 	{
-
+		this.onFinish = onFinish;
 	}
 
 	@Override
-	public void onNext(ModuleDependentModuleInitializer item)
+	public void onSubscribe(Subscription subscription)
 	{
+		subscription.request(1);
+	}
 
+	@Override
+	public void onNext(ModuleInitializer item)
+	{
+		moduleInitializers.add(item);
 	}
 
 	@Override
 	public void onError(Throwable throwable)
 	{
-
+		throwable.printStackTrace();
 	}
 
 	@Override
 	public void onComplete()
 	{
-
+		onFinish.accept(moduleInitializers);
 	}
 }

@@ -18,21 +18,49 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
-import org.quiltmc.loader.api.QuiltLoader;
+import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleConfig;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.concurrent.Flow;
 
 public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private Flow.Subscriber<ModuleConfig> vulkanRenderModuleConfigFlowSubscriber;
-	private ModuleConfig vulkanModuleConfig;
-	private ModuleConfig renderModuleConfig;
+	private final Flow.Subscriber<ModuleInitializer> vulkanRenderModuleDependentFlowSubscriber
+			= new ModuleDependentFlowSubscriber(
+			(Collection<ModuleInitializer> moduleInitializers) -> {
+				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
+					if (moduleInitializer instanceof VulkanModuleEntrypoint)
+					{
+						this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
+					}
+					if (moduleInitializer instanceof RenderModuleEntrypoint)
+					{
+						this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+					}
+				});
+				if (this.vulkanModuleEntrypoint == null)
+				{
+					throw new RuntimeException("Couldn't find the Curved Spacetime Vulkan Module, " +
+							" check if it exists!");
+				}
+				if (this.renderModuleEntrypoint == null)
+				{
+					throw new RuntimeException("Couldn't find the Curved Spacetime Render Module, " +
+							"check if it exists!");
+				}
+				System.out.println("The following should be true or false:");
+				System.out.println(((VulkanModuleConfig) this.vulkanModuleEntrypoint.getConfig())
+						.validation());
+			});
+	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
+	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 
 	@Override
 	public void onInitialize()
@@ -45,55 +73,16 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
-		vulkanRenderModuleConfigFlowSubscriber = new Flow.Subscriber<>()
-		{
-			@Override
-			public void onSubscribe(Flow.Subscription subscription)
-			{
-
-			}
-
-			@Override
-			public void onNext(ModuleConfig item)
-			{
-
-			}
-
-			@Override
-			public void onError(Throwable throwable)
-			{
-
-			}
-
-			@Override
-			public void onComplete()
-			{
-
-			}
-		};
 	}
 
 	@Override
 	public ModuleConfig getConfig()
 	{
-		return config;
+		return this.config;
 	}
 
-	public void initializeConfigs()
+	public Flow.Subscriber<ModuleInitializer> getVulkanRenderModuleDependentFlowSubscriber()
 	{
-		vulkanModuleConfig = (
-				(VulkanModuleDependentVulkanRenderModuleEntrypoint) QuiltLoader.getEntrypointContainers(
-								"vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class)
-						.stream().filter(VulkanModuleDependentVulkanRenderModuleEntrypoint.class::isInstance)
-						.findFirst()
-						.orElseThrow().getEntrypoint())
-				.getVulkanModuleEntrypoint().getConfig();
-		renderModuleConfig = (
-				(RenderModuleDependentVulkanRenderModuleEntrypoint) QuiltLoader.getEntrypointContainers(
-								"render_module_dependent", RenderModuleDependentModuleInitializer.class)
-						.stream().filter(RenderModuleDependentVulkanRenderModuleEntrypoint.class::isInstance)
-						.findFirst()
-						.orElseThrow().getEntrypoint())
-				.getRenderModuleEntrypoint().getConfig();
+		return this.vulkanRenderModuleDependentFlowSubscriber;
 	}
 }
