@@ -21,12 +21,12 @@ repositories {
     maven {
         url = uri("https://maven.quiltmc.org/repository/release/");
     }
-    maven {
-        url = uri("https://maven.neoforged.net/releases/");
-    }
 }
 
+val bundle by configurations.creating
+
 dependencies {
+    bundle(project(":curved-spacetime-quilt-loader-patches"))
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
@@ -38,6 +38,10 @@ tasks.named<Test>("test") {
 tasks.jar {
     manifest {
         attributes(mapOf("Premain-Class" to "QuiltTweakerAgent", "Can-Retransform-Classes" to true))
+    }
+    from(bundle) {
+        into("")
+        rename { "curved-spacetime-quilt-loader-patches.jar" }
     }
 }
 

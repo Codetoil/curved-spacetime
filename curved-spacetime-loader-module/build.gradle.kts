@@ -36,9 +36,6 @@ repositories {
     maven {
         url = uri("https://maven.quiltmc.org/repository/release/");
     }
-    maven {
-        url = uri("https://maven.neoforged.net/releases/");
-    }
 }
 
 dependencies {
@@ -113,11 +110,11 @@ val initQuiltTweakerAgent: Set<Task> = project(":curved-spacetime-quilt-tweaker-
 fun safeishWorkingDirectory(workingPath: java.nio.file.Path): File
 {
     return if(workingPath.toFile().exists())
-        workingPath.toFile()!!
+        workingPath.toFile()
     else
         if (workingPath.toFile().mkdirs())
-            workingPath.toFile()!!
-        else throw RuntimeException("Couldn't create ${workingPath}");
+            workingPath.toFile()
+        else throw RuntimeException("Couldn't create $workingPath");
 }
 
 tasks.named<Test>("test") {
@@ -125,7 +122,6 @@ tasks.named<Test>("test") {
     dependsOn(initQuiltTweakerAgent)
     jvmArgs("-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar")
     setWorkingDir(safeishWorkingDirectory(Paths.get(rootDir.toString(), "test")))
-
 }
 
 task<JavaExec>("runTrivial", JavaExec::class) {

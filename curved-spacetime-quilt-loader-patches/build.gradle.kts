@@ -16,9 +16,6 @@ repositories {
     maven {
         url = uri("https://maven.quiltmc.org/repository/release/");
     }
-    maven {
-        url = uri("https://maven.neoforged.net/releases/");
-    }
 }
 
 dependencies {
