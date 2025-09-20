@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class SceneLooper
 {
 	protected final Engine engine;
-	protected ScheduledExecutorService executor;
-	protected ScheduledFuture<?> loopHandler;
+	protected final ScheduledExecutorService executor;
+	protected final ScheduledFuture<?> loopHandler;
 	protected final Scene scene;
 
 	protected SceneLooper(Engine engine, Scene scene, long delay, long period,

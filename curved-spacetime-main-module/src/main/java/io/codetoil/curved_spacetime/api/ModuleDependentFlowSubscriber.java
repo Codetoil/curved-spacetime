@@ -19,6 +19,7 @@
 package io.codetoil.curved_spacetime.api;
 
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import org.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +54,7 @@ public class ModuleDependentFlowSubscriber
 	@Override
 	public void onError(Throwable throwable)
 	{
-		throwable.printStackTrace();
+		Logger.error(throwable);
 	}
 
 	@Override

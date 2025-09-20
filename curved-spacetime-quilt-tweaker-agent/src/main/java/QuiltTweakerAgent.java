@@ -20,7 +20,7 @@ import java.lang.instrument.Instrumentation;
 
 public class QuiltTweakerAgent
 {
-	public static void premain(String agentArgs, Instrumentation inst)
+	public static void premain(String _agentArgs, Instrumentation inst)
 	{
 		inst.addTransformer((loader, className, classBeingRedefined,
 							 protectionDomain, classfileBuffer) -> {

@@ -9,17 +9,17 @@ version = "0.1.0-SNAPSHOT"
 java {
     withSourcesJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8);
+        languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://maven.fabricmc.net/");
+        url = uri("https://maven.fabricmc.net/")
     }
     maven {
-        url = uri("https://maven.quiltmc.org/repository/release/");
+        url = uri("https://maven.quiltmc.org/repository/release/")
     }
 }
 
@@ -94,7 +94,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach({ softwareComponent -> from(softwareComponent) })
+            components.forEach { softwareComponent -> from(softwareComponent) }
         }
     }
 }

@@ -11,10 +11,10 @@ java {
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://maven.fabricmc.net/");
+        url = uri("https://maven.fabricmc.net/")
     }
     maven {
-        url = uri("https://maven.quiltmc.org/repository/release/");
+        url = uri("https://maven.quiltmc.org/repository/release/")
     }
 }
 

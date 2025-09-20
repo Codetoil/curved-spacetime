@@ -31,12 +31,15 @@ version = "0.1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://maven.fabricmc.net/");
+        url = uri("https://maven.fabricmc.net/")
     }
     maven {
-        url = uri("https://maven.quiltmc.org/repository/release/");
+        url = uri("https://maven.quiltmc.org/repository/release/")
     }
 }
+
+val getLWJGLNativesName = rootProject.extra["getLWJGLNativesName"]
+val lwjglNativesName: String? = (getLWJGLNativesName as? () -> String)?.invoke()
 
 dependencies {
     implementation (project(":curved-spacetime-main-module"))
@@ -57,12 +60,12 @@ dependencies {
     implementation ("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 
     runtimeOnly ("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
-    runtimeOnly ("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${(rootProject.extra["getLWJGLNativesName"] as () -> String)()}")
+    runtimeOnly ("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:$lwjglNativesName")
     runtimeOnly ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
-    runtimeOnly ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${(rootProject.extra["getLWJGLNativesName"] as () -> String)()}")
+    runtimeOnly ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:$lwjglNativesName")
     runtimeOnly ("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}")
     if (System.getProperty("os.name").lowercase().contains("mac")) {
-        runtimeOnly ("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:${(rootProject.extra["getLWJGLNativesName"] as () -> String)()}")
+        runtimeOnly ("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:$lwjglNativesName")
     }
 
     /*vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-module")
@@ -105,7 +108,8 @@ dependencies {
     }
 }*/
 
-val initQuiltTweakerAgent: Set<Task> = project(":curved-spacetime-quilt-tweaker-agent").getTasksByName("jar", false)
+val initQuiltTweakerAgent: Set<Task> = project(":curved-spacetime-quilt-tweaker-agent")
+    .getTasksByName("jar", false)
 
 fun safeishWorkingDirectory(workingPath: java.nio.file.Path): File
 {
@@ -114,27 +118,29 @@ fun safeishWorkingDirectory(workingPath: java.nio.file.Path): File
     else
         if (workingPath.toFile().mkdirs())
             workingPath.toFile()
-        else throw RuntimeException("Couldn't create $workingPath");
+        else throw RuntimeException("Couldn't create $workingPath")
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
     dependsOn(initQuiltTweakerAgent)
     jvmArgs("-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar")
-    setWorkingDir(safeishWorkingDirectory(Paths.get(rootDir.toString(), "test")))
+    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(), "test"))
 }
 
-task<JavaExec>("runTrivial", JavaExec::class) {
+tasks.register("runTrivial", JavaExec::class) {
     classpath = java.sourceSets["main"].runtimeClasspath
 
     mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = mutableListOf("-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
-               "-Dloader.development=true",
-               "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
-               "-Dfile.encoding=UTF-8",
-               "-Dsun.stdout.encoding=UTF-8",
-               "-Dsun.stderr.encoding=UTF-8")
-    setWorkingDir(safeishWorkingDirectory(Paths.get(rootDir.toString(), "runTrivial")))
+    jvmArgs = mutableListOf(
+        "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
+        "-Dloader.development=true",
+        "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
+        "-Dfile.encoding=UTF-8",
+        "-Dsun.stdout.encoding=UTF-8",
+        "-Dsun.stderr.encoding=UTF-8"
+    )
+    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(), "runTrivial"))
     dependsOn(initQuiltTweakerAgent)
 }
 
@@ -239,7 +245,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach({ softwareComponent -> from(softwareComponent)})
+            components.forEach { softwareComponent -> from(softwareComponent) }
         }
     }
 }
