@@ -1,10 +1,8 @@
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
-
 import java.nio.file.Paths
 
 plugins {
-    id 'java'
-    id 'maven-publish'
+    id ("java")
+    id ("maven-publish")
 }
 
 java {
@@ -14,7 +12,7 @@ java {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-configurations {
+/*configurations {
     dependencyScope("vulkanGLFWRenderModuleRuntimeOnly") {
         canBeConsumed = false
         canBeResolved = false
@@ -27,36 +25,50 @@ configurations {
         canBeConsumed = false
         canBeResolved = false
     }
+}*/
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://maven.fabricmc.net/");
+    }
+    maven {
+        url = uri("https://maven.quiltmc.org/repository/release/");
+    }
+    maven {
+        url = uri("https://maven.neoforged.net/releases/");
+    }
 }
 
 dependencies {
-    implementation project(":curved-spacetime-main-module")
-    implementation("org.quiltmc:quilt-loader:${quiltLoaderVersion}") {
-        exclude module: "annotations"
+    implementation (project(":curved-spacetime-main-module"))
+    implementation ("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
+        exclude("annotations")
     }
-    implementation("org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}")
+    implementation ("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
 
-    testImplementation platform("org.junit:junit-bom:${junitVersion}")
-    testImplementation "org.junit.jupiter:junit-jupiter"
-    testImplementation 'org.junit.platform:junit-platform-launcher'
+    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+    testImplementation ("org.junit.jupiter:junit-jupiter")
+    testImplementation ("org.junit.platform:junit-platform-launcher")
 
-    implementation "org.tinylog:tinylog-impl:${tinyLoggerVersion}"
+    implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
-    runtimeOnly project(":curved-spacetime-quilt-tweaker-agent")
-    implementation "com.google.code.gson:gson:${gsonVersion}"
-    implementation "com.google.guava:guava:${guavaVersion}"
-    implementation "net.fabricmc:sponge-mixin:${fabricMixinVersion}"
+    runtimeOnly (project(":curved-spacetime-quilt-tweaker-agent"))
+    implementation ("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
+    implementation ("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
+    implementation ("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 
-    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}"
-    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:${getLWJGLNativesName()}"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${getLWJGLNativesName()}"
-    runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
-    if (DefaultNativePlatform.currentOperatingSystem.macOsX) {
-        runtimeOnly "org.lwjgl:lwjgl-vulkan:${lwjglVersion}:${getLWJGLNativesName()}"
+    runtimeOnly ("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
+    runtimeOnly ("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${(rootProject.extra["getLWJGLNativesName"] as () -> String)()}")
+    runtimeOnly ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
+    runtimeOnly ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${(rootProject.extra["getLWJGLNativesName"] as () -> String)()}")
+    runtimeOnly ("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}")
+    if (System.getProperty("os.name").lowercase().contains("mac")) {
+        runtimeOnly ("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:${(rootProject.extra["getLWJGLNativesName"] as () -> String)()}")
     }
 
-    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-module")
+    /*vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-module")
     vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-render-module")
     vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-module")
     vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-module")
@@ -75,10 +87,10 @@ dependencies {
     vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-glfw-render-module")
     vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-render-module")
     vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-webserver-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-webserver-openapi-module")
+    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-webserver-openapi-module")*/
 }
 
-configurations {
+/*configurations {
     resolvable("runtimeClasspathWithVulkanGLFWRenderModule") {
         canBeConsumed = false
         canBeDeclared = false
@@ -94,35 +106,43 @@ configurations {
         canBeDeclared = false
         extendsFrom(implementation, vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly)
     }
+}*/
+
+val initQuiltTweakerAgent: Set<Task> = project(":curved-spacetime-quilt-tweaker-agent").getTasksByName("jar", false)
+
+fun safeishWorkingDirectory(workingPath: java.nio.file.Path): File
+{
+    return if(workingPath.toFile().exists())
+        workingPath.toFile()!!
+    else
+        if (workingPath.toFile().mkdirs())
+            workingPath.toFile()!!
+        else throw RuntimeException("Couldn't create ${workingPath}");
 }
 
-Set<Task> initQuiltTweakerAgent = project(":curved-spacetime-quilt-tweaker-agent").getTasksByName("jar", false)
-
-tasks.named('test') {
+tasks.named<Test>("test") {
     useJUnitPlatform()
     dependsOn(initQuiltTweakerAgent)
+    jvmArgs("-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar")
+    setWorkingDir(safeishWorkingDirectory(Paths.get(rootDir.toString(), "test")))
+
 }
 
-test {
-    jvmArgs '-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar'
-    setWorkingDir(Paths.get(getWorkingDir().parent, "test").toFile().exists() ? Paths.get(getWorkingDir().parent, "test").toFile() : Paths.get(getWorkingDir().parent, "test").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "test").toFile() : null)
-}
+task<JavaExec>("runTrivial", JavaExec::class) {
+    classpath = java.sourceSets["main"].runtimeClasspath
 
-tasks.register('runTrivial', JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-
-    mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
-    jvmArgs = ['-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar',
-               '-Dloader.development=true',
-               '-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar',
-               '-Dfile.encoding=UTF-8',
-               '-Dsun.stdout.encoding=UTF-8',
-               '-Dsun.stderr.encoding=UTF-8']
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivial").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivial").toFile() : Paths.get(getWorkingDir().parent, "runTrivial").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivial").toFile() : null)
+    mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
+    jvmArgs = mutableListOf("-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
+               "-Dloader.development=true",
+               "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
+               "-Dfile.encoding=UTF-8",
+               "-Dsun.stdout.encoding=UTF-8",
+               "-Dsun.stderr.encoding=UTF-8")
+    setWorkingDir(safeishWorkingDirectory(Paths.get(rootDir.toString(), "runTrivial")))
     dependsOn(initQuiltTweakerAgent)
 }
 
-tasks.register('runTrivialWithVulkanGLFWRenderModule', JavaExec) {
+/*tasks.register('runTrivialWithVulkanGLFWRenderModule', JavaExec) {
     classpath = configurations.runtimeClasspathWithVulkanGLFWRenderModule + sourceSets.main.runtimeClasspath
 
     mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
@@ -165,12 +185,12 @@ tasks.register('runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPI', JavaEx
 
     setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : null)
     dependsOn(initQuiltTweakerAgent)
-}
+}*/
 
 
-jar {
+tasks.jar {
     manifest {
-        attributes('Main-Class': 'io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime')
+        attributes(mapOf("Main-Class" to "io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"))
     }
 }
 
@@ -180,33 +200,33 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/Codetoil/curved-spacetime")
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
             }
         }
     }
     publications {
-        gpr(MavenPublication) {
+        register<MavenPublication>("gpr") {
             pom {
-                packaging = 'jar'
+                packaging = "jar"
 
-                name = 'Curved Spacetime Loader Module'
-                url = 'https://codetoil.io/curved-spacetime'
-                inceptionYear = '2023'
+                name = "Curved Spacetime Loader Module"
+                url = "https://codetoil.io/curved-spacetime"
+                inceptionYear = "2023"
                 licenses {
                     license {
-                        name = 'GPL-3.0-or-later'
-                        url = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
-                        distribution = 'repo'
+                        name = "GPL-3.0-or-later"
+                        url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+                        distribution = "repo"
                     }
                 }
                 developers {
                     developer {
-                        id = 'codetoil'
-                        name = 'Anthony Michalek (Codetoil)'
-                        email = 'ianthisawesomee@gmail.com'
-                        url = 'https://codetoil.io'
-                        roles = ['owner', 'arcitect', 'developer']
+                        id = "codetoil"
+                        name = "Anthony Michalek (Codetoil)"
+                        email = "ianthisawesomee@gmail.com"
+                        url = "https://codetoil.io"
+                        roles = setOf("owner", "architect", "developer")
                     }
                 }
                 issueManagement {
@@ -218,12 +238,12 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime/actions"
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/Codetoil/curved-spacetime.git'
-                    developerConnection = 'scm:git:ssh://github.com/Codetoil/curved-spacetime.git'
-                    url = 'https://github.com/Codetoil/curved-spacetime'
+                    connection = "scm:git:git://github.com/Codetoil/curved-spacetime.git"
+                    developerConnection = "scm:git:ssh://github.com/Codetoil/curved-spacetime.git"
+                    url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach(softwareComponent -> from(softwareComponent))
+            components.forEach({ softwareComponent -> from(softwareComponent)})
         }
     }
 }
