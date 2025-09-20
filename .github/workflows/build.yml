@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-render-module:publish
         env:
@@ -64,7 +64,7 @@ jobs:
     - name: Build
       run: ./gradlew :curved-spacetime-glfw-render-module:jar
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
+    # the publishing section of your build.gradle.kts.kts
     - name: Publish to GitHub Packages
       run: ./gradlew :curved-spacetime-glfw-render-module:publish
       env:
@@ -95,7 +95,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-loader-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-loader-module:publish
         env:
@@ -126,7 +126,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-main-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-main-module:publish
         env:
@@ -181,7 +181,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-quilt-tweaker-agent:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-quilt-tweaker-agent:publish
         env:
@@ -212,7 +212,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-render-module:publish
         env:
@@ -242,7 +242,7 @@ jobs:
               - name: Build
                 run: ./gradlew :curved-spacetime-vulkan-glfw-module:jar
               # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-              # the publishing section of your build.gradle
+              # the publishing section of your build.gradle.kts.kts
               - name: Publish to GitHub Packages
                 run: ./gradlew :curved-spacetime-vulkan-glfw-module:publish
                 env:
@@ -272,7 +272,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-vulkan-glfw-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-vulkan-glfw-render-module:publish
         env:
@@ -303,7 +303,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-vulkan-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-vulkan-module:publish
         env:
@@ -335,7 +335,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-vulkan-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-vulkan-render-module:publish
         env:
@@ -366,7 +366,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-webserver-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-webserver-module:publish
         env:
@@ -397,7 +397,7 @@ jobs:
       - name: Build
         run: ./gradlew :curved-spacetime-webserver-openapi-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
+      # the publishing section of your build.gradle.kts.kts
       - name: Publish to GitHub Packages
         run: ./gradlew :curved-spacetime-webserver-openapi-module:publish
         env:
