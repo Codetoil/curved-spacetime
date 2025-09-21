@@ -62,16 +62,16 @@ public class VulkanQueue
 		VK10.vkQueueWaitIdle(this.vkQueue);
 	}
 
-	public void submit(PointerBuffer vulkanCommandBuffers, LongBuffer waitVulkanSemapores,
+	public void submit(PointerBuffer vulkanCommandBuffers, LongBuffer waitVulkanSemaphores,
 					   IntBuffer waitVulkanDstStageMasks, LongBuffer signalVulkanSemaphores, VulkanFence vulkanFence)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkSubmitInfo vkSubmitInfo = VkSubmitInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO)
 					.pCommandBuffers(vulkanCommandBuffers).pSignalSemaphores(signalVulkanSemaphores);
-			if (waitVulkanSemapores != null)
+			if (waitVulkanSemaphores != null)
 			{
-				vkSubmitInfo.waitSemaphoreCount(waitVulkanSemapores.capacity()).pWaitSemaphores(waitVulkanSemapores)
+				vkSubmitInfo.waitSemaphoreCount(waitVulkanSemaphores.capacity()).pWaitSemaphores(waitVulkanSemaphores)
 						.pWaitDstStageMask(waitVulkanDstStageMasks);
 			} else
 			{

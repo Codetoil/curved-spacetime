@@ -30,20 +30,20 @@ if (osName.lowercase().contains("linux")) {
 } else if (osName.lowercase().contains("bsd")) {
     project.extra["lwjglNativesName"] = "natives-freebsd" + (when (osArch) {
         "amd64" -> ""
-        else -> throw RuntimeException("Unsupported CPU Archhitecture for FreeBSD!")
+        else -> throw RuntimeException("Unsupported CPU Architecture for FreeBSD!")
     })
 } else if (osName.lowercase().contains("mac")) {
     project.extra["lwjglNativesName"] = "natives-macos" + (when (osArch) {
         "amd64" -> ""
         "aarch64" -> "-arm64"
-        else -> throw RuntimeException("Unsupported CPU Archhitecture for macOS!")
+        else -> throw RuntimeException("Unsupported CPU Architecture for macOS!")
     })
 } else if (osName.lowercase().contains("windows")) {
     project.extra["lwjglNativesName"] = "natives-macos" + (when (osArch) {
         "amd64" -> ""
         "x86" -> "-x86"
         "aarch64" -> "-arm64"
-        else -> throw RuntimeException("Unsupported CPU Archhitecture for Windows!")
+        else -> throw RuntimeException("Unsupported CPU Architecture for Windows!")
     })
 } else {
     throw RuntimeException("Unsupported Operating System!")

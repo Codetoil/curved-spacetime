@@ -27,4 +27,14 @@ projectJDK: "25" #(Applied in CI/CD pipeline)
 
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: qodana-jvm-community
-withinDocker: false
+withinDocker: "false"
+
+exclude:
+  - name: Gradle
+    paths:
+      - gradlew
+      - gradlew.bat
+  - name: Licenses
+    paths:
+      - LICENSE
+      - Notices.md

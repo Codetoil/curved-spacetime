@@ -67,7 +67,7 @@ publishing {
                         name = "Anthony Michalek / Angelina Michalek (Codetoil)"
                         email = "ianthisawesomee@gmail.com"
                         url = "https://codetoil.io"
-                        roles = setOf("owner", "arcitect", "developer")
+                        roles = setOf("owner", "architect", "developer")
                     }
                 }
                 issueManagement {

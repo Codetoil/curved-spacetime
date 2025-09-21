@@ -38,7 +38,7 @@ public class VulkanSwapChainRenderPass
 		{
 			VkAttachmentDescription.Buffer attachments = VkAttachmentDescription.calloc(1, stack);
 
-			// Color attacbment
+			// Color attachment
 			attachments.get(0).format(swapChain.getVulkanSurfaceFormat().imageFormat())
 					.samples(VK10.VK_SAMPLE_COUNT_1_BIT).loadOp(VK10.VK_ATTACHMENT_LOAD_OP_CLEAR)
 					.storeOp(VK10.VK_ATTACHMENT_STORE_OP_STORE).initialLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)

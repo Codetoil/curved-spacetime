@@ -86,14 +86,14 @@ inspections:
       - "scope#$gitignore" # $gitignore scope available only in qodana execution
       - "scope#test:*..*"
       - "scope#file:buildSrc/*"
-      - "**.md" # Provides lot's of false positives on embedded code examples
+      - "**.md" # Provides lots of false positives on embedded code examples
   - group: "category:JavaScript and TypeScript"
     ignore:
       - "**/resources/**"
   - inspection: JavadocReference
     severity: WARNING # It has default ERROR severity. It's understandable for unresolved references in javadocs for editor but not on CI.
   - inspection: KtorOpenAPIUpdate
-    enabled: true # This inspection is long running and designed for Qodana
+    enabled: true # This inspection is long-running and designed for Qodana
   - group: CoverageInspections
     enabled: true # Explicitly enable all coverage inspections by default
   - group: MetricsInspections
