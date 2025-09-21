@@ -14,6 +14,7 @@ build/
 !.idea/codeStyles/Project.xml
 !.idea/inspectionProfiles
 !.idea/inspectionProfiles/Project_Default.xml
+!.idea/dictionaries/**
 !.idea/.gitignore
 out/
 !**/src/main/**/out/
