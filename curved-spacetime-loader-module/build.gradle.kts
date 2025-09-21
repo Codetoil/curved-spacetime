@@ -16,33 +16,30 @@ val webserverOpenAPIModuleRuntimeOnly =
     configurations.dependencyScope("webserverOpenAPIModuleRuntimeOnly") {
         isCanBeConsumed = false
     }
+val vulkanGLFWRenderModuleRuntimeOnly =
+    configurations.dependencyScope("vulkanGLFWRenderModuleRuntimeOnly") {
+        isCanBeConsumed = false
+    }
+val vulkanGLFWRenderModuleAndWebserverOpenAPIModuleOnlyRuntimeOnly =
+    configurations.dependencyScope("vulkanGLFWRenderModuleAndWebserverOpenAPIModuleOnlyRuntimeOnly") {
+        isCanBeConsumed = false
+    }
 val runtimeClasspathWithWebserverOpenAPIModule =
     configurations.resolvable("runtimeClasspathWithWebserverOpenAPIModule") {
         isCanBeConsumed = false
         extendsFrom(webserverOpenAPIModuleRuntimeOnly.get())
     }
-
-/*configurations {
-    dependencyScope("vulkanGLFWRenderModuleRuntimeOnly") {
-        canBeConsumed = false
-        canBeResolved = false
+val runtimeClasspathWithVulkanGLFWRenderModule =
+    configurations.resolvable("runtimeClasspathWithVulkanGLFWRenderModule") {
+        isCanBeConsumed = false
+        extendsFrom(vulkanGLFWRenderModuleRuntimeOnly.get())
     }
-    dependencyScope("vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly") {
-        canBeConsumed = false
-        canBeResolved = false
+val runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule =
+    configurations.resolvable("runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule") {
+        isCanBeConsumed = false
+        extendsFrom(webserverOpenAPIModuleRuntimeOnly.get(), vulkanGLFWRenderModuleRuntimeOnly.get(),
+            vulkanGLFWRenderModuleAndWebserverOpenAPIModuleOnlyRuntimeOnly.get())
     }
-    resolvable("runtimeClasspathWithVulkanGLFWRenderModule") {
-        canBeConsumed = false
-        canBeDeclared = false
-        extendsFrom(implementation, vulkanGLFWRenderModuleRuntimeOnly)
-    }
-    resolvable("runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule") {
-        canBeConsumed = false
-        canBeDeclared = false
-        extendsFrom(implementation, vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly)
-    }
-}*/
-
 
 repositories {
     mavenCentral()
@@ -53,9 +50,6 @@ repositories {
         url = uri("https://maven.quiltmc.org/repository/release/")
     }
 }
-
-val getLWJGLNativesName = rootProject.extra["getLWJGLNativesName"]
-val lwjglNativesName: String? = (getLWJGLNativesName as? () -> String)?.invoke()
 
 dependencies {
     implementation(project(":curved-spacetime-main-module"))
@@ -76,34 +70,24 @@ dependencies {
     implementation("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 
     runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
-    runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:$lwjglNativesName")
+    runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
     runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:$lwjglNativesName")
+    runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
     runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}")
     if (System.getProperty("os.name").lowercase().contains("mac")) {
-        runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:$lwjglNativesName")
+        runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
     }
 
-    /*vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-render-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-render-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-glfw-render-module")
-    vulkanGLFWRenderModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-render-module")*/
+    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-glfw-module"))
+    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-render-module"))
+    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-module"))
+    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-glfw-module"))
+    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-render-module"))
+    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-glfw-render-module"))
+    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-glfw-render-module"))
 
     webserverOpenAPIModuleRuntimeOnly (project(":curved-spacetime-webserver-module"))
     webserverOpenAPIModuleRuntimeOnly (project(":curved-spacetime-webserver-openapi-module"))
-
-    /*vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-glfw-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-render-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-vulkan-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-vulkan-render-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-glfw-render-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-vulkan-glfw-render-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-webserver-module")
-    vulkanGLFWRenderModuleAndWebserverOpenAPIModuleRuntimeOnly project(":curved-spacetime-webserver-openapi-module")*/
 }
 
 
@@ -143,20 +127,23 @@ tasks.register("runTrivial", JavaExec::class) {
     dependsOn(initQuiltTweakerAgent)
 }
 
-/*tasks.register('runTrivialWithVulkanGLFWRenderModule', JavaExec) {
-    classpath = configurations.runtimeClasspathWithVulkanGLFWRenderModule + sourceSets.main.runtimeClasspath
+tasks.register("runTrivialWithVulkanGLFWRenderModule", JavaExec::class) {
+    classpath =java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithVulkanGLFWRenderModule.get()
 
-    mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
-    jvmArgs = ['-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar',
-               '-Dloader.development=true',
-               '-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar',
-               '-Dfile.encoding=UTF-8',
-               '-Dsun.stdout.encoding=UTF-8',
-               '-Dsun.stderr.encoding=UTF-8']
+    mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
+    jvmArgs = mutableListOf(
+        "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
+        "-Dloader.development=true",
+        "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
+        "-Dfile.encoding=UTF-8",
+        "-Dsun.stdout.encoding=UTF-8",
+        "-Dsun.stderr.encoding=UTF-8"
+    )
 
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModule").toFile() : null)
+    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
+        "runTrivialWithVulkanGLFWRenderModule"))
     dependsOn(initQuiltTweakerAgent)
-}*/
+}
 
 tasks.register("runTrivialWithWebserverOpenAPI", JavaExec::class) {
     classpath = java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithWebserverOpenAPIModule.get()
@@ -171,24 +158,29 @@ tasks.register("runTrivialWithWebserverOpenAPI", JavaExec::class) {
         "-Dsun.stderr.encoding=UTF-8"
     )
 
-    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(), "runTrivialWithWebserverOpenAPIModule"))
+    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
+        "runTrivialWithWebserverOpenAPIModule"))
     dependsOn(initQuiltTweakerAgent)
 }
 
-/*tasks.register('runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPI', JavaExec) {
-    classpath = configurations.runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule + sourceSets.main.runtimeClasspath
+tasks.register("runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule", JavaExec::class) {
+    classpath = java.sourceSets["main"].runtimeClasspath +
+            runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule.get()
 
-    mainClass = 'io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime'
-    jvmArgs = ['-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar',
-               '-Dloader.development=true',
-               '-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar',
-               '-Dfile.encoding=UTF-8',
-               '-Dsun.stdout.encoding=UTF-8',
-               '-Dsun.stderr.encoding=UTF-8']
+    mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
+    jvmArgs = mutableListOf(
+        "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
+        "-Dloader.development=true",
+        "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
+        "-Dfile.encoding=UTF-8",
+        "-Dsun.stdout.encoding=UTF-8",
+        "-Dsun.stderr.encoding=UTF-8"
+    )
 
-    setWorkingDir(Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().exists() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile().mkdirs() ? Paths.get(getWorkingDir().parent, "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule").toFile() : null)
+    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
+        "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule"))
     dependsOn(initQuiltTweakerAgent)
-}*/
+}
 
 
 tasks.jar {
