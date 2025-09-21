@@ -1,4 +1,3 @@
-@file:Suppress("JAVA_MODULE_DOES_NOT_EXPORT_PACKAGE")
 rootProject.name = "curved-spacetime"
 
 include("curved-spacetime-quilt-tweaker-agent")
@@ -9,8 +8,8 @@ include("curved-spacetime-quilt-tweaker-agent")
 //include("curved-spacetime-vulkan-glfw-render-module")
 //include("curved-spacetime-vulkan-render-module")
 //include("curved-spacetime-render-module")
-//include("curved-spacetime-webserver-module")
-//include("curved-spacetime-webserver-openapi-module")
+include("curved-spacetime-webserver-module")
+include("curved-spacetime-webserver-openapi-module")
 include("curved-spacetime-main-module")
 include("curved-spacetime-loader-module")
 include("curved-spacetime-quilt-loader-patches")
