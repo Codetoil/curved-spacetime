@@ -24,13 +24,14 @@ repositories {
 dependencies {
     api (project(":curved-spacetime-main-module"))
 
-    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
-    testImplementation ("org.junit.jupiter:junit-jupiter")
-
     implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
     api ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
     runtimeOnly ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 publishing {

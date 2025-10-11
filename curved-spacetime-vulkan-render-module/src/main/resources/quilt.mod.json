@@ -21,12 +21,13 @@
     "entrypoints": {
       "main": "io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint",
       "render_module_dependent": "io.codetoil.curved_spacetime.render.vulkan.RenderModuleDependentVulkanRenderModuleEntrypoint",
-      "vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan.VulkanModuleDependentVulkanRenderModuleEntrypoint"
+      "vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan.VulkanModuleDependentVulkanRenderModuleEntrypoint",
+      "vulkan_render_module_dependent": "io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint"
     },
     "depends": [
       {
         "id": "quilt_loader",
-        "versions": ">=0.29.2-beta.1"
+        "versions": ">=0.29.2-beta.5"
       },
       {
         "id": "curved-spacetime-main-module",

@@ -27,8 +27,6 @@ val bundle by configurations.creating
 
 dependencies {
     bundle(project(":curved-spacetime-quilt-loader-patches"))
-    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 tasks.named<Test>("test") {

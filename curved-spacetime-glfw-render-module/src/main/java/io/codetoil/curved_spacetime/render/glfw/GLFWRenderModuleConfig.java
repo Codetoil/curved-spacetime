@@ -55,6 +55,15 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 	{
 		Properties props = new Properties();
 
+		try (FileReader reader = new FileReader(GLFWRenderModuleConfig.FILENAME))
+		{
+			props.load(reader);
+		} catch (FileNotFoundException ex)
+		{
+			Logger.warn(ex, "Could not find config file " + GLFWRenderModuleConfig.FILENAME);
+			this.dirty = true;
+		}
+
 		Object fpsPropValue = props.get("fps");
 		if (fpsPropValue != null)
 		{
@@ -109,7 +118,7 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 
 	public void save() throws IOException
 	{
-		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
+		Properties props = new Properties();
 		props.put("fps", String.valueOf(this.fps));
 		props.put("vsync", String.valueOf(this.vsync));
 

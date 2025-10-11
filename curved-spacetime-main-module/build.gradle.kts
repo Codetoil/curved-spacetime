@@ -22,6 +22,10 @@ repositories {
     }
 }
 
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+}
+
 
 dependencies {
     api("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")

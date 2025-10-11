@@ -26,10 +26,11 @@ dependencies {
     api (project(":curved-spacetime-vulkan-module"))
     api (project(":curved-spacetime-render-module"))
 
-    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
-    testImplementation ("org.junit.jupiter:junit-jupiter")
-
     implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 publishing {

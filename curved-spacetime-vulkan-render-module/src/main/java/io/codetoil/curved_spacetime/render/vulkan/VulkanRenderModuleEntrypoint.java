@@ -29,9 +29,8 @@ import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.Flow;
-//import java.util.concurrent.SubmissionPublisher;
 
-public class VulkanRenderModuleEntrypoint implements ModuleInitializer/*, VulkanRenderModuleDependentModuleInitializer*/
+public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
 	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
@@ -88,13 +87,4 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer/*, Vulkan
 	{
 		return this.moduleDependentFlowSubscriber;
 	}
-
-	/* @Override
-	public void onInitialize(VulkanRenderModuleEntrypoint self)
-	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.submit(self);
-		}
-	} */
 }

@@ -34,8 +34,7 @@ import java.util.concurrent.Flow.Subscriber;
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
-			= new ModuleDependentFlowSubscriber(
+	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber = new ModuleDependentFlowSubscriber(
 			(Collection<ModuleInitializer> moduleInitializers) -> {
 				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
 					if (moduleInitializer instanceof GLFWModuleEntrypoint)
@@ -62,6 +61,7 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 						(GLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
 								vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
 			});
+
 	private GLFWModuleEntrypoint glfwModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 
@@ -74,7 +74,7 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+			throw new RuntimeException("Failed to load GLFW Render Config", ex);
 		}
 	}
 

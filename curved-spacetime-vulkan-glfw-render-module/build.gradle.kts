@@ -30,15 +30,16 @@ dependencies {
     api (project(":curved-spacetime-vulkan-render-module"))
     api (project(":curved-spacetime-vulkan-glfw-module"))
 
-    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
-    testImplementation ("org.junit.jupiter:junit-jupiter")
-
     implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
     implementation ("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
     implementation ("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
     implementation ("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
     implementation ("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 publishing {
