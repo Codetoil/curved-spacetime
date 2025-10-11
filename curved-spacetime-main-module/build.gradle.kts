@@ -34,6 +34,8 @@ dependencies {
     api("org.tinylog:tinylog-api:${rootProject.extra["tinyLoggerVersion"]}")
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
+    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+
     api("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
         exclude("annotations")
     }

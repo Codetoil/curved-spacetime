@@ -26,6 +26,8 @@ dependencies {
     api (project(":curved-spacetime-glfw-module"))
     api (project(":curved-spacetime-render-module"))
 
+    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+
     implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
     api ("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")

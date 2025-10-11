@@ -5,6 +5,7 @@ plugins {
 
 // Maven Central - https://repo1.maven.org/maven2/
 project.extra["lwjglVersion"] = "3.3.6" // org.lwjgl:lwjgl, org.lwjgl:lwjgl-glfw, org.lwjgl:lwjgl-vulkan
+project.extra["junitVersion"] = "6.0.0" // org.junit:junit-bom
 project.extra["tinyLoggerVersion"] = "2.8.0-M1" // org.tinylog:tinylog-impl
 project.extra["gsonVersion"] = "2.13.2" // com.google.code.gson:gson
 project.extra["guavaVersion"] = "33.5.0-jre" // com.google.guava:guava

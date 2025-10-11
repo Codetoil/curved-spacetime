@@ -30,6 +30,8 @@ dependencies {
     api (project(":curved-spacetime-vulkan-render-module"))
     api (project(":curved-spacetime-vulkan-glfw-module"))
 
+    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+
     implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
     implementation ("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
