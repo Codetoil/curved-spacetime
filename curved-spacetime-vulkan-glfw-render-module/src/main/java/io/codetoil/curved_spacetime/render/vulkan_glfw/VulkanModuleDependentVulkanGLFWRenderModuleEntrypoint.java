@@ -32,12 +32,8 @@ public class VulkanModuleDependentVulkanGLFWRenderModuleEntrypoint implements Vu
 	@Override
 	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(vulkanModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+			.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+			.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanModuleEntrypoint);
 	}
 }

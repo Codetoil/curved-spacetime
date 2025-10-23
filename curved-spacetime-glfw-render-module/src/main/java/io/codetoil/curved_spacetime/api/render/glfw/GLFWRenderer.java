@@ -27,9 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class GLFWRenderer extends SceneLooper
 {
-	protected GLFWRenderer(Engine engine, Scene scene, GLFWRenderModuleConfig glfwRenderModuleConfig)
+	protected GLFWRenderer(Engine engine, Scene scene)
 	{
-		super(engine, scene, 1_000 / glfwRenderModuleConfig.getFPS(),
-				1_000 / glfwRenderModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
+		super(engine, scene);
 	}
 }

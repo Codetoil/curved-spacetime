@@ -18,100 +18,29 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.api.render.glfw.entrypoint.GLFWRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.VulkanGLFWRenderer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
-import io.codetoil.curved_spacetime.vulkan.VulkanModuleConfig;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWModuleEntrypoint;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Flow;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
-			= new ModuleDependentFlowSubscriber(
-			(Collection<ModuleInitializer> moduleInitializers) -> {
-				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
-					if (moduleInitializer instanceof GLFWModuleEntrypoint)
-					{
-						this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof RenderModuleEntrypoint)
-					{
-						this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof VulkanModuleEntrypoint)
-					{
-						this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof GLFWRenderModuleEntrypoint)
-					{
-						this.glfwRenderModuleEntrypoint = (GLFWRenderModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof VulkanGLFWModuleEntrypoint)
-					{
-						this.vulkanGLFWModuleEntrypoint = (VulkanGLFWModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof VulkanRenderModuleEntrypoint)
-					{
-						this.vulkanRenderModuleEntrypoint = (VulkanRenderModuleEntrypoint) moduleInitializer;
-					}
-				});
-				if (this.glfwModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime GLFW Module, " +
-							"check if it exists!");
-				}
-				if (this.renderModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Render Module, " +
-							" check if it exists!");
-				}
-				if (this.vulkanModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Vulkan Module, " +
-							" check if it exists!");
-				}
-				if (this.glfwRenderModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime GLFW Render Module, " +
-							"check if it exists!");
-				}
-				if (this.vulkanGLFWModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Vulkan GLFW Module, " +
-							" check if it exists!");
-				}
-				if (this.vulkanRenderModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Vulkan Render Module, " +
-							" check if it exists!");
-				}
-
-				Engine engine = Engine.getInstance();
-				engine.registerSceneLooper("vulkan_glfw_renderer",
-						new VulkanGLFWRenderer(engine, engine.scene, (VulkanGLFWRenderModuleConfig) this.config,
-								(GLFWRenderModuleConfig) this.glfwRenderModuleEntrypoint.getConfig()));
-				EntrypointUtil.invoke("vulkan_glfw_render_module_dependent",
-						VulkanGLFWRenderModuleDependentModuleInitializer.class,
-						(VulkanGLFWRenderModuleDependentModuleInitializer vulkanGLFWRenderModuleDependentModuleInitializer) ->
-								vulkanGLFWRenderModuleDependentModuleInitializer.onInitialize(this));
-			});
+	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private GLFWModuleEntrypoint glfwModuleEntrypoint = null;
 	private GLFWRenderModuleEntrypoint glfwRenderModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
@@ -130,7 +59,56 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		try
+		{
+			recieveDependenciesFromTransferQueue();
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
+		Engine engine = Engine.getInstance();
+		engine.registerSceneLooper("vulkan_glfw_renderer",
+				new VulkanGLFWRenderer(engine, engine.scene, (VulkanGLFWRenderModuleConfig) this.config,
+						(GLFWRenderModuleConfig) this.glfwRenderModuleEntrypoint.getConfig()));
+		EntrypointUtil.invoke("vulkan_glfw_render_module_dependent",
+				VulkanGLFWRenderModuleDependentModuleInitializer.class,
+				(VulkanGLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
+						vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
 
+	}
+
+	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
+	{
+		ModuleInitializer moduleInitializer;
+		for (int i = 0; i < 6; i++)
+		{
+			moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+			if (moduleInitializer instanceof GLFWModuleEntrypoint)
+			{
+				this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
+			}
+			if (moduleInitializer instanceof RenderModuleEntrypoint)
+			{
+				this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+			}
+			if (moduleInitializer instanceof VulkanModuleEntrypoint)
+			{
+				this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
+			}
+			if (moduleInitializer instanceof GLFWRenderModuleEntrypoint)
+			{
+				this.glfwRenderModuleEntrypoint = (GLFWRenderModuleEntrypoint) moduleInitializer;
+			}
+			if (moduleInitializer instanceof VulkanGLFWModuleEntrypoint)
+			{
+				this.vulkanGLFWModuleEntrypoint = (VulkanGLFWModuleEntrypoint) moduleInitializer;
+			}
+			if (moduleInitializer instanceof VulkanRenderModuleEntrypoint)
+			{
+				this.vulkanRenderModuleEntrypoint = (VulkanRenderModuleEntrypoint) moduleInitializer;
+			}
+		}
 	}
 
 	@Override
@@ -140,8 +118,8 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
-		return this.moduleDependentFlowSubscriber;
+		return this.dependencyModuleTransferQueue;
 	}
 }

@@ -23,20 +23,14 @@ import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentM
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
-import java.util.concurrent.SubmissionPublisher;
-
 public class RenderModuleDependentGLFWRenderModuleEntrypoint implements RenderModuleDependentModuleInitializer
 {
 
 	@Override
 	public void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(GLFWRenderModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(renderModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(GLFWRenderModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(renderModuleEntrypoint);
 	}
 }

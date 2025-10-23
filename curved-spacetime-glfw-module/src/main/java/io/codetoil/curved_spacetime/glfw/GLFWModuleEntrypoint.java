@@ -19,20 +19,19 @@
 
 package io.codetoil.curved_spacetime.glfw;
 
-import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.glfw.entrypoint.GLFWModuleDependentModuleInitializer;
+import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Flow;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class GLFWModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
-			= new ModuleDependentFlowSubscriber((Collection<ModuleInitializer> _) -> {});
+	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 
 	@Override
 	public void onInitialize()
@@ -45,6 +44,9 @@ public class GLFWModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		EntrypointUtil.invoke("glfw_module_dependent", GLFWModuleDependentModuleInitializer.class,
+				(GLFWModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
+						vulkanModuleDependentModuleInitializer.onInitialize(this));
 	}
 
 	@Override
@@ -54,8 +56,8 @@ public class GLFWModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
-		return this.moduleDependentFlowSubscriber;
+		return this.dependencyModuleTransferQueue;
 	}
 }

@@ -21,7 +21,7 @@ package io.codetoil.curved_spacetime.api.entrypoint;
 
 import org.quiltmc.loader.api.entrypoint.GameEntrypoint;
 
-import java.util.concurrent.Flow;
+import java.util.concurrent.TransferQueue;
 
 @SuppressWarnings("NonExtendableApiUsage")
 public interface ModuleInitializer extends GameEntrypoint
@@ -37,7 +37,7 @@ public interface ModuleInitializer extends GameEntrypoint
 	ModuleConfig getConfig();
 
 	/**
-	 * Runs when all dependencies are loaded if configured properly.
+	 *
 	 */
-	Flow.Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber();
+	TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue();
 }

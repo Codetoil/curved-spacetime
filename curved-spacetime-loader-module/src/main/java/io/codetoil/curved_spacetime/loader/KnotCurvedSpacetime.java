@@ -28,11 +28,14 @@ public class KnotCurvedSpacetime
 {
 	public static final EnvType CURVED_SPACETIME = EnvType.valueOf("CURVED_SPACETIME");
 
-	public static void main(String[] args)
+	static void main(String[] args)
 	{
-		System.setProperty(SystemProperties.SKIP_MC_PROVIDER, "true");
-		System.setProperty(SystemProperties.MODS_DIRECTORY, "modules");
-		System.setProperty(SystemProperties.TARGET_NAMESPACE, "official");
+		if (!System.getProperties().containsValue(SystemProperties.SKIP_MC_PROVIDER))
+			System.setProperty(SystemProperties.SKIP_MC_PROVIDER, "true");
+		if (!System.getProperties().containsValue(SystemProperties.MODS_DIRECTORY))
+			System.setProperty(SystemProperties.MODS_DIRECTORY, "modules");
+		if (!System.getProperties().containsValue(SystemProperties.TARGET_NAMESPACE))
+			System.setProperty(SystemProperties.TARGET_NAMESPACE, "official");
 		Knot.launch(args, KnotCurvedSpacetime.CURVED_SPACETIME);
 	}
 }

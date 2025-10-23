@@ -29,25 +29,15 @@ import java.util.concurrent.TimeUnit;
 public abstract class SceneLooper
 {
 	protected final Engine engine;
-	protected final ScheduledExecutorService executor;
-	protected final ScheduledFuture<?> loopHandler;
 	protected final Scene scene;
 
-	protected SceneLooper(Engine engine, Scene scene, long delay, long period,
-						  @NotNull TimeUnit timeUnit)
+	protected SceneLooper(Engine engine, Scene scene)
 	{
 		this.engine = engine;
 		this.scene = scene;
-
-		this.executor = Executors.newSingleThreadScheduledExecutor();
-		this.loopHandler = this.executor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
-	}
-
-	public void clean()
-	{
-		this.loopHandler.cancel(true);
-		this.executor.shutdown();
 	}
 
 	public abstract void loop();
+
+	public abstract void clean();
 }

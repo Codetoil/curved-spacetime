@@ -31,12 +31,8 @@ public class GLFWModuleDependentVulkanGLFWModuleEntrypoint implements GLFWModule
 	@Override
 	public void onInitialize(GLFWModuleEntrypoint glfwModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanGLFWModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(glfwModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(VulkanGLFWModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(glfwModuleEntrypoint);
 	}
 }

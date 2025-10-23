@@ -32,12 +32,8 @@ public class WebserverModuleDependentWebserverOpenAPIModuleEntrypoint implements
 	@Override
 	public void onInitialize(WebserverModuleEntrypoint webserverModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(WebserverOpenAPIModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(webserverModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(WebserverOpenAPIModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(webserverModuleEntrypoint);
 	}
 }

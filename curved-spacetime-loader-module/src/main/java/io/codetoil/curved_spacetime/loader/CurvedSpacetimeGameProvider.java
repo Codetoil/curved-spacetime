@@ -43,7 +43,7 @@ import java.util.*;
 
 public class CurvedSpacetimeGameProvider implements GameProvider
 {
-	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.Main";
+	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.api.engine.Engine";
 	private Arguments arguments;
 	private final List<Path> gameJars = new ArrayList<>();
 	private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
@@ -187,7 +187,8 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 		try
 		{
 			LibClassifier<CurvedSpacetimeModule> classifier =
-					new LibClassifier<>(CurvedSpacetimeModule.class, KnotCurvedSpacetime.CURVED_SPACETIME, this);
+					new LibClassifier<>(CurvedSpacetimeModule.class, KnotCurvedSpacetime.CURVED_SPACETIME,
+							this);
 			Path gameJar = GameProviderHelper.getCommonGameJar();
 			if (gameJar != null)
 			{
@@ -295,7 +296,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 
 		try
 		{
-			Class<?> c = loader.loadClass("io.codetoil.curved_spacetime.Main");
+			Class<?> c = loader.loadClass(ENTRYPOINT);
 			Method m = c.getMethod("main", String[].class);
 			m.invoke(null, (Object) this.arguments.toArray());
 		} catch (InvocationTargetException e)

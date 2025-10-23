@@ -18,7 +18,6 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.glfw.entrypoint.GLFWRenderModuleDependentModuleInitializer;
@@ -27,43 +26,16 @@ import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Flow;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber = new ModuleDependentFlowSubscriber(
-			(Collection<ModuleInitializer> moduleInitializers) -> {
-				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
-					if (moduleInitializer instanceof GLFWModuleEntrypoint)
-					{
-						this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof RenderModuleEntrypoint)
-					{
-						this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
-					}
-				});
-				if (this.glfwModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime GLFW Module, " +
-							"check if it exists!");
-				}
-				if (this.renderModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Render Module, " +
-							" check if it exists!");
-				}
-				EntrypointUtil.invoke("glfw_render_module_dependent",
-						GLFWRenderModuleDependentModuleInitializer.class,
-						(GLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
-								vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
-			});
+	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 
-	private GLFWModuleEntrypoint glfwModuleEntrypoint = null;
-	private RenderModuleEntrypoint renderModuleEntrypoint = null;
+	private GLFWModuleEntrypoint glfwModuleEntrypoint;
+	private RenderModuleEntrypoint renderModuleEntrypoint;
 
 	@Override
 	public void onInitialize()
@@ -76,6 +48,42 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load GLFW Render Config", ex);
 		}
+		try
+		{
+			recieveDependenciesFromTransferQueue();
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
+		EntrypointUtil.invoke("glfw_render_module_dependent",
+				GLFWRenderModuleDependentModuleInitializer.class,
+				(GLFWRenderModuleDependentModuleInitializer glfwRenderModuleDependentModuleInitializer) ->
+						glfwRenderModuleDependentModuleInitializer.onInitialize(this));
+	}
+
+	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
+	{
+		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+		if (moduleInitializer instanceof GLFWModuleEntrypoint)
+		{
+			this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
+		}
+		if (moduleInitializer instanceof RenderModuleEntrypoint)
+		{
+			this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+		}
+
+		moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+		if (moduleInitializer instanceof GLFWModuleEntrypoint)
+		{
+			this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
+		}
+		if (moduleInitializer instanceof RenderModuleEntrypoint)
+		{
+			this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+		}
 	}
 
 	@Override
@@ -85,8 +93,8 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
-		return moduleDependentFlowSubscriber;
+		return this.dependencyModuleTransferQueue;
 	}
 }

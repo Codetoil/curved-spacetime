@@ -19,42 +19,18 @@
 
 package io.codetoil.curved_spacetime.webserver.openapi;
 
-import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.api.webserver.openapi.WebserverOpenAPIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
-import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Flow;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
-			= new ModuleDependentFlowSubscriber(
-			(Collection<ModuleInitializer> moduleInitializers) -> {
-				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
-					if (moduleInitializer instanceof WebserverModuleEntrypoint)
-					{
-						this.webserverModuleEntrypoint = (WebserverModuleEntrypoint) moduleInitializer;
-					}
-				});
-				if (this.webserverModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Webserver Module, " +
-							" check if it exists!");
-				}
-				EntrypointUtil.invoke("webserver_openapi_module_dependent",
-						WebserverOpenAPIModuleDependentModuleInitializer.class,
-						(WebserverOpenAPIModuleDependentModuleInitializer
-								 webserverOpenAPIModuleDependentModuleInitializer) ->
-								webserverOpenAPIModuleDependentModuleInitializer
-										.onInitialize(this));
-			});
+	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private WebserverModuleEntrypoint webserverModuleEntrypoint = null;
 
 	@Override
@@ -77,8 +53,8 @@ public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
-		return this.moduleDependentFlowSubscriber;
+		return this.dependencyModuleTransferQueue;
 	}
 }

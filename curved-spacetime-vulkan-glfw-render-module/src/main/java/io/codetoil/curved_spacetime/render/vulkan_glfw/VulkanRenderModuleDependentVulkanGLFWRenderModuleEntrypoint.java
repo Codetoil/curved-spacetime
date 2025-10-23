@@ -23,8 +23,6 @@ import io.codetoil.curved_spacetime.api.render.vulkan.entrypoint.VulkanRenderMod
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
-import java.util.concurrent.SubmissionPublisher;
-
 public class VulkanRenderModuleDependentVulkanGLFWRenderModuleEntrypoint
 		implements VulkanRenderModuleDependentModuleInitializer
 {
@@ -32,12 +30,8 @@ public class VulkanRenderModuleDependentVulkanGLFWRenderModuleEntrypoint
 	@Override
 	public void onInitialize(VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(vulkanRenderModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanRenderModuleEntrypoint);
 	}
 }

@@ -47,7 +47,7 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 							  VulkanGLFWRenderModuleConfig vulkanGLFWRenderModuleConfig,
 							  GLFWRenderModuleConfig glfwRenderModuleConfig)
 	{
-		super(engine, scene, glfwRenderModuleConfig);
+		super(engine, scene);
 
 		this.vulkanGLFWWindow = new VulkanGLFWWindow(engine);
 
@@ -72,19 +72,6 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 				new VulkanForwardRenderActivity(this.vulkanSwapChain, this.vulkanGraphicsCommandPool);
 	}
 
-	public void clean()
-	{
-		super.clean();
-		this.vulkanGraphicsPresentQueue.waitIdle();
-		this.vulkanGraphicsQueue.waitIdle();
-		this.vulkanForwardRenderActivity.cleanup();
-		this.vulkanSwapChain.cleanup();
-		this.vulkanSurface.cleanup();
-		this.vulkanInstance.cleanup();
-		this.vulkanGLFWWindow.hideWindow();
-		this.vulkanGLFWWindow.clean();
-	}
-
 	public void loop()
 	{
 		this.vulkanForwardRenderActivity.waitForVulkanFence();
@@ -94,5 +81,17 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 		this.vulkanForwardRenderActivity.submit(this.vulkanGraphicsQueue);
 		this.vulkanSwapChain.presentImage(vulkanGraphicsPresentQueue, imageIndex);
 		this.vulkanGLFWWindow.loop();
+	}
+
+	public void clean()
+	{
+		this.vulkanGraphicsPresentQueue.waitIdle();
+		this.vulkanGraphicsQueue.waitIdle();
+		this.vulkanForwardRenderActivity.cleanup();
+		this.vulkanSwapChain.cleanup();
+		this.vulkanSurface.cleanup();
+		this.vulkanInstance.cleanup();
+		this.vulkanGLFWWindow.hideWindow();
+		this.vulkanGLFWWindow.clean();
 	}
 }

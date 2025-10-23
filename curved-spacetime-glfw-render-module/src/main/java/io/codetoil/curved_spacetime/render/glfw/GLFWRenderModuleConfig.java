@@ -29,20 +29,13 @@ import java.util.Properties;
 
 public class GLFWRenderModuleConfig implements ModuleConfig
 {
-	private static final int DEFAULT_FPS = 60;
 	private static final boolean DEFAULT_VSYNC = true;
 	private static final String FILENAME = "glfw-render-module.config";
 	private boolean dirty = false;
-	private int fps;
 	private boolean vsync;
 
 	public GLFWRenderModuleConfig()
 	{
-	}
-
-	public int getFPS()
-	{
-		return this.fps;
 	}
 
 	public boolean hasVSync()
@@ -61,34 +54,6 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 		} catch (FileNotFoundException ex)
 		{
 			Logger.warn(ex, "Could not find config file " + GLFWRenderModuleConfig.FILENAME);
-			this.dirty = true;
-		}
-
-		Object fpsPropValue = props.get("fps");
-		if (fpsPropValue != null)
-		{
-			try
-			{
-				this.fps = Integer.parseInt(fpsPropValue.toString());
-			} catch (NumberFormatException ex)
-			{
-				Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-						fpsPropValue, GLFWRenderModuleConfig.DEFAULT_FPS);
-				this.fps = GLFWRenderModuleConfig.DEFAULT_FPS;
-				this.dirty = true;
-			}
-			if (this.fps < 1 || this.fps > 1000)
-			{
-				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
-						GLFWRenderModuleConfig.DEFAULT_FPS);
-				this.fps = GLFWRenderModuleConfig.DEFAULT_FPS;
-				this.dirty = true;
-			}
-		} else
-		{
-			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
-					GLFWRenderModuleConfig.DEFAULT_FPS);
-			this.fps = GLFWRenderModuleConfig.DEFAULT_FPS;
 			this.dirty = true;
 		}
 
@@ -119,7 +84,6 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 	public void save() throws IOException
 	{
 		Properties props = new Properties();
-		props.put("fps", String.valueOf(this.fps));
 		props.put("vsync", String.valueOf(this.vsync));
 
 		try (FileWriter writer = new FileWriter(GLFWRenderModuleConfig.FILENAME))

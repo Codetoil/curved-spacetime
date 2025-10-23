@@ -33,12 +33,9 @@ public class VulkanGLFWModuleDependentVulkanGLFWRenderModuleEntrypoint
 	@Override
 	public void onInitialize(VulkanGLFWModuleEntrypoint vulkanGLFWModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(vulkanGLFWModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue()
+				.tryTransfer(vulkanGLFWModuleEntrypoint);
 	}
 }

@@ -109,18 +109,22 @@ tasks.named<Test>("test") {
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(), "test"))
 }
 
+val runJVMArgs = listOf(
+    "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
+    "-Dloader.development=true",
+    "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
+    "-Dfile.encoding=UTF-8",
+    "-Dsun.stdout.encoding=UTF-8",
+    "-Dsun.stderr.encoding=UTF-8",
+    "-Dloader.validation.level=5",
+    "-Dloader.log.level=TRACE"
+);
+
 tasks.register("runTrivial", JavaExec::class) {
     classpath = java.sourceSets["main"].runtimeClasspath
 
     mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = mutableListOf(
-        "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
-        "-Dloader.development=true",
-        "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
-        "-Dfile.encoding=UTF-8",
-        "-Dsun.stdout.encoding=UTF-8",
-        "-Dsun.stderr.encoding=UTF-8"
-    )
+    jvmArgs = runJVMArgs
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(), "runTrivial"))
     dependsOn(initQuiltTweakerAgent)
 }
@@ -129,14 +133,7 @@ tasks.register("runTrivialWithVulkanGLFWRenderModule", JavaExec::class) {
     classpath =java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithVulkanGLFWRenderModule.get()
 
     mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = mutableListOf(
-        "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
-        "-Dloader.development=true",
-        "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
-        "-Dfile.encoding=UTF-8",
-        "-Dsun.stdout.encoding=UTF-8",
-        "-Dsun.stderr.encoding=UTF-8"
-    )
+    jvmArgs = runJVMArgs
 
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
         "runTrivialWithVulkanGLFWRenderModule"))
@@ -147,14 +144,7 @@ tasks.register("runTrivialWithWebserverOpenAPI", JavaExec::class) {
     classpath = java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithWebserverOpenAPIModule.get()
 
     mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = mutableListOf(
-        "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
-        "-Dloader.development=true",
-        "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
-        "-Dfile.encoding=UTF-8",
-        "-Dsun.stdout.encoding=UTF-8",
-        "-Dsun.stderr.encoding=UTF-8"
-    )
+    jvmArgs = runJVMArgs
 
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
         "runTrivialWithWebserverOpenAPIModule"))
@@ -166,14 +156,7 @@ tasks.register("runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule", 
             runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule.get()
 
     mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = mutableListOf(
-        "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
-        "-Dloader.development=true",
-        "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
-        "-Dfile.encoding=UTF-8",
-        "-Dsun.stdout.encoding=UTF-8",
-        "-Dsun.stderr.encoding=UTF-8"
-    )
+    jvmArgs = runJVMArgs
 
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
         "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule"))

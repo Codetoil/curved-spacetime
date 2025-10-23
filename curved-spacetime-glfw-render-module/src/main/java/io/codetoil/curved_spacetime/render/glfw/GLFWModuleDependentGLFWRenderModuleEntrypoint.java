@@ -23,20 +23,14 @@ import io.codetoil.curved_spacetime.api.glfw.entrypoint.GLFWModuleDependentModul
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
-import java.util.concurrent.SubmissionPublisher;
-
 public class GLFWModuleDependentGLFWRenderModuleEntrypoint implements GLFWModuleDependentModuleInitializer
 {
 
 	@Override
 	public void onInitialize(GLFWModuleEntrypoint vulkanModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(GLFWRenderModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(vulkanModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(GLFWRenderModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanModuleEntrypoint);
 	}
 }

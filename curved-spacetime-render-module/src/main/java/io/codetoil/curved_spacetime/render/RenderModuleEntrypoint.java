@@ -19,22 +19,19 @@
 
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Flow;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class RenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
-			= new ModuleDependentFlowSubscriber((Collection<ModuleInitializer> _) -> {});
+	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 
 	@Override
 	public void onInitialize()
@@ -59,8 +56,8 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
-		return this.moduleDependentFlowSubscriber;
+		return this.depdencyModuleTransferQueue;
 	}
 }

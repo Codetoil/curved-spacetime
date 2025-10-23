@@ -18,7 +18,6 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan.entrypoint.VulkanRenderModuleDependentModuleInitializer;
@@ -27,40 +26,13 @@ import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Flow;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
-			= new ModuleDependentFlowSubscriber(
-			(Collection<ModuleInitializer> moduleInitializers) -> {
-				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
-					if (moduleInitializer instanceof VulkanModuleEntrypoint)
-					{
-						this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof RenderModuleEntrypoint)
-					{
-						this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
-					}
-				});
-				if (this.vulkanModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Vulkan Module, " +
-							" check if it exists!");
-				}
-				if (this.renderModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Render Module, " +
-							"check if it exists!");
-				}
-				EntrypointUtil.invoke("vulkan_render_module_dependent",
-						VulkanRenderModuleDependentModuleInitializer.class,
-						(VulkanRenderModuleDependentModuleInitializer vulkanRenderModuleDependentModuleInitializer) ->
-								vulkanRenderModuleDependentModuleInitializer.onInitialize(this));
-			});
+	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 
@@ -75,6 +47,42 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		try
+		{
+			recieveDependenciesFromTransferQueue();
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
+		EntrypointUtil.invoke("vulkan_render_module_dependent",
+				VulkanRenderModuleDependentModuleInitializer.class,
+				(VulkanRenderModuleDependentModuleInitializer vulkanRenderModuleDependentModuleInitializer) ->
+						vulkanRenderModuleDependentModuleInitializer.onInitialize(this));
+	}
+
+	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
+	{
+		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+		if (moduleInitializer instanceof VulkanModuleEntrypoint)
+		{
+			this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
+		}
+		if (moduleInitializer instanceof RenderModuleEntrypoint)
+		{
+			this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+		}
+
+		moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+		if (moduleInitializer instanceof VulkanModuleEntrypoint)
+		{
+			this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
+		}
+		if (moduleInitializer instanceof RenderModuleEntrypoint)
+		{
+			this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+		}
 	}
 
 	@Override
@@ -83,8 +91,8 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		return this.config;
 	}
 
-	public Flow.Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
-		return this.moduleDependentFlowSubscriber;
+		return this.dependencyModuleTransferQueue;
 	}
 }

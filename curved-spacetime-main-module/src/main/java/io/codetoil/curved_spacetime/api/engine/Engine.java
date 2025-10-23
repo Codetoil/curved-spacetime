@@ -19,19 +19,30 @@
 package io.codetoil.curved_spacetime.api.engine;
 
 import io.codetoil.curved_spacetime.MainModuleConfig;
+import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneLooper;
+import org.jetbrains.annotations.NotNull;
 import org.quiltmc.loader.api.QuiltLoader;
+import org.quiltmc.loader.impl.QuiltLoaderImpl;
+import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Engine
 {
 	public final MainModuleConfig mainModuleConfig;
 	public Scene scene;
 	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
+	protected final ScheduledExecutorService executor;
+	protected ScheduledFuture<?> loopHandler;
 	private static Engine INSTANCE;
 
 	public Engine()
@@ -45,11 +56,38 @@ public class Engine
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
 		this.scene = new Scene();
+
+		this.executor = Executors.newSingleThreadScheduledExecutor();
+	}
+
+	public static void main(String[] args)
+	{
+		Engine engine = new Engine();
+		engine.initModules();
+		engine.startLoop(1_000 / engine.mainModuleConfig.getFPS(),
+				1_000 / engine.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
+	}
+
+	public void initModules()
+	{
+		QuiltLoaderImpl.INSTANCE.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
+		EntrypointUtils.invoke("main", ModuleInitializer.class, ModuleInitializer::onInitialize);
+	}
+
+	public void startLoop(long delay, long period, @NotNull TimeUnit timeUnit)
+	{
+		this.loopHandler = this.executor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
+	}
+
+	public void loop() {
+		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.loop());
 	}
 
 	public void clean()
 	{
-		this.sceneLooperMap.forEach((value, sceneLooper) -> sceneLooper.clean());
+		this.loopHandler.cancel(true);
+		this.executor.shutdown();
+		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.clean());
 	}
 
 	public void registerSceneLooper(String id, SceneLooper sceneLooper)

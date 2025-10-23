@@ -18,51 +18,23 @@
 
 package io.codetoil.curved_spacetime.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.api.ModuleDependentFlowSubscriber;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
-import io.codetoil.curved_spacetime.vulkan.VulkanModuleConfig;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Flow;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class VulkanGLFWModuleEntrypoint implements ModuleInitializer
 {
 	private ModuleConfig config;
-	private final Flow.Subscriber<ModuleInitializer> moduleDependentFlowSubscriber
-			= new ModuleDependentFlowSubscriber(
-			(Collection<ModuleInitializer> moduleInitializers) -> {
-				moduleInitializers.forEach((ModuleInitializer moduleInitializer) -> {
-					if (moduleInitializer instanceof VulkanModuleEntrypoint)
-					{
-						this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
-					}
-					if (moduleInitializer instanceof GLFWModuleEntrypoint)
-					{
-						this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
-					}
-				});
-				if (this.vulkanModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime Vulkan Module, " +
-							" check if it exists!");
-				}
-				if (this.glfwModuleEntrypoint == null)
-				{
-					throw new RuntimeException("Couldn't find the Curved Spacetime GLFW Module, " +
-							"check if it exists!");
-				}
-				EntrypointUtil.invoke("vulkan_glfw_module_dependent",
-						VulkanGLFWModuleDependentModuleInitializer.class,
-						(VulkanGLFWModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
-								vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
-			});
+
+	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private GLFWModuleEntrypoint glfwModuleEntrypoint = null;
 
@@ -77,6 +49,42 @@ public class VulkanGLFWModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		try
+		{
+			recieveDependenciesFromTransferQueue();
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
+		EntrypointUtil.invoke("vulkan_glfw_module_dependent",
+				VulkanGLFWModuleDependentModuleInitializer.class,
+				(VulkanGLFWModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
+						vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
+	}
+
+	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
+	{
+		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+		if (moduleInitializer instanceof VulkanModuleEntrypoint)
+		{
+			this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
+		}
+		if (moduleInitializer instanceof GLFWModuleEntrypoint)
+		{
+			this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
+		}
+
+		moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+		if (moduleInitializer instanceof VulkanModuleEntrypoint)
+		{
+			this.vulkanModuleEntrypoint = (VulkanModuleEntrypoint) moduleInitializer;
+		}
+		if (moduleInitializer instanceof GLFWModuleEntrypoint)
+		{
+			this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
+		}
 	}
 
 	@Override
@@ -86,8 +94,8 @@ public class VulkanGLFWModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public Subscriber<ModuleInitializer> getModuleDependentFlowSubscriber()
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
-		return moduleDependentFlowSubscriber;
+		return dependencyModuleTransferQueue;
 	}
 }

@@ -23,20 +23,14 @@ import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentM
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
-import java.util.concurrent.SubmissionPublisher;
-
 public class VulkanModuleDependentVulkanGLFWModuleEntrypoint implements VulkanModuleDependentModuleInitializer
 {
 
 	@Override
 	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanGLFWModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(vulkanModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(VulkanGLFWModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanModuleEntrypoint);
 	}
 }

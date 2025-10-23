@@ -21,10 +21,7 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
-
-import java.util.concurrent.SubmissionPublisher;
 
 public class RenderModuleDependentVulkanGLFWRenderModuleEntrypoint implements RenderModuleDependentModuleInitializer
 {
@@ -32,12 +29,8 @@ public class RenderModuleDependentVulkanGLFWRenderModuleEntrypoint implements Re
 	@Override
 	public void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint)
 	{
-		try (SubmissionPublisher<ModuleInitializer> submissionPublisher = new SubmissionPublisher<>())
-		{
-			submissionPublisher.subscribe(QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
-					.findFirst().orElseThrow().getModuleDependentFlowSubscriber());
-			submissionPublisher.submit(renderModuleEntrypoint);
-		}
+		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+				.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(renderModuleEntrypoint);
 	}
 }

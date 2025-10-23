@@ -25,17 +25,52 @@ import java.util.Properties;
 
 public class MainModuleConfig
 {
+	private static final int DEFAULT_FPS = 60;
 	private static final String FILENAME = "main-module.config";
 	private boolean dirty = false;
+	private int fps;
 
 	public MainModuleConfig()
 	{
 
 	}
 
+	public int getFPS()
+	{
+		return this.fps;
+	}
+
 	public MainModuleConfig load() throws IOException
 	{
-		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
+		Properties props = new Properties();
+
+		Object fpsPropValue = props.get("fps");
+		if (fpsPropValue != null)
+		{
+			try
+			{
+				this.fps = Integer.parseInt(fpsPropValue.toString());
+			} catch (NumberFormatException ex)
+			{
+				Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
+						fpsPropValue, MainModuleConfig.DEFAULT_FPS);
+				this.fps = MainModuleConfig.DEFAULT_FPS;
+				this.dirty = true;
+			}
+			if (this.fps < 1 || this.fps > 1000)
+			{
+				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
+						MainModuleConfig.DEFAULT_FPS);
+				this.fps = MainModuleConfig.DEFAULT_FPS;
+				this.dirty = true;
+			}
+		} else
+		{
+			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
+					MainModuleConfig.DEFAULT_FPS);
+			this.fps = MainModuleConfig.DEFAULT_FPS;
+			this.dirty = true;
+		}
 
 		try (FileReader reader = new FileReader(MainModuleConfig.FILENAME))
 		{
@@ -51,7 +86,8 @@ public class MainModuleConfig
 
 	public void save() throws IOException
 	{
-		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
+		Properties props = new Properties();
+		props.put("fps", String.valueOf(this.fps));
 
 		try (FileWriter writer = new FileWriter(MainModuleConfig.FILENAME))
 		{
