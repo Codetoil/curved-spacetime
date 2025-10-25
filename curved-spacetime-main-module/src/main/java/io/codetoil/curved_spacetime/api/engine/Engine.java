@@ -26,6 +26,9 @@ import org.jetbrains.annotations.NotNull;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.impl.QuiltLoaderImpl;
 import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
+import org.quiltmc.loader.impl.util.log.Log;
+import org.quiltmc.loader.impl.util.log.LogCategory;
+import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -40,6 +43,7 @@ public class Engine
 {
 	public final MainModuleConfig mainModuleConfig;
 	public Scene scene;
+	public static final LogCategory ENGINE_CATEGORY = LogCategory.create("Curved Spacetime Engine");
 	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
 	protected final ScheduledExecutorService executor;
 	protected ScheduledFuture<?> loopHandler;
@@ -63,7 +67,9 @@ public class Engine
 	public static void main(String[] args)
 	{
 		Engine engine = new Engine();
+		Log.info(Engine.ENGINE_CATEGORY, "Initializing Modules");
 		engine.initModules();
+		Log.info(Engine.ENGINE_CATEGORY, "Starting main loop.");
 		engine.startLoop(1_000 / engine.mainModuleConfig.getFPS(),
 				1_000 / engine.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
@@ -85,7 +91,6 @@ public class Engine
 
 	public void clean()
 	{
-		this.loopHandler.cancel(true);
 		this.executor.shutdown();
 		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.clean());
 	}
@@ -97,8 +102,8 @@ public class Engine
 
 	public void stop()
 	{
+		this.loopHandler.cancel(true);
 		this.clean();
-		// TODO Send Stop Event to all mods
 	}
 
 	@SuppressWarnings("deprecation")
