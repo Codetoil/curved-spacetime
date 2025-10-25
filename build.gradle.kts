@@ -14,7 +14,7 @@ project.extra["guavaVersion"] = "33.5.0-jre" // com.google.guava:guava
 project.extra["fabricMixinVersion"] = "0.16.5+mixin.0.8.7" // net.fabricmc:sponge-mixin
 
 // QuiltMC Maven - https://maven.quiltmc.org/repository/release/
-project.extra["quiltLoaderVersion"] = "0.29.2-beta.5" // org.quiltmc:quilt-loader, org.quiltmc:quilt-loader-dependencies
+project.extra["quiltLoaderVersion"] = "0.29.3-beta.1" // org.quiltmc:quilt-loader, org.quiltmc:quilt-loader-dependencies
 
 val osArch: String = System.getProperty("os.arch")
 val osName: String = System.getProperty("os.name")

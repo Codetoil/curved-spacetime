@@ -1,11 +1,3 @@
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        maven { url = uri("https://maven.minecraftforge.net") }
-    }
-}
-
 rootProject.name = "curved-spacetime"
 
 include("curved-spacetime-quilt-loader-patches")

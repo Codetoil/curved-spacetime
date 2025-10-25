@@ -1,10 +1,8 @@
-import net.minecraftforge.jarjar.gradle.JarJarDependencyMethods
 import java.nio.file.Paths
 
 plugins {
     id("java")
     id("maven-publish")
-    id("net.minecraftforge.jarjar") version "0.2.3"
 }
 
 java {
@@ -13,8 +11,6 @@ java {
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
-
-jarJar.register()
 
 val webserverOpenAPIModuleRuntimeOnly =
     configurations.dependencyScope("webserverOpenAPIModuleRuntimeOnly") {
