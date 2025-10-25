@@ -28,16 +28,15 @@ import org.quiltmc.loader.impl.QuiltLoaderImpl;
 import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
 import org.quiltmc.loader.impl.util.log.Log;
 import org.quiltmc.loader.impl.util.log.LogCategory;
-import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.Future.State;
 
 public class Engine
 {
@@ -45,7 +44,8 @@ public class Engine
 	public Scene scene;
 	public static final LogCategory ENGINE_CATEGORY = LogCategory.create("Curved Spacetime Engine");
 	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
-	protected final ScheduledExecutorService executor;
+	protected final ScheduledExecutorService loopExecutor;
+	protected final ExecutorService moduleInitializerThreadPool;
 	protected ScheduledFuture<?> loopHandler;
 	private static Engine INSTANCE;
 
@@ -61,10 +61,11 @@ public class Engine
 		}
 		this.scene = new Scene();
 
-		this.executor = Executors.newSingleThreadScheduledExecutor();
+		this.loopExecutor = Executors.newSingleThreadScheduledExecutor();
+		this.moduleInitializerThreadPool = Executors.newCachedThreadPool();
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws Throwable
 	{
 		Engine engine = new Engine();
 		Log.info(Engine.ENGINE_CATEGORY, "Initializing Modules");
@@ -74,15 +75,33 @@ public class Engine
 				1_000 / engine.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
 
-	public void initModules()
+	public void initModules() throws Throwable
 	{
 		QuiltLoaderImpl.INSTANCE.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
-		EntrypointUtils.invoke("main", ModuleInitializer.class, ModuleInitializer::onInitialize);
+		CompletionService<?> completionService = new ExecutorCompletionService<>(this.moduleInitializerThreadPool);
+		List<Future<?>> futures = new ArrayList<>();
+		EntrypointUtils.invoke("main", ModuleInitializer.class, moduleInitializer ->
+		{
+			futures.add(completionService.submit(moduleInitializer::onInitialize, null));
+		});
+		this.moduleInitializerThreadPool.shutdown();
+		while (!futures.isEmpty())
+		{
+			Future<?> future = completionService.poll();
+			if (future != null)
+			{
+				futures.remove(future);
+				if (State.FAILED.equals(future.state()))
+				{
+					throw future.exceptionNow();
+				}
+			}
+		}
 	}
 
 	public void startLoop(long delay, long period, @NotNull TimeUnit timeUnit)
 	{
-		this.loopHandler = this.executor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
+		this.loopHandler = this.loopExecutor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
 	}
 
 	public void loop() {
@@ -91,7 +110,7 @@ public class Engine
 
 	public void clean()
 	{
-		this.executor.shutdown();
+		this.loopExecutor.shutdown();
 		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.clean());
 	}
 
