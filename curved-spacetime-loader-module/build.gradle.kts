@@ -1,8 +1,10 @@
+import net.minecraftforge.jarjar.gradle.JarJarDependencyMethods
 import java.nio.file.Paths
 
 plugins {
     id("java")
     id("maven-publish")
+    id("net.minecraftforge.jarjar") version "0.2.3"
 }
 
 java {
@@ -11,6 +13,8 @@ java {
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
+
+jarJar.register()
 
 val webserverOpenAPIModuleRuntimeOnly =
     configurations.dependencyScope("webserverOpenAPIModuleRuntimeOnly") {
@@ -53,6 +57,8 @@ repositories {
 
 dependencies {
     implementation(project(":curved-spacetime-main-module"))
+
+    // TODO Implement JarJar support when documentation is available.
     implementation("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
         exclude("annotations")
     }
@@ -118,7 +124,7 @@ val runJVMArgs = listOf(
     "-Dsun.stderr.encoding=UTF-8",
     "-Dloader.validation.level=5",
     "-Dloader.log.level=TRACE"
-);
+)
 
 tasks.register("runTrivial", JavaExec::class) {
     classpath = java.sourceSets["main"].runtimeClasspath
@@ -129,29 +135,29 @@ tasks.register("runTrivial", JavaExec::class) {
     dependsOn(initQuiltTweakerAgent)
 }
 
-tasks.register("runTrivialWithVulkanGLFWRenderModule", JavaExec::class) {
+tasks.register("runWithVulkanGLFWRenderModule", JavaExec::class) {
     classpath =java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithVulkanGLFWRenderModule.get()
 
     mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
     jvmArgs = runJVMArgs
 
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
-        "runTrivialWithVulkanGLFWRenderModule"))
+        "runWithVulkanGLFWRenderModule"))
     dependsOn(initQuiltTweakerAgent)
 }
 
-tasks.register("runTrivialWithWebserverOpenAPI", JavaExec::class) {
+tasks.register("runWithWebserverOpenAPI", JavaExec::class) {
     classpath = java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithWebserverOpenAPIModule.get()
 
     mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
     jvmArgs = runJVMArgs
 
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
-        "runTrivialWithWebserverOpenAPIModule"))
+        "runWithWebserverOpenAPIModule"))
     dependsOn(initQuiltTweakerAgent)
 }
 
-tasks.register("runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule", JavaExec::class) {
+tasks.register("runWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule", JavaExec::class) {
     classpath = java.sourceSets["main"].runtimeClasspath +
             runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule.get()
 
@@ -159,14 +165,14 @@ tasks.register("runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule", 
     jvmArgs = runJVMArgs
 
     workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
-        "runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule"))
+        "runWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule"))
     dependsOn(initQuiltTweakerAgent)
 }
 
 
 tasks.jar {
     manifest {
-        attributes(mapOf("Main-Class" to "io.github.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"))
+        attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"))
     }
 }
 
@@ -219,7 +225,13 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach { softwareComponent -> from(softwareComponent) }
+            components.forEach { component ->
+                run {
+                    IO.println(component)
+                    IO.println(component.name)
+                }
+            }
+            from(components["java"])
         }
     }
 }

@@ -44,6 +44,15 @@ public class MainModuleConfig
 	{
 		Properties props = new Properties();
 
+		try (FileReader reader = new FileReader(MainModuleConfig.FILENAME))
+		{
+			props.load(reader);
+		} catch (FileNotFoundException ex)
+		{
+			Logger.warn(ex, "Could not find config file " + MainModuleConfig.FILENAME);
+			this.dirty = true;
+		}
+
 		Object fpsPropValue = props.get("fps");
 		if (fpsPropValue != null)
 		{
@@ -69,15 +78,6 @@ public class MainModuleConfig
 			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
 					MainModuleConfig.DEFAULT_FPS);
 			this.fps = MainModuleConfig.DEFAULT_FPS;
-			this.dirty = true;
-		}
-
-		try (FileReader reader = new FileReader(MainModuleConfig.FILENAME))
-		{
-			props.load(reader);
-		} catch (FileNotFoundException ex)
-		{
-			Logger.warn(ex, "Could not find config file " + MainModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 

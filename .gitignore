@@ -47,9 +47,9 @@ bin/
 
 lwjgl-natives
 runTrivial
-runTrivialWithVulkanGLFWRenderModule
-runTrivialWithWebserverOpenAPIModule
-runTrivialWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule
+runWithVulkanGLFWRenderModule
+runWithWebserverOpenAPIModule
+runWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule
 test
 
 curved-spacetime-installer/target/**

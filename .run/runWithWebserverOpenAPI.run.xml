@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="runTrivialWithVulkanGLFWRenderModule" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="runWithWebserverOpenAPI" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/curved-spacetime-loader-module" />
@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="runTrivialWithVulkanGLFWRenderModule" />
+          <option value="runWithWebserverOpenAPI" />
         </list>
       </option>
       <option name="vmOptions" />
