@@ -70,10 +70,16 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 		engine.registerSceneLooper("vulkan_glfw_renderer",
 				new VulkanGLFWRenderer(engine, engine.scene, (VulkanGLFWRenderModuleConfig) this.config,
 						(GLFWRenderModuleConfig) this.glfwRenderModuleEntrypoint.getConfig()));
-		EntrypointUtil.invoke("vulkan_glfw_render_module_dependent",
-				VulkanGLFWRenderModuleDependentModuleInitializer.class,
-				(VulkanGLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
-						vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
+		try
+		{
+			Engine.callDependents("vulkan_glfw_render_module_dependent",
+					VulkanGLFWRenderModuleDependentModuleInitializer.class,
+					(VulkanGLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
+							vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
+		} catch (Throwable e)
+		{
+			throw new RuntimeException(e);
+		}
 
 	}
 

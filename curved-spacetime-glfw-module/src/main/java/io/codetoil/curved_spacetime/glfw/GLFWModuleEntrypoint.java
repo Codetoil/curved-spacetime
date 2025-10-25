@@ -19,6 +19,7 @@
 
 package io.codetoil.curved_spacetime.glfw;
 
+import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.glfw.entrypoint.GLFWModuleDependentModuleInitializer;
@@ -44,9 +45,15 @@ public class GLFWModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
-		EntrypointUtil.invoke("glfw_module_dependent", GLFWModuleDependentModuleInitializer.class,
-				(GLFWModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
-						vulkanModuleDependentModuleInitializer.onInitialize(this));
+		try
+		{
+			Engine.callDependents("glfw_module_dependent", GLFWModuleDependentModuleInitializer.class,
+					(GLFWModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
+							vulkanModuleDependentModuleInitializer.onInitialize(this));
+		} catch (Throwable e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

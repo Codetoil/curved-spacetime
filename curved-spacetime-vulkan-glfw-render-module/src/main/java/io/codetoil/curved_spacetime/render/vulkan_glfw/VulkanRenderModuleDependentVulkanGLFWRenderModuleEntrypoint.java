@@ -31,7 +31,7 @@ public class VulkanRenderModuleDependentVulkanGLFWRenderModuleEntrypoint
 	public void onInitialize(VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint)
 	{
 		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-				.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+				.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
 				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanRenderModuleEntrypoint);
 	}
 }

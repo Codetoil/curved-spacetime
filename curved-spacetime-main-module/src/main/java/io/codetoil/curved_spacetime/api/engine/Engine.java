@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Engine
 {
@@ -45,7 +47,6 @@ public class Engine
 	public static final LogCategory ENGINE_CATEGORY = LogCategory.create("Curved Spacetime Engine");
 	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
 	protected final ScheduledExecutorService loopExecutor;
-	protected final ExecutorService moduleInitializerThreadPool;
 	protected ScheduledFuture<?> loopHandler;
 	private static Engine INSTANCE;
 
@@ -62,10 +63,9 @@ public class Engine
 		this.scene = new Scene();
 
 		this.loopExecutor = Executors.newSingleThreadScheduledExecutor();
-		this.moduleInitializerThreadPool = Executors.newCachedThreadPool();
 	}
 
-	public static void main(String[] args) throws Throwable
+	public static void main(String[] args)
 	{
 		Engine engine = new Engine();
 		Log.info(Engine.ENGINE_CATEGORY, "Initializing Modules");
@@ -75,28 +75,44 @@ public class Engine
 				1_000 / engine.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
 
-	public void initModules() throws Throwable
+	public void initModules()
 	{
 		QuiltLoaderImpl.INSTANCE.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
-		CompletionService<?> completionService = new ExecutorCompletionService<>(this.moduleInitializerThreadPool);
-		List<Future<?>> futures = new ArrayList<>();
-		EntrypointUtils.invoke("main", ModuleInitializer.class, moduleInitializer ->
+		try
 		{
-			futures.add(completionService.submit(moduleInitializer::onInitialize, null));
-		});
-		this.moduleInitializerThreadPool.shutdown();
-		while (!futures.isEmpty())
+			Engine.callDependents("main", ModuleInitializer.class, ModuleInitializer::onInitialize);
+		} catch (Throwable e)
 		{
-			Future<?> future = completionService.poll();
-			if (future != null)
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static <C> void callDependents(String name, Class<C> moduleInitializerClass, Consumer<C> onInitialize)
+			throws Throwable
+	{
+		try (ExecutorService moduleInitializerThreadPool = Executors.newCachedThreadPool())
+		{
+			CompletionService<?> completionService = new ExecutorCompletionService<>(moduleInitializerThreadPool);
+			List<Future<?>> futures = new ArrayList<>();
+			EntrypointUtils.invoke(name, moduleInitializerClass, moduleInitializer ->
 			{
-				futures.remove(future);
-				if (State.FAILED.equals(future.state()))
+				futures.add(completionService.submit(() -> onInitialize.accept(moduleInitializer), null));
+			});
+			moduleInitializerThreadPool.shutdown();
+			while (!futures.isEmpty())
+			{
+				Future<?> future = completionService.poll();
+				if (future != null)
 				{
-					throw future.exceptionNow();
+					futures.remove(future);
+					if (State.FAILED.equals(future.state()))
+					{
+						throw future.exceptionNow();
+					}
 				}
 			}
 		}
+
 	}
 
 	public void startLoop(long delay, long period, @NotNull TimeUnit timeUnit)

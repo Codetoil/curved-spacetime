@@ -19,8 +19,11 @@
 
 package io.codetoil.curved_spacetime.webserver.openapi;
 
+import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.webserver.WebserverModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.api.webserver.openapi.WebserverOpenAPIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
 
 import java.io.IOException;
@@ -42,7 +45,18 @@ public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+			throw new RuntimeException("Failed to load Webserver OpenAPI Module Config", ex);
+		}
+		try
+		{
+			Engine.callDependents("webserver_openapi_module_dependent",
+					WebserverOpenAPIModuleDependentModuleInitializer.class,
+					(WebserverOpenAPIModuleDependentModuleInitializer webserverOpenAPIModuleDependentModuleInitializer)
+							-> webserverOpenAPIModuleDependentModuleInitializer
+									.onInitialize(this));
+		} catch (Throwable e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 

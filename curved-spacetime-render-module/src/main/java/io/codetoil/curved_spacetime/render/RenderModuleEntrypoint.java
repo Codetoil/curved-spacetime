@@ -19,6 +19,7 @@
 
 package io.codetoil.curved_spacetime.render;
 
+import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
@@ -42,11 +43,17 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+			throw new RuntimeException("Failed to load Render Module Config", ex);
 		}
-		EntrypointUtil.invoke("render_module_dependent", RenderModuleDependentModuleInitializer.class,
-				(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
-						renderModuleDependentModuleInitializer.onInitialize(this));
+		try
+		{
+			Engine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
+					(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
+							renderModuleDependentModuleInitializer.onInitialize(this));
+		} catch (Throwable e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

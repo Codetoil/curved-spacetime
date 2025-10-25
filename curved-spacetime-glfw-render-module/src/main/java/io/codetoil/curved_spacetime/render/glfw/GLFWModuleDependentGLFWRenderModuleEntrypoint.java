@@ -27,10 +27,10 @@ public class GLFWModuleDependentGLFWRenderModuleEntrypoint implements GLFWModule
 {
 
 	@Override
-	public void onInitialize(GLFWModuleEntrypoint vulkanModuleEntrypoint)
+	public void onInitialize(GLFWModuleEntrypoint glfwModuleEntrypoint)
 	{
 		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
 				.filter(GLFWRenderModuleEntrypoint.class::isInstance)
-				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanModuleEntrypoint);
+				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(glfwModuleEntrypoint);
 	}
 }

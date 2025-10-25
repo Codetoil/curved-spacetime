@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan.entrypoint.VulkanRenderModuleDependentModuleInitializer;
@@ -54,10 +55,16 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException(e);
 		}
-		EntrypointUtil.invoke("vulkan_render_module_dependent",
-				VulkanRenderModuleDependentModuleInitializer.class,
-				(VulkanRenderModuleDependentModuleInitializer vulkanRenderModuleDependentModuleInitializer) ->
-						vulkanRenderModuleDependentModuleInitializer.onInitialize(this));
+		try
+		{
+			Engine.callDependents("vulkan_render_module_dependent",
+					VulkanRenderModuleDependentModuleInitializer.class,
+					(VulkanRenderModuleDependentModuleInitializer vulkanRenderModuleDependentModuleInitializer) ->
+							vulkanRenderModuleDependentModuleInitializer.onInitialize(this));
+		} catch (Throwable e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException

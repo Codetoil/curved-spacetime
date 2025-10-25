@@ -33,7 +33,7 @@ public class VulkanModuleDependentVulkanGLFWRenderModuleEntrypoint implements Vu
 	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint)
 	{
 		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-			.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+			.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
 			.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanModuleEntrypoint);
 	}
 }

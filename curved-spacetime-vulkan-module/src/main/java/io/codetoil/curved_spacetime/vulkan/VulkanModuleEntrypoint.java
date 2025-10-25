@@ -19,14 +19,18 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
+import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
 
 import java.io.IOException;
-import java.util.concurrent.LinkedTransferQueue;
-import java.util.concurrent.TransferQueue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.Future.State;
 
 public class VulkanModuleEntrypoint implements ModuleInitializer
 {
@@ -44,9 +48,15 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
-		EntrypointUtil.invoke("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
-				(VulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
-						vulkanModuleDependentModuleInitializer.onInitialize(this));
+		try
+		{
+			Engine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
+					(VulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
+							vulkanModuleDependentModuleInitializer.onInitialize(this));
+		} catch (Throwable e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
