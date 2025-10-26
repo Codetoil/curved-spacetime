@@ -34,15 +34,6 @@ dependencies {
     implementation("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
     implementation("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 
-    runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
-    (rootProject.extra["lwjglNativesNames"] as List<*>)
-        .forEach { runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${it}") }
-    runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
-    (rootProject.extra["lwjglNativesNames"] as List<*>)
-        .forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${it}") }
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:natives-macos")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:natives-macos-arm64")
 }
 
 
@@ -56,7 +47,6 @@ tasks.shadowJar {
     )
     dependencies {
         exclude(dependency("io.codetoil:.*"))
-        exclude(dependency("org.lwjgl:.*"))
     }
     destinationDirectory = File("$rootDir/installer")
     from(nonJar)

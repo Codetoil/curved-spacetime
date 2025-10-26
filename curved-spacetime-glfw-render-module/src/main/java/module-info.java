@@ -21,8 +21,6 @@ module io.codetoil.curved_spacetime.render.glfw {
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.render;
 	requires io.codetoil.curved_spacetime.glfw;
-	requires org.lwjgl;
-	requires org.lwjgl.glfw;
 	requires org.quiltmc.loader;
 
 	exports io.codetoil.curved_spacetime.render.glfw;

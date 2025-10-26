@@ -98,12 +98,10 @@ public class Engine
 			CompletionService<?> completionService = new ExecutorCompletionService<>(moduleInitializerThreadPool);
 			List<Future<?>> futures = new ArrayList<>();
 			EntrypointUtils.invoke(name, moduleInitializerClass, moduleInitializer ->
-			{
-				futures.add(completionService.submit(() -> {
-					Logger.trace("{}: Calling {}.", name, moduleInitializer);
-					onInitialize.accept(moduleInitializer);
-				}, null));
-			});
+					futures.add(completionService.submit(() -> {
+						Logger.trace("{}: Calling {}.", name, moduleInitializer);
+						onInitialize.accept(moduleInitializer);
+					}, null)));
 			moduleInitializerThreadPool.shutdown();
 			while (!futures.isEmpty())
 			{

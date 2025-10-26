@@ -20,7 +20,6 @@ module io.codetoil.curved_spacetime.vulkan_glfw {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.glfw;
-	requires org.lwjgl;
 	requires org.lwjgl.glfw;
 	requires io.codetoil.curved_spacetime.vulkan;
 	requires org.quiltmc.loader;

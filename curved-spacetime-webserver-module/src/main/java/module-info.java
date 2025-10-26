@@ -20,7 +20,6 @@ module io.codetoil.curved_spacetime.webserver {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
 	requires jdk.httpserver;
-	requires org.quiltmc.loader;
 
 	exports io.codetoil.curved_spacetime.webserver;
 	exports io.codetoil.curved_spacetime.api.webserver;

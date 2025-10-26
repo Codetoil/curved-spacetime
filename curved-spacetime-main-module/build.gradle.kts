@@ -49,6 +49,10 @@ dependencies {
     }
     implementation("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
     implementation("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
+
+    runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
+    (rootProject.extra["lwjglNativesNames"] as List<*>)
+        .forEach { runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${it}") }
 }
 
 publishing {
