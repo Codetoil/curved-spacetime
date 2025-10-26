@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-java@v5
         with:
-          distribution: zulu
+          distribution: temurin
           java-version: 25
 
       - name: Generate and submit dependency graph
