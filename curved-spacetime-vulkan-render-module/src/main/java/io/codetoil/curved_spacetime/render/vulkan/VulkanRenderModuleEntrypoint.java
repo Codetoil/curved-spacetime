@@ -24,7 +24,6 @@ import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan.entrypoint.VulkanRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
-import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -32,8 +31,8 @@ import java.util.concurrent.TransferQueue;
 
 public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
-	private ModuleConfig config;
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private ModuleConfig config;
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 

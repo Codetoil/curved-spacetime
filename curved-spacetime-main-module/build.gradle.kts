@@ -2,15 +2,13 @@ plugins {
     id("java")
     id("java-library")
     id("maven-publish")
-}
-
-java {
-    withSourcesJar()
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
+val nonJar by configurations.creating
 
 repositories {
     mavenCentral()
@@ -26,15 +24,25 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
+tasks.shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    mergeServiceFiles()
+    dependencies {
+        include(dependency("org.tinylog:tinylog-api"))
+    }
+    destinationDirectory = File("$rootDir/installer")
+    from(nonJar)
+}
 
 dependencies {
+    nonJar(files("../LICENSE.md"))
     api("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
     api("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
 
     api("org.tinylog:tinylog-api:${rootProject.extra["tinyLoggerVersion"]}")
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
-    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 
     api("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
         exclude("annotations")
@@ -92,7 +100,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach { softwareComponent -> from(softwareComponent) }
+            from(components["shadow"])
         }
     }
 }

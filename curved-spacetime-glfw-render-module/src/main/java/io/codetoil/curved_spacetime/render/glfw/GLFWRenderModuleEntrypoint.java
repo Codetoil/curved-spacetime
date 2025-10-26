@@ -24,7 +24,6 @@ import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.glfw.entrypoint.GLFWRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
-import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -32,9 +31,8 @@ import java.util.concurrent.TransferQueue;
 
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
-	private ModuleConfig config;
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
-
+	private ModuleConfig config;
 	private GLFWModuleEntrypoint glfwModuleEntrypoint;
 	private RenderModuleEntrypoint renderModuleEntrypoint;
 

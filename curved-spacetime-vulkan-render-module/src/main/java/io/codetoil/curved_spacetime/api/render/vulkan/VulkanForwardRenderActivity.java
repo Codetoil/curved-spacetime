@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
+ * (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -73,21 +72,6 @@ public class VulkanForwardRenderActivity
 		}
 	}
 
-	public void cleanup()
-	{
-		Arrays.asList(this.vulkanFrameBuffers).forEach(VulkanFrameBuffer::cleanup);
-		this.vulkanSwapChainRenderPass.cleanup();
-		Arrays.asList(this.vulkanCommandBuffers).forEach(VulkanCommandBuffer::cleanup);
-		Arrays.asList(this.vulkanFences).forEach(VulkanFence::cleanup);
-	}
-
-	public void waitForVulkanFence()
-	{
-		int idx = this.vulkanSwapChain.getCurrentFrame();
-		VulkanFence currentVulkanFence = this.vulkanFences[idx];
-		currentVulkanFence.vulkanFenceWait();
-	}
-
 	private void recordVulkanCommandBuffer(VulkanCommandBuffer vulkanCommandBuffer, VulkanFrameBuffer vulkanFrameBuffer,
 										   int width, int height)
 	{
@@ -106,6 +90,21 @@ public class VulkanForwardRenderActivity
 			VK10.vkCmdEndRenderPass(vulkanCommandBuffer.getVkCommandBuffer());
 			vulkanCommandBuffer.endRecording();
 		}
+	}
+
+	public void cleanup()
+	{
+		Arrays.asList(this.vulkanFrameBuffers).forEach(VulkanFrameBuffer::cleanup);
+		this.vulkanSwapChainRenderPass.cleanup();
+		Arrays.asList(this.vulkanCommandBuffers).forEach(VulkanCommandBuffer::cleanup);
+		Arrays.asList(this.vulkanFences).forEach(VulkanFence::cleanup);
+	}
+
+	public void waitForVulkanFence()
+	{
+		int idx = this.vulkanSwapChain.getCurrentFrame();
+		VulkanFence currentVulkanFence = this.vulkanFences[idx];
+		currentVulkanFence.vulkanFenceWait();
 	}
 
 	public void submit(VulkanGraphicsQueue vulkanGraphicsQueue)

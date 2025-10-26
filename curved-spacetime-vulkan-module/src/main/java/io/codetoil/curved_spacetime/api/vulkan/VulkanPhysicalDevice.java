@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -132,16 +131,6 @@ public class VulkanPhysicalDevice
 		}
 	}
 
-	public void cleanup()
-	{
-		Logger.debug("Destroying physical device [{}]", this.vkPhysicalDeviceProperties.deviceNameString());
-		this.vkMemoryProperties.free();
-		this.vkPhysicalDeviceFeatures.free();
-		this.vkQueueFamilyProps.free();
-		this.vkDeviceExtensions.free();
-		this.vkPhysicalDeviceProperties.free();
-	}
-
 	protected static PointerBuffer getPhysicalDevices(VulkanInstance instance, MemoryStack stack)
 	{
 		PointerBuffer pPhysicalDevices;
@@ -162,6 +151,48 @@ public class VulkanPhysicalDevice
 	public String getDeviceName()
 	{
 		return this.vkPhysicalDeviceProperties.deviceNameString();
+	}
+
+	private boolean hasGraphicsQueueFamily()
+	{
+		boolean result = false;
+		int numQueueFamilies = this.vkQueueFamilyProps != null ? this.vkQueueFamilyProps.capacity() : 0;
+		for (int i = 0; i < numQueueFamilies; i++)
+		{
+			VkQueueFamilyProperties familyProps = this.vkQueueFamilyProps.get(i);
+			if ((familyProps.queueFlags() & VK10.VK_QUEUE_GRAPHICS_BIT) != 0)
+			{
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+
+	private boolean hasKHRSwapChainExtension()
+	{
+		boolean result = false;
+		int numExtensions = this.vkDeviceExtensions != null ? this.vkDeviceExtensions.capacity() : 0;
+		for (int i = 0; i < numExtensions; i++)
+		{
+			String extensionName = this.vkDeviceExtensions.get(i).extensionNameString();
+			if (KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME.equals(extensionName))
+			{
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+
+	public void cleanup()
+	{
+		Logger.debug("Destroying physical device [{}]", this.vkPhysicalDeviceProperties.deviceNameString());
+		this.vkMemoryProperties.free();
+		this.vkPhysicalDeviceFeatures.free();
+		this.vkQueueFamilyProps.free();
+		this.vkDeviceExtensions.free();
+		this.vkPhysicalDeviceProperties.free();
 	}
 
 	public VkPhysicalDeviceMemoryProperties getVkMemoryProperties()
@@ -187,37 +218,5 @@ public class VulkanPhysicalDevice
 	public VkQueueFamilyProperties.Buffer getVkQueueFamilyProps()
 	{
 		return this.vkQueueFamilyProps;
-	}
-
-	private boolean hasKHRSwapChainExtension()
-	{
-		boolean result = false;
-		int numExtensions = this.vkDeviceExtensions != null ? this.vkDeviceExtensions.capacity() : 0;
-		for (int i = 0; i < numExtensions; i++)
-		{
-			String extensionName = this.vkDeviceExtensions.get(i).extensionNameString();
-			if (KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME.equals(extensionName))
-			{
-				result = true;
-				break;
-			}
-		}
-		return result;
-	}
-
-	private boolean hasGraphicsQueueFamily()
-	{
-		boolean result = false;
-		int numQueueFamilies = this.vkQueueFamilyProps != null ? this.vkQueueFamilyProps.capacity() : 0;
-		for (int i = 0; i < numQueueFamilies; i++)
-		{
-			VkQueueFamilyProperties familyProps = this.vkQueueFamilyProps.get(i);
-			if ((familyProps.queueFlags() & VK10.VK_QUEUE_GRAPHICS_BIT) != 0)
-			{
-				result = true;
-				break;
-			}
-		}
-		return result;
 	}
 }

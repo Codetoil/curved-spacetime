@@ -23,7 +23,6 @@ import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.VulkanGLFWRenderer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
@@ -31,7 +30,6 @@ import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWModuleEntrypoint;
-import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -39,8 +37,8 @@ import java.util.concurrent.TransferQueue;
 
 public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 {
-	private ModuleConfig config;
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private ModuleConfig config;
 	private GLFWModuleEntrypoint glfwModuleEntrypoint = null;
 	private GLFWRenderModuleEntrypoint glfwRenderModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;

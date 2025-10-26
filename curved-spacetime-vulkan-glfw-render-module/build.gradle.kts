@@ -1,15 +1,13 @@
 plugins {
-    id ("java")
-    id ("java-library")
-    id ("maven-publish")
-}
-
-java {
-    withSourcesJar()
+    id("java")
+    id("java-library")
+    id("maven-publish")
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
+
+val nonJar by configurations.creating
 
 repositories {
     mavenCentral()
@@ -22,26 +20,33 @@ repositories {
 }
 
 dependencies {
-    api (project(":curved-spacetime-main-module"))
-    api (project(":curved-spacetime-render-module"))
-    api (project(":curved-spacetime-glfw-module"))
-    api (project(":curved-spacetime-vulkan-module"))
-    api (project(":curved-spacetime-glfw-render-module"))
-    api (project(":curved-spacetime-vulkan-render-module"))
-    api (project(":curved-spacetime-vulkan-glfw-module"))
+    nonJar(files("../LICENSE.md"))
+    api(project(":curved-spacetime-main-module"))
+    api(project(":curved-spacetime-render-module"))
+    api(project(":curved-spacetime-glfw-module"))
+    api(project(":curved-spacetime-vulkan-module"))
+    api(project(":curved-spacetime-glfw-render-module"))
+    api(project(":curved-spacetime-vulkan-render-module"))
+    api(project(":curved-spacetime-vulkan-glfw-module"))
 
-    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 
-    implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
+    implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
-    implementation ("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
-    implementation ("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
-    implementation ("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
-    implementation ("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
+    implementation("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
+    implementation("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
+    implementation("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
+    implementation("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    destinationDirectory = File("$rootDir/installer/vulkan-glfw-render")
+    from(nonJar)
 }
 
 publishing {
@@ -93,7 +98,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach { softwareComponent -> from(softwareComponent) }
+            from(components["java"])
         }
     }
 }

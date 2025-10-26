@@ -23,8 +23,6 @@ import io.codetoil.curved_spacetime.api.glfw.entrypoint.GLFWModuleDependentModul
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
-import java.util.concurrent.SubmissionPublisher;
-
 public class GLFWModuleDependentVulkanGLFWModuleEntrypoint implements GLFWModuleDependentModuleInitializer
 {
 

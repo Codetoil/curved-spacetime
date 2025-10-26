@@ -23,8 +23,6 @@ import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentM
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
-import java.util.concurrent.SubmissionPublisher;
-
 public class RenderModuleDependentVulkanRenderModuleEntrypoint implements RenderModuleDependentModuleInitializer
 {
 

@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -19,8 +18,8 @@
 
 package io.codetoil.curved_spacetime.api.vulkan;
 
-import io.codetoil.curved_spacetime.vulkan.VulkanModuleConfig;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleConfig;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -46,11 +45,9 @@ public class VulkanInstance
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
 	public final VulkanModuleConfig vulkanModuleConfig;
-
-	private final VkInstance vkInstance;
 	protected final VulkanPhysicalDevice vulkanPhysicalDevice;
 	protected final VulkanLogicalDevice vulkanLogicalDevice;
-
+	private final VkInstance vkInstance;
 	private VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 	private long vkDebugHandle;
 

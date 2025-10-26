@@ -46,6 +46,7 @@ bin/
 .DS_Store
 
 lwjgl-natives
+run
 runTrivial
 runWithVulkanGLFWRenderModule
 runWithWebserverOpenAPIModule

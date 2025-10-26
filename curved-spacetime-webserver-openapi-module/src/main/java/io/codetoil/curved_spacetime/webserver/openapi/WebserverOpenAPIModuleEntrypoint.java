@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
+ * (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -22,7 +21,6 @@ package io.codetoil.curved_spacetime.webserver.openapi;
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.api.webserver.WebserverModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.api.webserver.openapi.WebserverOpenAPIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
 
@@ -32,8 +30,8 @@ import java.util.concurrent.TransferQueue;
 
 public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 {
-	private ModuleConfig config;
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private ModuleConfig config;
 	private WebserverModuleEntrypoint webserverModuleEntrypoint = null;
 
 	@Override
@@ -53,7 +51,7 @@ public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 					WebserverOpenAPIModuleDependentModuleInitializer.class,
 					(WebserverOpenAPIModuleDependentModuleInitializer webserverOpenAPIModuleDependentModuleInitializer)
 							-> webserverOpenAPIModuleDependentModuleInitializer
-									.onInitialize(this));
+							.onInitialize(this));
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);

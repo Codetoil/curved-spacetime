@@ -1,17 +1,19 @@
 plugins {
     java
     id("maven-publish")
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
 java {
-    withSourcesJar()
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
 }
+
+val nonJar by configurations.creating
 
 repositories {
     mavenCentral()
@@ -23,12 +25,11 @@ repositories {
     }
 }
 
-val bundle by configurations.creating
-
 dependencies {
-    bundle(project(":curved-spacetime-quilt-loader-patches"))
+    nonJar(files("../LICENSE.md"))
+    implementation(project(":curved-spacetime-quilt-loader-patches"))
 
-    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 }
 
 tasks.named<Test>("test") {
@@ -39,10 +40,13 @@ tasks.jar {
     manifest {
         attributes(mapOf("Premain-Class" to "QuiltTweakerAgent", "Can-Retransform-Classes" to true))
     }
-    from(bundle) {
-        into("")
-        rename { "curved-spacetime-quilt-loader-patches.jar" }
-    }
+}
+
+tasks.shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    mergeServiceFiles()
+    destinationDirectory = File("$rootDir/installer")
+    from(nonJar)
 }
 
 publishing {
@@ -94,7 +98,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach { softwareComponent -> from(softwareComponent) }
+            from(components["shadow"])
         }
     }
 }

@@ -3,43 +3,13 @@ import java.nio.file.Paths
 plugins {
     id("java")
     id("maven-publish")
-}
-
-java {
-    withSourcesJar()
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val webserverOpenAPIModuleRuntimeOnly =
-    configurations.dependencyScope("webserverOpenAPIModuleRuntimeOnly") {
-        isCanBeConsumed = false
-    }
-val vulkanGLFWRenderModuleRuntimeOnly =
-    configurations.dependencyScope("vulkanGLFWRenderModuleRuntimeOnly") {
-        isCanBeConsumed = false
-    }
-val vulkanGLFWRenderModuleAndWebserverOpenAPIModuleOnlyRuntimeOnly =
-    configurations.dependencyScope("vulkanGLFWRenderModuleAndWebserverOpenAPIModuleOnlyRuntimeOnly") {
-        isCanBeConsumed = false
-    }
-val runtimeClasspathWithWebserverOpenAPIModule =
-    configurations.resolvable("runtimeClasspathWithWebserverOpenAPIModule") {
-        isCanBeConsumed = false
-        extendsFrom(webserverOpenAPIModuleRuntimeOnly.get())
-    }
-val runtimeClasspathWithVulkanGLFWRenderModule =
-    configurations.resolvable("runtimeClasspathWithVulkanGLFWRenderModule") {
-        isCanBeConsumed = false
-        extendsFrom(vulkanGLFWRenderModuleRuntimeOnly.get())
-    }
-val runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule =
-    configurations.resolvable("runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule") {
-        isCanBeConsumed = false
-        extendsFrom(webserverOpenAPIModuleRuntimeOnly.get(), vulkanGLFWRenderModuleRuntimeOnly.get(),
-            vulkanGLFWRenderModuleAndWebserverOpenAPIModuleOnlyRuntimeOnly.get())
-    }
+val nonJar by configurations.creating
 
 repositories {
     mavenCentral()
@@ -52,9 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":curved-spacetime-main-module"))
-
-    // TODO Implement JarJar support when documentation is available.
+    nonJar(files("../LICENSE.md"))
     implementation("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
         exclude("annotations")
     }
@@ -64,107 +32,37 @@ dependencies {
 
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
-    runtimeOnly(project(":curved-spacetime-quilt-tweaker-agent"))
     implementation("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
     implementation("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
     implementation("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 
     runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
-    runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
+    (rootProject.extra["lwjglNativesNames"] as List<*>)
+        .forEach { runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${it}") }
     runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
+    (rootProject.extra["lwjglNativesNames"] as List<*>)
+        .forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${it}") }
     runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}")
-    if (System.getProperty("os.name").lowercase().contains("mac")) {
-        runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:natives-macos")
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:natives-macos-arm64")
+}
+
+
+tasks.shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    mergeServiceFiles()
+    exclude(
+        "fabric-installer.launchwrapper.json", "quilt_installer.json",
+        "LICENSE", "LICENSE.txt", "META-INF/LICENSE", "LICENSE_MixinExtras", "LICENSE_quilt-loader",
+        "changelog/**"
+    )
+    dependencies {
+        exclude(dependency("io.codetoil:.*"))
+        exclude(dependency("org.lwjgl:.*"))
     }
-
-    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-glfw-module"))
-    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-render-module"))
-    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-module"))
-    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-glfw-module"))
-    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-render-module"))
-    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-glfw-render-module"))
-    vulkanGLFWRenderModuleRuntimeOnly (project(":curved-spacetime-vulkan-glfw-render-module"))
-
-    webserverOpenAPIModuleRuntimeOnly (project(":curved-spacetime-webserver-module"))
-    webserverOpenAPIModuleRuntimeOnly (project(":curved-spacetime-webserver-openapi-module"))
+    destinationDirectory = File("$rootDir/installer")
+    from(nonJar)
 }
-
-
-
-val initQuiltTweakerAgent: Set<Task> = project(":curved-spacetime-quilt-tweaker-agent")
-    .getTasksByName("jar", false)
-
-fun safeishWorkingDirectory(workingPath: java.nio.file.Path): File {
-    return if (workingPath.toFile().exists())
-        workingPath.toFile()
-    else
-        if (workingPath.toFile().mkdirs())
-            workingPath.toFile()
-        else throw RuntimeException("Couldn't create $workingPath")
-}
-
-tasks.named<Test>("test") {
-    useJUnitPlatform()
-    dependsOn(initQuiltTweakerAgent)
-    jvmArgs("-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar")
-    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(), "test"))
-}
-
-val runJVMArgs = listOf(
-    "-Dloader.gameJarPath=../curved-spacetime-main-module/build/libs/curved-spacetime-main-module-0.1.0-SNAPSHOT.jar",
-    "-Dloader.development=true",
-    "-javaagent:../curved-spacetime-quilt-tweaker-agent/build/libs/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT.jar",
-    "-Dfile.encoding=UTF-8",
-    "-Dsun.stdout.encoding=UTF-8",
-    "-Dsun.stderr.encoding=UTF-8",
-    "-Dloader.validation.level=5",
-    "-Dloader.log.level=TRACE"
-)
-
-tasks.register("runTrivial", JavaExec::class) {
-    classpath = java.sourceSets["main"].runtimeClasspath
-
-    mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = runJVMArgs
-    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(), "runTrivial"))
-    dependsOn(initQuiltTweakerAgent)
-}
-
-tasks.register("runWithVulkanGLFWRenderModule", JavaExec::class) {
-    classpath =java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithVulkanGLFWRenderModule.get()
-
-    mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = runJVMArgs
-
-    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
-        "runWithVulkanGLFWRenderModule"))
-    dependsOn(initQuiltTweakerAgent)
-}
-
-tasks.register("runWithWebserverOpenAPI", JavaExec::class) {
-    classpath = java.sourceSets["main"].runtimeClasspath + runtimeClasspathWithWebserverOpenAPIModule.get()
-
-    mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = runJVMArgs
-
-    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
-        "runWithWebserverOpenAPIModule"))
-    dependsOn(initQuiltTweakerAgent)
-}
-
-tasks.register("runWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule", JavaExec::class) {
-    classpath = java.sourceSets["main"].runtimeClasspath +
-            runtimeClasspathWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule.get()
-
-    mainClass = "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"
-    jvmArgs = runJVMArgs
-
-    workingDir = safeishWorkingDirectory(Paths.get(rootDir.toString(),
-        "runWithVulkanGLFWRenderModuleAndWebserverOpenAPIModule"))
-    dependsOn(initQuiltTweakerAgent)
-}
-
 
 tasks.jar {
     manifest {
@@ -221,13 +119,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach { component ->
-                run {
-                    IO.println(component)
-                    IO.println(component.name)
-                }
-            }
-            from(components["java"])
+            from(components["shadow"])
         }
     }
 }

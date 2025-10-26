@@ -20,16 +20,16 @@ package io.codetoil.curved_spacetime.api.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.render.glfw.GLFWRenderer;
-import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanForwardRenderActivity;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanGraphicsQueue;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanSurface;
 import io.codetoil.curved_spacetime.api.render.vulkan.VulkanSwapChain;
+import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanCommandPool;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanInstance;
 import io.codetoil.curved_spacetime.api.vulkan_glfw.VulkanGLFWWindow;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleConfig;
-import io.codetoil.curved_spacetime.api.vulkan.VulkanCommandPool;
-import io.codetoil.curved_spacetime.api.vulkan.VulkanInstance;
 import org.lwjgl.glfw.GLFWVulkan;
 
 public class VulkanGLFWRenderer extends GLFWRenderer

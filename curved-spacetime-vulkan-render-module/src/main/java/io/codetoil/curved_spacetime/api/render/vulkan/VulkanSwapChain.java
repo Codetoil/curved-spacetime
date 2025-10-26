@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -113,15 +112,6 @@ public class VulkanSwapChain
 		}
 	}
 
-	public void cleanup()
-	{
-		Logger.debug("Destroying Vulkan SwapChain");
-		Arrays.asList(synchronizationVulkanSemaphoresList).forEach(SynchronizationVulkanSemaphores::cleanup);
-		this.vulkanSwapChainExtent.free();
-		Arrays.asList(this.vulkanImageViews).forEach(VulkanImageView::cleanup);
-		KHRSwapchain.vkDestroySwapchainKHR(this.vulkanLogicalDevice.getVkDevice(), this.vkSwapChain, null);
-	}
-
 	private int calcNumImages(VkSurfaceCapabilitiesKHR surfCapabilities, int requestedImages)
 	{
 		int minImages = surfCapabilities.minImageCount();
@@ -227,8 +217,13 @@ public class VulkanSwapChain
 
 	}
 
-	public record VulkanSurfaceFormat(int imageFormat, int colorSpace)
+	public void cleanup()
 	{
+		Logger.debug("Destroying Vulkan SwapChain");
+		Arrays.asList(synchronizationVulkanSemaphoresList).forEach(SynchronizationVulkanSemaphores::cleanup);
+		this.vulkanSwapChainExtent.free();
+		Arrays.asList(this.vulkanImageViews).forEach(VulkanImageView::cleanup);
+		KHRSwapchain.vkDestroySwapchainKHR(this.vulkanLogicalDevice.getVkDevice(), this.vkSwapChain, null);
 	}
 
 	public VulkanSurfaceFormat getVulkanSurfaceFormat()
@@ -307,6 +302,10 @@ public class VulkanSwapChain
 			currentFrame = (currentFrame + 1) % vulkanImageViews.length;
 			return resize;
 		}
+	}
+
+	public record VulkanSurfaceFormat(int imageFormat, int colorSpace)
+	{
 	}
 
 	public record SynchronizationVulkanSemaphores(VulkanSemaphore imageAcquisitionVulkanSemaphore,

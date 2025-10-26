@@ -21,9 +21,6 @@ package io.codetoil.curved_spacetime.api.render.glfw;
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneLooper;
-import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
-
-import java.util.concurrent.TimeUnit;
 
 public abstract class GLFWRenderer extends SceneLooper
 {

@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright 2016 FabricMC<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright 2016 FabricMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -20,10 +19,16 @@
 package io.codetoil.curved_spacetime.loader;
 
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.loader.api.*;
+import org.quiltmc.loader.api.ModDependency;
+import org.quiltmc.loader.api.ModDependencyIdentifier;
+import org.quiltmc.loader.api.Version;
+import org.quiltmc.loader.api.VersionRange;
 import org.quiltmc.loader.impl.FormattedException;
 import org.quiltmc.loader.impl.entrypoint.GameTransformer;
-import org.quiltmc.loader.impl.game.*;
+import org.quiltmc.loader.impl.game.GameProvider;
+import org.quiltmc.loader.impl.game.GameProviderHelper;
+import org.quiltmc.loader.impl.game.LibClassifier;
+import org.quiltmc.loader.impl.game.MappingConfiguration;
 import org.quiltmc.loader.impl.launch.common.QuiltLauncher;
 import org.quiltmc.loader.impl.launch.common.QuiltLauncherBase;
 import org.quiltmc.loader.impl.metadata.qmj.Icons;
@@ -44,13 +49,13 @@ import java.util.*;
 public class CurvedSpacetimeGameProvider implements GameProvider
 {
 	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.api.engine.Engine";
-	private Arguments arguments;
 	private final List<Path> gameJars = new ArrayList<>();
-	private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
 	private final List<Path> miscGameLibraries = new ArrayList<>();
 	private final GameTransformer transformer = new GameTransformer();
 	@SuppressWarnings("UnstableApiUsage")
 	private final MappingConfiguration mappingConfiguration = new MappingConfigurationCurvedSpacetime();
+	private Arguments arguments;
+	private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
 
 	@Override
 	public String getGameId()
@@ -99,15 +104,15 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 			}
 
 			@Override
-			public VersionRange versionRange()
+			public ModDependencyIdentifier id()
 			{
-				return javaRange;
+				return ModDependencyIdentifier.of("", "java");
 			}
 
 			@Override
-			public ModDependency unless()
+			public VersionRange versionRange()
 			{
-				return null;
+				return javaRange;
 			}
 
 			@Override
@@ -117,15 +122,15 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 			}
 
 			@Override
-			public boolean optional()
+			public ModDependency unless()
 			{
-				return false;
+				return null;
 			}
 
 			@Override
-			public ModDependencyIdentifier id()
+			public boolean optional()
 			{
-				return ModDependencyIdentifier.of("", "java");
+				return false;
 			}
 		});
 		List<Path> paths = new ArrayList<>(this.gameJars);

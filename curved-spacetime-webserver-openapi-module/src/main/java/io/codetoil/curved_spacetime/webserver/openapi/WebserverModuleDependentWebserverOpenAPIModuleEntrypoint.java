@@ -23,8 +23,6 @@ import io.codetoil.curved_spacetime.api.webserver.WebserverModuleDependentModule
 import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
 
-import java.util.concurrent.SubmissionPublisher;
-
 public class WebserverModuleDependentWebserverOpenAPIModuleEntrypoint implements
 		WebserverModuleDependentModuleInitializer
 {

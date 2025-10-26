@@ -5,7 +5,7 @@ on:
     branches:
       - master
   release:
-    types: [created]
+    types: [ created ]
 
 permissions:
   contents: write
@@ -14,16 +14,16 @@ jobs:
   dependency-submission:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-java@v5
-      with:
-        distribution: temurin
-        java-version: 8
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 8
 
-    - uses: actions/setup-java@v5
-      with:
-        distribution: zulu
-        java-version: 25
+      - uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 25
 
-    - name: Generate and submit dependency graph
-      uses: gradle/actions/dependency-submission@v4
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@v4

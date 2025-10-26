@@ -20,11 +20,8 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWModuleEntrypoint;
 import org.quiltmc.loader.api.QuiltLoader;
-
-import java.util.concurrent.SubmissionPublisher;
 
 public class VulkanGLFWModuleDependentVulkanGLFWRenderModuleEntrypoint
 		implements VulkanGLFWModuleDependentModuleInitializer

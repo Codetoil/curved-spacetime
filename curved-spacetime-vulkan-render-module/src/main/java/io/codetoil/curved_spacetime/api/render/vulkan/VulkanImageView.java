@@ -1,7 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -69,11 +68,11 @@ public class VulkanImageView
 
 	public static class VulkanImageViewData
 	{
-		private int aspectMask;
 		private final int baseArrayLayer;
+		private final int mipLevels;
+		private int aspectMask;
 		private int format;
 		private int layerCount;
-		private final int mipLevels;
 		private int viewType;
 
 		public VulkanImageViewData()

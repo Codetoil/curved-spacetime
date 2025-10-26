@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -26,8 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.impl.QuiltLoaderImpl;
 import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
-import org.quiltmc.loader.impl.util.log.Log;
-import org.quiltmc.loader.impl.util.log.LogCategory;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -39,16 +37,15 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Engine
 {
-	public final MainModuleConfig mainModuleConfig;
-	public Scene scene;
-	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
-	protected final ScheduledExecutorService loopExecutor;
-	protected ScheduledFuture<?> loopHandler;
 	private static Engine INSTANCE;
+	public final MainModuleConfig mainModuleConfig;
+	protected final ScheduledExecutorService loopExecutor;
+	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
+	public Scene scene;
+	protected ScheduledFuture<?> loopHandler;
 
 	public Engine()
 	{
@@ -87,6 +84,11 @@ public class Engine
 		}
 	}
 
+	public void startLoop(long delay, long period, @NotNull TimeUnit timeUnit)
+	{
+		this.loopHandler = this.loopExecutor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
+	}
+
 	public static <C> void callDependents(String name, Class<C> moduleInitializerClass, Consumer<C> onInitialize)
 			throws Throwable
 	{
@@ -119,19 +121,16 @@ public class Engine
 
 	}
 
-	public void startLoop(long delay, long period, @NotNull TimeUnit timeUnit)
+	public void loop()
 	{
-		this.loopHandler = this.loopExecutor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
-	}
-
-	public void loop() {
 		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.loop());
 	}
 
-	public void clean()
+	@SuppressWarnings("deprecation")
+	public static Engine getInstance()
 	{
-		this.loopExecutor.shutdown();
-		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.clean());
+		if (INSTANCE == null) INSTANCE = (Engine) QuiltLoader.getGameInstance();
+		return INSTANCE;
 	}
 
 	public void registerSceneLooper(String id, SceneLooper sceneLooper)
@@ -145,10 +144,9 @@ public class Engine
 		this.clean();
 	}
 
-	@SuppressWarnings("deprecation")
-	public static Engine getInstance()
+	public void clean()
 	{
-		if (INSTANCE == null) INSTANCE = (Engine) QuiltLoader.getGameInstance();
-		return INSTANCE;
+		this.loopExecutor.shutdown();
+		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.clean());
 	}
 }

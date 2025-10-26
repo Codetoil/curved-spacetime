@@ -20,7 +20,10 @@ package io.codetoil.curved_spacetime;
 
 import org.tinylog.Logger;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Properties;
 
 public class MainModuleConfig

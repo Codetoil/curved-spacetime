@@ -21,9 +21,6 @@
 
 package org.quiltmc.loader.impl.plugin.quilt;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
 import org.quiltmc.loader.api.gui.QuiltLoaderIcon;
 import org.quiltmc.loader.api.plugin.ModContainerExt;
 import org.quiltmc.loader.api.plugin.QuiltPluginContext;
@@ -32,6 +29,9 @@ import org.quiltmc.loader.impl.metadata.qmj.InternalModMetadata;
 import org.quiltmc.loader.impl.plugin.base.InternalModOptionBase;
 import org.quiltmc.loader.impl.util.QuiltLoaderInternal;
 import org.quiltmc.loader.impl.util.QuiltLoaderInternalType;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 @QuiltLoaderInternal(QuiltLoaderInternalType.NEW_INTERNAL)
 @SuppressWarnings("unused")
@@ -45,12 +45,6 @@ public class BuiltinModOption extends InternalModOptionBase
 	}
 
 	@Override
-	public boolean needsTransforming()
-	{
-		return false;
-	}
-
-	@Override
 	public QuiltLoaderIcon modTypeIcon()
 	{
 		return GuiManagerImpl.ICON_JAVA_PACKAGE;
@@ -60,12 +54,6 @@ public class BuiltinModOption extends InternalModOptionBase
 	public QuiltLoaderIcon modCompleteIcon()
 	{
 		return GuiManagerImpl.ICON_JAVA_PACKAGE;
-	}
-
-	@Override
-	protected String nameOfType()
-	{
-		return "builtin";
 	}
 
 	@Override
@@ -82,5 +70,17 @@ public class BuiltinModOption extends InternalModOptionBase
 			}
 		}
 		return new BuiltinModContainer(pluginContext, metadata, from, transformedResourceRoot, needsTransforming());
+	}
+
+	@Override
+	protected String nameOfType()
+	{
+		return "builtin";
+	}
+
+	@Override
+	public boolean needsTransforming()
+	{
+		return false;
 	}
 }

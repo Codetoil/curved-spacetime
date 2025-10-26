@@ -1,8 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br>
- * Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br>
- * Copyright 2016 FabricMC<br>
- * Copyright 2022-2023 QuiltMC<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright 2016 FabricMC<br> Copyright 2022-2023 QuiltMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -25,7 +23,6 @@ import net.fabricmc.api.EnvType;
 import org.quiltmc.loader.impl.launch.knot.Knot;
 import org.quiltmc.loader.impl.util.SystemProperties;
 import org.quiltmc.loader.impl.util.log.Log;
-import org.quiltmc.loader.impl.util.log.LogHandler;
 
 public class KnotCurvedSpacetime
 {

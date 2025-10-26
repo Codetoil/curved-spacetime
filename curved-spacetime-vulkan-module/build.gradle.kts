@@ -1,15 +1,14 @@
 plugins {
-    id ("java")
-    id ("java-library")
-    id ("maven-publish")
-}
-
-java {
-    withSourcesJar()
+    id("java")
+    id("java-library")
+    id("maven-publish")
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
+
+val nonJar by configurations.creating
 
 repositories {
     mavenCentral()
@@ -22,20 +21,32 @@ repositories {
 }
 
 dependencies {
-    api (project(":curved-spacetime-main-module"))
+    nonJar(files("../LICENSE.md"))
+    api(project(":curved-spacetime-main-module"))
 
-    testImplementation (platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 
-    implementation ("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
+    implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
-    api ("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}")
+    api("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}")
     if (System.getProperty("os.name").lowercase().contains("mac")) {
-        runtimeOnly ("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
+        runtimeOnly("org.lwjgl:lwjgl-vulkan:${rootProject.extra["lwjglVersion"]}:${rootProject.extra["lwjglNativesName"]}")
     }
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks.shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    mergeServiceFiles()
+    dependencies {
+        exclude(dependency("io.codetoil:.*"))
+        include(dependency("org.lwjgl:.*"))
+    }
+    destinationDirectory = File("$rootDir/installer/vulkan-glfw-render")
+    from(nonJar)
 }
 
 publishing {
@@ -87,7 +98,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            components.forEach { softwareComponent -> from(softwareComponent) }
+            from(components["shadow"])
         }
     }
 }
