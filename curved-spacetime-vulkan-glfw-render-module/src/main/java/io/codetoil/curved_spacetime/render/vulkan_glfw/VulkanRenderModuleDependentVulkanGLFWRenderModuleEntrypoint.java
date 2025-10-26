@@ -30,8 +30,14 @@ public class VulkanRenderModuleDependentVulkanGLFWRenderModuleEntrypoint
 	@Override
 	public void onInitialize(VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint)
 	{
-		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-				.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
-				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanRenderModuleEntrypoint);
+		try
+		{
+			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+					.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
+					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(vulkanRenderModuleEntrypoint);
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

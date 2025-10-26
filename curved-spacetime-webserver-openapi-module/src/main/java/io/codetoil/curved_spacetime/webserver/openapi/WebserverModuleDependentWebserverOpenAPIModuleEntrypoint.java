@@ -32,8 +32,14 @@ public class WebserverModuleDependentWebserverOpenAPIModuleEntrypoint implements
 	@Override
 	public void onInitialize(WebserverModuleEntrypoint webserverModuleEntrypoint)
 	{
-		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-				.filter(WebserverOpenAPIModuleEntrypoint.class::isInstance)
-				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(webserverModuleEntrypoint);
+		try
+		{
+			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+					.filter(WebserverOpenAPIModuleEntrypoint.class::isInstance)
+					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(webserverModuleEntrypoint);
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

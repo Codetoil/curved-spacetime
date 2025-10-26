@@ -31,8 +31,14 @@ public class VulkanModuleDependentVulkanRenderModuleEntrypoint implements Vulkan
 	@Override
 	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint)
 	{
-		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-				.filter(VulkanRenderModuleEntrypoint.class::isInstance)
-				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(vulkanModuleEntrypoint);
+		try
+		{
+			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(vulkanModuleEntrypoint);
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

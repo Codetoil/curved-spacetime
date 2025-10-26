@@ -31,8 +31,14 @@ public class RenderModuleDependentVulkanRenderModuleEntrypoint implements Render
 	@Override
 	public void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint)
 	{
-		QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
-				.filter(VulkanRenderModuleEntrypoint.class::isInstance)
-				.findFirst().orElseThrow().getDependencyModuleTransferQueue().tryTransfer(renderModuleEntrypoint);
+		try
+		{
+			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
+					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(renderModuleEntrypoint);
+		} catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

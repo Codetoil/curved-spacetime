@@ -28,6 +28,7 @@ import org.quiltmc.loader.impl.QuiltLoaderImpl;
 import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
 import org.quiltmc.loader.impl.util.log.Log;
 import org.quiltmc.loader.impl.util.log.LogCategory;
+import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -44,7 +45,6 @@ public class Engine
 {
 	public final MainModuleConfig mainModuleConfig;
 	public Scene scene;
-	public static final LogCategory ENGINE_CATEGORY = LogCategory.create("Curved Spacetime Engine");
 	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
 	protected final ScheduledExecutorService loopExecutor;
 	protected ScheduledFuture<?> loopHandler;
@@ -68,9 +68,9 @@ public class Engine
 	public static void main(String[] args)
 	{
 		Engine engine = new Engine();
-		Log.info(Engine.ENGINE_CATEGORY, "Initializing Modules");
+		Logger.info("Initializing Modules");
 		engine.initModules();
-		Log.info(Engine.ENGINE_CATEGORY, "Starting main loop.");
+		Logger.info("Starting main loop.");
 		engine.startLoop(1_000 / engine.mainModuleConfig.getFPS(),
 				1_000 / engine.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
@@ -90,13 +90,17 @@ public class Engine
 	public static <C> void callDependents(String name, Class<C> moduleInitializerClass, Consumer<C> onInitialize)
 			throws Throwable
 	{
+		Logger.trace("Dependents of {}: {}\n", name, QuiltLoader.getEntrypoints(name, moduleInitializerClass));
 		try (ExecutorService moduleInitializerThreadPool = Executors.newCachedThreadPool())
 		{
 			CompletionService<?> completionService = new ExecutorCompletionService<>(moduleInitializerThreadPool);
 			List<Future<?>> futures = new ArrayList<>();
 			EntrypointUtils.invoke(name, moduleInitializerClass, moduleInitializer ->
 			{
-				futures.add(completionService.submit(() -> onInitialize.accept(moduleInitializer), null));
+				futures.add(completionService.submit(() -> {
+					Logger.trace("{}: Calling {}.", name, moduleInitializer);
+					onInitialize.accept(moduleInitializer);
+				}, null));
 			});
 			moduleInitializerThreadPool.shutdown();
 			while (!futures.isEmpty())
