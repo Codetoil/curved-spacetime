@@ -29,6 +29,7 @@ tasks.shadowJar {
     mergeServiceFiles()
     dependencies {
         include(dependency("org.tinylog:tinylog-api"))
+        include(dependency("org.lwjgl:lwjgl"))
     }
     destinationDirectory = File("$rootDir/installer")
     from(nonJar)
