@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.Copy
-
 plugins {
     java
     id("org.jetbrains.qodana") version "2025.2.1"
