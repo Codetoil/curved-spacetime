@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("maven-publish")
     id("com.gradleup.shadow") version "9.2.2"
+    id ("org.graalvm.buildtools.native") version "0.11.1"
 }
 
 group = "io.codetoil"
@@ -21,6 +22,7 @@ repositories {
 
 dependencies {
     nonJar(files("../LICENSE.md"))
+    implementation(project(":curved-spacetime-quilt-loader-patches"))
     implementation("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
         exclude("annotations")
     }
@@ -36,6 +38,46 @@ dependencies {
 
 }
 
+graalvmNative {
+    binaries {
+        named("main") {
+            imageName.set("curved-spacetime-debug")
+            mainClass.set("io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime")
+            debug.set(true)
+            verbose.set(true)
+            richOutput.set(true)
+            quickBuild.set(false)
+
+            configurationFileDirectories.from(file("src/graalvm"))
+
+            buildArgs.add("--initialize-at-build-time=" +
+                    "org.quiltmc.loader.impl.filesystem.QuiltUnifiedFileSystemProvider," +
+                    "org.quiltmc.loader.impl.filesystem.QuiltMemoryFileSystemProvider," +
+                    "org.quiltmc.loader.impl.filesystem.QuiltJoinedFileSystemProvider," +
+                    "org.quiltmc.loader.impl.filesystem.QuiltZipFileSystemProvider," +
+                    "org.quiltmc.loader.impl.filesystem.QuiltFSP")
+            jvmArgs.add("-Dloader.gameJarPath=../../../../installer/curved-spacetime-main-module-0.1.0-SNAPSHOT-all.jar")
+            jvmArgs.add("-Dloader.development=true")
+            jvmArgs.add("-javaagent:../../../../installer/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT-all.jar")
+            jvmArgs.add("-Dfile.encoding=UTF-8")
+            jvmArgs.add("-Dsun.stdout.encoding=UTF-8")
+            jvmArgs.add("-Dsun.stderr.encoding=UTF-8")
+            jvmArgs.add("-Dloader.validation.level=5")
+            jvmArgs.add("-Dloader.log.level=TRACE")
+            jvmArgs.add("-Dorg.lwjgl.util.Debug=true")
+            jvmArgs.add("-Dorg.lwjgl.util.DebugLoader=true")
+
+            runtimeArgs.add("")
+
+            useFatJar.set(true)
+
+            javaLauncher.set(javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(25))
+                vendor.set(JvmVendorSpec.GRAAL_VM)
+            })
+        }
+    }
+}
 
 tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -49,13 +91,10 @@ tasks.shadowJar {
         exclude(dependency("io.codetoil:.*"))
     }
     destinationDirectory = File("$rootDir/installer")
-    from(nonJar)
-}
-
-tasks.jar {
     manifest {
         attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.KnotCurvedSpacetime"))
     }
+    from(nonJar)
 }
 
 publishing {

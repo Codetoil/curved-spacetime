@@ -1,7 +1,15 @@
+pluginManagement {
+    repositories {
+        maven {
+            url = uri("https://raw.githubusercontent.com/graalvm/native-build-tools/snapshots")
+        }
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = "curved-spacetime"
 
 include("curved-spacetime-quilt-loader-patches")
-include("curved-spacetime-quilt-tweaker-agent")
 include("curved-spacetime-vulkan-module")
 include("curved-spacetime-glfw-module")
 include("curved-spacetime-render-module")
@@ -14,7 +22,6 @@ include("curved-spacetime-vulkan-glfw-render-module")
 include("curved-spacetime-main-module")
 include("curved-spacetime-loader-module")
 project(":curved-spacetime-quilt-loader-patches").name = "curved-spacetime-quilt-loader-patches"
-project(":curved-spacetime-quilt-tweaker-agent").name = "curved-spacetime-quilt-tweaker-agent"
 project(":curved-spacetime-vulkan-module").name = "curved-spacetime-vulkan-module"
 project(":curved-spacetime-glfw-module").name = "curved-spacetime-glfw-module"
 project(":curved-spacetime-render-module").name = "curved-spacetime-render-module"

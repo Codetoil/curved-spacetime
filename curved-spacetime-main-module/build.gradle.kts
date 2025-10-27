@@ -45,6 +45,7 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 
+    api(project(":curved-spacetime-quilt-loader-patches"))
     api("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
         exclude("annotations")
     }
