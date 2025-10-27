@@ -23,10 +23,14 @@ import io.codetoil.curved_spacetime.api.engine.Engine;
 public abstract class Window
 {
 	protected final Engine engine;
+	protected final String title;
+	protected KeyboardInput keyboardInput;
+	protected MouseInput mouseInput;
 
-	protected Window(Engine engine)
+	protected Window(Engine engine, String title)
 	{
 		this.engine = engine;
+		this.title = title;
 	}
 
 	public abstract void init();
@@ -37,9 +41,30 @@ public abstract class Window
 
 	public abstract int getWidth();
 
-	public abstract void showWindow();
+	public abstract void setShouldClose();
 
-	public abstract void hideWindow();
+	public abstract boolean shouldClose();
 
 	public abstract void clean();
+
+	public KeyboardInput getKeyboardInput()
+	{
+		return keyboardInput;
+	}
+
+	public MouseInput getMouseInput()
+	{
+		return mouseInput;
+	}
+
+	public void pollEvents()
+	{
+		keyboardInput.poll();
+		mouseInput.poll();
+	}
+
+	public void resetInput()
+	{
+		keyboardInput.clean();
+	}
 }

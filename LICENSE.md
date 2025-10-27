@@ -338,7 +338,7 @@ network.
 Corresponding Source conveyed, and Installation Information provided,
 in accord with this section must be in a format that is publicly
 documented (and with an implementation available to the public in
-source code form), and must require no special password or key for
+source code form), and must require no special password or keyCtx for
 unpacking, reading or copying.
 
 ### 7. Additional Terms.

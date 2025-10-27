@@ -21,8 +21,7 @@ package io.codetoil.curved_spacetime.api.engine;
 import io.codetoil.curved_spacetime.MainModuleConfig;
 import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.scene.Scene;
-import io.codetoil.curved_spacetime.api.scene.SceneLooper;
-import org.jetbrains.annotations.NotNull;
+import io.codetoil.curved_spacetime.api.scene.SceneCallback;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.impl.QuiltLoaderImpl;
 import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
@@ -42,10 +41,11 @@ public class Engine
 {
 	private static Engine INSTANCE;
 	public final MainModuleConfig mainModuleConfig;
-	protected final ScheduledExecutorService loopExecutor;
-	private final Map<String, SceneLooper> sceneLooperMap = new HashMap<>();
+	protected final ScheduledExecutorService sceneCallbackExecutor;
+	private final Map<String, SceneCallback> sceneCallbackMap = new HashMap<>();
 	public Scene scene;
-	protected ScheduledFuture<?> loopHandler;
+	protected Future<?> sceneCallbackInitializeHandler;
+	protected ScheduledFuture<?> sceneCallbackLoopHandler;
 
 	public Engine()
 	{
@@ -59,20 +59,25 @@ public class Engine
 		}
 		this.scene = new Scene();
 
-		this.loopExecutor = Executors.newSingleThreadScheduledExecutor();
+		this.sceneCallbackExecutor = Executors.newSingleThreadScheduledExecutor();
 	}
 
 	public static void main(String[] args)
 	{
 		Engine engine = new Engine();
-		Logger.info("Initializing Modules");
-		engine.initModules();
-		Logger.info("Starting main loop.");
-		engine.startLoop(1_000 / engine.mainModuleConfig.getFPS(),
+		Logger.info("Running Entrypoints in parallel");
+		engine.runEntrypoints();
+		Logger.info("Initializing Scene Callbacks");
+		engine.sceneCallbackInitializeHandler = engine.sceneCallbackExecutor.submit(() ->
+				engine.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.init()));
+		Logger.info("Looping Scene Callbacks");
+		engine.sceneCallbackLoopHandler = engine.sceneCallbackExecutor.scheduleAtFixedRate(() ->
+						engine.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop()),
+				1_000 / engine.mainModuleConfig.getFPS(),
 				1_000 / engine.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
 
-	public void initModules()
+	public void runEntrypoints()
 	{
 		QuiltLoaderImpl.INSTANCE.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
 		try
@@ -82,11 +87,6 @@ public class Engine
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	public void startLoop(long delay, long period, @NotNull TimeUnit timeUnit)
-	{
-		this.loopHandler = this.loopExecutor.scheduleAtFixedRate(this::loop, delay, period, timeUnit);
 	}
 
 	public static <C> void callDependents(String name, Class<C> moduleInitializerClass, Consumer<C> onInitialize)
@@ -119,11 +119,6 @@ public class Engine
 
 	}
 
-	public void loop()
-	{
-		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.loop());
-	}
-
 	@SuppressWarnings("deprecation")
 	public static Engine getInstance()
 	{
@@ -131,20 +126,20 @@ public class Engine
 		return INSTANCE;
 	}
 
-	public void registerSceneLooper(String id, SceneLooper sceneLooper)
+	public void registerSceneCallback(String id, SceneCallback sceneCallback)
 	{
-		this.sceneLooperMap.put(id, sceneLooper);
+		this.sceneCallbackMap.put(id, sceneCallback);
 	}
 
 	public void stop()
 	{
-		this.loopHandler.cancel(true);
+		this.sceneCallbackLoopHandler.cancel(true);
 		this.clean();
 	}
 
 	public void clean()
 	{
-		this.loopExecutor.shutdown();
-		this.sceneLooperMap.forEach((_, sceneLooper) -> sceneLooper.clean());
+		this.sceneCallbackExecutor.shutdown();
+		this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.clean());
 	}
 }

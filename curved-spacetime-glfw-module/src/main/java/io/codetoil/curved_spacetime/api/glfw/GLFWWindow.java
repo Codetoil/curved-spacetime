@@ -1,6 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity. <br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -26,17 +26,15 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
-import java.util.Objects;
-
 public abstract class GLFWWindow extends Window
 {
 	protected long windowHandle;
 	protected int width;
 	protected int height;
 
-	protected GLFWWindow(Engine engine)
+	protected GLFWWindow(Engine engine, String title)
 	{
-		super(engine);
+		super(engine, title);
 	}
 
 	public void init()
@@ -62,23 +60,25 @@ public abstract class GLFWWindow extends Window
 		setWindowHints();
 
 		// Create the window
-		this.windowHandle = GLFW.glfwCreateWindow(620, 480, "Curved Spacetime", MemoryUtil.NULL, MemoryUtil.NULL);
+		this.windowHandle =
+				GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
 		if (this.windowHandle == MemoryUtil.NULL) throw new RuntimeException("Failed to create the GLFW window");
 
-		// Set up a key callback. It will be called every time a key is pressed, repeated or released.
-
-		GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> {
-			if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE)
-				GLFW.glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+		this.keyboardInput = new GLFWKeyboardInput(this);
+		GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (window, w, h) -> {
+			width = w;
+			height = h;
 		});
+
+		this.mouseInput = new GLFWMouseInput(this);
 	}
 
 	public void loop()
 	{
 		// Poll for window events. The key callback above will only be
 		// invoked during this call.
-		GLFW.glfwPollEvents();
-		if (GLFW.glfwWindowShouldClose(this.windowHandle))
+		this.pollEvents();
+		if (this.shouldClose())
 		{
 			this.engine.stop();
 		}
@@ -94,21 +94,21 @@ public abstract class GLFWWindow extends Window
 		return this.width;
 	}
 
-	public void showWindow()
+	public void setShouldClose()
 	{
-		GLFW.glfwShowWindow(this.windowHandle);
+		GLFW.glfwSetWindowShouldClose(this.windowHandle, true);
 	}
 
-	public void hideWindow()
+	public boolean shouldClose()
 	{
-		GLFW.glfwDestroyWindow(this.windowHandle);
+		return GLFW.glfwWindowShouldClose(this.windowHandle);
 	}
 
 	public void clean()
 	{
 		Callbacks.glfwFreeCallbacks(this.windowHandle);
+		GLFW.glfwDestroyWindow(this.windowHandle);
 		GLFW.glfwTerminate();
-		Objects.requireNonNull(GLFW.glfwSetErrorCallback(null)).free();
 	}
 
 	public abstract boolean doesDriverExist();

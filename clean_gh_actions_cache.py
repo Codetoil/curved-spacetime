@@ -4,13 +4,13 @@ import sys
 
 while True:
     caches_json_s = subprocess.run(['sh',
-                          '-c',
-                          'gh api '
-                          '-H "Accept: application/vnd.github+json" '
-                          '-H "X-GitHub-Api-Version: 2022-11-28" '
-                          '/repos/Codetoil/curved-spacetime/actions/caches'],
-                         capture_output=True,
-                         encoding='UTF-8').stdout
+                                    '-c',
+                                    'gh api '
+                                    '-H "Accept: application/vnd.github+json" '
+                                    '-H "X-GitHub-Api-Version: 2022-11-28" '
+                                    '/repos/Codetoil/curved-spacetime/actions/caches'],
+                                   capture_output=True,
+                                   encoding='UTF-8').stdout
     print(caches_json_s)
 
     caches_json = json.loads(caches_json_s)
@@ -29,5 +29,5 @@ while True:
                            '-H "X-GitHub-Api-Version: 2022-11-28" '
                            '/repos/Codetoil/curved-spacetime/actions/caches/' +
                            str(id)],
-           capture_output=True,
-           encoding='UTF-8')) for id in cache_ids]
+                          capture_output=True,
+                          encoding='UTF-8')) for id in cache_ids]

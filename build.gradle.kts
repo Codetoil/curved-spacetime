@@ -30,6 +30,30 @@ project.extra["lwjglNativesNames"] = listOf(
     "natives-windows-arm64"
 )
 
+tasks.clean {
+    doLast {
+        files(
+            "$rootDir/installer/",
+            "$rootDir/installer/webserver-openapi",
+            "$rootDir/installer/vulkan-glfw-render",
+            "$rootDir/run/",
+            "$rootDir/run/webserver-openapi",
+            "$rootDir/run/vulkan-glfw-render"
+        ).forEach { folderIt ->
+            folderIt.listFiles().forEach { fileIt ->
+                if (fileIt.name.contains(".jar")) {
+                    fileIt.delete();
+                    println("deleted: ${fileIt.path}")
+                }
+            }
+        }
+    }
+}
+
+tasks.build {
+    dependsOn(tasks.clean)
+}
+
 tasks.register<Copy>("preRun")
 {
     from("$rootDir/installer")

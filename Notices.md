@@ -2,12 +2,13 @@
 
 ## Vulkan Book
 
-https://github.com/lwjglgamedev/vulkanbook/tree/38455088386f058f96576c3e0ce925f935525d96
+https://github.com/lwjglgamedev/vulkanbook/tree/ebe25ab57930b80b62e915fed8de5f97169ecd72
+./vulkanbook.epub
 
 ```
 MIT License
 
-Copyright (c) 2024 Antonio Hernández Bejarano
+Copyright (c) 2025 Antonio Hernández Bejarano
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -25,9 +25,9 @@ import org.lwjgl.glfw.GLFWVulkan;
 
 public class VulkanGLFWWindow extends GLFWWindow
 {
-	public VulkanGLFWWindow(Engine engine)
+	public VulkanGLFWWindow(Engine engine, String title)
 	{
-		super(engine);
+		super(engine, title);
 	}
 
 	@Override
@@ -45,9 +45,8 @@ public class VulkanGLFWWindow extends GLFWWindow
 	@Override
 	protected void setWindowHints()
 	{
-		GLFW.glfwDefaultWindowHints(); // optional, the current window hints are already the default
-		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE); // the window will stay hidden after creation
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE); // the window will be resizable
-		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API); // Do not use either OpenGL nor OpenGL ES
+		GLFW.glfwDefaultWindowHints();
+		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API);
 	}
 }

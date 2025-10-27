@@ -1,6 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2024 Antonio Hernández Bejarano<br>
+ * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -34,25 +34,31 @@ import org.lwjgl.glfw.GLFWVulkan;
 
 public class VulkanGLFWRenderer extends GLFWRenderer
 {
-	protected final VulkanGLFWWindow vulkanGLFWWindow;
-	protected final VulkanInstance vulkanInstance;
-	protected final VulkanCommandPool vulkanGraphicsCommandPool;
-	protected final VulkanGraphicsQueue vulkanGraphicsQueue;
-	protected final VulkanSurface vulkanSurface;
-	protected final VulkanSwapChain vulkanSwapChain;
-	protected final VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanGraphicsPresentQueue;
-	protected final VulkanForwardRenderActivity vulkanForwardRenderActivity;
+	private final VulkanGLFWRenderModuleConfig vulkanGLFWRenderModuleConfig;
+	private final GLFWRenderModuleConfig glfwRenderModuleConfig;
+	protected VulkanGLFWWindow vulkanGLFWWindow;
+	protected VulkanInstance vulkanInstance = null;
+	protected VulkanCommandPool vulkanGraphicsCommandPool = null;
+	protected VulkanGraphicsQueue vulkanGraphicsQueue = null;
+	protected VulkanSurface vulkanSurface = null;
+	protected VulkanSwapChain vulkanSwapChain = null;
+	protected VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanGraphicsPresentQueue = null;
+	protected VulkanForwardRenderActivity vulkanForwardRenderActivity = null;
 
 	public VulkanGLFWRenderer(Engine engine, Scene scene,
 							  VulkanGLFWRenderModuleConfig vulkanGLFWRenderModuleConfig,
 							  GLFWRenderModuleConfig glfwRenderModuleConfig)
 	{
 		super(engine, scene);
+		this.vulkanGLFWRenderModuleConfig = vulkanGLFWRenderModuleConfig;
+		this.glfwRenderModuleConfig = glfwRenderModuleConfig;
+	}
 
-		this.vulkanGLFWWindow = new VulkanGLFWWindow(engine);
+	public void init()
+	{
+		this.vulkanGLFWWindow = new VulkanGLFWWindow(engine, "curved-spacetime");
 
 		this.vulkanGLFWWindow.init();
-		this.vulkanGLFWWindow.showWindow();
 
 		this.vulkanInstance = new VulkanInstance(GLFWVulkan::glfwGetRequiredInstanceExtensions);
 		this.vulkanSurface = new VulkanGLFWSurface(this.vulkanInstance.getVulkanPhysicalDevice(),
@@ -70,6 +76,7 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
 		this.vulkanForwardRenderActivity =
 				new VulkanForwardRenderActivity(this.vulkanSwapChain, this.vulkanGraphicsCommandPool);
+
 	}
 
 	public void loop()
@@ -91,7 +98,7 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 		this.vulkanSwapChain.cleanup();
 		this.vulkanSurface.cleanup();
 		this.vulkanInstance.cleanup();
-		this.vulkanGLFWWindow.hideWindow();
+		this.vulkanGLFWWindow.setShouldClose();
 		this.vulkanGLFWWindow.clean();
 	}
 }
