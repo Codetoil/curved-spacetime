@@ -1,13 +1,16 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run Debug" type="JarApplication">
-    <option name="JAR_PATH" value="$PROJECT_DIR$/run/curved-spacetime-loader-module-0.1.0-SNAPSHOT-all.jar" />
-    <option name="VM_PARAMETERS" value="-Dloader.gameJarPath=./curved-spacetime-main-module-0.1.0-SNAPSHOT-all.jar -Dloader.development=true -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dloader.validation.level=5 -Dloader.log.level=TRACE -Dorg.lwjgl.util.Debug=true -Dorg.lwjgl.util.DebugLoader=true" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-    <option name="ALTERNATIVE_JRE_PATH" value="temurin-25" />
-    <method v="2">
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="build" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="preRun" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
-    </method>
-  </configuration>
+    <configuration default="false" name="Run Debug" type="JarApplication">
+        <option name="JAR_PATH" value="$PROJECT_DIR$/run/curved-spacetime-loader-module-0.1.0-SNAPSHOT-all.jar"/>
+        <option name="VM_PARAMETERS"
+                value="-Dloader.gameJarPath=./curved-spacetime-main-module-0.1.0-SNAPSHOT-all.jar -Dloader.development=true -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dloader.validation.level=5 -Dloader.log.level=TRACE -Dorg.lwjgl.util.Debug=true -Dorg.lwjgl.util.DebugLoader=true"/>
+        <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run"/>
+        <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true"/>
+        <option name="ALTERNATIVE_JRE_PATH" value="temurin-25"/>
+        <method v="2">
+            <option name="Gradle.BeforeRunTask" enabled="true" tasks="build" externalProjectPath="$PROJECT_DIR$"
+                    vmOptions="" scriptParameters=""/>
+            <option name="Gradle.BeforeRunTask" enabled="true" tasks="preRun" externalProjectPath="$PROJECT_DIR$"
+                    vmOptions="" scriptParameters=""/>
+        </method>
+    </configuration>
 </component>

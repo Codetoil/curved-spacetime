@@ -2,7 +2,7 @@ plugins {
     id("java")
     id("maven-publish")
     id("com.gradleup.shadow") version "9.2.2"
-    id ("org.graalvm.buildtools.native") version "0.11.1"
+    id("org.graalvm.buildtools.native") version "0.11.1"
 }
 
 group = "io.codetoil"
@@ -50,12 +50,14 @@ graalvmNative {
 
             configurationFileDirectories.from(file("src/graalvm"))
 
-            buildArgs.add("--initialize-at-build-time=" +
-                    "org.quiltmc.loader.impl.filesystem.QuiltUnifiedFileSystemProvider," +
-                    "org.quiltmc.loader.impl.filesystem.QuiltMemoryFileSystemProvider," +
-                    "org.quiltmc.loader.impl.filesystem.QuiltJoinedFileSystemProvider," +
-                    "org.quiltmc.loader.impl.filesystem.QuiltZipFileSystemProvider," +
-                    "org.quiltmc.loader.impl.filesystem.QuiltFSP")
+            buildArgs.add(
+                "--initialize-at-build-time=" +
+                        "org.quiltmc.loader.impl.filesystem.QuiltUnifiedFileSystemProvider," +
+                        "org.quiltmc.loader.impl.filesystem.QuiltMemoryFileSystemProvider," +
+                        "org.quiltmc.loader.impl.filesystem.QuiltJoinedFileSystemProvider," +
+                        "org.quiltmc.loader.impl.filesystem.QuiltZipFileSystemProvider," +
+                        "org.quiltmc.loader.impl.filesystem.QuiltFSP"
+            )
             jvmArgs.add("-Dloader.gameJarPath=../../../../installer/curved-spacetime-main-module-0.1.0-SNAPSHOT-all.jar")
             jvmArgs.add("-Dloader.development=true")
             jvmArgs.add("-Dfile.encoding=UTF-8")
