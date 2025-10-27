@@ -58,7 +58,6 @@ graalvmNative {
                     "org.quiltmc.loader.impl.filesystem.QuiltFSP")
             jvmArgs.add("-Dloader.gameJarPath=../../../../installer/curved-spacetime-main-module-0.1.0-SNAPSHOT-all.jar")
             jvmArgs.add("-Dloader.development=true")
-            jvmArgs.add("-javaagent:../../../../installer/curved-spacetime-quilt-tweaker-agent-0.1.0-SNAPSHOT-all.jar")
             jvmArgs.add("-Dfile.encoding=UTF-8")
             jvmArgs.add("-Dsun.stdout.encoding=UTF-8")
             jvmArgs.add("-Dsun.stderr.encoding=UTF-8")
