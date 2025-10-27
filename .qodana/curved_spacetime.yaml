@@ -106,3 +106,18 @@ inspections:
   - inspection: NullableProblems
     options:
       IGNORE_EXTERNAL_SUPER_NOTNULL: true
+exclude:
+  - name: Gradle
+    paths:
+      - gradlew
+      - gradlew.bat
+  - name: Licenses
+    paths:
+      - LICENSE
+      - Notices.md
+  - name: All
+    paths:
+      - gradlew.bat
+      - gradlew
+      - .run
+      - gradle
