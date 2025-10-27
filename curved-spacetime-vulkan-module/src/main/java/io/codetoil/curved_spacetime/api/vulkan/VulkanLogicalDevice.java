@@ -66,18 +66,18 @@ public class VulkanLogicalDevice
 			for (int index = 0; index < numQueueFamilies; index++)
 			{
 				FloatBuffer priorities = stack.callocFloat(queuePropsBuff.get(index).queueCount());
-				queueCreationInfoBuf.get(index).sType(VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
+				queueCreationInfoBuf.get(index).sType(VK13.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
 						.queueFamilyIndex(index).pQueuePriorities(priorities);
 			}
 
 			VkDeviceCreateInfo deviceCreateInfo =
-					VkDeviceCreateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
+					VkDeviceCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
 							.ppEnabledExtensionNames(requiredExtensions).pEnabledFeatures(features)
 							.pQueueCreateInfos(queueCreationInfoBuf);
 
 			PointerBuffer pp = stack.mallocPointer(1);
 			VulkanUtils.vkCheck(
-					VK10.vkCreateDevice(vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo, null, pp),
+					VK13.vkCreateDevice(vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo, null, pp),
 					"Failed to create device");
 			this.vkDevice = new VkDevice(pp.get(0), vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo);
 		}
@@ -89,13 +89,13 @@ public class VulkanLogicalDevice
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			IntBuffer numExtensionsBuf = stack.callocInt(1);
-			VK10.vkEnumerateDeviceExtensionProperties(vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
+			VK13.vkEnumerateDeviceExtensionProperties(vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
 					numExtensionsBuf, null);
 			int numExtensions = numExtensionsBuf.get(0);
 			Logger.debug("Device supports [{}] extensions", numExtensions);
 
 			VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions, stack);
-			VK10.vkEnumerateDeviceExtensionProperties(this.vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
+			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
 					numExtensionsBuf, propsBuff);
 			for (int index = 0; index < numExtensions; index++)
 			{
@@ -111,7 +111,7 @@ public class VulkanLogicalDevice
 	public void cleanup()
 	{
 		Logger.debug("Destroying Vulkan device");
-		VK10.vkDestroyDevice(this.vkDevice, null);
+		VK13.vkDestroyDevice(this.vkDevice, null);
 	}
 
 	public VulkanPhysicalDevice getPhysicalDevice()
@@ -126,6 +126,6 @@ public class VulkanLogicalDevice
 
 	public void waitIdle()
 	{
-		VK10.vkDeviceWaitIdle(this.vkDevice);
+		VK13.vkDeviceWaitIdle(this.vkDevice);
 	}
 }

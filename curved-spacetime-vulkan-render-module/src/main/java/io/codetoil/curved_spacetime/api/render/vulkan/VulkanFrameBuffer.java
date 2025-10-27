@@ -21,7 +21,7 @@ package io.codetoil.curved_spacetime.api.render.vulkan;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 
 import java.nio.LongBuffer;
@@ -39,11 +39,11 @@ public class VulkanFrameBuffer
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkFramebufferCreateInfo framebufferCreateInfo =
-					VkFramebufferCreateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
+					VkFramebufferCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
 							.pAttachments(pAttachments).width(width).height(height).layers(1).renderPass(renderPass);
 
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK10.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo, null, lp),
+			VulkanUtils.vkCheck(VK13.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo, null, lp),
 					"Failed to create FrameBuffer");
 			this.vkFrameBuffer = lp.get(0);
 		}
@@ -51,7 +51,7 @@ public class VulkanFrameBuffer
 
 	public void cleanup()
 	{
-		VK10.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
+		VK13.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
 	}
 
 	public long getVkFrameBuffer()

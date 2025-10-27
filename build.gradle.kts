@@ -38,12 +38,15 @@ tasks.clean {
             "$rootDir/installer/vulkan-glfw-render",
             "$rootDir/run/",
             "$rootDir/run/webserver-openapi",
+            "$rootDir/run/modules",
             "$rootDir/run/vulkan-glfw-render"
         ).forEach { folderIt ->
-            folderIt.listFiles().forEach { fileIt ->
-                if (fileIt.name.contains(".jar")) {
-                    fileIt.delete();
-                    println("deleted: ${fileIt.path}")
+            if (folderIt.listFiles() != null && folderIt.listFiles().size != 0) {
+                folderIt.listFiles().forEach { fileIt ->
+                    if (fileIt.name.contains(".jar")) {
+                        fileIt.delete();
+                        println("deleted: ${fileIt.path}")
+                    }
                 }
             }
         }

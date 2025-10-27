@@ -20,7 +20,7 @@ package io.codetoil.curved_spacetime.api.vulkan;
 
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 
 import java.nio.LongBuffer;
@@ -36,9 +36,9 @@ public class VulkanSemaphore
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkSemaphoreCreateInfo semaphoreCreateInfo =
-					VkSemaphoreCreateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
+					VkSemaphoreCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK10.vkCreateSemaphore(logicalDevice.getVkDevice(), semaphoreCreateInfo, null, lp),
+			VulkanUtils.vkCheck(VK13.vkCreateSemaphore(logicalDevice.getVkDevice(), semaphoreCreateInfo, null, lp),
 					"Failed to create semaphore");
 			this.vkSemaphore = lp.get(0);
 		}
@@ -46,7 +46,7 @@ public class VulkanSemaphore
 
 	public void cleanup()
 	{
-		VK10.vkDestroySemaphore(this.logicalDevice.getVkDevice(), this.vkSemaphore, null);
+		VK13.vkDestroySemaphore(this.logicalDevice.getVkDevice(), this.vkSemaphore, null);
 	}
 
 	public long getVkSemaphore()

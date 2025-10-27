@@ -39,30 +39,30 @@ public class VulkanSwapChainRenderPass
 
 			// Color attachment
 			attachments.get(0).format(swapChain.getVulkanSurfaceFormat().imageFormat())
-					.samples(VK10.VK_SAMPLE_COUNT_1_BIT).loadOp(VK10.VK_ATTACHMENT_LOAD_OP_CLEAR)
-					.storeOp(VK10.VK_ATTACHMENT_STORE_OP_STORE).initialLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
+					.samples(VK13.VK_SAMPLE_COUNT_1_BIT).loadOp(VK13.VK_ATTACHMENT_LOAD_OP_CLEAR)
+					.storeOp(VK13.VK_ATTACHMENT_STORE_OP_STORE).initialLayout(VK13.VK_IMAGE_LAYOUT_UNDEFINED)
 					.finalLayout(KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
 			VkAttachmentReference.Buffer colorReference = VkAttachmentReference.calloc(1, stack).attachment(0)
-					.layout(VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+					.layout(VK13.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
 			VkSubpassDescription.Buffer subPass =
-					VkSubpassDescription.calloc(1, stack).pipelineBindPoint(VK10.VK_PIPELINE_BIND_POINT_GRAPHICS)
+					VkSubpassDescription.calloc(1, stack).pipelineBindPoint(VK13.VK_PIPELINE_BIND_POINT_GRAPHICS)
 							.colorAttachmentCount(colorReference.remaining()).pColorAttachments(colorReference);
 
 			VkSubpassDependency.Buffer subpassDependencies = VkSubpassDependency.calloc(1, stack);
-			subpassDependencies.get(0).srcSubpass(VK10.VK_SUBPASS_EXTERNAL).dstSubpass(0)
-					.srcStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-					.dstStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT).srcAccessMask(0)
-					.dstAccessMask(VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+			subpassDependencies.get(0).srcSubpass(VK13.VK_SUBPASS_EXTERNAL).dstSubpass(0)
+					.srcStageMask(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+					.dstStageMask(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT).srcAccessMask(0)
+					.dstAccessMask(VK13.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
 
 			VkRenderPassCreateInfo renderPassInfo =
-					VkRenderPassCreateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
+					VkRenderPassCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
 							.pAttachments(attachments).pSubpasses(subPass).pDependencies(subpassDependencies);
 
 			LongBuffer lp = stack.mallocLong(1);
 			VulkanUtils.vkCheck(
-					VK10.vkCreateRenderPass(swapChain.getVulkanLogicalDevice().getVkDevice(), renderPassInfo, null, lp),
+					VK13.vkCreateRenderPass(swapChain.getVulkanLogicalDevice().getVkDevice(), renderPassInfo, null, lp),
 					"Failed to create render pass");
 			this.vkRenderPass = lp.get(0);
 		}
@@ -70,7 +70,7 @@ public class VulkanSwapChainRenderPass
 
 	public void cleanup()
 	{
-		VK10.vkDestroyRenderPass(this.swapChain.getVulkanLogicalDevice().getVkDevice(), this.vkRenderPass, null);
+		VK13.vkDestroyRenderPass(this.swapChain.getVulkanLogicalDevice().getVkDevice(), this.vkRenderPass, null);
 	}
 
 	public long getVkRenderPass()

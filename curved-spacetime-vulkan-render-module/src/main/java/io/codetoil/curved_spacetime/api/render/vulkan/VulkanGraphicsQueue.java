@@ -23,7 +23,7 @@ import io.codetoil.curved_spacetime.api.vulkan.VulkanPhysicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanQueue;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
 import java.nio.IntBuffer;
@@ -50,7 +50,7 @@ public class VulkanGraphicsQueue extends VulkanQueue
 		for (int index = 0; index < numQueuesFamilies; index++)
 		{
 			VkQueueFamilyProperties props = queuePropsBuff.get(index);
-			boolean graphicsQueue = (props.queueFlags() & VK10.VK_QUEUE_GRAPHICS_BIT) != 0;
+			boolean graphicsQueue = (props.queueFlags() & VK13.VK_QUEUE_GRAPHICS_BIT) != 0;
 			if (graphicsQueue)
 			{
 				result = index;
@@ -86,7 +86,7 @@ public class VulkanGraphicsQueue extends VulkanQueue
 				{
 					KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(), i,
 							surface.getVkSurface(), intBuffer);
-					boolean supportsPresentation = intBuffer.get(0) == VK10.VK_TRUE;
+					boolean supportsPresentation = intBuffer.get(0) == VK13.VK_TRUE;
 					if (supportsPresentation)
 					{
 						index = i;

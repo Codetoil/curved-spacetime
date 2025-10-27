@@ -42,12 +42,12 @@ public class VulkanCommandBuffer
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-					VkCommandBufferAllocateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
+					VkCommandBufferAllocateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
 							.commandPool(commandPool.getVkCommandPool())
-							.level(primary ? VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY :
-									VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY).commandBufferCount(1);
+							.level(primary ? VK13.VK_COMMAND_BUFFER_LEVEL_PRIMARY :
+									VK13.VK_COMMAND_BUFFER_LEVEL_SECONDARY).commandBufferCount(1);
 			PointerBuffer pb = stack.mallocPointer(1);
-			VulkanUtils.vkCheck(VK10.vkAllocateCommandBuffers(vkDevice, cmdBufAllocateInfo, pb),
+			VulkanUtils.vkCheck(VK13.vkAllocateCommandBuffers(vkDevice, cmdBufAllocateInfo, pb),
 					"Failed to allocate render command buffer");
 
 			this.vkCommandBuffer = new VkCommandBuffer(pb.get(0), vkDevice);
@@ -64,11 +64,11 @@ public class VulkanCommandBuffer
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkCommandBufferBeginInfo cmdBufInfo =
-					VkCommandBufferBeginInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+					VkCommandBufferBeginInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
 			if (this.oneTimeSubmit)
 			{
-				cmdBufInfo.flags(VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+				cmdBufInfo.flags(VK13.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 			}
 			if (!this.primary)
 			{
@@ -77,13 +77,13 @@ public class VulkanCommandBuffer
 					throw new RuntimeException("Secondary buffers must declare inheritance info");
 				}
 				VkCommandBufferInheritanceInfo vkInheritanceInfo = VkCommandBufferInheritanceInfo.calloc(stack)
-						.sType(VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
+						.sType(VK13.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
 						.renderPass(inheritanceInfo.renderPass()).subpass(inheritanceInfo.subpass())
 						.framebuffer(inheritanceInfo.framebuffer());
 				cmdBufInfo.pInheritanceInfo(vkInheritanceInfo);
-				cmdBufInfo.flags(VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
+				cmdBufInfo.flags(VK13.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 			}
-			VulkanUtils.vkCheck(VK10.vkBeginCommandBuffer(this.vkCommandBuffer, cmdBufInfo),
+			VulkanUtils.vkCheck(VK13.vkBeginCommandBuffer(this.vkCommandBuffer, cmdBufInfo),
 					"Failed to create command buffer");
 		}
 	}
@@ -91,13 +91,13 @@ public class VulkanCommandBuffer
 	public void cleanup()
 	{
 		Logger.trace("Destroying command buffer");
-		VK10.vkFreeCommandBuffers(this.commandPool.getVulkanLogicalDevice().getVkDevice(),
+		VK13.vkFreeCommandBuffers(this.commandPool.getVulkanLogicalDevice().getVkDevice(),
 				this.commandPool.getVkCommandPool(), this.vkCommandBuffer);
 	}
 
 	public void endRecording()
 	{
-		VulkanUtils.vkCheck(VK10.vkEndCommandBuffer(this.vkCommandBuffer), "Failed to end command buffer");
+		VulkanUtils.vkCheck(VK13.vkEndCommandBuffer(this.vkCommandBuffer), "Failed to end command buffer");
 	}
 
 	public VkCommandBuffer getVkCommandBuffer()
@@ -107,6 +107,6 @@ public class VulkanCommandBuffer
 
 	public void reset()
 	{
-		VK10.vkResetCommandBuffer(this.vkCommandBuffer, VK10.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
+		VK13.vkResetCommandBuffer(this.vkCommandBuffer, VK13.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
 	}
 }

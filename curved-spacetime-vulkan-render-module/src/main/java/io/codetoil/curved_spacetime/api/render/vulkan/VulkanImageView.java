@@ -21,7 +21,7 @@ package io.codetoil.curved_spacetime.api.render.vulkan;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 
 import java.nio.LongBuffer;
@@ -44,13 +44,13 @@ public class VulkanImageView
 		{
 			LongBuffer lp = stack.mallocLong(1);
 			VkImageViewCreateInfo viewCreateInfo =
-					VkImageViewCreateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
+					VkImageViewCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
 							.image(vkImage).viewType(vulkanImageViewData.viewType).format(vulkanImageViewData.format)
 							.subresourceRange(
 									it -> it.aspectMask(this.aspectMask).baseMipLevel(0).levelCount(this.mipLevels)
 											.baseMipLevel(vulkanImageViewData.baseArrayLayer)
 											.layerCount(vulkanImageViewData.layerCount));
-			VulkanUtils.vkCheck(VK10.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),
+			VulkanUtils.vkCheck(VK13.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),
 					"Failed to create image view");
 			this.vkImageView = lp.get(0);
 		}
@@ -58,7 +58,7 @@ public class VulkanImageView
 
 	public void cleanup()
 	{
-		VK10.vkDestroyImageView(this.vulkanLogicalDevice.getVkDevice(), this.vkImageView, null);
+		VK13.vkDestroyImageView(this.vulkanLogicalDevice.getVkDevice(), this.vkImageView, null);
 	}
 
 	public long getVkImageView()
@@ -80,7 +80,7 @@ public class VulkanImageView
 			this.baseArrayLayer = 0;
 			this.layerCount = 1;
 			this.mipLevels = 1;
-			this.viewType = VK10.VK_IMAGE_VIEW_TYPE_2D;
+			this.viewType = VK13.VK_IMAGE_VIEW_TYPE_2D;
 		}
 
 		public VulkanImageView.VulkanImageViewData aspectMask(int aspectMask)

@@ -23,7 +23,7 @@ import io.codetoil.curved_spacetime.api.vulkan.VulkanCommandPool;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanFence;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
@@ -80,14 +80,14 @@ public class VulkanForwardRenderActivity
 			VkClearValue.Buffer clearValues = VkClearValue.calloc(1, stack);
 			clearValues.apply(0, v -> v.color().float32(0, 0.5f).float32(1, 0.7f).float32(2, 1.0f));
 			VkRenderPassBeginInfo renderPassBeginInfo =
-					VkRenderPassBeginInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
+					VkRenderPassBeginInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
 							.pClearValues(clearValues).renderArea(a -> a.extent().set(width, height))
 							.framebuffer(vulkanFrameBuffer.getVkFrameBuffer());
 
 			vulkanCommandBuffer.beginRecording();
-			VK10.vkCmdBeginRenderPass(vulkanCommandBuffer.getVkCommandBuffer(), renderPassBeginInfo,
-					VK10.VK_SUBPASS_CONTENTS_INLINE);
-			VK10.vkCmdEndRenderPass(vulkanCommandBuffer.getVkCommandBuffer());
+			VK13.vkCmdBeginRenderPass(vulkanCommandBuffer.getVkCommandBuffer(), renderPassBeginInfo,
+					VK13.VK_SUBPASS_CONTENTS_INLINE);
+			VK13.vkCmdEndRenderPass(vulkanCommandBuffer.getVkCommandBuffer());
 			vulkanCommandBuffer.endRecording();
 		}
 	}
@@ -119,7 +119,7 @@ public class VulkanForwardRenderActivity
 					this.vulkanSwapChain.getSyncVulkanSemaphoreList()[idx];
 			vulkanGraphicsQueue.submit(stack.pointers(vulkanCommandBuffer.getVkCommandBuffer()),
 					stack.longs(synchronizationVulkanSemaphores.imageAcquisitionVulkanSemaphore().getVkSemaphore()),
-					stack.ints(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
+					stack.ints(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
 					stack.longs(synchronizationVulkanSemaphores.renderCompleteVulkanSemaphore().getVkSemaphore()),
 					currentVulkanFence);
 		}

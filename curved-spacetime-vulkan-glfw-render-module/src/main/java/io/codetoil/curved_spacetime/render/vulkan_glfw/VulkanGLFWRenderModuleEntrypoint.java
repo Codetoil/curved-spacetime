@@ -65,9 +65,8 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 			throw new RuntimeException(e);
 		}
 		Engine engine = Engine.getInstance();
-		engine.registerSceneCallback("vulkan_glfw_renderer",
-				new VulkanGLFWRenderer(engine, engine.scene, (VulkanGLFWRenderModuleConfig) this.config,
-						(GLFWRenderModuleConfig) this.glfwRenderModuleEntrypoint.getConfig()));
+		engine.registerSceneCallback("vulkan_glfw_renderer", new VulkanGLFWRenderer(engine, engine.scene,
+				this));
 		try
 		{
 			Engine.callDependents("vulkan_glfw_render_module_dependent",
@@ -113,6 +112,36 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 				this.vulkanRenderModuleEntrypoint = (VulkanRenderModuleEntrypoint) moduleInitializer;
 			}
 		}
+	}
+
+	public GLFWModuleEntrypoint getGlfwModuleEntrypoint()
+	{
+		return glfwModuleEntrypoint;
+	}
+
+	public GLFWRenderModuleEntrypoint getGlfwRenderModuleEntrypoint()
+	{
+		return glfwRenderModuleEntrypoint;
+	}
+
+	public RenderModuleEntrypoint getRenderModuleEntrypoint()
+	{
+		return renderModuleEntrypoint;
+	}
+
+	public VulkanGLFWModuleEntrypoint getVulkanGLFWModuleEntrypoint()
+	{
+		return vulkanGLFWModuleEntrypoint;
+	}
+
+	public VulkanModuleEntrypoint getVulkanModuleEntrypoint()
+	{
+		return vulkanModuleEntrypoint;
+	}
+
+	public VulkanRenderModuleEntrypoint getVulkanRenderModuleEntrypoint()
+	{
+		return vulkanRenderModuleEntrypoint;
 	}
 
 	@Override

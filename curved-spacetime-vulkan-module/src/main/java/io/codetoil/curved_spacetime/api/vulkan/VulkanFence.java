@@ -20,7 +20,7 @@ package io.codetoil.curved_spacetime.api.vulkan;
 
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkFenceCreateInfo;
 
 import java.nio.LongBuffer;
@@ -36,11 +36,11 @@ public class VulkanFence
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkFenceCreateInfo fenceCreateInfo =
-					VkFenceCreateInfo.calloc(stack).sType(VK10.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO)
-							.flags(signaled ? VK10.VK_FENCE_CREATE_SIGNALED_BIT : 0);
+					VkFenceCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO)
+							.flags(signaled ? VK13.VK_FENCE_CREATE_SIGNALED_BIT : 0);
 
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK10.vkCreateFence(logicalDevice.getVkDevice(), fenceCreateInfo, null, lp),
+			VulkanUtils.vkCheck(VK13.vkCreateFence(logicalDevice.getVkDevice(), fenceCreateInfo, null, lp),
 					"Failed to create fence");
 			this.vkFence = lp.get(0);
 		}
@@ -48,12 +48,12 @@ public class VulkanFence
 
 	public void cleanup()
 	{
-		VK10.vkDestroyFence(this.logicalDevice.getVkDevice(), this.vkFence, null);
+		VK13.vkDestroyFence(this.logicalDevice.getVkDevice(), this.vkFence, null);
 	}
 
 	public void vulkanFenceWait()
 	{
-		VK10.vkWaitForFences(this.logicalDevice.getVkDevice(), this.vkFence, true, Long.MAX_VALUE);
+		VK13.vkWaitForFences(this.logicalDevice.getVkDevice(), this.vkFence, true, Long.MAX_VALUE);
 	}
 
 	public long getVkFence()
@@ -63,6 +63,6 @@ public class VulkanFence
 
 	public void reset()
 	{
-		VK10.vkResetFences(this.logicalDevice.getVkDevice(), this.vkFence);
+		VK13.vkResetFences(this.logicalDevice.getVkDevice(), this.vkFence);
 	}
 }
