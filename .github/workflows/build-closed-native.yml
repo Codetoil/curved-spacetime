@@ -10,9 +10,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  curved-spacetime-linux-x64:
-
-    runs-on: ubuntu-24.04
+  curved-spacetime:
+    name: Build curved-spacetime ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-2025, macos-15-intel, macos-26]
     permissions:
       contents: read
       packages: write
@@ -24,79 +27,13 @@ jobs:
           java-version: '25'
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
-  curved-spacetime-linux-arm64:
-
-    runs-on: ubuntu-24.04-arm
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: graalvm/setup-graalvm@v1
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
         with:
-          java-version: '25'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-      - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
-  curved-spacetime-windows-x64:
-
-    runs-on: windows-2025
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '25'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-      - name: Compile
-        run: .\gradlew.bat :curved-spacetime-closed-loader-module:nativeCompile
-  curved-spacetime-macos-x64:
-
-    runs-on: macos-15-intel
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '25'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-      - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
-  curved-spacetime-macos-arm64:
-
-    runs-on: macos-26
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '25'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-      - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
+          name: curved-spacetime-${{ matrix.os }}
+          path: curved-spacetime-closed-loader-module/build/native/nativeCompile/**
