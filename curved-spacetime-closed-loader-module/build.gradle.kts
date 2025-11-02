@@ -71,18 +71,12 @@ graalvmNative {
 
             useFatJar.set(true)
 
-            if (System.getProperty("os.name").contains("Windows")) {
-                javaLauncher.set(javaToolchains.launcherFor {
-                    languageVersion.set(JavaLanguageVersion.of(25))
-                })
-            }
-            else
-            {
-                javaLauncher.set(javaToolchains.launcherFor {
-                    languageVersion.set(JavaLanguageVersion.of(25))
-                    nativeImageCapable.set(true)
-                })
-            }
+            javaLauncher.set(javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(25))
+                vendor.set(JvmVendorSpec.GRAAL_VM)
+            })
+
+            System.setProperty("java.io.tmpdir", "$projectDir/build/tmp")
         }
     }
 }
