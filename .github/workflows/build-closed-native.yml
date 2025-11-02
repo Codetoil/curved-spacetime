@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
   curved-spacetime-windows-x64:
 
-    runs-on: windows-2025
+    runs-on: windows-11
     permissions:
       contents: read
       packages: write
@@ -63,10 +63,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: gradlew.bat :curved-spacetime-closed-loader-module:nativeCompile
+        run: .\gradlew.bat :curved-spacetime-closed-loader-module:nativeCompile
   curved-spacetime-windows-arm64:
 
-    runs-on: windows-2025-arm64
+    runs-on: windows-11-arm
     permissions:
       contents: read
       packages: write
@@ -81,7 +81,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: gradlew.bat :curved-spacetime-closed-loader-module:nativeCompile
+        run: .\gradlew.bat :curved-spacetime-closed-loader-module:nativeCompile
   curved-spacetime-macos-arm64:
 
     runs-on: macos-26
