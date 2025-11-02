@@ -28,7 +28,7 @@ module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
 	requires org.lwjgl;
 	requires org.lwjgl.vulkan;
 	requires org.lwjgl.glfw;
-	requires org.quiltmc.loader;
+	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
 	exports io.codetoil.curved_spacetime.api.render.vulkan_glfw;

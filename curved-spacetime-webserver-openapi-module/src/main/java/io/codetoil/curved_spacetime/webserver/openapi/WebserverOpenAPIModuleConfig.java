@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.webserver.openapi;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleConfig;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;

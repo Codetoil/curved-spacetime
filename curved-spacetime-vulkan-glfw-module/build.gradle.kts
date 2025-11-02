@@ -20,7 +20,8 @@ repositories {
 }
 
 dependencies {
-    nonJar(files("../LICENSE.md"))
+    nonJar(files("../LICENSE.md", "../Notices.md"))
+    
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-vulkan-module"))
     api(project(":curved-spacetime-glfw-module"))
@@ -36,7 +37,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/installer/vulkan-glfw-render")
+    destinationDirectory = File("$rootDir/installer-quilt/modules")
     from(nonJar)
 }
 

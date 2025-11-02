@@ -19,8 +19,8 @@
 package io.codetoil.curved_spacetime.vulkan;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
 
 import java.io.IOException;

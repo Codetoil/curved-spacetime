@@ -18,10 +18,10 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
-import org.quiltmc.loader.api.QuiltLoader;
 
 public class RenderModuleDependentVulkanRenderModuleEntrypoint implements RenderModuleDependentModuleInitializer
 {
@@ -31,7 +31,8 @@ public class RenderModuleDependentVulkanRenderModuleEntrypoint implements Render
 	{
 		try
 		{
-			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+			Engine.getInstance().getCurvedSpacetimeLoader()
+					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(renderModuleEntrypoint);
 		} catch (InterruptedException e)

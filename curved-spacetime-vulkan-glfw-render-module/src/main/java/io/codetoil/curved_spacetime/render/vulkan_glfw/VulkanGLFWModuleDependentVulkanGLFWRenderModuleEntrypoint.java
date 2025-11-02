@@ -18,10 +18,10 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWModuleEntrypoint;
-import org.quiltmc.loader.api.QuiltLoader;
 
 public class VulkanGLFWModuleDependentVulkanGLFWRenderModuleEntrypoint
 		implements VulkanGLFWModuleDependentModuleInitializer
@@ -32,7 +32,8 @@ public class VulkanGLFWModuleDependentVulkanGLFWRenderModuleEntrypoint
 	{
 		try
 		{
-			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+			Engine.getInstance().getCurvedSpacetimeLoader()
+					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue()
 					.transfer(vulkanGLFWModuleEntrypoint);

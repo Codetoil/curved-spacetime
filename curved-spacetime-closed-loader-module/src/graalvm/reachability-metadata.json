@@ -1,0 +1,44 @@
+{
+  "reflection": [
+    {
+      "type": "org.tinylog.writers.ConsoleWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "freebsd/*/org/lwjgl/liblwjgl.so"
+    },
+    {
+      "glob": "linux/*/org/lwjgl/liblwjgl.so"
+    },
+    {
+      "glob": "macos/*/org/lwjgl/liblwjgl.dylib"
+    },
+    {
+      "glob": "windows/*/org/lwjgl/lwjgl.dll"
+    },
+    {
+      "glob": "freebsd/*/org/lwjgl/glfw/liblwjgl-glfw.so"
+    },
+    {
+      "glob": "linux/*/org/lwjgl/glfw/liblwjgl-glfw.so"
+    },
+    {
+      "glob": "macos/*/org/lwjgl/glfw/liblwjgl-glfw.dylib"
+    },
+    {
+      "glob": "windows/*/org/lwjgl/glfw/lwjgl-glfw.dll"
+    },
+    {
+      "glob": "macos/*/org/lwjgl/vulkan/liblwjgl-vulkan.dylib"
+    }
+  ]
+}

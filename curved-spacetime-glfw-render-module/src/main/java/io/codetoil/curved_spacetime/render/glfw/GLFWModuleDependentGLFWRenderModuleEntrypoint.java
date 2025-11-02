@@ -18,10 +18,10 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.glfw.entrypoint.GLFWModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
-import org.quiltmc.loader.api.QuiltLoader;
 
 public class GLFWModuleDependentGLFWRenderModuleEntrypoint implements GLFWModuleDependentModuleInitializer
 {
@@ -31,7 +31,8 @@ public class GLFWModuleDependentGLFWRenderModuleEntrypoint implements GLFWModule
 	{
 		try
 		{
-			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+			Engine.getInstance().getCurvedSpacetimeLoader()
+					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(GLFWRenderModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(glfwModuleEntrypoint);
 		} catch (InterruptedException e)

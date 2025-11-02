@@ -20,7 +20,8 @@ repositories {
 }
 
 dependencies {
-    nonJar(files("../LICENSE.md"))
+    nonJar(files("../LICENSE.md", "../Notices.md"))
+    
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
     api(project(":curved-spacetime-glfw-module"))
@@ -33,10 +34,8 @@ dependencies {
 
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
-    implementation("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
     implementation("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
     implementation("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
-    implementation("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 }
 
 tasks.named<Test>("test") {
@@ -45,7 +44,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/installer/vulkan-glfw-render")
+    destinationDirectory = File("$rootDir/installer-quilt/modules")
     from(nonJar)
 }
 

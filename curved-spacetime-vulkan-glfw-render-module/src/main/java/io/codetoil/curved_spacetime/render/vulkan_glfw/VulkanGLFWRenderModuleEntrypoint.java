@@ -19,13 +19,12 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.VulkanGLFWRenderer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
-import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;

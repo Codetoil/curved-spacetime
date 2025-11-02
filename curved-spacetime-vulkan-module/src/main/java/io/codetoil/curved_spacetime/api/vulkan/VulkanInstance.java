@@ -55,8 +55,6 @@ public class VulkanInstance
 			KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
 	public static final String DBG_CALLBACK_PREF = "VkDebugUtilsCallback, {}";
 
-	protected VulkanPhysicalDevice vulkanPhysicalDevice;
-	protected VulkanLogicalDevice vulkanLogicalDevice;
 	protected VkInstance vkInstance;
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 	protected long vkDebugHandle;
@@ -166,11 +164,6 @@ public class VulkanInstance
 				this.vkDebugHandle = longBuff.get(0);
 			}
 		}
-/*
-		this.vulkanPhysicalDevice =
-				VulkanPhysicalDevice.createPhysicalDevice(this,
-						((VulkanModuleConfig) vulkanModuleEntrypoint.getConfig()).getPreferredDeviceName());
-		this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);*/
 	}
 
 	private List<String> getSupportedValidationLayers()
@@ -270,9 +263,6 @@ public class VulkanInstance
 
 	public void cleanup()
 	{
-//		this.vulkanLogicalDevice.waitIdle();
-//		this.vulkanLogicalDevice.cleanup();
-//		this.vulkanPhysicalDevice.cleanup();
 		Logger.debug("Destroying Vulkan Instance");
 		if (this.vkDebugHandle != VK13.VK_NULL_HANDLE)
 		{
@@ -289,15 +279,5 @@ public class VulkanInstance
 	public VkInstance getVkInstance()
 	{
 		return this.vkInstance;
-	}
-
-	public VulkanLogicalDevice getVulkanLogicalDevice()
-	{
-		return this.vulkanLogicalDevice;
-	}
-
-	public VulkanPhysicalDevice getVulkanPhysicalDevice()
-	{
-		return this.vulkanPhysicalDevice;
 	}
 }

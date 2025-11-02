@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.api.webserver.openapi;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.openapi.WebserverOpenAPIModuleEntrypoint;
 
 public interface WebserverOpenAPIModuleDependentModuleInitializer

@@ -24,8 +24,10 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 import org.tinylog.Logger;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,23 +43,7 @@ public class VulkanLogicalDevice
 		this.vulkanPhysicalDevice = vulkanPhysicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			// Define required extensions
-			Set<String> deviceExtensions = getDeviceExtensions();
-			boolean usePortability =
-					deviceExtensions.contains(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME) &&
-							VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
-			int numExtensions = usePortability ? 2 : 1;
-			PointerBuffer requiredExtensions = stack.mallocPointer(numExtensions);
-			requiredExtensions.put(stack.ASCII(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME));
-			if (usePortability)
-			{
-				requiredExtensions.put(stack.ASCII(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME));
-			}
-			requiredExtensions.flip();
-
-			// Set up required features
-			VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.calloc(stack);
-
+			PointerBuffer reqExtensions = this.createReqExtensions(stack);
 			// Enable all the queue families
 			VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanPhysicalDevice.getVkQueueFamilyProps();
 			int numQueueFamilies = queuePropsBuff.capacity();
@@ -66,13 +52,16 @@ public class VulkanLogicalDevice
 			for (int index = 0; index < numQueueFamilies; index++)
 			{
 				FloatBuffer priorities = stack.callocFloat(queuePropsBuff.get(index).queueCount());
-				queueCreationInfoBuf.get(index).sType(VK13.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
-						.queueFamilyIndex(index).pQueuePriorities(priorities);
+				queueCreationInfoBuf.get(index)
+						.sType$Default()
+						.queueFamilyIndex(index)
+						.pQueuePriorities(priorities);
 			}
 
 			VkDeviceCreateInfo deviceCreateInfo =
-					VkDeviceCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
-							.ppEnabledExtensionNames(requiredExtensions).pEnabledFeatures(features)
+					VkDeviceCreateInfo.calloc(stack)
+							.sType$Default()
+							.ppEnabledExtensionNames(reqExtensions)
 							.pQueueCreateInfos(queueCreationInfoBuf);
 
 			PointerBuffer pp = stack.mallocPointer(1);
@@ -83,13 +72,34 @@ public class VulkanLogicalDevice
 		}
 	}
 
+	private PointerBuffer createReqExtensions(MemoryStack stack) {
+		Set<String> deviceExtensions = getDeviceExtensions();
+		boolean usePortability =
+				deviceExtensions.contains(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME)
+				&& VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
+
+		var extensionList = new ArrayList<ByteBuffer>();
+		for (String extension : VulkanPhysicalDevice.REQUIRED_EXTENSIONS) {
+			extensionList.add(stack.ASCII(extension));
+		}
+		if (usePortability) {
+			extensionList.add(stack.ASCII(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME));
+		}
+
+		PointerBuffer requiredExtensions = stack.mallocPointer(extensionList.size());
+		extensionList.forEach(requiredExtensions::put);
+		requiredExtensions.flip();
+
+		return requiredExtensions;
+	}
+
 	private Set<String> getDeviceExtensions()
 	{
 		Set<String> deviceExtensions = new HashSet<>();
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			IntBuffer numExtensionsBuf = stack.callocInt(1);
-			VK13.vkEnumerateDeviceExtensionProperties(vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
+			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
 					numExtensionsBuf, null);
 			int numExtensions = numExtensionsBuf.get(0);
 			Logger.debug("Device supports [{}] extensions", numExtensions);

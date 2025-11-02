@@ -23,7 +23,7 @@ module io.codetoil.curved_spacetime.render.vulkan {
 	requires io.codetoil.curved_spacetime.vulkan;
 	requires org.lwjgl;
 	requires org.lwjgl.vulkan;
-	requires org.quiltmc.loader;
+	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime.render.vulkan;
 	exports io.codetoil.curved_spacetime.api.render.vulkan;

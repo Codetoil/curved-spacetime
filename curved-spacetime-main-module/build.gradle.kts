@@ -31,26 +31,21 @@ tasks.shadowJar {
         include(dependency("org.tinylog:tinylog-api"))
         include(dependency("org.lwjgl:lwjgl"))
     }
-    destinationDirectory = File("$rootDir/installer")
+    destinationDirectory = File("$rootDir/installer-quilt")
     from(nonJar)
 }
 
 dependencies {
-    nonJar(files("../LICENSE.md"))
+    nonJar(files("../LICENSE.md", "../Notices.md"))
+    
     api("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
     api("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
+    api(project(":curved-spacetime-loader-module"))
 
     api("org.tinylog:tinylog-api:${rootProject.extra["tinyLoggerVersion"]}")
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
-
-    api(project(":curved-spacetime-quilt-loader-patches"))
-    api("org.quiltmc:quilt-loader:${rootProject.extra["quiltLoaderVersion"]}") {
-        exclude("annotations")
-    }
-    implementation("org.quiltmc:quilt-loader-dependencies:${rootProject.extra["quiltLoaderVersion"]}")
-    implementation("net.fabricmc:sponge-mixin:${rootProject.extra["fabricMixinVersion"]}")
 
     runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
     (rootProject.extra["lwjglNativesNames"] as List<*>)

@@ -19,6 +19,7 @@
 module io.codetoil.curved_spacetime.render {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
+	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime.render;
 	exports io.codetoil.curved_spacetime.api.render.entrypoint;

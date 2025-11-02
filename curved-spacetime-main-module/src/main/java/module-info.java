@@ -18,12 +18,10 @@
 
 module io.codetoil.curved_spacetime {
 	requires org.tinylog.api;
-	requires org.quiltmc.loader;
-	requires org.jetbrains.annotations;
+	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime;
 	exports io.codetoil.curved_spacetime.api;
-	exports io.codetoil.curved_spacetime.api.entrypoint;
 	exports io.codetoil.curved_spacetime.api.scene;
 	exports io.codetoil.curved_spacetime.api.engine;
 }

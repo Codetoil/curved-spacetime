@@ -20,7 +20,8 @@ repositories {
 }
 
 dependencies {
-    nonJar(files("../LICENSE.md"))
+    nonJar(files("../LICENSE.md", "../Notices.md"))
+    
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-webserver-module"))
 
@@ -35,7 +36,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/installer/webserver-openapi")
+    destinationDirectory = File("$rootDir/installer-quilt/webserver-openapi")
     from(nonJar)
 }
 

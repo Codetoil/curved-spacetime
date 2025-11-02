@@ -19,8 +19,8 @@
 package io.codetoil.curved_spacetime.glfw;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.glfw.entrypoint.GLFWModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -45,7 +45,8 @@ public class GLFWModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			Engine.callDependents("glfw_module_dependent", GLFWModuleDependentModuleInitializer.class,
+			Engine.callDependents("glfw_module_dependent",
+					GLFWModuleDependentModuleInitializer.class,
 					(GLFWModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
 							vulkanModuleDependentModuleInitializer.onInitialize(this));
 		} catch (Throwable e)

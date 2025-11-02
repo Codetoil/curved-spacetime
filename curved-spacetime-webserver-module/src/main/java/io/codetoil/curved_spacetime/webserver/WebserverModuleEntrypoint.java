@@ -20,8 +20,8 @@ package io.codetoil.curved_spacetime.webserver;
 
 import com.sun.net.httpserver.HttpServer;
 import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.webserver.WebserverModuleDependentModuleInitializer;
 
 import java.io.IOException;

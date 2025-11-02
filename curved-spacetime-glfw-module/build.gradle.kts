@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    nonJar(files("../LICENSE.md"))
+    nonJar(files("../LICENSE.md", "../Notices.md"))
     api(project(":curved-spacetime-main-module"))
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
@@ -44,7 +44,7 @@ tasks.shadowJar {
         exclude(dependency("io.codetoil:.*"))
         include(dependency("org.lwjgl:.*"))
     }
-    destinationDirectory = File("$rootDir/installer/vulkan-glfw-render")
+    destinationDirectory = File("$rootDir/installer-quilt/modules")
     from(nonJar)
 }
 

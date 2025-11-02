@@ -30,15 +30,13 @@ import java.nio.IntBuffer;
 
 public class VulkanGraphicsQueue extends VulkanQueue
 {
-
+	public VulkanGraphicsQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueFamilyIndex, int queueIndex)
+	{
+		super(vulkanLogicalDevice, queueFamilyIndex, queueIndex);
+	}
 	public VulkanGraphicsQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueIndex)
 	{
-		this(vulkanLogicalDevice, VulkanGraphicsQueue.getGraphicsQueueFamilyIndex(vulkanLogicalDevice), queueIndex);
-	}
-
-	public VulkanGraphicsQueue(VulkanLogicalDevice vulkanLogicalDevice, int graphicsQueueFamilyIndex, int queueIndex)
-	{
-		super(vulkanLogicalDevice, graphicsQueueFamilyIndex, queueIndex);
+		super(vulkanLogicalDevice, getGraphicsQueueFamilyIndex(vulkanLogicalDevice), queueIndex);
 	}
 
 	private static int getGraphicsQueueFamilyIndex(VulkanLogicalDevice vulkanLogicalDevice)

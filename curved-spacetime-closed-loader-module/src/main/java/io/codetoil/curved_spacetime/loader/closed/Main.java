@@ -1,0 +1,13 @@
+package io.codetoil.curved_spacetime.loader.closed;
+
+import io.codetoil.curved_spacetime.api.engine.Engine;
+import org.tinylog.Logger;
+
+public class Main
+{
+	static void main(String[] args)
+	{
+		Logger.info("Starting closed-world version of Engine!");
+		Engine.main(args, new CurvedSpacetimeLoaderClosedLoader());
+	}
+}

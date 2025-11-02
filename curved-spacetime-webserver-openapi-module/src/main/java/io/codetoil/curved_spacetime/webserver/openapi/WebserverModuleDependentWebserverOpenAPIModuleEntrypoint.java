@@ -18,10 +18,10 @@
 
 package io.codetoil.curved_spacetime.webserver.openapi;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.webserver.WebserverModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
-import org.quiltmc.loader.api.QuiltLoader;
 
 public class WebserverModuleDependentWebserverOpenAPIModuleEntrypoint implements
 		WebserverModuleDependentModuleInitializer
@@ -32,7 +32,8 @@ public class WebserverModuleDependentWebserverOpenAPIModuleEntrypoint implements
 	{
 		try
 		{
-			QuiltLoader.getEntrypoints("main", ModuleInitializer.class).stream()
+			Engine.getInstance().getCurvedSpacetimeLoader()
+					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(WebserverOpenAPIModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(webserverModuleEntrypoint);
 		} catch (InterruptedException e)

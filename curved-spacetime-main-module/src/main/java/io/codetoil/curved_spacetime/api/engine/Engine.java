@@ -19,12 +19,10 @@
 package io.codetoil.curved_spacetime.api.engine;
 
 import io.codetoil.curved_spacetime.MainModuleConfig;
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneCallback;
-import org.quiltmc.loader.api.QuiltLoader;
-import org.quiltmc.loader.impl.QuiltLoaderImpl;
-import org.quiltmc.loader.impl.entrypoint.EntrypointUtils;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -39,16 +37,19 @@ import java.util.function.Consumer;
 
 public class Engine
 {
-	private static Engine INSTANCE;
+	protected static Engine INSTANCE;
 	public final MainModuleConfig mainModuleConfig;
 	protected final ScheduledExecutorService sceneCallbackExecutor;
 	private final Map<String, SceneCallback> sceneCallbackMap = new HashMap<>();
+	protected final CurvedSpacetimeLoader loader;
 	public Scene scene;
 	protected Future<?> sceneCallbackInitializeHandler;
 	protected ScheduledFuture<?> sceneCallbackLoopHandler;
 
-	public Engine()
+	public Engine(CurvedSpacetimeLoader loader)
 	{
+		INSTANCE = this;
+		this.loader = loader;
 		try
 		{
 			this.mainModuleConfig = new MainModuleConfig().load();
@@ -58,46 +59,49 @@ public class Engine
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
 		this.scene = new Scene();
-
 		this.sceneCallbackExecutor = Executors.newSingleThreadScheduledExecutor();
+		Logger.info("Running Entrypoints in parallel");
+		this.runEntrypoints();
+		Logger.info("Initializing Scene Callbacks");
+		this.sceneCallbackInitializeHandler = this.sceneCallbackExecutor.submit(() ->
+				this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.init()));
+		Logger.info("Looping Scene Callbacks");
+		this.sceneCallbackLoopHandler = this.sceneCallbackExecutor.scheduleAtFixedRate(() ->
+						this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop()),
+				1_000 / this.mainModuleConfig.getFPS(),
+				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args, CurvedSpacetimeLoader loader)
 	{
-		Engine engine = new Engine();
-		Logger.info("Running Entrypoints in parallel");
-		engine.runEntrypoints();
-		Logger.info("Initializing Scene Callbacks");
-		engine.sceneCallbackInitializeHandler = engine.sceneCallbackExecutor.submit(() ->
-				engine.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.init()));
-		Logger.info("Looping Scene Callbacks");
-		engine.sceneCallbackLoopHandler = engine.sceneCallbackExecutor.scheduleAtFixedRate(() ->
-						engine.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop()),
-				1_000 / engine.mainModuleConfig.getFPS(),
-				1_000 / engine.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
+		INSTANCE = new Engine(loader);
 	}
 
 	public void runEntrypoints()
 	{
-		QuiltLoaderImpl.INSTANCE.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
+		this.loader.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
 		try
 		{
-			Engine.callDependents("main", ModuleInitializer.class, ModuleInitializer::onInitialize);
+			Engine.callDependents("main", ModuleInitializer.class,
+					ModuleInitializer::onInitialize);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static <C> void callDependents(String name, Class<C> moduleInitializerClass, Consumer<C> onInitialize)
+	public static <E> void callDependents(String name,
+										  Class<E> moduleInitializerClass,
+										  Consumer<E> onInitialize)
 			throws Throwable
 	{
-		Logger.trace("Dependents of {}: {}\n", name, QuiltLoader.getEntrypoints(name, moduleInitializerClass));
+		Logger.trace("Dependents of {}: {}\n", name,
+				INSTANCE.loader.getEntrypoints(name, moduleInitializerClass));
 		try (ExecutorService moduleInitializerThreadPool = Executors.newCachedThreadPool())
 		{
 			CompletionService<?> completionService = new ExecutorCompletionService<>(moduleInitializerThreadPool);
 			List<Future<?>> futures = new ArrayList<>();
-			EntrypointUtils.invoke(name, moduleInitializerClass, moduleInitializer ->
+			INSTANCE.loader.invokeEntrypoints(name, moduleInitializerClass, moduleInitializer ->
 					futures.add(completionService.submit(() -> {
 						Logger.trace("{}: Calling {}.", name, moduleInitializer);
 						onInitialize.accept(moduleInitializer);
@@ -119,11 +123,14 @@ public class Engine
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public static Engine getInstance()
 	{
-		if (INSTANCE == null) INSTANCE = (Engine) QuiltLoader.getGameInstance();
 		return INSTANCE;
+	}
+
+	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
+	{
+		return loader;
 	}
 
 	public void registerSceneCallback(String id, SceneCallback sceneCallback)

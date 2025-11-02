@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.api.render.vulkan.entrypoint;
 
-import io.codetoil.curved_spacetime.api.entrypoint.ModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 
 public interface VulkanRenderModuleDependentModuleInitializer
