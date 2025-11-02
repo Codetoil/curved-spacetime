@@ -74,7 +74,6 @@ graalvmNative {
             if (System.getProperty("os.name").contains("Windows")) {
                 javaLauncher.set(javaToolchains.launcherFor {
                     languageVersion.set(JavaLanguageVersion.of(25))
-                    vendor.set(JvmVendorSpec.GRAAL_VM)
                 })
             }
             else
