@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
   curved-spacetime-windows-x64:
 
-    runs-on: windows-11
+    runs-on: windows-2025
     permissions:
       contents: read
       packages: write
