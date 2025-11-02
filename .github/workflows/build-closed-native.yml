@@ -99,4 +99,4 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: gradlew.bat :curved-spacetime-closed-loader-module:nativeCompile
+        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
