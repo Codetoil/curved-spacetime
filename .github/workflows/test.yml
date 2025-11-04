@@ -10,11 +10,8 @@ name: Test
 on:
   workflow_dispatch:
   pull_request:
-  push:
-    branches:
-      - master
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   test-loader-module:
