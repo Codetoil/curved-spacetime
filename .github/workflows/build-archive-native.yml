@@ -120,7 +120,7 @@ jobs:
 
     permissions:
       contents: read
-      packages: writeos.arch java
+      packages: write
 
     steps:
       - uses: actions/checkout@v5
