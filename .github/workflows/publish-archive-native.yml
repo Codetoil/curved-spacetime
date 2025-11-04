@@ -79,8 +79,7 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-native-windows-x64/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-closed-native-variant-windows-x64-${{ vars.VERSION }}-${{ github.sha }}.zip .
-        working-directory: archive-closed-native-windows-x64
+      - run: Compress-Archive -Path ./archive-closed-native-windows-x64/* -DestinationPath ./curved-spacetime-closed-native-variant-windows-x64-${{ vars.VERSION }}-${{ github.sha }}.zip
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
