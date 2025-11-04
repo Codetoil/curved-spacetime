@@ -66,7 +66,7 @@ publishing {
                 packaging = "jar"
 
                 name = "Curved Spacetime Vulkan Module"
-                url = "https://codetoil.io/curved-spacetime"
+                url = "https://github.com/Codetoil/curved-spacetime"
                 inceptionYear = "2023"
                 licenses {
                     license {

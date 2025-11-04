@@ -65,7 +65,7 @@ publishing {
                 packaging = "jar"
 
                 name = "Curved Spacetime GLFW Module"
-                url = "https://codetoil.io/curved-spacetime"
+                url = "https://github.com/Codetoil/curved-spacetime"
                 inceptionYear = "2025"
                 licenses {
                     license {

@@ -69,7 +69,7 @@ publishing {
                 packaging = "jar"
 
                 name = "Curved Spacetime Quilt Loader Module"
-                url = "https://codetoil.io/curved-spacetime"
+                url = "https://github.com/Codetoil/curved-spacetime"
                 inceptionYear = "2023"
                 licenses {
                     license {
