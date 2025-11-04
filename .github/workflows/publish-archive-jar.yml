@@ -7,9 +7,9 @@ on:
 jobs:
   publish-curved-spacetime-archive:
     runs-on: ubuntu-24.04
+
     permissions:
-      contents: read
-      packages: write
+      contents: write
 
     steps:
       - uses: actions/checkout@v5

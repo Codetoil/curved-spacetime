@@ -6,8 +6,6 @@ on:
     branches:
       - master
 
-
-
 jobs:
   create-debug-release:
     runs-on: ubuntu-24.04
