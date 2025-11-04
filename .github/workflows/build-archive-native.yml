@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: curved-spacetime-closed-native-variant-0.1.0-SNAPSHOT-linux-arm64
-          path: archive-closed-native-linux-arm/**
+          path: archive-closed-native-linux-arm64/**
   build-curved-spacetime-closed-windows-x64:
     name: Build curved-spacetime (Closed Native Variant) Windows x64
     runs-on: windows-2025
