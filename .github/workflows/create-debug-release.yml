@@ -93,11 +93,11 @@ jobs:
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ vars.VERSION }}-${{ github.sha }}
           name: "Debug Release ${{ vars.VERSION }}-${{ github.sha }}"
+          generate_release_notes: true
           body_path: release_body.md
           draft: false
           prerelease: true
+          token: ${{ secrets.CURVED_SPACETIME_DEBUG_RELEASE_PAT }}
