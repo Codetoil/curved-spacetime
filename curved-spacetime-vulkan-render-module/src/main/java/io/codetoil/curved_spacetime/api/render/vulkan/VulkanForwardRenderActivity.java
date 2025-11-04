@@ -115,13 +115,13 @@ public class VulkanForwardRenderActivity
 			VulkanCommandBuffer vulkanCommandBuffer = this.vulkanCommandBuffers[idx];
 			VulkanFence currentVulkanFence = this.vulkanFences[idx];
 			currentVulkanFence.reset();
-			VulkanSwapChain.SynchronizationVulkanSemaphores synchronizationVulkanSemaphores =
-					this.vulkanSwapChain.getSyncVulkanSemaphoreList()[idx];
-			vulkanGraphicsQueue.submit(stack.pointers(vulkanCommandBuffer.getVkCommandBuffer()),
-					stack.longs(synchronizationVulkanSemaphores.imageAcquisitionVulkanSemaphore().getVkSemaphore()),
-					stack.ints(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
-					stack.longs(synchronizationVulkanSemaphores.renderCompleteVulkanSemaphore().getVkSemaphore()),
-					currentVulkanFence);
+			//VulkanSwapChain.SynchronizationVulkanSemaphores synchronizationVulkanSemaphores =
+			//		this.vulkanSwapChain.getSyncVulkanSemaphoreList()[idx];
+			//vulkanGraphicsQueue.submit(stack.pointers(vulkanCommandBuffer.getVkCommandBuffer()),
+			//		stack.longs(synchronizationVulkanSemaphores.imageAcquisitionVulkanSemaphore().getVkSemaphore()),
+			//		stack.ints(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
+			//		stack.longs(synchronizationVulkanSemaphores.renderCompleteVulkanSemaphore().getVkSemaphore()),
+			//		currentVulkanFence);
 		}
 	}
 }

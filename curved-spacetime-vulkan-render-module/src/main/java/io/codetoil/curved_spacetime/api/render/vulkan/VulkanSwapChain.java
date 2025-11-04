@@ -30,9 +30,7 @@ import org.tinylog.Logger;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class VulkanSwapChain
 {
@@ -42,13 +40,14 @@ public class VulkanSwapChain
 	protected final VulkanSwapChain.VulkanSurfaceFormat vulkanSurfaceFormat;
 	protected final VkExtent2D vulkanSwapChainExtent;
 	protected final long vkSwapChain;
-	protected final SynchronizationVulkanSemaphores[] synchronizationVulkanSemaphoresList;
+	//protected final SynchronizationVulkanSemaphores[] synchronizationVulkanSemaphoresList;
 	protected int currentFrame;
 
 	public VulkanSwapChain(VulkanLogicalDevice vulkanLogicalDevice, VulkanSurface surface, Window window,
-						   int requestedImages, boolean vsync,
-						   VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanPresentationQueue,
-						   VulkanGraphicsQueue[] vulkanConcurrentQueues)
+						   int requestedImages, boolean vsync//,
+						   // VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanPresentationQueue,
+						   // VulkanGraphicsQueue[] vulkanConcurrentQueues
+	)
 	{
 		Logger.debug("Creating Vulkan SwapChain");
 		this.vulkanLogicalDevice = vulkanLogicalDevice;
@@ -58,29 +57,35 @@ public class VulkanSwapChain
 			VulkanPhysicalDevice vulkanPhysicalDevice = vulkanLogicalDevice.getPhysicalDevice();
 
 			// Get surface capabilities
-			VkSurfaceCapabilitiesKHR surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack);
-			VulkanUtils.vkCheck(
-					KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanPhysicalDevice.getVkPhysicalDevice(),
-							surface.getVkSurface(), surfCapabilities), "Failed to get surface capabilities");
+			VkSurfaceCapabilitiesKHR surfaceCaps = surface.getSurfaceCaps();
 
-			int numImages = calcNumImages(surfCapabilities, requestedImages);
-			this.synchronizationVulkanSemaphoresList = new SynchronizationVulkanSemaphores[numImages];
+			int requiredImages = calcNumImages(surfaceCaps, requestedImages);
+
+			/*this.synchronizationVulkanSemaphoresList = new SynchronizationVulkanSemaphores[requiredImages];
 			Arrays.setAll(this.synchronizationVulkanSemaphoresList,
 					i -> new SynchronizationVulkanSemaphores(this.vulkanLogicalDevice));
-			this.currentFrame = 0;
+			this.currentFrame = 0;*/
+
+			this.vulkanSwapChainExtent = calcSwapChainExtent(window, surfaceCaps);
 
 			this.vulkanSurfaceFormat = calcSurfaceFormat(vulkanPhysicalDevice, surface);
 
-			this.vulkanSwapChainExtent = calcSwapChainExtent(window, surfCapabilities);
-
 			VkSwapchainCreateInfoKHR vkSwapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc(stack)
-					.sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR).surface(surface.getVkSurface())
-					.minImageCount(numImages).imageFormat(this.vulkanSurfaceFormat.imageFormat())
-					.imageColorSpace(this.vulkanSurfaceFormat.colorSpace()).imageExtent(this.vulkanSwapChainExtent)
-					.imageArrayLayers(1).imageUsage(VK13.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
-					.preTransform(surfCapabilities.currentTransform())
-					.compositeAlpha(KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR).clipped(true);
-			int numQueues = vulkanConcurrentQueues != null ? vulkanConcurrentQueues.length : 0;
+					.sType$Default()
+					.surface(surface.getVkSurface())
+					.minImageCount(requiredImages)
+					.imageFormat(this.vulkanSurfaceFormat.imageFormat())
+					.imageColorSpace(this.vulkanSurfaceFormat.colorSpace())
+					.imageExtent(this.vulkanSwapChainExtent)
+					.imageArrayLayers(1)
+					.imageUsage(VK13.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+					.preTransform(surfaceCaps.currentTransform())
+					.compositeAlpha(KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
+					.clipped(true);
+			vkSwapchainCreateInfo.presentMode(
+					vsync ? KHRSurface.VK_PRESENT_MODE_FIFO_KHR : KHRSurface.VK_PRESENT_MODE_IMMEDIATE_KHR);
+
+			/*int numQueues = vulkanConcurrentQueues != null ? vulkanConcurrentQueues.length : 0;
 			List<Integer> indices = new ArrayList<>();
 			for (int i = 0; i < numQueues; i++)
 			{
@@ -100,7 +105,8 @@ public class VulkanSwapChain
 			} else
 			{
 				vkSwapchainCreateInfo.imageSharingMode(VK13.VK_SHARING_MODE_EXCLUSIVE);
-			}
+			}*/
+
 			LongBuffer lp = stack.mallocLong(1);
 			VulkanUtils.vkCheck(
 					KHRSwapchain.vkCreateSwapchainKHR(vulkanLogicalDevice.getVkDevice(), vkSwapchainCreateInfo, null,
@@ -123,7 +129,7 @@ public class VulkanSwapChain
 		}
 		result = Math.max(result, minImages);
 		Logger.debug(
-				"Requested [{}] images, got [{}] images. Surface capabilities, maxImages: [{}], " + "minImages: [{}]",
+				"Requested [{}] images, got [{}] images. Surface capabilities, maxImages: [{}], minImages: [{}]",
 				requestedImages, result, maxImages, minImages);
 		return result;
 	}
@@ -175,7 +181,7 @@ public class VulkanSwapChain
 		if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF)
 		{
 			// Surface size undefined. Set to the window size if within bounds
-			int width = Math.min(window.getWidth(), surfCapabilities.maxImageCount());
+			int width = Math.min(window.getWidth(), surfCapabilities.maxImageExtent().width());
 			width = Math.max(width, surfCapabilities.minImageExtent().width());
 
 			int height = Math.min(window.getHeight(), surfCapabilities.maxImageExtent().height());
@@ -220,7 +226,7 @@ public class VulkanSwapChain
 	public void cleanup()
 	{
 		Logger.debug("Destroying Vulkan SwapChain");
-		Arrays.asList(synchronizationVulkanSemaphoresList).forEach(SynchronizationVulkanSemaphores::cleanup);
+		//Arrays.asList(synchronizationVulkanSemaphoresList).forEach(SynchronizationVulkanSemaphores::cleanup);
 		this.vulkanSwapChainExtent.free();
 		Arrays.asList(this.vulkanImageViews).forEach(VulkanImageView::cleanup);
 		KHRSwapchain.vkDestroySwapchainKHR(this.vulkanLogicalDevice.getVkDevice(), this.vkSwapChain, null);
@@ -241,10 +247,10 @@ public class VulkanSwapChain
 		return this.currentFrame;
 	}
 
-	public SynchronizationVulkanSemaphores[] getSyncVulkanSemaphoreList()
+	/*public SynchronizationVulkanSemaphores[] getSyncVulkanSemaphoreList()
 	{
 		return this.synchronizationVulkanSemaphoresList;
-	}
+	}*/
 
 	public VkExtent2D getVulkanSwapChainExtent()
 	{
@@ -256,7 +262,7 @@ public class VulkanSwapChain
 		return this.vulkanImageViews;
 	}
 
-	public int acquireNextImage()
+	/*public int acquireNextImage()
 	{
 		int imageIndex;
 		try (MemoryStack stack = MemoryStack.stackPush())
@@ -302,7 +308,7 @@ public class VulkanSwapChain
 			currentFrame = (currentFrame + 1) % vulkanImageViews.length;
 			return resize;
 		}
-	}
+	}*/
 
 	public record VulkanSurfaceFormat(int imageFormat, int colorSpace)
 	{

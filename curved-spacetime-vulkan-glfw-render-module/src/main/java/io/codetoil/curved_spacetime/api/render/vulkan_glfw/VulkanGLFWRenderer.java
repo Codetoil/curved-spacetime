@@ -30,6 +30,8 @@ import io.codetoil.curved_spacetime.api.vulkan.VulkanInstance;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.VulkanPhysicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan_glfw.VulkanGLFWWindow;
+import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleEntrypoint;
 import org.lwjgl.glfw.GLFWVulkan;
 
@@ -67,19 +69,19 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 		this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);
 		this.vulkanSurface = new VulkanGLFWSurface(this.vulkanInstance, this.vulkanPhysicalDevice,
 				this.vulkanGLFWWindow.getWindowHandle());
-		/*this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanInstance.getVulkanLogicalDevice(), 0);
-		this.vulkanGraphicsPresentQueue =
-				new VulkanGraphicsQueue.VulkanGraphicsPresentQueue(this.vulkanInstance.getVulkanLogicalDevice(),
-						this.vulkanSurface, 0);
+		this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanLogicalDevice, 0);
+		//this.vulkanGraphicsPresentQueue =
+		//		new VulkanGraphicsQueue.VulkanGraphicsPresentQueue(this.vulkanInstance.getVulkanLogicalDevice(),
+		//				this.vulkanSurface, 0);
 		this.vulkanSwapChain =
-				new VulkanSwapChain(this.vulkanInstance.getVulkanLogicalDevice(), this.vulkanSurface,
+				new VulkanSwapChain(this.vulkanLogicalDevice, this.vulkanSurface,
 						this.vulkanGLFWWindow,
 						((VulkanGLFWRenderModuleConfig) this.entrypoint.getConfig())
 								.getRequestedImages(),
 						((GLFWRenderModuleConfig) this.entrypoint.getGlfwRenderModuleEntrypoint().getConfig())
-								.hasVSync(), this.vulkanGraphicsPresentQueue,
-						new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
-		this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
+								.hasVSync());//, this.vulkanGraphicsPresentQueue,
+						// new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
+		/*this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
 		this.vulkanForwardRenderActivity =
 				new VulkanForwardRenderActivity(this.vulkanSwapChain, this.vulkanGraphicsCommandPool);*/
@@ -99,10 +101,10 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 
 	public void clean()
 	{
-		/*this.vulkanGraphicsPresentQueue.waitIdle();
+		//this.vulkanGraphicsPresentQueue.waitIdle();
 		this.vulkanGraphicsQueue.waitIdle();
-		this.vulkanForwardRenderActivity.cleanup();
-		this.vulkanSwapChain.cleanup();*/
+		//this.vulkanForwardRenderActivity.cleanup();
+		this.vulkanSwapChain.cleanup();
 		this.vulkanSurface.cleanup();
 		this.vulkanLogicalDevice.waitIdle();
 		this.vulkanLogicalDevice.cleanup();

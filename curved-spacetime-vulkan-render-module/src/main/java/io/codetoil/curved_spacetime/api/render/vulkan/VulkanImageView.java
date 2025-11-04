@@ -33,6 +33,7 @@ public class VulkanImageView
 
 	private final VulkanLogicalDevice vulkanLogicalDevice;
 	private final long vkImageView;
+	private final long vkImage;
 
 	public VulkanImageView(VulkanLogicalDevice vulkanLogicalDevice, long vkImage,
 						   VulkanImageViewData vulkanImageViewData)
@@ -40,16 +41,25 @@ public class VulkanImageView
 		this.vulkanLogicalDevice = vulkanLogicalDevice;
 		this.aspectMask = vulkanImageViewData.aspectMask;
 		this.mipLevels = vulkanImageViewData.mipLevels;
+		this.vkImage = vkImage;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			LongBuffer lp = stack.mallocLong(1);
 			VkImageViewCreateInfo viewCreateInfo =
-					VkImageViewCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
-							.image(vkImage).viewType(vulkanImageViewData.viewType).format(vulkanImageViewData.format)
+					VkImageViewCreateInfo
+							.calloc(stack)
+							.sType$Default()
+							.image(vkImage)
+							.viewType(vulkanImageViewData.viewType)
+							.format(vulkanImageViewData.format)
 							.subresourceRange(
-									it -> it.aspectMask(this.aspectMask).baseMipLevel(0).levelCount(this.mipLevels)
-											.baseMipLevel(vulkanImageViewData.baseArrayLayer)
-											.layerCount(vulkanImageViewData.layerCount));
+									it ->
+											it
+													.aspectMask(this.aspectMask)
+													.baseMipLevel(0)
+													.levelCount(this.mipLevels)
+													.baseMipLevel(vulkanImageViewData.baseArrayLayer)
+													.layerCount(vulkanImageViewData.layerCount));
 			VulkanUtils.vkCheck(VK13.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),
 					"Failed to create image view");
 			this.vkImageView = lp.get(0);
@@ -61,15 +71,30 @@ public class VulkanImageView
 		VK13.vkDestroyImageView(this.vulkanLogicalDevice.getVkDevice(), this.vkImageView, null);
 	}
 
+	public int getAspectMask()
+	{
+		return aspectMask;
+	}
+
+	public int getMipLevels()
+	{
+		return mipLevels;
+	}
+
 	public long getVkImageView()
 	{
 		return this.vkImageView;
 	}
 
+	public long getVkImage()
+	{
+		return vkImage;
+	}
+
 	public static class VulkanImageViewData
 	{
-		private final int baseArrayLayer;
-		private final int mipLevels;
+		private int baseArrayLayer;
+		private int mipLevels;
 		private int aspectMask;
 		private int format;
 		private int layerCount;
@@ -91,6 +116,7 @@ public class VulkanImageView
 
 		public VulkanImageView.VulkanImageViewData baseArrayLayer(int baseArrayLayer)
 		{
+			this.baseArrayLayer = baseArrayLayer;
 			return this;
 		}
 
@@ -106,10 +132,17 @@ public class VulkanImageView
 			return this;
 		}
 
+		public VulkanImageView.VulkanImageViewData mipLevels(int mipLevels)
+		{
+			this.mipLevels = mipLevels;
+			return this;
+		}
+
 		public VulkanImageView.VulkanImageViewData viewType(int viewType)
 		{
 			this.viewType = viewType;
 			return this;
 		}
+
 	}
 }
