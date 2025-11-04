@@ -34,18 +34,20 @@ import java.util.Set;
 
 public class VulkanPhysicalDevice
 {
+	protected static final Set<String> REQUIRED_EXTENSIONS;
+
+	static
+	{
+		REQUIRED_EXTENSIONS = new HashSet<>();
+		REQUIRED_EXTENSIONS.add(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+	}
+
 	private final VkExtensionProperties.Buffer vkDeviceExtensions;
 	private final VkPhysicalDeviceMemoryProperties vkMemoryProperties;
 	private final VkPhysicalDevice vkPhysicalDevice;
 	private final VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures;
 	private final VkPhysicalDeviceProperties2 vkPhysicalDeviceProperties;
 	private final VkQueueFamilyProperties.Buffer vkQueueFamilyProps;
-	protected static final Set<String> REQUIRED_EXTENSIONS;
-
-	static {
-		REQUIRED_EXTENSIONS = new HashSet<>();
-		REQUIRED_EXTENSIONS.add(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-	}
 
 	private VulkanPhysicalDevice(VkPhysicalDevice vkPhysicalDevice)
 	{
@@ -98,18 +100,21 @@ public class VulkanPhysicalDevice
 
 			//Populate available devices
 			List<VulkanPhysicalDevice> physDevices = new ArrayList<>();
-			for (int i = 0; i < numDevices; i++) {
+			for (int i = 0; i < numDevices; i++)
+			{
 				var vkPhysicalDevice = new VkPhysicalDevice(pPhysicalDevices.get(i), instance.getVkInstance());
 				var physDevice = new VulkanPhysicalDevice(vkPhysicalDevice);
 
 				String deviceName = physDevice.getDeviceName();
-				if (!physDevice.hasGraphicsQueueFamily()) {
+				if (!physDevice.hasGraphicsQueueFamily())
+				{
 					Logger.debug("Device [{}] does not support graphics queue family", deviceName);
 					physDevice.cleanup();
 					continue;
 				}
 
-				if (!physDevice.supportsExtensions(REQUIRED_EXTENSIONS)) {
+				if (!physDevice.supportsExtensions(REQUIRED_EXTENSIONS))
+				{
 					Logger.debug("Device [{}] does not support required extensions", deviceName);
 					physDevice.cleanup();
 					continue;
@@ -117,14 +122,17 @@ public class VulkanPhysicalDevice
 
 				String preferredDeviceName = ((VulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
 						.getPreferredDeviceName();
-				if (preferredDeviceName != null && preferredDeviceName.equals(deviceName)) {
+				if (preferredDeviceName != null && preferredDeviceName.equals(deviceName))
+				{
 					selectedVulkanPhysicalDevice = physDevice;
 					break;
 				}
 				if (physDevice.vkPhysicalDeviceProperties.properties().deviceType()
-						== VK13.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+						== VK13.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+				{
 					physDevices.addFirst(physDevice);
-				} else {
+				} else
+				{
 					physDevices.add(physDevice);
 				}
 			}
@@ -136,7 +144,8 @@ public class VulkanPhysicalDevice
 			// Clean up non-selected devices
 			physDevices.forEach(VulkanPhysicalDevice::cleanup);
 
-			if (selectedVulkanPhysicalDevice == null) {
+			if (selectedVulkanPhysicalDevice == null)
+			{
 				throw new RuntimeException("No suitable physical devices found");
 			}
 
@@ -184,23 +193,6 @@ public class VulkanPhysicalDevice
 		return result;
 	}
 
-	public boolean supportsExtensions(Set<String> extensions) {
-		var copyExtensions = new HashSet<>(extensions);
-		int numExtensions = vkDeviceExtensions != null ? vkDeviceExtensions.capacity() : 0;
-		for (int i = 0; i < numExtensions; i++) {
-			String extensionName = vkDeviceExtensions.get(i).extensionNameString();
-			copyExtensions.remove(extensionName);
-		}
-
-		boolean result = copyExtensions.isEmpty();
-		if (!result) {
-			Logger.debug("At least [{}] extension is not supported by device [{}]",
-					copyExtensions.iterator().next(),
-					getDeviceName());
-		}
-		return result;
-	}
-
 	public void cleanup()
 	{
 		Logger.debug("Destroying physical device [{}]",
@@ -210,6 +202,26 @@ public class VulkanPhysicalDevice
 		this.vkQueueFamilyProps.free();
 		this.vkDeviceExtensions.free();
 		this.vkPhysicalDeviceProperties.free();
+	}
+
+	public boolean supportsExtensions(Set<String> extensions)
+	{
+		var copyExtensions = new HashSet<>(extensions);
+		int numExtensions = vkDeviceExtensions != null ? vkDeviceExtensions.capacity() : 0;
+		for (int i = 0; i < numExtensions; i++)
+		{
+			String extensionName = vkDeviceExtensions.get(i).extensionNameString();
+			copyExtensions.remove(extensionName);
+		}
+
+		boolean result = copyExtensions.isEmpty();
+		if (!result)
+		{
+			Logger.debug("At least [{}] extension is not supported by device [{}]",
+					copyExtensions.iterator().next(),
+					getDeviceName());
+		}
+		return result;
 	}
 
 	public VkPhysicalDeviceMemoryProperties getVkMemoryProperties()

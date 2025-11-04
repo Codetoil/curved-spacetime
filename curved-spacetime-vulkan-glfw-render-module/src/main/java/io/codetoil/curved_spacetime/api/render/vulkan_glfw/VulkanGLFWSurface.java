@@ -25,12 +25,9 @@ import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.glfw.GLFWVulkan;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
-import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.tinylog.Logger;
 
-import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
 public class VulkanGLFWSurface extends VulkanSurface
@@ -69,11 +66,6 @@ public class VulkanGLFWSurface extends VulkanSurface
 				null);
 	}
 
-	public long getVkSurface()
-	{
-		return this.vkSurface;
-	}
-
 	@Override
 	public VkSurfaceCapabilitiesKHR getSurfaceCaps()
 	{
@@ -84,5 +76,10 @@ public class VulkanGLFWSurface extends VulkanSurface
 	public SurfaceFormat getSurfaceFormat()
 	{
 		return this.surfaceFormat;
+	}
+
+	public long getVkSurface()
+	{
+		return this.vkSurface;
 	}
 }

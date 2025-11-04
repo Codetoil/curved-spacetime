@@ -54,7 +54,8 @@ public class VulkanUtils
 	{
 		if (err != VK13.VK_SUCCESS)
 		{
-			String errCode = switch (err) {
+			String errCode = switch (err)
+			{
 				case VK13.VK_NOT_READY -> "VK_NOT_READY";
 				case VK13.VK_TIMEOUT -> "VK_TIMEOUT";
 				case VK13.VK_EVENT_SET -> "VK_EVENT_SET";

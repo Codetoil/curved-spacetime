@@ -32,8 +32,6 @@ import java.util.function.Consumer;
 
 public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 {
-	private Object engine;
-
 	private static final String MAIN_ENTRYPOINT_NAME = "main";
 	private static final List<ModuleInitializer> MAIN_ENTRYPOINTS = List.of(
 			new GLFWModuleEntrypoint(),
@@ -46,7 +44,6 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			//new WebserverModuleEntrypoint(),
 			//new WebserverOpenAPIModuleEntrypoint()
 	);
-
 	private static final String GLFW_MODULE_DEPENDENT_ENTRYPOINT_NAME = "glfw_module_dependent";
 	private static final List<GLFWModuleDependentModuleInitializer> GLFW_MODULE_DEPENDENT_ENTRYPOINTS = List.of(
 			new GLFWModuleDependentGLFWRenderModuleEntrypoint(),
@@ -78,7 +75,6 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			= "vulkan_glfw_render_module_dependent";
 	private static final List<VulkanGLFWRenderModuleDependentModuleInitializer>
 			VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
-
 	private static final String WEBSERVER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "webserver_module_dependent";
 	private static final List<WebserverModuleDependentModuleInitializer> WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS
 			= List.of(new WebserverModuleDependentWebserverOpenAPIModuleEntrypoint());
@@ -86,6 +82,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			= "webserver_openapi_module_dependent";
 	private static final List<WebserverOpenAPIModuleDependentModuleInitializer>
 			WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
+	private Object engine;
 
 	@Override
 	public void prepareModInit(Path path, Object engine)
@@ -96,49 +93,59 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 	@Override
 	public <E> List<E> getEntrypoints(String name, Class<E> moduleInitializerClass)
 	{
-		if (MAIN_ENTRYPOINT_NAME.equals(name) && moduleInitializerClass.isAssignableFrom(ModuleInitializer.class)) {
+		if (MAIN_ENTRYPOINT_NAME.equals(name) && moduleInitializerClass.isAssignableFrom(ModuleInitializer.class))
+		{
 			return (List<E>) MAIN_ENTRYPOINTS;
 		}
 
 		if (GLFW_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(GLFWModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(GLFWModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) GLFW_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(RenderModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(RenderModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (VULKAN_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(VulkanModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(VulkanModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) VULKAN_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(GLFWRenderModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(GLFWRenderModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (VULKAN_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(VulkanRenderModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(VulkanRenderModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) VULKAN_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (VULKAN_GLFW_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(VulkanGLFWModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(VulkanGLFWModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) VULKAN_GLFW_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(VulkanGLFWRenderModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(VulkanGLFWRenderModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 
 		if (WEBSERVER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(WebserverModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(WebserverModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(WebserverOpenAPIModuleDependentModuleInitializer.class)) {
+				moduleInitializerClass.isAssignableFrom(WebserverOpenAPIModuleDependentModuleInitializer.class))
+		{
 			return (List<E>) WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 
-		throw new IllegalArgumentException("Cannot get Entrypoints: Invalid entrypoint type: " + name + " with class " 
+		throw new IllegalArgumentException("Cannot get Entrypoints: Invalid entrypoint type: " + name + " with class "
 				+ moduleInitializerClass + ". Add corresponding code to io.codetoil.curved_spacetime.loader.closed." +
 				"CurvedSpacetimeLoaderClosedLoader.");
 	}

@@ -113,6 +113,18 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 		}
 	}
 
+	@Override
+	public ModuleConfig getConfig()
+	{
+		return this.config;
+	}
+
+	@Override
+	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	{
+		return this.dependencyModuleTransferQueue;
+	}
+
 	public GLFWModuleEntrypoint getGlfwModuleEntrypoint()
 	{
 		return glfwModuleEntrypoint;
@@ -141,17 +153,5 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	public VulkanRenderModuleEntrypoint getVulkanRenderModuleEntrypoint()
 	{
 		return vulkanRenderModuleEntrypoint;
-	}
-
-	@Override
-	public ModuleConfig getConfig()
-	{
-		return this.config;
-	}
-
-	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
-	{
-		return this.dependencyModuleTransferQueue;
 	}
 }

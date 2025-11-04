@@ -65,7 +65,8 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 		this.vulkanPhysicalDevice =
 				VulkanPhysicalDevice.createPhysicalDevice(this.vulkanInstance, entrypoint.getVulkanModuleEntrypoint());
 		this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);
-		this.vulkanSurface = new VulkanGLFWSurface(this.vulkanInstance, this.vulkanPhysicalDevice, this.vulkanGLFWWindow.getWindowHandle());
+		this.vulkanSurface = new VulkanGLFWSurface(this.vulkanInstance, this.vulkanPhysicalDevice,
+				this.vulkanGLFWWindow.getWindowHandle());
 		/*this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanInstance.getVulkanLogicalDevice(), 0);
 		this.vulkanGraphicsPresentQueue =
 				new VulkanGraphicsQueue.VulkanGraphicsPresentQueue(this.vulkanInstance.getVulkanLogicalDevice(),

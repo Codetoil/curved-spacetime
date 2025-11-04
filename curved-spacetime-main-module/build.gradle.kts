@@ -37,7 +37,7 @@ tasks.shadowJar {
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
-    
+
     api("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
     api("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
     api(project(":curved-spacetime-loader-module"))

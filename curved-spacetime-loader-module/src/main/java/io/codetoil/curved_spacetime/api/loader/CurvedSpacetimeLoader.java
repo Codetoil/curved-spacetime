@@ -10,7 +10,8 @@ public interface CurvedSpacetimeLoader
 
 	<E> List<E> getEntrypoints(String name, Class<E> moduleInitializerClass);
 
-	<E> void invokeEntrypoints(String name, Class<E> moduleInitializerClass, Consumer<? super E> moduleInitializerConsumer);
+	<E> void invokeEntrypoints(String name, Class<E> moduleInitializerClass,
+							   Consumer<? super E> moduleInitializerConsumer);
 
 	Object getEngine();
 }

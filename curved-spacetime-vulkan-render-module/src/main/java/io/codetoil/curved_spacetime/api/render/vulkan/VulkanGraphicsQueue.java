@@ -34,6 +34,7 @@ public class VulkanGraphicsQueue extends VulkanQueue
 	{
 		super(vulkanLogicalDevice, queueFamilyIndex, queueIndex);
 	}
+
 	public VulkanGraphicsQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueIndex)
 	{
 		super(vulkanLogicalDevice, getGraphicsQueueFamilyIndex(vulkanLogicalDevice), queueIndex);

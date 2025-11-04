@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
-    
+
     api(project(":curved-spacetime-main-module"))
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))

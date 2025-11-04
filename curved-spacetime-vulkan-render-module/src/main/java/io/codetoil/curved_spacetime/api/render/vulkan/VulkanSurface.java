@@ -32,17 +32,16 @@ public abstract class VulkanSurface
 {
 	protected final VulkanPhysicalDevice vulkanPhysicalDevice;
 
-	public abstract void cleanup();
-
-	public abstract long getVkSurface();
-
-	public abstract VkSurfaceCapabilitiesKHR getSurfaceCaps();
-	public abstract SurfaceFormat getSurfaceFormat();
-
 	public VulkanSurface(VulkanPhysicalDevice vulkanPhysicalDevice)
 	{
 		this.vulkanPhysicalDevice = vulkanPhysicalDevice;
 	}
+
+	public abstract void cleanup();
+
+	public abstract VkSurfaceCapabilitiesKHR getSurfaceCaps();
+
+	public abstract SurfaceFormat getSurfaceFormat();
 
 	protected SurfaceFormat calcSurfaceFormat()
 	{
@@ -82,6 +81,9 @@ public abstract class VulkanSurface
 		return new SurfaceFormat(imageFormat, colorSpace);
 	}
 
-	public record SurfaceFormat(int imageFormat, int colorSpace) {
-}
+	public abstract long getVkSurface();
+
+	public record SurfaceFormat(int imageFormat, int colorSpace)
+	{
+	}
 }

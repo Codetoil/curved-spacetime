@@ -118,7 +118,8 @@ public class VulkanInstance
 			{
 				additionalExtensions.add(stack.UTF8(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME));
 			}
-			if (usePortability) {
+			if (usePortability)
+			{
 				additionalExtensions.add(stack.UTF8(PORTABILITY_EXTENSION));
 			}
 			int numAdditionalExtensions = additionalExtensions.size();
@@ -126,7 +127,8 @@ public class VulkanInstance
 			PointerBuffer requiredExtensions = stack.mallocPointer(windowExtensions.remaining() +
 					numAdditionalExtensions);
 			requiredExtensions.put(windowExtensions);
-			for (int i = 0; i < numAdditionalExtensions; i++) {
+			for (int i = 0; i < numAdditionalExtensions; i++)
+			{
 				requiredExtensions.put(additionalExtensions.get(i));
 			}
 			requiredExtensions.flip();

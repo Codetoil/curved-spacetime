@@ -72,17 +72,20 @@ public class VulkanLogicalDevice
 		}
 	}
 
-	private PointerBuffer createReqExtensions(MemoryStack stack) {
+	private PointerBuffer createReqExtensions(MemoryStack stack)
+	{
 		Set<String> deviceExtensions = getDeviceExtensions();
 		boolean usePortability =
 				deviceExtensions.contains(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME)
-				&& VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
+						&& VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
 
 		var extensionList = new ArrayList<ByteBuffer>();
-		for (String extension : VulkanPhysicalDevice.REQUIRED_EXTENSIONS) {
+		for (String extension : VulkanPhysicalDevice.REQUIRED_EXTENSIONS)
+		{
 			extensionList.add(stack.ASCII(extension));
 		}
-		if (usePortability) {
+		if (usePortability)
+		{
 			extensionList.add(stack.ASCII(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME));
 		}
 

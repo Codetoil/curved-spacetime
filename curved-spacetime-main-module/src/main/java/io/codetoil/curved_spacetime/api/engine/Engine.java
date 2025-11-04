@@ -19,8 +19,8 @@
 package io.codetoil.curved_spacetime.api.engine;
 
 import io.codetoil.curved_spacetime.MainModuleConfig;
-import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.loader.CurvedSpacetimeLoader;
+import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneCallback;
 import org.tinylog.Logger;
@@ -40,8 +40,8 @@ public class Engine
 	protected static Engine INSTANCE;
 	public final MainModuleConfig mainModuleConfig;
 	protected final ScheduledExecutorService sceneCallbackExecutor;
-	private final Map<String, SceneCallback> sceneCallbackMap = new HashMap<>();
 	protected final CurvedSpacetimeLoader loader;
+	private final Map<String, SceneCallback> sceneCallbackMap = new HashMap<>();
 	public Scene scene;
 	protected Future<?> sceneCallbackInitializeHandler;
 	protected ScheduledFuture<?> sceneCallbackLoopHandler;
@@ -70,11 +70,6 @@ public class Engine
 						this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop()),
 				1_000 / this.mainModuleConfig.getFPS(),
 				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
-	}
-
-	public static void main(String[] args, CurvedSpacetimeLoader loader)
-	{
-		INSTANCE = new Engine(loader);
 	}
 
 	public void runEntrypoints()
@@ -121,6 +116,11 @@ public class Engine
 			}
 		}
 
+	}
+
+	public static void main(String[] args, CurvedSpacetimeLoader loader)
+	{
+		INSTANCE = new Engine(loader);
 	}
 
 	public static Engine getInstance()

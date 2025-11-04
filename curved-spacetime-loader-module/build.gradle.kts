@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
-    
+
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 }
