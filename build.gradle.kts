@@ -34,7 +34,7 @@ val osArch: String = System.getProperty("os.arch")
 val osName: String = System.getProperty("os.name")
 if (osName.lowercase().contains("linux")) {
     project.extra["osNameAndArch"] = "linux" + (when (osArch) {
-        "amd64" -> "-x64"
+        "amd64", "x86_64" -> "-x64"
         "arm" -> "-arm32"
         "aarch64" -> "-arm64"
         "ppc" -> "-ppc64le"
@@ -43,18 +43,18 @@ if (osName.lowercase().contains("linux")) {
     })
 } else if (osName.lowercase().contains("bsd")) {
     project.extra["osNameAndArch"] = "freebsd" + (when (osArch) {
-        "amd64" -> "-x64"
+        "amd64", "x86_64" -> "-x64"
         else -> throw RuntimeException("Unsupported CPU Architecture for FreeBSD!")
     })
 } else if (osName.lowercase().contains("mac")) {
     project.extra["osNameAndArch"] = "macos" + (when (osArch) {
-        "amd64" -> "-x64"
+        "amd64", "x86_64" -> "-x64"
         "aarch64" -> "-arm64"
         else -> throw RuntimeException("Unsupported CPU Architecture for macOS!")
     })
 } else if (osName.lowercase().contains("windows")) {
-    project.extra["osNameAndArch"] = "natives-windows" + (when (osArch) {
-        "amd64" -> "-x64"
+    project.extra["osNameAndArch"] = "windows" + (when (osArch) {
+        "amd64", "x86_64" -> "-x64"
         "x86" -> "-x86"
         "aarch64" -> "-arm64"
         else -> throw RuntimeException("Unsupported CPU Architecture for Windows!")
