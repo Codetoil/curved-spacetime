@@ -13,6 +13,7 @@ jobs:
   create-debug-release:
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@v5
       - name: Resolve true commit SHA
         id: sha_resolver
         run: |
