@@ -45,7 +45,7 @@ tasks.shadowJar {
         exclude(dependency("io.codetoil:.*"))
         include(dependency("org.lwjgl:.*"))
     }
-    destinationDirectory = File("$rootDir/installer-quilt/modules")
+    destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)
 }
 

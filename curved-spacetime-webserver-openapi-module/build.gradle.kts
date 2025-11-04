@@ -36,7 +36,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/installer-quilt/webserver-openapi")
+    destinationDirectory = File("$rootDir/archive-quilt/webserver-openapi")
     from(nonJar)
 }
 

@@ -45,12 +45,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-lwjgl-natives
-run-quilt
-run-closed-jar
-run-closed-native
+archive-quilt
+archive-closed-jar
+archive-closed-native**
 test
-
-curved-spacetime-installer/target/**
-!curved-spacetime-installer/apache-maven-3.9.10/bin
-curved-spacetime-installer/curved-spacetime-installer.iml

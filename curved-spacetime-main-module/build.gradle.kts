@@ -31,7 +31,7 @@ tasks.shadowJar {
         include(dependency("org.tinylog:tinylog-api"))
         include(dependency("org.lwjgl:lwjgl"))
     }
-    destinationDirectory = File("$rootDir/installer-quilt")
+    destinationDirectory = File("$rootDir/archive-quilt")
     from(nonJar)
 }
 

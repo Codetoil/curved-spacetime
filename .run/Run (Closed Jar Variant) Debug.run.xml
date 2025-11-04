@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run (Closed Jar Variant) Debug" type="JarApplication">
-    <option name="JAR_PATH" value="$PROJECT_DIR$/run-closed-jar/curved-spacetime-closed-loader-module-0.1.0-SNAPSHOT-all.jar" />
+    <option name="JAR_PATH" value="$PROJECT_DIR$/run-closed-jar/curved-spacetime-0.1.0-SNAPSHOT-all.jar" />
     <option name="VM_PARAMETERS" value="-Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dorg.lwjgl.util.Debug=true -Dorg.lwjgl.util.DebugLoader=true" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run-closed-jar" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />

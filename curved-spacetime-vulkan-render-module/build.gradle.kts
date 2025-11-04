@@ -37,7 +37,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/installer-quilt/modules")
+    destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)
 }
 

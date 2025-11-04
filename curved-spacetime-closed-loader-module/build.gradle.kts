@@ -8,6 +8,10 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
+base {
+    archivesName = "curved-spacetime"
+}
+
 val nonJar by configurations.creating
 
 repositories {
@@ -50,7 +54,7 @@ dependencies {
 graalvmNative {
     binaries {
         named("main") {
-            imageName.set("curved-spacetime")
+            imageName.set("curved-spacetime-0.1.0-SNAPSHOT-${rootProject.extra["osNameAndArch"]}")
             mainClass.set("io.codetoil.curved_spacetime.loader.closed.Main")
             debug.set(true)
             verbose.set(true)
@@ -88,10 +92,9 @@ tasks.nativeCompile {
 
 tasks.register("cleanClosedNative") {
     run {
-        file("$rootDir/installer-closed-native/").deleteRecursively()
-        val folder = file("$rootDir/run-closed-native")
-        if (folder.listFiles() != null && folder.listFiles().size != 0) {
-            folder.listFiles().forEach { fileIt ->
+        val folder = file("$rootDir/archive-closed-native-${rootProject.extra["osNameAndArch"]}")
+        if (folder.listFiles() != null && folder.listFiles()?.size != 0) {
+            folder.listFiles()?.forEach { fileIt ->
                 run {
                     if (fileIt.name.contains("curved-spacetime")) {
                         fileIt.delete()
@@ -112,28 +115,21 @@ tasks.register("cleanClosedNative") {
 }
 
 tasks.register<Copy>("nativeFilesCopyClosedNative") {
-    into("$rootDir/installer-closed-native")
+    into("$rootDir/archive-closed-native-${rootProject.extra["osNameAndArch"]}")
     exclude("sources", "reports", "embedded-resource.json")
     finalizedBy(tasks["nonJarCopyClosedNative"])
+    mustRunAfter(tasks.nativeCompile)
 }
 
 tasks.register<Copy>("nonJarCopyClosedNative") {
     from(nonJar)
-    into("$rootDir/installer-closed-native/")
-    finalizedBy(tasks["preRunClosedNative"])
-}
-
-tasks.register<Copy>("preRunClosedNative") {
-    from("$rootDir/installer-closed-native/")
-    into("$rootDir/run-closed-native/")
-    include("**")
-    mustRunAfter(tasks.nativeCompile)
+    into("$rootDir/archive-closed-native-${rootProject.extra["osNameAndArch"]}/")
 }
 
 tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
-    destinationDirectory = File("$rootDir/installer-closed-jar/")
+    destinationDirectory = File("$rootDir/archive-closed-jar/")
     manifest {
         attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.closed.Main"))
     }

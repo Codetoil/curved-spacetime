@@ -30,6 +30,39 @@ project.extra["lwjglNativesNames"] = listOf(
     "natives-windows-arm64"
 )
 
+val osArch: String = System.getProperty("os.arch")
+val osName: String = System.getProperty("os.name")
+if (osName.lowercase().contains("linux")) {
+    project.extra["osNameAndArch"] = "linux" + (when (osArch) {
+        "amd64" -> "-x64"
+        "arm" -> "-arm32"
+        "aarch64" -> "-arm64"
+        "ppc" -> "-ppc64le"
+        "riscv" -> "-riscv64"
+        else -> throw RuntimeException("Unsupported CPU Architecture for Linux!")
+    })
+} else if (osName.lowercase().contains("bsd")) {
+    project.extra["osNameAndArch"] = "freebsd" + (when (osArch) {
+        "amd64" -> "-x64"
+        else -> throw RuntimeException("Unsupported CPU Architecture for FreeBSD!")
+    })
+} else if (osName.lowercase().contains("mac")) {
+    project.extra["osNameAndArch"] = "macos" + (when (osArch) {
+        "amd64" -> "-x64"
+        "aarch64" -> "-arm64"
+        else -> throw RuntimeException("Unsupported CPU Architecture for macOS!")
+    })
+} else if (osName.lowercase().contains("windows")) {
+    project.extra["osNameAndArch"] = "natives-windows" + (when (osArch) {
+        "amd64" -> "-x64"
+        "x86" -> "-x86"
+        "aarch64" -> "-arm64"
+        else -> throw RuntimeException("Unsupported CPU Architecture for Windows!")
+    })
+} else {
+    throw RuntimeException("Unsupported Operating System!")
+}
+
 val nonJar by configurations.creating
 
 dependencies {
@@ -38,13 +71,11 @@ dependencies {
 
 tasks.register("cleanJar") {
     run {
-        file("$rootDir/installer-closed-jar/").deleteRecursively()
-        file("$rootDir/installer-quilt/").deleteRecursively()
         files(
-            "$rootDir/run-quilt/",
-            "$rootDir/run-quilt/webserver-openapi",
-            "$rootDir/run-quilt/modules",
-            "$rootDir/run-closed-jar/",
+            "$rootDir/archive-quilt/",
+            "$rootDir/archive-quilt/webserver-openapi",
+            "$rootDir/archive-quilt/modules",
+            "$rootDir/archive-closed-jar/",
         ).forEach { folderIt ->
             if (folderIt.listFiles() != null && folderIt.listFiles().size != 0) {
                 folderIt.listFiles().forEach { fileIt ->
@@ -68,31 +99,15 @@ tasks.register("cleanJar") {
     }
 }
 
-tasks.register<Copy>("preRunQuilt") {
-    from("$rootDir/installer-quilt/")
-    into("$rootDir/run-quilt/")
-    include("**")
-    mustRunAfter(rootProject.subprojects.map { it.tasks.build })
-}
-
-tasks.register<Copy>("preRunClosedJar") {
-    from("$rootDir/installer-closed-jar/")
-    into("$rootDir/run-closed-jar/")
-    include("**")
-    mustRunAfter(rootProject.subprojects.map { it.tasks.build })
-}
-
 tasks.register<Copy>("nonJarCopyClosedJar") {
     from(nonJar)
-    into("$rootDir/installer-closed-jar/")
-    finalizedBy(tasks["preRunClosedJar"])
+    into("$rootDir/archive-closed-jar/")
     mustRunAfter(rootProject.subprojects.map { it.tasks.build })
 }
 
 tasks.register<Copy>("nonJarCopyQuilt") {
     from(nonJar)
-    into("$rootDir/installer-quilt/")
-    finalizedBy(tasks["preRunQuilt"])
+    into("$rootDir/archive-quilt/")
     mustRunAfter(rootProject.subprojects.map { it.tasks.build })
 }
 

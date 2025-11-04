@@ -45,7 +45,7 @@ tasks.shadowJar {
         "LICENSE", "LICENSE.txt", "META-INF/LICENSE", "LICENSE_MixinExtras", "LICENSE_quilt-loader",
         "changelog/**"
     )
-    destinationDirectory = File("$rootDir/installer-quilt")
+    destinationDirectory = File("$rootDir/archive-quilt")
     manifest {
         attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.quiltmc.KnotCurvedSpacetime"))
     }
