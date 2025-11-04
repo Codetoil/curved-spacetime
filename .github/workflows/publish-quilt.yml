@@ -130,7 +130,7 @@ jobs:
         run: ./gradlew :curved-spacetime-main-module:publish
         env:
           USERNAME: ${{ github.actor }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}W
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-curved-spacetime-render-module:
 
