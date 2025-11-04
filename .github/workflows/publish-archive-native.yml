@@ -23,7 +23,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
+        run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-linux-x64/source.tar.gz HEAD
       - run: zip -r ../curved-spacetime-closed-world-native-variant-linux-x64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-world-native-linux-x64
@@ -50,7 +50,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
+        run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-linux-arm64/source.tar.gz HEAD
       - run: zip -r ../curved-spacetime-closed-world-native-variant-linux-arm64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-world-native-linux-arm64
@@ -77,7 +77,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
+        run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-windows-x64/source.tar.gz HEAD
       - run: Compress-Archive -Path ./archive-closed-world-native-windows-x64/* -DestinationPath ./curved-spacetime-closed-world-native-variant-windows-x64-${{ vars.VERSION }}-${{ github.sha }}.zip
       - name: Publish
@@ -103,7 +103,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
+        run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-macos-x64/source.tar.gz HEAD
       - run: zip -r ../curved-spacetime-closed-world-native-variant-macos-x64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-world-native-macos-x64
@@ -130,7 +130,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
+        run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-macos-arm64/source.tar.gz HEAD
       - run: zip -r ../curved-spacetime-closed-world-native-variant-macos-arm64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-world-native-macos-arm64

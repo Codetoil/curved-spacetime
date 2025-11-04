@@ -22,11 +22,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Build
-        run: ./gradlew :curved-spacetime-closed-loader-module:jar
+        run: ./gradlew :curved-spacetime-closed-world-loader-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle.kts
       - name: Publish to GitHub Packages
-        run: ./gradlew :curved-spacetime-closed-loader-module:publish
+        run: ./gradlew :curved-spacetime-closed-world-loader-module:publish
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

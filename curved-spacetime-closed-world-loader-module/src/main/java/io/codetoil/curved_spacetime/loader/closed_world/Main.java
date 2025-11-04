@@ -1,4 +1,4 @@
-package io.codetoil.curved_spacetime.loader.closed;
+package io.codetoil.curved_spacetime.loader.closed_world;
 
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import org.tinylog.Logger;

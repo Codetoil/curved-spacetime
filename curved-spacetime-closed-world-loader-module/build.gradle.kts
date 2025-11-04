@@ -55,7 +55,7 @@ graalvmNative {
     binaries {
         named("main") {
             imageName.set("curved-spacetime-0.1.0-SNAPSHOT-${rootProject.extra["osNameAndArch"]}")
-            mainClass.set("io.codetoil.curved_spacetime.loader.closed.Main")
+            mainClass.set("io.codetoil.curved_spacetime.loader.closed_world.Main")
             debug.set(true)
             verbose.set(true)
             richOutput.set(true)
@@ -131,7 +131,7 @@ tasks.shadowJar {
     mergeServiceFiles()
     destinationDirectory = File("$rootDir/archive-closed-world-jar/")
     manifest {
-        attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.closed.Main"))
+        attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.closed_world.Main"))
     }
     from(nonJar)
 }
@@ -152,7 +152,7 @@ publishing {
             pom {
                 packaging = "jar"
 
-                name = "Curved Spacetime Closed Loader Module"
+                name = "Curved Spacetime Closed World Loader Module"
                 url = "https://codetoil.io/curved-spacetime"
                 inceptionYear = "2025"
                 licenses {

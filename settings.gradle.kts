@@ -22,7 +22,7 @@ include("curved-spacetime-vulkan-glfw-render-module")
 include("curved-spacetime-main-module")
 include("curved-spacetime-loader-module")
 include("curved-spacetime-quilt-loader-module")
-include("curved-spacetime-closed-loader-module")
+include("curved-spacetime-closed-world-loader-module")
 project(":curved-spacetime-quilt-loader-patches").name = "curved-spacetime-quilt-loader-patches"
 project(":curved-spacetime-vulkan-module").name = "curved-spacetime-vulkan-module"
 project(":curved-spacetime-glfw-module").name = "curved-spacetime-glfw-module"
@@ -36,4 +36,4 @@ project(":curved-spacetime-vulkan-glfw-render-module").name = "curved-spacetime-
 project(":curved-spacetime-main-module").name = "curved-spacetime-main-module"
 project(":curved-spacetime-loader-module").name = "curved-spacetime-loader-module"
 project(":curved-spacetime-quilt-loader-module").name = "curved-spacetime-quilt-loader-module"
-project(":curved-spacetime-closed-loader-module").name = "curved-spacetime-closed-loader-module"
+project(":curved-spacetime-closed-world-loader-module").name = "curved-spacetime-closed-world-loader-module"
