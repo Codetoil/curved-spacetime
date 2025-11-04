@@ -3,11 +3,6 @@ name: Publish Archive (Jar)
 on:
   release:
     types: [ created ]
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-env:
-  VERSION: 0.1.0-SNAPSHOT
 
 jobs:
   publish-curved-spacetime-archive:
@@ -34,13 +29,13 @@ jobs:
         run: ./gradlew build
       - run: git archive --format=tar.gz -o ./archive-quilt/source.tar.gz HEAD
       - run: git archive --format=tar.gz -o ./archive-closed-jar/source.tar.gz HEAD
-      - run: zip -r curved-spacetime-quilt-variant-${{ env.VERSION }}-${{ github.sha }}.zip .
+      - run: zip -r curved-spacetime-quilt-variant-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-quilt
-      - run: zip -r curved-spacetime-closed-jar-variant-${{ env.VERSION }}-${{ github.sha }}.zip .
+      - run: zip -r curved-spacetime-closed-jar-variant-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-jar
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: curved-spacetime-quilt-variant-${{ env.VERSION }}-${{ github.sha }}.zip |
-            curved-spacetime-closed-jar-variant-${{ env.VERSION }}-${{ github.sha }}.zip
+          files: curved-spacetime-quilt-variant-${{ vars.VERSION }}-${{ github.sha }}.zip |
+            curved-spacetime-closed-jar-variant-${{ vars.VERSION }}-${{ github.sha }}.zip

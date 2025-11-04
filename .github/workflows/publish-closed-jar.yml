@@ -3,11 +3,6 @@ name: Publish (Closed Jar Variant)
 on:
   release:
     types: [ created ]
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-env:
-  VERSION: 0.1.0-SNAPSHOT
 
 jobs:
   publish-curved-spacetime:
