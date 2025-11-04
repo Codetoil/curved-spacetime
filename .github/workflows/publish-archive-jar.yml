@@ -1,16 +1,13 @@
-name: Build Archive (Jar)
+name: Publish Archive (Jar)
 
 on:
-  push:
-    branches:
-      - master
   release:
     types: [ created ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  build-curved-spacetime-archive:
+  publish-curved-spacetime-archive:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -34,13 +31,13 @@ jobs:
         run: ./gradlew build
       - run: git archive --format=tar.gz -o ./archive-quilt/source.tar.gz HEAD
       - run: git archive --format=tar.gz -o ./archive-closed-jar/source.tar.gz HEAD
-      - name: Upload (Quilt Variant)
-        uses: actions/upload-artifact@v5
+      - run: zip -r curved-spacetime-quilt-variant-${{ env.VERSION }}-${{ github.sha }}.zip .
+        working-directory: archive-quilt
+      - run: zip -r curved-spacetime-closed-jar-variant-${{ env.VERSION }}-${{ github.sha }}.zip .
+        working-directory: archive-closed-jar
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
         with:
-          name: curved-spacetime-quilt-variant-0.1.0-SNAPSHOT
-          path: archive-quilt/**
-      - name: Upload (Closed Jar Variant)
-        uses: actions/upload-artifact@v5
-        with:
-          name: curved-spacetime-closed-jar-variant-0.1.0-SNAPSHOT
-          path: archive-closed-jar/**
+          files: curved-spacetime-quilt-variant-${{ env.VERSION }}-${{ github.sha }}.zip |
+            curved-spacetime-closed-jar-variant-${{ env.VERSION }}-${{ github.sha }}.zip
