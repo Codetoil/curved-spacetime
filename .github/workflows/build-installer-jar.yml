@@ -33,12 +33,12 @@ jobs:
       - name: Build
         run: ./gradlew build
       - name: Upload (Quilt Variant)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: curved-spacetime-quilt-variant-0.1.0-SNAPSHOT
           path: installer-quilt/**
       - name: Upload (Closed Jar Variant)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: curved-spacetime-closed-jar-variant-0.1.0-SNAPSHOT
           path: installer-closed-jar/**

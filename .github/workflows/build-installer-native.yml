@@ -35,7 +35,7 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
       - name: Upload binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: curved-spacetime-closed-native-variant-0.1.0-SNAPSHOT-${{ matrix.os }}
           path: installer-closed-native/**
