@@ -30,7 +30,7 @@ import java.util.Properties;
 public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 {
 	private static final int DEFAULT_REQUESTED_IMAGES = 2;
-	private static final String FILENAME = "vulkan-glfw-render-module.config";
+	private static final String FILENAME = "config/vulkan-glfw-render-module.config";
 	private int requestedImages;
 	private boolean dirty = false;
 

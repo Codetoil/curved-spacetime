@@ -28,7 +28,6 @@ tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
     dependencies {
-        include(dependency("org.tinylog:tinylog-api"))
         include(dependency("org.lwjgl:lwjgl"))
     }
     destinationDirectory = File("$rootDir/archive-quilt")
@@ -42,7 +41,6 @@ dependencies {
     api("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
     api(project(":curved-spacetime-loader-module"))
 
-    api("org.tinylog:tinylog-api:${rootProject.extra["tinyLoggerVersion"]}")
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))

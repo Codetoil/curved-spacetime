@@ -30,7 +30,7 @@ import java.util.Properties;
 public class GLFWRenderModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VSYNC = true;
-	private static final String FILENAME = "glfw-render-module.config";
+	private static final String FILENAME = "config/glfw-render-module.config";
 	private boolean dirty = false;
 	private boolean vsync;
 

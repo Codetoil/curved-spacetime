@@ -29,7 +29,7 @@ import java.util.Properties;
 
 public class WebserverOpenAPIModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "webserver-openapi-module.config";
+	private static final String FILENAME = "config/webserver-openapi-module.config";
 	private boolean dirty = false;
 
 	public WebserverOpenAPIModuleConfig()

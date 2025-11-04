@@ -29,7 +29,7 @@ import java.util.Properties;
 
 public class WebserverModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "webserver-module.config";
+	private static final String FILENAME = "config/webserver-module.config";
 	private boolean dirty = false;
 
 	public WebserverModuleConfig()

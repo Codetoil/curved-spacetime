@@ -29,7 +29,7 @@ import java.util.Properties;
 public class MainModuleConfig
 {
 	private static final int DEFAULT_FPS = 60;
-	private static final String FILENAME = "main-module.config";
+	private static final String FILENAME = "config/main-module.config";
 	private boolean dirty = false;
 	private int fps;
 

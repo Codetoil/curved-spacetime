@@ -30,7 +30,7 @@ import java.util.Properties;
 
 public class GLFWModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "glfw-module.config";
+	private static final String FILENAME = "config/glfw-module.config";
 	private boolean dirty = false;
 
 	public GLFWModuleConfig()

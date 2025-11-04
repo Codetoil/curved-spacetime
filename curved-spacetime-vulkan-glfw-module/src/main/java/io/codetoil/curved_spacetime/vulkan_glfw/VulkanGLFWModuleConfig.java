@@ -29,7 +29,7 @@ import java.util.Properties;
 
 public class VulkanGLFWModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "vulkan-glfw-module.config";
+	private static final String FILENAME = "config/vulkan-glfw-module.config";
 	private boolean dirty = false;
 
 	public VulkanGLFWModuleConfig()

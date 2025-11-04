@@ -29,7 +29,7 @@ import java.util.Properties;
 
 public class VulkanRenderModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "vulkan-render-module.config";
+	private static final String FILENAME = "config/vulkan-render-module.config";
 	private boolean dirty = false;
 
 	public VulkanRenderModuleConfig()

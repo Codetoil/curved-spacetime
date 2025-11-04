@@ -31,7 +31,7 @@ public class VulkanModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VALIDATE = false;
 	private static final String DEFAULT_PREFERRED_DEVICE_NAME = null;
-	private static final String FILENAME = "vulkan-module.config";
+	private static final String FILENAME = "config/vulkan-module.config";
 	private boolean _validation;
 	private String preferredDeviceName;
 	private boolean dirty = false;

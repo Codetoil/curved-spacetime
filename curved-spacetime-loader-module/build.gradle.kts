@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    id("java-library")
     id("maven-publish")
 }
 
@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
-
+    api("org.tinylog:tinylog-api:${rootProject.extra["tinyLoggerVersion"]}")
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 }

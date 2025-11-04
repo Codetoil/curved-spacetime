@@ -29,7 +29,7 @@ import java.util.Properties;
 
 public class RenderModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "render-module.config";
+	private static final String FILENAME = "config/render-module.config";
 	private boolean dirty = false;
 
 	public RenderModuleConfig()
