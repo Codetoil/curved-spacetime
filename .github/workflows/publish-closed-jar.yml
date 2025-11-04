@@ -2,7 +2,7 @@ name: Publish (Closed Jar Variant)
 
 on:
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   publish-curved-spacetime:

@@ -2,7 +2,7 @@ name: Publish Archive (Jar)
 
 on:
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   publish-curved-spacetime-archive:

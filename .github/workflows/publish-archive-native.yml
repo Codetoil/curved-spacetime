@@ -2,7 +2,7 @@ name: Publish Archive (Native)
 
 on:
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   publish-curved-spacetime-closed-linux-x64:
