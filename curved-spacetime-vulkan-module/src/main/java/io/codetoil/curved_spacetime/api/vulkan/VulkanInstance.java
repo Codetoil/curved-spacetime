@@ -240,24 +240,22 @@ public class VulkanInstance
 				.messageSeverity(VulkanInstance.MESSAGE_SEVERITY_BITMASK)
 				.messageType(VulkanInstance.MESSAGE_TYPE_BITMASK)
 				.pfnUserCallback((messageSeverity, messageTypes, callbackDataAddress, userData) -> {
-					try (VkDebugUtilsMessengerCallbackDataEXT callbackData = VkDebugUtilsMessengerCallbackDataEXT.create(
-							callbackDataAddress))
+					VkDebugUtilsMessengerCallbackDataEXT callbackData =
+							VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);
+					if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0)
 					{
-						if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0)
-						{
-							Logger.info(DBG_CALLBACK_PREF, callbackData.pMessageString());
-						} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) !=
-								0)
-						{
-							Logger.warn(DBG_CALLBACK_PREF, callbackData.pMessageString());
-						} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0)
-						{
-							Logger.error(DBG_CALLBACK_PREF, callbackData.pMessageString());
-						} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) !=
-								0)
-						{
-							Logger.debug(DBG_CALLBACK_PREF, callbackData.pMessageString());
-						}
+						Logger.info(DBG_CALLBACK_PREF, callbackData.pMessageString());
+					} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) !=
+							0)
+					{
+						Logger.warn(DBG_CALLBACK_PREF, callbackData.pMessageString());
+					} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0)
+					{
+						Logger.error(DBG_CALLBACK_PREF, callbackData.pMessageString());
+					} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) !=
+							0)
+					{
+						Logger.debug(DBG_CALLBACK_PREF, callbackData.pMessageString());
 					}
 					return VK13.VK_FALSE;
 				});
