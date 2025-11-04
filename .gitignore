@@ -46,6 +46,6 @@ bin/
 .DS_Store
 
 archive-quilt
-archive-closed-jar
-archive-closed-native**
+archive-closed-world-jar
+archive-closed-world-native**
 test

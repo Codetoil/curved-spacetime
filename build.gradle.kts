@@ -75,7 +75,7 @@ tasks.register("cleanJar") {
             "$rootDir/archive-quilt/",
             "$rootDir/archive-quilt/webserver-openapi",
             "$rootDir/archive-quilt/modules",
-            "$rootDir/archive-closed-jar/",
+            "$rootDir/archive-closed-world-jar/",
         ).forEach { folderIt ->
             if (folderIt.listFiles() != null && folderIt.listFiles().size != 0) {
                 folderIt.listFiles().forEach { fileIt ->
@@ -101,7 +101,7 @@ tasks.register("cleanJar") {
 
 tasks.register<Copy>("nonJarCopyClosedJar") {
     from(nonJar)
-    into("$rootDir/archive-closed-jar/")
+    into("$rootDir/archive-closed-world-jar/")
     mustRunAfter(rootProject.subprojects.map { it.tasks.build })
 }
 

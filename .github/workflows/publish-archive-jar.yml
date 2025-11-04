@@ -28,15 +28,15 @@ jobs:
       - name: Build
         run: ./gradlew build
       - run: git archive --format=tar.gz -o ./archive-quilt/source.tar.gz HEAD
-      - run: git archive --format=tar.gz -o ./archive-closed-jar/source.tar.gz HEAD
+      - run: git archive --format=tar.gz -o ./archive-closed-world-jar/source.tar.gz HEAD
       - run: zip -r ../curved-spacetime-quilt-variant-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-quilt
-      - run: zip -r ../curved-spacetime-closed-jar-variant-${{ vars.VERSION }}-${{ github.sha }}.zip .
-        working-directory: archive-closed-jar
+      - run: zip -r ../curved-spacetime-closed-world-jar-variant-${{ vars.VERSION }}-${{ github.sha }}.zip .
+        working-directory: archive-closed-world-jar
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
           files: |
             ./curved-spacetime-quilt-variant-${{ vars.VERSION }}-${{ github.sha }}.zip
-            ./curved-spacetime-closed-jar-variant-${{ vars.VERSION }}-${{ github.sha }}.zip
+            ./curved-spacetime-closed-world-jar-variant-${{ vars.VERSION }}-${{ github.sha }}.zip

@@ -92,7 +92,7 @@ tasks.nativeCompile {
 
 tasks.register("cleanClosedNative") {
     run {
-        val folder = file("$rootDir/archive-closed-native-${rootProject.extra["osNameAndArch"]}")
+        val folder = file("$rootDir/archive-closed-world-native-${rootProject.extra["osNameAndArch"]}")
         if (folder.listFiles() != null && folder.listFiles()?.size != 0) {
             folder.listFiles()?.forEach { fileIt ->
                 run {
@@ -115,7 +115,7 @@ tasks.register("cleanClosedNative") {
 }
 
 tasks.register<Copy>("nativeFilesCopyClosedNative") {
-    into("$rootDir/archive-closed-native-${rootProject.extra["osNameAndArch"]}")
+    into("$rootDir/archive-closed-world-native-${rootProject.extra["osNameAndArch"]}")
     exclude("sources", "reports", "embedded-resource.json")
     finalizedBy(tasks["nonJarCopyClosedNative"])
     mustRunAfter(tasks.nativeCompile)
@@ -123,13 +123,13 @@ tasks.register<Copy>("nativeFilesCopyClosedNative") {
 
 tasks.register<Copy>("nonJarCopyClosedNative") {
     from(nonJar)
-    into("$rootDir/archive-closed-native-${rootProject.extra["osNameAndArch"]}/")
+    into("$rootDir/archive-closed-world-native-${rootProject.extra["osNameAndArch"]}/")
 }
 
 tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
-    destinationDirectory = File("$rootDir/archive-closed-jar/")
+    destinationDirectory = File("$rootDir/archive-closed-world-jar/")
     manifest {
         attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.closed.Main"))
     }
