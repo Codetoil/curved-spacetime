@@ -1,8 +1,9 @@
 name: Publish (Closed Jar Variant)
 
 on:
-  release:
-    types: [ created ]
+  push:
+    branches:
+      - master
 
 jobs:
   publish-curved-spacetime:
