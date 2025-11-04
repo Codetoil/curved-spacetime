@@ -93,5 +93,5 @@ jobs:
           tag_name: ${{ vars.VERSION }}-${{ github.sha }}
           name: "Debug Release ${{ vars.VERSION }}-${{ github.sha }}"
           body_path: release_body.md
-          draft: true
+          draft: false
           prerelease: true
