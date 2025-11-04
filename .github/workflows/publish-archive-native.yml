@@ -25,13 +25,13 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-native-linux-x64/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-linux-x64.zip .
+      - run: zip -r ../curved-spacetime-closed-native-variant-linux-x64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-native-linux-x64
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: ./curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-linux-x64.zip
+          files: ./curved-spacetime-closed-native-variant-linux-x64-${{ vars.VERSION }}-${{ github.sha }}.zip
   publish-curved-spacetime-closed-linux-arm64:
     name: Publish curved-spacetime (Closed Native Variant) Linux arm64
     runs-on: ubuntu-24.04-arm
@@ -52,13 +52,13 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-native-linux-arm64/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-linux-arm64.zip .
+      - run: zip -r ../curved-spacetime-closed-native-variant-linux-arm64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-native-linux-arm64
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: ./curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-linux-arm64.zip
+          files: ./curved-spacetime-closed-native-variant-linux-arm64-${{ vars.VERSION }}-${{ github.sha }}.zip
   publish-curved-spacetime-closed-windows-x64:
     name: Publish curved-spacetime (Closed Native Variant) Windows x64
     runs-on: windows-2025
@@ -79,13 +79,13 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-native-windows-x64/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-windows-x64.zip .
+      - run: zip -r ../curved-spacetime-closed-native-variant-windows-x64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-native-windows-x64
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: ./curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-windows-x64.zip
+          files: ./curved-spacetime-closed-native-variant-windows-x64-${{ vars.VERSION }}-${{ github.sha }}.zip
   publish-curved-spacetime-closed-macos-x64:
     name: Publish curved-spacetime (Closed Native Variant) macOS x64
     runs-on: macos-15-intel
@@ -106,13 +106,13 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-native-macos-x64/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-macos-x64.zip .
+      - run: zip -r ../curved-spacetime-closed-native-variant-macos-x64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-native-macos-x64
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: ./curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-macos-x64.zip
+          files: ./curved-spacetime-closed-native-variant-macos-x64-${{ vars.VERSION }}-${{ github.sha }}.zip
   publish-curved-spacetime-closed-macos-arm64:
     name: Publish curved-spacetime (Closed Native Variant) macOS arm64
     runs-on: macos-26
@@ -133,10 +133,10 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-native-macos-arm64/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-macos-arm64.zip .
+      - run: zip -r ../curved-spacetime-closed-native-variant-macos-arm64-${{ vars.VERSION }}-${{ github.sha }}.zip .
         working-directory: archive-closed-native-macos-arm64
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: ./curved-spacetime-closed-native-variant-${{ vars.VERSION }}-${{ github.sha }}-macos-arm64.zip
+          files: ./curved-spacetime-closed-native-variant-macos-arm64-${{ vars.VERSION }}-${{ github.sha }}.zip

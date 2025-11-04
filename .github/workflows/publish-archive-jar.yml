@@ -37,6 +37,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files:
+          files: |
             ./curved-spacetime-quilt-variant-${{ vars.VERSION }}-${{ github.sha }}.zip
             ./curved-spacetime-closed-jar-variant-${{ vars.VERSION }}-${{ github.sha }}.zip
