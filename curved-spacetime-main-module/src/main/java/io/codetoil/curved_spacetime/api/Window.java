@@ -18,18 +18,14 @@
 
 package io.codetoil.curved_spacetime.api;
 
-import io.codetoil.curved_spacetime.api.engine.Engine;
-
 public abstract class Window
 {
-	protected final Engine engine;
 	protected final String title;
 	protected KeyboardInput keyboardInput;
 	protected MouseInput mouseInput;
 
-	protected Window(Engine engine, String title)
+	protected Window(String title)
 	{
-		this.engine = engine;
 		this.title = title;
 	}
 

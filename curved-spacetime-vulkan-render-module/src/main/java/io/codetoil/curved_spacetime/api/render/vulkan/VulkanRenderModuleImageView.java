@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.api.render.vulkan;
 
-import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
@@ -26,19 +26,19 @@ import org.lwjgl.vulkan.VkImageViewCreateInfo;
 
 import java.nio.LongBuffer;
 
-public class VulkanImageView
+public class VulkanRenderModuleImageView
 {
 	private final int aspectMask;
 	private final int mipLevels;
 
-	private final VulkanLogicalDevice vulkanLogicalDevice;
+	private final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
 	private final long vkImageView;
 	private final long vkImage;
 
-	public VulkanImageView(VulkanLogicalDevice vulkanLogicalDevice, long vkImage,
-						   VulkanImageViewData vulkanImageViewData)
+	public VulkanRenderModuleImageView(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, long vkImage,
+									   VulkanImageViewData vulkanImageViewData)
 	{
-		this.vulkanLogicalDevice = vulkanLogicalDevice;
+		this.vulkanModuleLogicalDevice = vulkanModuleLogicalDevice;
 		this.aspectMask = vulkanImageViewData.aspectMask;
 		this.mipLevels = vulkanImageViewData.mipLevels;
 		this.vkImage = vkImage;
@@ -60,7 +60,8 @@ public class VulkanImageView
 													.levelCount(this.mipLevels)
 													.baseMipLevel(vulkanImageViewData.baseArrayLayer)
 													.layerCount(vulkanImageViewData.layerCount));
-			VulkanUtils.vkCheck(VK13.vkCreateImageView(vulkanLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),
+			VulkanUtils.vkCheck(
+					VK13.vkCreateImageView(vulkanModuleLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),
 					"Failed to create image view");
 			this.vkImageView = lp.get(0);
 		}
@@ -68,7 +69,7 @@ public class VulkanImageView
 
 	public void cleanup()
 	{
-		VK13.vkDestroyImageView(this.vulkanLogicalDevice.getVkDevice(), this.vkImageView, null);
+		VK13.vkDestroyImageView(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkImageView, null);
 	}
 
 	public int getAspectMask()
@@ -108,37 +109,37 @@ public class VulkanImageView
 			this.viewType = VK13.VK_IMAGE_VIEW_TYPE_2D;
 		}
 
-		public VulkanImageView.VulkanImageViewData aspectMask(int aspectMask)
+		public VulkanRenderModuleImageView.VulkanImageViewData aspectMask(int aspectMask)
 		{
 			this.aspectMask = aspectMask;
 			return this;
 		}
 
-		public VulkanImageView.VulkanImageViewData baseArrayLayer(int baseArrayLayer)
+		public VulkanRenderModuleImageView.VulkanImageViewData baseArrayLayer(int baseArrayLayer)
 		{
 			this.baseArrayLayer = baseArrayLayer;
 			return this;
 		}
 
-		public VulkanImageView.VulkanImageViewData format(int format)
+		public VulkanRenderModuleImageView.VulkanImageViewData format(int format)
 		{
 			this.format = format;
 			return this;
 		}
 
-		public VulkanImageView.VulkanImageViewData layerCount(int layerCount)
+		public VulkanRenderModuleImageView.VulkanImageViewData layerCount(int layerCount)
 		{
 			this.layerCount = layerCount;
 			return this;
 		}
 
-		public VulkanImageView.VulkanImageViewData mipLevels(int mipLevels)
+		public VulkanRenderModuleImageView.VulkanImageViewData mipLevels(int mipLevels)
 		{
 			this.mipLevels = mipLevels;
 			return this;
 		}
 
-		public VulkanImageView.VulkanImageViewData viewType(int viewType)
+		public VulkanRenderModuleImageView.VulkanImageViewData viewType(int viewType)
 		{
 			this.viewType = viewType;
 			return this;

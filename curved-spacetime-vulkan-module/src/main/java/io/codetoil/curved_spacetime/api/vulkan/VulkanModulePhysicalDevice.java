@@ -32,7 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class VulkanPhysicalDevice
+public class VulkanModulePhysicalDevice
 {
 	protected static final Set<String> REQUIRED_EXTENSIONS;
 
@@ -49,7 +49,7 @@ public class VulkanPhysicalDevice
 	private final VkPhysicalDeviceProperties2 vkPhysicalDeviceProperties;
 	private final VkQueueFamilyProperties.Buffer vkQueueFamilyProps;
 
-	private VulkanPhysicalDevice(VkPhysicalDevice vkPhysicalDevice)
+	private VulkanModulePhysicalDevice(VkPhysicalDevice vkPhysicalDevice)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
@@ -83,11 +83,11 @@ public class VulkanPhysicalDevice
 		}
 	}
 
-	public static VulkanPhysicalDevice createPhysicalDevice(VulkanInstance instance,
-															VulkanModuleEntrypoint vulkanModuleEntrypoint)
+	public static VulkanModulePhysicalDevice createPhysicalDevice(VulkanModuleVulkanInstance instance,
+																  VulkanModuleEntrypoint vulkanModuleEntrypoint)
 	{
 		Logger.debug("Selecting physical devices");
-		VulkanPhysicalDevice selectedVulkanPhysicalDevice = null;
+		VulkanModulePhysicalDevice selectedVulkanModulePhysicalDevice = null;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			// Get available devices
@@ -99,11 +99,11 @@ public class VulkanPhysicalDevice
 			}
 
 			//Populate available devices
-			List<VulkanPhysicalDevice> physDevices = new ArrayList<>();
+			List<VulkanModulePhysicalDevice> physDevices = new ArrayList<>();
 			for (int i = 0; i < numDevices; i++)
 			{
 				var vkPhysicalDevice = new VkPhysicalDevice(pPhysicalDevices.get(i), instance.getVkInstance());
-				var physDevice = new VulkanPhysicalDevice(vkPhysicalDevice);
+				var physDevice = new VulkanModulePhysicalDevice(vkPhysicalDevice);
 
 				String deviceName = physDevice.getDeviceName();
 				if (!physDevice.hasGraphicsQueueFamily())
@@ -124,7 +124,7 @@ public class VulkanPhysicalDevice
 						.getPreferredDeviceName();
 				if (preferredDeviceName != null && preferredDeviceName.equals(deviceName))
 				{
-					selectedVulkanPhysicalDevice = physDevice;
+					selectedVulkanModulePhysicalDevice = physDevice;
 					break;
 				}
 				if (physDevice.vkPhysicalDeviceProperties.properties().deviceType()
@@ -137,25 +137,25 @@ public class VulkanPhysicalDevice
 				}
 			}
 			// No preferred device, or it does not meet requirements, just pick the first one
-			selectedVulkanPhysicalDevice =
-					selectedVulkanPhysicalDevice == null &&
-							!physDevices.isEmpty() ? physDevices.removeFirst() : selectedVulkanPhysicalDevice;
+			selectedVulkanModulePhysicalDevice =
+					selectedVulkanModulePhysicalDevice == null &&
+							!physDevices.isEmpty() ? physDevices.removeFirst() : selectedVulkanModulePhysicalDevice;
 
 			// Clean up non-selected devices
-			physDevices.forEach(VulkanPhysicalDevice::cleanup);
+			physDevices.forEach(VulkanModulePhysicalDevice::cleanup);
 
-			if (selectedVulkanPhysicalDevice == null)
+			if (selectedVulkanModulePhysicalDevice == null)
 			{
 				throw new RuntimeException("No suitable physical devices found");
 			}
 
-			Logger.debug("Selected device: [{}]", selectedVulkanPhysicalDevice.getDeviceName());
+			Logger.debug("Selected device: [{}]", selectedVulkanModulePhysicalDevice.getDeviceName());
 
-			return selectedVulkanPhysicalDevice;
+			return selectedVulkanModulePhysicalDevice;
 		}
 	}
 
-	protected static PointerBuffer getPhysicalDevices(VulkanInstance instance, MemoryStack stack)
+	protected static PointerBuffer getPhysicalDevices(VulkanModuleVulkanInstance instance, MemoryStack stack)
 	{
 		PointerBuffer pPhysicalDevices;
 		// Get number of physical devices

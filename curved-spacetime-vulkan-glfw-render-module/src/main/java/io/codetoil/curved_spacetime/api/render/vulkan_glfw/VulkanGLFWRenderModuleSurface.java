@@ -18,9 +18,9 @@
 
 package io.codetoil.curved_spacetime.api.render.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.api.render.vulkan.VulkanSurface;
-import io.codetoil.curved_spacetime.api.vulkan.VulkanInstance;
-import io.codetoil.curved_spacetime.api.vulkan.VulkanPhysicalDevice;
+import io.codetoil.curved_spacetime.api.render.vulkan.VulkanRenderModuleSurface;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanModulePhysicalDevice;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleVulkanInstance;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.glfw.GLFWVulkan;
 import org.lwjgl.system.MemoryStack;
@@ -30,27 +30,28 @@ import org.tinylog.Logger;
 
 import java.nio.LongBuffer;
 
-public class VulkanGLFWSurface extends VulkanSurface
+public class VulkanGLFWRenderModuleSurface extends VulkanRenderModuleSurface
 {
 
 	protected final VkSurfaceCapabilitiesKHR surfaceCaps;
 	protected final SurfaceFormat surfaceFormat;
 	protected final long vkSurface;
 
-	public VulkanGLFWSurface(VulkanInstance vulkanInstance, VulkanPhysicalDevice vulkanPhysicalDevice,
-							 long windowHandle)
+	public VulkanGLFWRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
+										 VulkanModulePhysicalDevice vulkanModulePhysicalDevice,
+										 long windowHandle)
 	{
-		super(vulkanPhysicalDevice);
+		super(vulkanModulePhysicalDevice);
 		Logger.debug("Creating vulkan glfw surface");
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			LongBuffer pSurface = stack.mallocLong(1);
-			GLFWVulkan.glfwCreateWindowSurface(vulkanInstance.getVkInstance(),
+			GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(),
 					windowHandle, null, pSurface);
 			this.vkSurface = pSurface.get(0);
 			this.surfaceCaps = VkSurfaceCapabilitiesKHR.calloc();
 
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this.vulkanPhysicalDevice
+			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this.vulkanModulePhysicalDevice
 							.getVkPhysicalDevice(), vkSurface, surfaceCaps),
 					"Failed to get surface capabilities");
 
@@ -62,7 +63,7 @@ public class VulkanGLFWSurface extends VulkanSurface
 	{
 		Logger.debug("Destroying Vulkan surface");
 		this.surfaceCaps.free();
-		KHRSurface.vkDestroySurfaceKHR(vulkanPhysicalDevice.getVkPhysicalDevice().getInstance(), this.vkSurface,
+		KHRSurface.vkDestroySurfaceKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice().getInstance(), this.vkSurface,
 				null);
 	}
 

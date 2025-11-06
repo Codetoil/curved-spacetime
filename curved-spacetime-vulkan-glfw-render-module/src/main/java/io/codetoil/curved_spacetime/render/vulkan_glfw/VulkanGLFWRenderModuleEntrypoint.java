@@ -21,7 +21,7 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 import io.codetoil.curved_spacetime.api.engine.Engine;
 import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.api.render.vulkan_glfw.VulkanGLFWRenderer;
+import io.codetoil.curved_spacetime.api.render.vulkan_glfw.VulkanGLFWRenderRenderModuleRenderer;
 import io.codetoil.curved_spacetime.api.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
@@ -63,9 +63,9 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException(e);
 		}
-		Engine engine = Engine.getInstance();
-		engine.registerSceneCallback("vulkan_glfw_renderer", new VulkanGLFWRenderer(engine, engine.scene,
-				this));
+
+		Engine.getInstance()
+				.registerMainCallback("vulkan_glfw_renderer", new VulkanGLFWRenderRenderModuleRenderer(this));
 		try
 		{
 			Engine.callDependents("vulkan_glfw_render_module_dependent",

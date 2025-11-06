@@ -90,6 +90,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 		this.engine = engine;
 	}
 
+	@SuppressWarnings("unchecked") // Should always be valid in this case.
 	@Override
 	public <E> List<E> getEntrypoints(String name, Class<E> moduleInitializerClass)
 	{

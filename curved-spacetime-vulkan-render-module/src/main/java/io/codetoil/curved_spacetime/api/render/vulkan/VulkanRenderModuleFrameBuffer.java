@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.api.render.vulkan;
 
-import io.codetoil.curved_spacetime.api.vulkan.VulkanLogicalDevice;
+import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
@@ -26,13 +26,14 @@ import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 
 import java.nio.LongBuffer;
 
-public class VulkanFrameBuffer
+public class VulkanRenderModuleFrameBuffer
 {
-	private final VulkanLogicalDevice logicalDevice;
+	private final VulkanModuleLogicalDevice logicalDevice;
 	private final long vkFrameBuffer;
 
-	public VulkanFrameBuffer(VulkanLogicalDevice logicalDevice, int width, int height, LongBuffer pAttachments,
-							 long renderPass)
+	public VulkanRenderModuleFrameBuffer(VulkanModuleLogicalDevice logicalDevice, int width, int height,
+										 LongBuffer pAttachments,
+										 long renderPass)
 	{
 		this.logicalDevice = logicalDevice;
 

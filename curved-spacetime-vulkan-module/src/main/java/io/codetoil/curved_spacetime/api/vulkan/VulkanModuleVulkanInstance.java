@@ -30,13 +30,10 @@ import org.tinylog.Logger;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
-public class VulkanInstance
+public class VulkanModuleVulkanInstance
 {
 	public static final int MESSAGE_SEVERITY_BITMASK = EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
@@ -55,11 +52,13 @@ public class VulkanInstance
 			KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
 	public static final String DBG_CALLBACK_PREF = "VkDebugUtilsCallback, {}";
 
+	protected final boolean supportsWindowing;
 	protected VkInstance vkInstance;
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 	protected long vkDebugHandle;
 
-	public VulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint, Supplier<PointerBuffer> windowExtensionsGetter)
+	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint,
+									  Supplier<PointerBuffer> windowExtensionsGetter)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
@@ -108,9 +107,10 @@ public class VulkanInstance
 					VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
 
 			PointerBuffer windowExtensions = windowExtensionsGetter.get();
-			if (windowExtensions == null)
+			supportsWindowing = windowExtensions != null;
+			if (!supportsWindowing)
 			{
-				throw new RuntimeException("Failed to find the Window extensions");
+				Logger.info("No windowing extensions");
 			}
 
 			List<ByteBuffer> additionalExtensions = new ArrayList<>();
@@ -124,9 +124,14 @@ public class VulkanInstance
 			}
 			int numAdditionalExtensions = additionalExtensions.size();
 
-			PointerBuffer requiredExtensions = stack.mallocPointer(windowExtensions.remaining() +
-					numAdditionalExtensions);
-			requiredExtensions.put(windowExtensions);
+			PointerBuffer requiredExtensions = stack.mallocPointer(
+					(supportsWindowing ? Objects.requireNonNull(windowExtensions).remaining() : 0) +
+							numAdditionalExtensions);
+			if (supportsWindowing)
+			{
+				assert windowExtensions != null;
+				requiredExtensions.put(windowExtensions);
+			}
 			for (int i = 0; i < numAdditionalExtensions; i++)
 			{
 				requiredExtensions.put(additionalExtensions.get(i));
@@ -237,8 +242,8 @@ public class VulkanInstance
 	{
 		return VkDebugUtilsMessengerCreateInfoEXT.calloc()
 				.sType$Default()
-				.messageSeverity(VulkanInstance.MESSAGE_SEVERITY_BITMASK)
-				.messageType(VulkanInstance.MESSAGE_TYPE_BITMASK)
+				.messageSeverity(VulkanModuleVulkanInstance.MESSAGE_SEVERITY_BITMASK)
+				.messageType(VulkanModuleVulkanInstance.MESSAGE_TYPE_BITMASK)
 				.pfnUserCallback((messageSeverity, messageTypes, callbackDataAddress, userData) -> {
 					VkDebugUtilsMessengerCallbackDataEXT callbackData =
 							VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);
@@ -279,5 +284,10 @@ public class VulkanInstance
 	public VkInstance getVkInstance()
 	{
 		return this.vkInstance;
+	}
+
+	public boolean supportsWindowing()
+	{
+		return supportsWindowing;
 	}
 }

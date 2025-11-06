@@ -21,48 +21,39 @@ package io.codetoil.curved_spacetime.api.vulkan;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
-import org.tinylog.Logger;
+import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 
 import java.nio.LongBuffer;
 
-public class VulkanCommandPool
+public class VulkanModuleSemaphore
 {
-	private final VulkanLogicalDevice vulkanLogicalDevice;
-	private final long vkCommandPool;
+	private final VulkanModuleVulkanContext context;
+	private final long vkSemaphore;
 
-	public VulkanCommandPool(VulkanLogicalDevice vulkanLogicalDevice, int queueFamilyIndex)
+	public VulkanModuleSemaphore(VulkanModuleVulkanContext context)
 	{
-		Logger.debug("Creating Vulkan CommandPool for " + vulkanLogicalDevice);
-
-		this.vulkanLogicalDevice = vulkanLogicalDevice;
+		this.context = context;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkCommandPoolCreateInfo cmdPoolInfo =
-					VkCommandPoolCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
-							.flags(VK13.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT)
-							.queueFamilyIndex(queueFamilyIndex);
-
+			VkSemaphoreCreateInfo semaphoreCreateInfo =
+					VkSemaphoreCreateInfo
+							.calloc(stack)
+							.sType$Default();
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateCommandPool(vulkanLogicalDevice.getVkDevice(), cmdPoolInfo, null, lp),
-					"failed to create command pool");
-
-			this.vkCommandPool = lp.get(0);
+			VulkanUtils.vkCheck(VK13.vkCreateSemaphore(context.getLogicalDevice().getVkDevice(),
+							semaphoreCreateInfo, null, lp),
+					"Failed to create semaphore");
+			this.vkSemaphore = lp.get(0);
 		}
 	}
 
-	public void cleanup()
+	public void clean()
 	{
-		VK13.vkDestroyCommandPool(this.vulkanLogicalDevice.getVkDevice(), this.vkCommandPool, null);
+		VK13.vkDestroySemaphore(this.context.getLogicalDevice().getVkDevice(), this.vkSemaphore, null);
 	}
 
-	public VulkanLogicalDevice getVulkanLogicalDevice()
+	public long getVkSemaphore()
 	{
-		return this.vulkanLogicalDevice;
-	}
-
-	public long getVkCommandPool()
-	{
-		return this.vkCommandPool;
+		return this.vkSemaphore;
 	}
 }

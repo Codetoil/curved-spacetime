@@ -26,15 +26,15 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
-public abstract class GLFWWindow extends Window
+public abstract class GLFWModuleWindow extends Window
 {
 	protected long windowHandle;
 	protected int width;
 	protected int height;
 
-	protected GLFWWindow(Engine engine, String title)
+	protected GLFWModuleWindow(String title)
 	{
-		super(engine, title);
+		super(title);
 	}
 
 	public void init()
@@ -64,13 +64,13 @@ public abstract class GLFWWindow extends Window
 				GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
 		if (this.windowHandle == MemoryUtil.NULL) throw new RuntimeException("Failed to create the GLFW window");
 
-		this.keyboardInput = new GLFWKeyboardInput(this);
+		this.keyboardInput = new GLFWModuleKeyboardInput(this);
 		GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (window, w, h) -> {
 			width = w;
 			height = h;
 		});
 
-		this.mouseInput = new GLFWMouseInput(this);
+		this.mouseInput = new GLFWModuleMouseInput(this);
 	}
 
 	public void loop()
@@ -80,7 +80,7 @@ public abstract class GLFWWindow extends Window
 		this.pollEvents();
 		if (this.shouldClose())
 		{
-			this.engine.stop();
+			Engine.getInstance().stop();
 		}
 	}
 

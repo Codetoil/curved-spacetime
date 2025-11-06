@@ -21,48 +21,59 @@ package io.codetoil.curved_spacetime.api.vulkan;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkFenceCreateInfo;
+import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
+import org.tinylog.Logger;
 
 import java.nio.LongBuffer;
 
-public class VulkanFence
+public class VulkanModuleCommandPool
 {
-	private final VulkanLogicalDevice logicalDevice;
-	private final long vkFence;
+	private final VulkanModuleVulkanContext vulkanModuleVulkanContext;
+	private final long vkCommandPool;
 
-	public VulkanFence(VulkanLogicalDevice logicalDevice, boolean signaled)
+	public VulkanModuleCommandPool(VulkanModuleVulkanContext context, int queueFamilyIndex, boolean supportReset)
 	{
-		this.logicalDevice = logicalDevice;
+		Logger.debug("Creating Vulkan CommandPool for " + context.getLogicalDevice());
+
+		this.vulkanModuleVulkanContext = context;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkFenceCreateInfo fenceCreateInfo =
-					VkFenceCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO)
-							.flags(signaled ? VK13.VK_FENCE_CREATE_SIGNALED_BIT : 0);
+			VkCommandPoolCreateInfo cmdPoolInfo =
+					VkCommandPoolCreateInfo.calloc(stack)
+							.sType$Default()
+							.queueFamilyIndex(queueFamilyIndex);
+			if (supportReset)
+			{
+				cmdPoolInfo.flags(VK13.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+			}
 
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateFence(logicalDevice.getVkDevice(), fenceCreateInfo, null, lp),
-					"Failed to create fence");
-			this.vkFence = lp.get(0);
+			VulkanUtils.vkCheck(
+					VK13.vkCreateCommandPool(context.getLogicalDevice().getVkDevice(), cmdPoolInfo, null, lp),
+					"failed to create command pool");
+
+			this.vkCommandPool = lp.get(0);
 		}
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroyFence(this.logicalDevice.getVkDevice(), this.vkFence, null);
+		VK13.vkDestroyCommandPool(this.vulkanModuleVulkanContext.getLogicalDevice().getVkDevice(), this.vkCommandPool,
+				null);
 	}
 
-	public void vulkanFenceWait()
+	public long getVkCommandPool()
 	{
-		VK13.vkWaitForFences(this.logicalDevice.getVkDevice(), this.vkFence, true, Long.MAX_VALUE);
+		return this.vkCommandPool;
 	}
 
-	public long getVkFence()
+	public VulkanModuleVulkanContext getContext()
 	{
-		return this.vkFence;
+		return this.vulkanModuleVulkanContext;
 	}
 
 	public void reset()
 	{
-		VK13.vkResetFences(this.logicalDevice.getVkDevice(), this.vkFence);
+		VK13.vkResetCommandPool(this.vulkanModuleVulkanContext.getLogicalDevice().getVkDevice(), this.vkCommandPool, 0);
 	}
 }

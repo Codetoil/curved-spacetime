@@ -21,33 +21,29 @@ package io.codetoil.curved_spacetime.api.vulkan;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkQueue;
-import org.lwjgl.vulkan.VkSubmitInfo;
+import org.lwjgl.vulkan.*;
 import org.tinylog.Logger;
 
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
-
-public class VulkanQueue
+public class VulkanModuleQueue
 {
 
 	protected final int queueFamilyIndex;
 	protected final VkQueue vkQueue;
 
-	public VulkanQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueFamilyIndex, int queueIndex)
+	public VulkanModuleQueue(VulkanModuleVulkanContext context, int queueFamilyIndex, int queueIndex)
 	{
 		Logger.debug(
-				"Creating queue for " + vulkanLogicalDevice + " queueFamilyIndex " + queueFamilyIndex + " queueIndex " +
+				"Creating queue for " + context.getLogicalDevice() + " queueFamilyIndex " + queueFamilyIndex +
+						" queueIndex " +
 						queueIndex);
 
 		this.queueFamilyIndex = queueFamilyIndex;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			PointerBuffer pQueue = stack.mallocPointer(1);
-			VK13.vkGetDeviceQueue(vulkanLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
+			VK13.vkGetDeviceQueue(context.getLogicalDevice().getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
 			long queue = pQueue.get(0);
-			this.vkQueue = new VkQueue(queue, vulkanLogicalDevice.getVkDevice());
+			this.vkQueue = new VkQueue(queue, context.getLogicalDevice().getVkDevice());
 		}
 	}
 
@@ -61,23 +57,24 @@ public class VulkanQueue
 		VK13.vkQueueWaitIdle(this.vkQueue);
 	}
 
-	public void submit(PointerBuffer vulkanCommandBuffers, LongBuffer waitVulkanSemaphores,
-					   IntBuffer waitVulkanDstStageMasks, LongBuffer signalVulkanSemaphores, VulkanFence vulkanFence)
+	public void submit(VkCommandBufferSubmitInfo.Buffer vulkanCommandBuffers,
+					   VkSemaphoreSubmitInfo.Buffer waitVulkanSemaphores,
+					   VkSemaphoreSubmitInfo.Buffer signalVulkanSemaphores,
+					   VulkanModuleFence vulkanModuleFence)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkSubmitInfo vkSubmitInfo = VkSubmitInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_SUBMIT_INFO)
-					.pCommandBuffers(vulkanCommandBuffers).pSignalSemaphores(signalVulkanSemaphores);
+			VkSubmitInfo2.Buffer vkSubmitInfo = VkSubmitInfo2
+					.calloc(1, stack)
+					.sType$Default()
+					.pCommandBufferInfos(vulkanCommandBuffers)
+					.pSignalSemaphoreInfos(signalVulkanSemaphores);
 			if (waitVulkanSemaphores != null)
 			{
-				vkSubmitInfo.waitSemaphoreCount(waitVulkanSemaphores.capacity()).pWaitSemaphores(waitVulkanSemaphores)
-						.pWaitDstStageMask(waitVulkanDstStageMasks);
-			} else
-			{
-				vkSubmitInfo.waitSemaphoreCount(0);
+				vkSubmitInfo.pWaitSemaphoreInfos(waitVulkanSemaphores);
 			}
-			long vulkanFenceHandle = vulkanFence != null ? vulkanFence.getVkFence() : VK13.VK_NULL_HANDLE;
-			VulkanUtils.vkCheck(VK13.vkQueueSubmit(this.vkQueue, vkSubmitInfo, vulkanFenceHandle),
+			long vulkanFenceHandle = vulkanModuleFence != null ? vulkanModuleFence.getVkFence() : VK13.VK_NULL_HANDLE;
+			VulkanUtils.vkCheck(VK13.vkQueueSubmit2(this.vkQueue, vkSubmitInfo, vulkanFenceHandle),
 					"Failed to submit command to queue");
 		}
 	}

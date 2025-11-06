@@ -3,38 +3,36 @@
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
-
 #Specify inspection profile for code analysis
 profile:
   path: .qodana/curved_spacetime.yaml
-
-include:
-  - name: "category:Java/Java language level migration aids"
-  - name: "GLOBAL"
-  - name: "severity:INFORMATION"
-  - name: "severity:TEXT ATTRIBUTES"
-  - name: "QodanaJavaSanity"
-  - name: "QodanaKotlinSanity"
-
 projectJDK: "25" #(Applied in CI/CD pipeline)
-
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
-
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
-
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: qodana-jvm-community
 withinDocker: "false"
-
 exclude:
-  - name: Gradle
+  - name: All
     paths:
       - gradlew
       - gradlew.bat
-  - name: Licenses
-    paths:
+      - gradle
       - LICENSE
       - Notices.md
+      - curved-spacetime-webserver-openapi-module/src/main/resources/curved-spacetime-webserver-openapi-module.mixins.json
+      - curved-spacetime-webserver-module/src/main/resources/curved-spacetime-webserver-module.mixins.json
+      - curved-spacetime-vulkan-render-module/src/main/resources/curved-spacetime-vulkan-render-module.mixins.json
+      - curved-spacetime-vulkan-module/src/main/resources/curved-spacetime-vulkan-module.mixins.json
+      - curved-spacetime-vulkan-glfw-render-module/src/main/resources/curved-spacetime-vulkan-glfw-render-module.mixins.json
+      - curved-spacetime-vulkan-glfw-module/src/main/resources/curved-spacetime-vulkan-glfw-module.mixins.json
+      - curved-spacetime-render-module/src/main/resources/curved-spacetime-render-module.mixins.json
+      - curved-spacetime-glfw-render-module/src/main/resources/curved-spacetime-glfw-render-module.mixins.json
+      - curved-spacetime-glfw-module/src/main/resources/curved-spacetime-glfw-module.mixins.json
+      - .run
+      - clean_gh_actions_cache_win.py
+      - clean_gh_actions_cache_unix.py
+      - vulkanbook.epub

@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GLFWKeyboardInput implements KeyboardInput, GLFWKeyCallbackI
+public class GLFWModuleKeyboardInput implements KeyboardInput, GLFWKeyCallbackI
 {
 	protected final Map<Integer, Boolean> tappedKeyMap;
-	protected final GLFWWindow window;
+	protected final GLFWModuleWindow window;
 	protected final List<KeyCallback> callbacks;
 
-	public GLFWKeyboardInput(GLFWWindow window)
+	public GLFWModuleKeyboardInput(GLFWModuleWindow window)
 	{
 		this.window = window;
 		tappedKeyMap = new HashMap<>();

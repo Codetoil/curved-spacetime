@@ -1,6 +1,6 @@
 /**
  * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -16,16 +16,13 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api.render.glfw;
+package io.codetoil.curved_spacetime.api.engine;
 
-import io.codetoil.curved_spacetime.api.engine.Engine;
-import io.codetoil.curved_spacetime.api.scene.Scene;
-import io.codetoil.curved_spacetime.api.scene.SceneCallback;
-
-public abstract class GLFWRenderer extends SceneCallback
+public interface MainCallback
 {
-	protected GLFWRenderer(Engine engine, Scene scene)
-	{
-		super(engine, scene);
-	}
+	void init();
+
+	void loop();
+
+	void clean();
 }

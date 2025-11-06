@@ -31,21 +31,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class VulkanLogicalDevice
+public class VulkanModuleLogicalDevice
 {
-	private final VulkanPhysicalDevice vulkanPhysicalDevice;
+	private final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
 	private final VkDevice vkDevice;
 
-	public VulkanLogicalDevice(VulkanPhysicalDevice vulkanPhysicalDevice)
+	public VulkanModuleLogicalDevice(VulkanModulePhysicalDevice vulkanModulePhysicalDevice)
 	{
 		Logger.debug("Creating logical device");
 
-		this.vulkanPhysicalDevice = vulkanPhysicalDevice;
+		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			PointerBuffer reqExtensions = this.createReqExtensions(stack);
 			// Enable all the queue families
-			VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanPhysicalDevice.getVkQueueFamilyProps();
+			VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanModulePhysicalDevice.getVkQueueFamilyProps();
 			int numQueueFamilies = queuePropsBuff.capacity();
 			VkDeviceQueueCreateInfo.Buffer queueCreationInfoBuf =
 					VkDeviceQueueCreateInfo.calloc(numQueueFamilies, stack);
@@ -66,9 +66,9 @@ public class VulkanLogicalDevice
 
 			PointerBuffer pp = stack.mallocPointer(1);
 			VulkanUtils.vkCheck(
-					VK13.vkCreateDevice(vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo, null, pp),
+					VK13.vkCreateDevice(vulkanModulePhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo, null, pp),
 					"Failed to create device");
-			this.vkDevice = new VkDevice(pp.get(0), vulkanPhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo);
+			this.vkDevice = new VkDevice(pp.get(0), vulkanModulePhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class VulkanLogicalDevice
 						&& VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
 
 		var extensionList = new ArrayList<ByteBuffer>();
-		for (String extension : VulkanPhysicalDevice.REQUIRED_EXTENSIONS)
+		for (String extension : VulkanModulePhysicalDevice.REQUIRED_EXTENSIONS)
 		{
 			extensionList.add(stack.ASCII(extension));
 		}
@@ -102,13 +102,15 @@ public class VulkanLogicalDevice
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			IntBuffer numExtensionsBuf = stack.callocInt(1);
-			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
+			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+					(String) null,
 					numExtensionsBuf, null);
 			int numExtensions = numExtensionsBuf.get(0);
 			Logger.debug("Device supports [{}] extensions", numExtensions);
 
 			VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions, stack);
-			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanPhysicalDevice.getVkPhysicalDevice(), (String) null,
+			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+					(String) null,
 					numExtensionsBuf, propsBuff);
 			for (int index = 0; index < numExtensions; index++)
 			{
@@ -127,9 +129,9 @@ public class VulkanLogicalDevice
 		VK13.vkDestroyDevice(this.vkDevice, null);
 	}
 
-	public VulkanPhysicalDevice getPhysicalDevice()
+	public VulkanModulePhysicalDevice getPhysicalDevice()
 	{
-		return this.vulkanPhysicalDevice;
+		return this.vulkanModulePhysicalDevice;
 	}
 
 	public VkDevice getVkDevice()

@@ -111,13 +111,14 @@ exclude:
     paths:
       - gradlew
       - gradlew.bat
+      - gradle
   - name: Licenses
     paths:
       - LICENSE
       - Notices.md
   - name: All
     paths:
-      - gradlew.bat
-      - gradlew
       - .run
-      - gradle
+      - clean_gh_actions_cache_win.py
+      - clean_gh_actions_cache_unix.py
+      - vulkanbook.epub

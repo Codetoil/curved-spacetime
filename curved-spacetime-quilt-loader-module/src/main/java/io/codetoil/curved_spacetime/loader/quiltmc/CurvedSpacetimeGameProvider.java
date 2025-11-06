@@ -305,7 +305,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 		try
 		{
 			Class<?> c = classLoader.loadClass(ENTRYPOINT);
-			Method m = c.getMethod("main", String[].class, CurvedSpacetimeLoader.class);
+			Method m = c.getMethod("start", String[].class, CurvedSpacetimeLoader.class);
 			m.invoke(null, (Object) this.arguments.toArray(), loader);
 		} catch (InvocationTargetException e)
 		{

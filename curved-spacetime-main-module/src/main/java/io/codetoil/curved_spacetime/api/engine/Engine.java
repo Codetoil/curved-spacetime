@@ -27,10 +27,7 @@ import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
@@ -39,14 +36,15 @@ public class Engine
 {
 	protected static Engine INSTANCE;
 	public final MainModuleConfig mainModuleConfig;
-	protected final ScheduledExecutorService sceneCallbackExecutor;
+	protected final ScheduledExecutorService callbackExecutor;
 	protected final CurvedSpacetimeLoader loader;
+	protected final Set<Scene> scenes = new HashSet<>();
+	private final Map<String, MainCallback> mainCallbackMap = new HashMap<>();
 	private final Map<String, SceneCallback> sceneCallbackMap = new HashMap<>();
-	public Scene scene;
-	protected Future<?> sceneCallbackInitializeHandler;
-	protected ScheduledFuture<?> sceneCallbackLoopHandler;
+	protected Future<?> callbackInitializeHandler;
+	protected ScheduledFuture<?> callbackLoopHandler;
 
-	public Engine(CurvedSpacetimeLoader loader)
+	private Engine(CurvedSpacetimeLoader loader)
 	{
 		INSTANCE = this;
 		this.loader = loader;
@@ -58,16 +56,21 @@ public class Engine
 		{
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
-		this.scene = new Scene();
-		this.sceneCallbackExecutor = Executors.newSingleThreadScheduledExecutor();
+		this.scenes.add(new Scene());
+		this.callbackExecutor = Executors.newSingleThreadScheduledExecutor();
 		Logger.info("Running Entrypoints in parallel");
 		this.runEntrypoints();
-		Logger.info("Initializing Scene Callbacks");
-		this.sceneCallbackInitializeHandler = this.sceneCallbackExecutor.submit(() ->
-				this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.init()));
-		Logger.info("Looping Scene Callbacks");
-		this.sceneCallbackLoopHandler = this.sceneCallbackExecutor.scheduleAtFixedRate(() ->
-						this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop()),
+		Logger.info("Initializing Callbacks");
+		this.callbackInitializeHandler = this.callbackExecutor.submit(() ->
+		{
+			this.mainCallbackMap.forEach((_, mainCallback) -> mainCallback.init());
+			this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.init());
+		});
+		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() ->
+				{
+					this.mainCallbackMap.forEach((_, mainCallback) -> mainCallback.loop());
+					this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop());
+				},
 				1_000 / this.mainModuleConfig.getFPS(),
 				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
@@ -118,7 +121,7 @@ public class Engine
 
 	}
 
-	public static void main(String[] args, CurvedSpacetimeLoader loader)
+	public static void start(String[] args, CurvedSpacetimeLoader loader)
 	{
 		INSTANCE = new Engine(loader);
 	}
@@ -133,6 +136,11 @@ public class Engine
 		return loader;
 	}
 
+	public void registerMainCallback(String id, MainCallback mainCallback)
+	{
+		this.mainCallbackMap.put(id, mainCallback);
+	}
+
 	public void registerSceneCallback(String id, SceneCallback sceneCallback)
 	{
 		this.sceneCallbackMap.put(id, sceneCallback);
@@ -140,13 +148,18 @@ public class Engine
 
 	public void stop()
 	{
-		this.sceneCallbackLoopHandler.cancel(true);
+		this.callbackLoopHandler.cancel(true);
 		this.clean();
 	}
 
 	public void clean()
 	{
-		this.sceneCallbackExecutor.shutdown();
-		this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.clean());
+		this.callbackExecutor.shutdown();
+		this.sceneCallbackMap.forEach((_, mainCallback) -> mainCallback.clean());
+	}
+
+	public Set<Scene> getScenes()
+	{
+		return scenes;
 	}
 }

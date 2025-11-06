@@ -24,28 +24,33 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 import org.tinylog.Logger;
 
-public class VulkanCommandBuffer
+import java.nio.IntBuffer;
+
+public class VulkanModuleCommandBuffer
 {
-	private final VulkanCommandPool commandPool;
+	private final VulkanModuleCommandPool commandPool;
 	private final boolean oneTimeSubmit;
 	private final VkCommandBuffer vkCommandBuffer;
 	private final boolean primary;
 
-	public VulkanCommandBuffer(VulkanCommandPool commandPool, boolean primary, boolean oneTimeSubmit)
+	public VulkanModuleCommandBuffer(VulkanModuleCommandPool commandPool, boolean primary, boolean oneTimeSubmit)
 	{
 		Logger.trace("Creating command buffer");
 		this.commandPool = commandPool;
 		this.primary = primary;
 		this.oneTimeSubmit = oneTimeSubmit;
-		VkDevice vkDevice = commandPool.getVulkanLogicalDevice().getVkDevice();
+		VkDevice vkDevice = commandPool.getContext().getLogicalDevice().getVkDevice();
 
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-					VkCommandBufferAllocateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
+					VkCommandBufferAllocateInfo
+							.calloc(stack)
+							.sType$Default()
 							.commandPool(commandPool.getVkCommandPool())
 							.level(primary ? VK13.VK_COMMAND_BUFFER_LEVEL_PRIMARY :
-									VK13.VK_COMMAND_BUFFER_LEVEL_SECONDARY).commandBufferCount(1);
+									VK13.VK_COMMAND_BUFFER_LEVEL_SECONDARY)
+							.commandBufferCount(1);
 			PointerBuffer pb = stack.mallocPointer(1);
 			VulkanUtils.vkCheck(VK13.vkAllocateCommandBuffers(vkDevice, cmdBufAllocateInfo, pb),
 					"Failed to allocate render command buffer");
@@ -59,12 +64,14 @@ public class VulkanCommandBuffer
 		this.beginRecording(null);
 	}
 
-	public void beginRecording(VkCommandBufferInheritanceInfo inheritanceInfo)
+	public void beginRecording(InheritanceInfo inheritanceInfo)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			VkCommandBufferBeginInfo cmdBufInfo =
-					VkCommandBufferBeginInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+					VkCommandBufferBeginInfo
+							.calloc(stack)
+							.sType$Default();
 
 			if (this.oneTimeSubmit)
 			{
@@ -76,12 +83,24 @@ public class VulkanCommandBuffer
 				{
 					throw new RuntimeException("Secondary buffers must declare inheritance info");
 				}
-				VkCommandBufferInheritanceInfo vkInheritanceInfo = VkCommandBufferInheritanceInfo.calloc(stack)
-						.sType(VK13.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
-						.renderPass(inheritanceInfo.renderPass()).subpass(inheritanceInfo.subpass())
-						.framebuffer(inheritanceInfo.framebuffer());
+				int numColorFormats = inheritanceInfo.colorFormats.length;
+				IntBuffer colorFormats = stack.callocInt(numColorFormats);
+				for (int i = 0; i < numColorFormats; i++)
+				{
+					colorFormats.put(0, inheritanceInfo.colorFormats[i]);
+				}
+				VkCommandBufferInheritanceRenderingInfo renderingInfo = VkCommandBufferInheritanceRenderingInfo
+						.calloc(stack)
+						.sType$Default()
+						.depthAttachmentFormat(inheritanceInfo.depthFormat)
+						.pColorAttachmentFormats(colorFormats)
+						.rasterizationSamples(inheritanceInfo.rasterizationSamples);
+
+				VkCommandBufferInheritanceInfo vkInheritanceInfo = VkCommandBufferInheritanceInfo
+						.calloc(stack)
+						.sType$Default()
+						.pNext(renderingInfo);
 				cmdBufInfo.pInheritanceInfo(vkInheritanceInfo);
-				cmdBufInfo.flags(VK13.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 			}
 			VulkanUtils.vkCheck(VK13.vkBeginCommandBuffer(this.vkCommandBuffer, cmdBufInfo),
 					"Failed to create command buffer");
@@ -91,7 +110,7 @@ public class VulkanCommandBuffer
 	public void cleanup()
 	{
 		Logger.trace("Destroying command buffer");
-		VK13.vkFreeCommandBuffers(this.commandPool.getVulkanLogicalDevice().getVkDevice(),
+		VK13.vkFreeCommandBuffers(this.commandPool.getContext().getLogicalDevice().getVkDevice(),
 				this.commandPool.getVkCommandPool(), this.vkCommandBuffer);
 	}
 
@@ -108,5 +127,31 @@ public class VulkanCommandBuffer
 	public void reset()
 	{
 		VK13.vkResetCommandBuffer(this.vkCommandBuffer, VK13.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
+	}
+
+	public void submitAndWait(VulkanModuleQueue queue)
+	{
+		VulkanModuleFence fence = new VulkanModuleFence(this.commandPool.getContext(), true);
+		fence.reset();
+		try (MemoryStack stack = MemoryStack.stackPush())
+		{
+			VkCommandBufferSubmitInfo.Buffer cmds = VkCommandBufferSubmitInfo
+					.calloc(1, stack)
+					.sType$Default()
+					.commandBuffer(vkCommandBuffer);
+			queue.submit(cmds, null, null, fence);
+		}
+		fence.fenceWait();
+		fence.clean();
+	}
+
+	public VulkanModuleCommandPool getCommandPool()
+	{
+		return commandPool;
+	}
+
+	public record InheritanceInfo(int depthFormat, int[] colorFormats, int rasterizationSamples)
+	{
+
 	}
 }

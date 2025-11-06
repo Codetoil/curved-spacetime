@@ -21,36 +21,51 @@ package io.codetoil.curved_spacetime.api.vulkan;
 import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
+import org.lwjgl.vulkan.VkFenceCreateInfo;
 
 import java.nio.LongBuffer;
 
-public class VulkanSemaphore
+public class VulkanModuleFence
 {
-	private final VulkanLogicalDevice logicalDevice;
-	private final long vkSemaphore;
+	private final VulkanModuleVulkanContext context;
+	private final long vkFence;
 
-	public VulkanSemaphore(VulkanLogicalDevice logicalDevice)
+	public VulkanModuleFence(VulkanModuleVulkanContext context, boolean signaled)
 	{
-		this.logicalDevice = logicalDevice;
+		this.context = context;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkSemaphoreCreateInfo semaphoreCreateInfo =
-					VkSemaphoreCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
+			VkFenceCreateInfo fenceCreateInfo =
+					VkFenceCreateInfo
+							.calloc(stack)
+							.sType$Default()
+							.flags(signaled ? VK13.VK_FENCE_CREATE_SIGNALED_BIT : 0);
+
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateSemaphore(logicalDevice.getVkDevice(), semaphoreCreateInfo, null, lp),
-					"Failed to create semaphore");
-			this.vkSemaphore = lp.get(0);
+			VulkanUtils.vkCheck(VK13.vkCreateFence(context.getLogicalDevice().getVkDevice(), fenceCreateInfo,
+					null, lp), "Failed to create fence");
+			this.vkFence = lp.get(0);
 		}
 	}
 
-	public void cleanup()
+	public void clean()
 	{
-		VK13.vkDestroySemaphore(this.logicalDevice.getVkDevice(), this.vkSemaphore, null);
+		VK13.vkDestroyFence(this.context.getLogicalDevice().getVkDevice(), this.vkFence,
+				null);
 	}
 
-	public long getVkSemaphore()
+	public void fenceWait()
 	{
-		return this.vkSemaphore;
+		VK13.vkWaitForFences(this.context.getLogicalDevice().getVkDevice(), this.vkFence, true, Long.MAX_VALUE);
+	}
+
+	public long getVkFence()
+	{
+		return this.vkFence;
+	}
+
+	public void reset()
+	{
+		VK13.vkResetFences(this.context.getLogicalDevice().getVkDevice(), this.vkFence);
 	}
 }

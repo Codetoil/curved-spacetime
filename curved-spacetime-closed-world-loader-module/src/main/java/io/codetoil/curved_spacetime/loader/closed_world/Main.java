@@ -8,6 +8,6 @@ public class Main
 	static void main(String[] args)
 	{
 		Logger.info("Starting closed-world version of Engine!");
-		Engine.main(args, new CurvedSpacetimeLoaderClosedLoader());
+		Engine.start(args, new CurvedSpacetimeLoaderClosedLoader());
 	}
 }

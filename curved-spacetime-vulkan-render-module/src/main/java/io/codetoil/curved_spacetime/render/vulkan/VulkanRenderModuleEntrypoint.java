@@ -101,4 +101,14 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 	{
 		return this.dependencyModuleTransferQueue;
 	}
+
+	public VulkanModuleEntrypoint getVulkanModuleEntrypoint()
+	{
+		return vulkanModuleEntrypoint;
+	}
+
+	public RenderModuleEntrypoint getRenderModuleEntrypoint()
+	{
+		return renderModuleEntrypoint;
+	}
 }
