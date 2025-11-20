@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.jetbrains.qodana") version "2025.2.1"
+    id("org.jetbrains.qodana") version "2025.2.2"
 }
 
 // Maven Central - https://repo1.maven.org/maven2/
