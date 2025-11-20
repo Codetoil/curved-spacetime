@@ -52,7 +52,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: javadoc
-      - run: mkdir javadoc/curved-spacetime/${{ github.ref_name }}
+      - run: mkdir -p javadoc/curved-spacetime/${{ github.ref_name }}
       - run: unzip -d javadoc/curved-spacetime/${{ github.ref_name }} javadoc.zip
       - name: Preform Update
         run: |
