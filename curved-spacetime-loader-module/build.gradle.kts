@@ -8,10 +8,6 @@ version = "0.1.0-SNAPSHOT"
 
 val nonJar by configurations.creating
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
     api("org.tinylog:tinylog-api:${rootProject.extra["tinyLoggerVersion"]}")

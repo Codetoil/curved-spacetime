@@ -1,5 +1,6 @@
 plugins {
-    java
+    buildsrc
+    id("io.freefair.aggregate-javadoc")
     id("org.jetbrains.qodana") version "2025.2.2"
 }
 
@@ -67,6 +68,25 @@ val nonJar by configurations.creating
 
 dependencies {
     nonJar(files("LICENSE.md", "Notices.md"))
+
+    rootProject.subprojects.filter { project -> !project.name.contains("quilt-loader-patches") }
+        .forEach { subproject ->
+            subproject.plugins.withId("java") {
+                javadoc(subproject)
+            }
+        }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            url = uri("https://maven.fabricmc.net/")
+        }
+        maven {
+            url = uri("https://maven.quiltmc.org/repository/release/")
+        }
+    }
 }
 
 tasks.register("cleanJar") {

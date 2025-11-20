@@ -16,6 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
+/**
+ * Vulkan GLFW Render Module of Curved Spacetime
+ * */
 module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
@@ -32,4 +35,5 @@ module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
 
 	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
 	exports io.codetoil.curved_spacetime.api.render.vulkan_glfw;
+	exports io.codetoil.curved_spacetime.api.render.vulkan_glfw.entrypoint;
 }

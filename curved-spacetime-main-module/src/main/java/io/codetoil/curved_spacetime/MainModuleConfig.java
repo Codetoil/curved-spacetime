@@ -20,10 +20,8 @@ package io.codetoil.curved_spacetime;
 
 import org.tinylog.Logger;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Properties;
 
 public class MainModuleConfig
@@ -91,6 +89,9 @@ public class MainModuleConfig
 	{
 		Properties props = new Properties();
 		props.put("fps", String.valueOf(this.fps));
+
+		File configFile = new File(MainModuleConfig.FILENAME);
+		if (!configFile.getParentFile().mkdirs()) throw new IOException("Could not create config directory");
 
 		try (FileWriter writer = new FileWriter(MainModuleConfig.FILENAME))
 		{

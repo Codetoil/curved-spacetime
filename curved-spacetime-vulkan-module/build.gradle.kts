@@ -10,16 +10,6 @@ version = "0.1.0-SNAPSHOT"
 
 val nonJar by configurations.creating
 
-repositories {
-    mavenCentral()
-    maven {
-        url = uri("https://maven.fabricmc.net/")
-    }
-    maven {
-        url = uri("https://maven.quiltmc.org/repository/release/")
-    }
-}
-
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 

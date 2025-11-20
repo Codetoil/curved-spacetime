@@ -17,14 +17,11 @@
  */
 
 /**
- * Main Module of Curved Spacetime
+ * Quilt Loader Module of Curved Spacetime
  * */
-module io.codetoil.curved_spacetime {
-	requires org.tinylog.api;
+module io.codetoil.curved_spacetime.loader.quiltmc {
 	requires io.codetoil.curved_spacetime.loader;
-
-	exports io.codetoil.curved_spacetime;
-	exports io.codetoil.curved_spacetime.api;
-	exports io.codetoil.curved_spacetime.api.scene;
-	exports io.codetoil.curved_spacetime.api.engine;
+	requires org.jetbrains.annotations;
+	requires org.quiltmc.loader;
+	requires org.tinylog.api;
 }

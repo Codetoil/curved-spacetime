@@ -16,15 +16,21 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-/**
- * Main Module of Curved Spacetime
- * */
-module io.codetoil.curved_spacetime {
-	requires org.tinylog.api;
-	requires io.codetoil.curved_spacetime.loader;
 
-	exports io.codetoil.curved_spacetime;
-	exports io.codetoil.curved_spacetime.api;
-	exports io.codetoil.curved_spacetime.api.scene;
-	exports io.codetoil.curved_spacetime.api.engine;
+/**
+ * Closed-World Loader Module of Curved Spacetime
+ * */
+module io.codetoil.curved_spacetime.loader.closed_world {
+	requires io.codetoil.curved_spacetime;
+	requires io.codetoil.curved_spacetime.glfw;
+	requires io.codetoil.curved_spacetime.loader;
+	requires io.codetoil.curved_spacetime.render;
+	requires io.codetoil.curved_spacetime.render.glfw;
+	requires io.codetoil.curved_spacetime.render.vulkan;
+	requires io.codetoil.curved_spacetime.vulkan;
+	requires io.codetoil.curved_spacetime.vulkan_glfw;
+	requires io.codetoil.curved_spacetime.webserver;
+	requires io.codetoil.curved_spacetime.webserver.openapi;
+	requires io.github.codetoil.curved_spacetime.render.vulkan_glfw;
+	requires org.tinylog.api;
 }

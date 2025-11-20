@@ -1,15 +1,15 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
 
 PackageIdentifier: Codetoil.CurvedSpacetime
-PackageVersion: 0.1.0-SNAPSHOT+build.0.0
+PackageVersion: 0.1.0-build.29.1
 ManifestType: defaultLocale
 PackageLocale: en-US
 Publisher: Codetoil
 PublisherSupportUrl: https://github.com/Codetoil/curved-spacetime/issues
-PackageName: CurvedSpacetime
+PackageName: Curved Spacetime Closed-World Native Variant
 License: GNU GPLv3 or Later
-LicenseUrl: https://github.com/Codetoil/curved-spacetime/blob/58f65632c06668713a37c0324b236ccca6a8922d/LICENSE.md
-ShortDescription: Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity. This is the Closed-World Variant.
+LicenseUrl: https://github.com/Codetoil/curved-spacetime/tree/0.1.0-build.29.1/LICENSE.md
+ShortDescription: Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity. This is the Closed-World Native Variant.
 Description: |
   Curved Spacetime is a work-in-progress computer program that simulates
   General Relativity whose goal is that it should contain a UI normal people
@@ -23,6 +23,7 @@ Description: |
   - The Closed-World Jar Variant, which is faster but less extendable. Requires Java 25 to be installed.
   - The Closed-World Native Variant, which is the fastest but least extendable. Does not require Java 25 to be installed, but less Operating Systems are supported.
   
-  This is the Closed-World Native Variant.
+  The version installed by WinGet is the Closed-World Native Variant. Alternative versions can be downloaded from the GitHub Releases page
+  or built from the corresponding sources.
 Tags: [simulator, vulkan, raytracing, general-relativity, curved-spacetime]
 ManifestVersion: 1.10.0

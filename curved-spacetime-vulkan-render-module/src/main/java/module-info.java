@@ -16,6 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
+/**
+ * Vulkan Render Loader Module of Curved Spacetime
+ * */
 module io.codetoil.curved_spacetime.render.vulkan {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;

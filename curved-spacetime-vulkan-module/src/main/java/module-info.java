@@ -16,6 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
+/**
+ * Vulkan Module of Curved Spacetime
+ * */
 module io.codetoil.curved_spacetime.vulkan {
 	requires org.tinylog.api;
 	requires org.lwjgl;
