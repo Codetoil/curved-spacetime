@@ -1,6 +1,6 @@
 package io.codetoil.curved_spacetime.loader.closed_world;
 
-import io.codetoil.curved_spacetime.api.engine.Engine;
+import io.codetoil.curved_spacetime.engine.Engine;
 import org.tinylog.Logger;
 
 public class Main

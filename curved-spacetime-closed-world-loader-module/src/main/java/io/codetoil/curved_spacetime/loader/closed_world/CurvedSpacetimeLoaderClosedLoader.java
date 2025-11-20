@@ -1,16 +1,16 @@
 package io.codetoil.curved_spacetime.loader.closed_world;
 
-import io.codetoil.curved_spacetime.api.glfw.entrypoint.GLFWModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.loader.CurvedSpacetimeLoader;
-import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.glfw.entrypoint.GLFWModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
+import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.render.glfw.entrypoint.GLFWRenderModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.render.vulkan.entrypoint.VulkanRenderModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.webserver.WebserverModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.api.webserver.openapi.WebserverOpenAPIModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.glfw.entrypoint.GLFWRenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.vulkan.entrypoint.VulkanRenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.vulkan_glfw.entrypoint.VulkanGLFWModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.webserver.WebserverModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.webserver.openapi.WebserverOpenAPIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.GLFWModuleDependentGLFWRenderModuleEntrypoint;

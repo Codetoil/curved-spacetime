@@ -122,13 +122,15 @@ tasks.register("cleanJar") {
 tasks.register<Copy>("nonJarCopyClosedJar") {
     from(nonJar)
     into("$rootDir/archive-closed-world-jar/")
-    mustRunAfter(rootProject.subprojects.map { it.tasks.build })
+    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
+        .map { it.tasks.build })
 }
 
 tasks.register<Copy>("nonJarCopyQuilt") {
     from(nonJar)
     into("$rootDir/archive-quilt/")
-    mustRunAfter(rootProject.subprojects.map { it.tasks.build })
+    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
+        .map { it.tasks.build })
 }
 
 tasks.build {

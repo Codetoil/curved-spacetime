@@ -28,6 +28,5 @@ module io.codetoil.curved_spacetime.vulkan_glfw {
 	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime.vulkan_glfw;
-	exports io.codetoil.curved_spacetime.api.vulkan_glfw;
-	exports io.codetoil.curved_spacetime.api.vulkan_glfw.entrypoint;
+	exports io.codetoil.curved_spacetime.vulkan_glfw.entrypoint;
 }

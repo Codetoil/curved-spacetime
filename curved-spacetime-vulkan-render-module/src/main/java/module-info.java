@@ -29,6 +29,5 @@ module io.codetoil.curved_spacetime.render.vulkan {
 	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime.render.vulkan;
-	exports io.codetoil.curved_spacetime.api.render.vulkan;
-	exports io.codetoil.curved_spacetime.api.render.vulkan.entrypoint;
+	exports io.codetoil.curved_spacetime.render.vulkan.entrypoint;
 }

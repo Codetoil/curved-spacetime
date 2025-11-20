@@ -23,6 +23,7 @@ include("curved-spacetime-main-module")
 include("curved-spacetime-loader-module")
 include("curved-spacetime-quilt-loader-module")
 include("curved-spacetime-closed-world-loader-module")
+
 project(":curved-spacetime-quilt-loader-patches").name = "curved-spacetime-quilt-loader-patches"
 project(":curved-spacetime-vulkan-module").name = "curved-spacetime-vulkan-module"
 project(":curved-spacetime-glfw-module").name = "curved-spacetime-glfw-module"

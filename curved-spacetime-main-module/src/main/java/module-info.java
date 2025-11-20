@@ -24,7 +24,6 @@ module io.codetoil.curved_spacetime {
 	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime;
-	exports io.codetoil.curved_spacetime.api;
-	exports io.codetoil.curved_spacetime.api.scene;
-	exports io.codetoil.curved_spacetime.api.engine;
+	exports io.codetoil.curved_spacetime.scene;
+	exports io.codetoil.curved_spacetime.engine;
 }
