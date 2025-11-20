@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("java-library")
+    id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
 }
 
@@ -83,4 +84,8 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+tasks.javadocLinks {
+    urlProvider = { id -> urlProviderFunc(id) }
 }

@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("java-library")
+    id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
     id("com.gradleup.shadow") version "9.2.2"
 }
@@ -91,4 +92,8 @@ publishing {
             from(components["shadow"])
         }
     }
+}
+
+tasks.javadocLinks {
+    urlProvider = { id -> urlProviderFunc(id) }
 }
