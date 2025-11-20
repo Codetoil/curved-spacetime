@@ -21,7 +21,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ vars.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}
-          name: "Debug Release ${{ vars.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}
+          name: "Debug Release ${{ vars.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}"
           generate_release_notes: true
           draft: false
           prerelease: true
