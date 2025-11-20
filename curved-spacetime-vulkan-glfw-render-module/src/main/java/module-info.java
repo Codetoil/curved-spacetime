@@ -19,7 +19,7 @@
 /**
  * Vulkan GLFW Render Module of Curved Spacetime
  * */
-module io.github.codetoil.curved_spacetime.render.vulkan_glfw {
+module io.codetoil.curved_spacetime.render.vulkan_glfw {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.vulkan;

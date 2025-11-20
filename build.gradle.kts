@@ -1,6 +1,5 @@
 plugins {
-    buildsrc
-    id("io.freefair.aggregate-javadoc")
+    //id("java")
     id("org.jetbrains.qodana") version "2025.2.2"
 }
 

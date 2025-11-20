@@ -31,6 +31,6 @@ module io.codetoil.curved_spacetime.loader.closed_world {
 	requires io.codetoil.curved_spacetime.vulkan_glfw;
 	requires io.codetoil.curved_spacetime.webserver;
 	requires io.codetoil.curved_spacetime.webserver.openapi;
-	requires io.github.codetoil.curved_spacetime.render.vulkan_glfw;
+	requires io.codetoil.curved_spacetime.render.vulkan_glfw;
 	requires org.tinylog.api;
 }

@@ -1,6 +1,5 @@
 plugins {
-    `kotlin-dsl`
-    kotlin("jvm") version "2.2.21"
+    id("java-gradle-plugin")
 }
 
 repositories {
@@ -9,5 +8,8 @@ repositories {
 }
 
 dependencies {
-    implementation("io.freefair.aggregate-javadoc:io.freefair.aggregate-javadoc.gradle.plugin:9.1.0")
+    implementation ("org.apache.maven:maven-model:3.9.11")
+    implementation ("org.apache.maven:maven-artifact:3.9.11")
+
+    api ("io.freefair.okhttp:io.freefair.okhttp.gradle.plugin:9.1.0")
 }
