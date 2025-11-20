@@ -39,6 +39,8 @@ jobs:
 
   publish-to-github-pages:
     runs-on: ubuntu-24.04
+    # Add a dependency to the build job
+    needs: javadoc
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
