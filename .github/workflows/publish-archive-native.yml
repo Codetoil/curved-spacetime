@@ -79,7 +79,7 @@ jobs:
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-windows-x64/source.tar.gz HEAD
-      - run: Compress-Archive -Path ./archive-closed-world-native-windows-x64/* -DestinationPath ./curved-spacetime-closed-world-native-variant-windows-x64-${{ vars.VERSION }}-${{ vars.GITHUB_RUN_NUMBER }}.${{ vars.GITHUB_RUN_ATTEMPT }}.zip
+      - run: Compress-Archive -Path ./archive-closed-world-native-windows-x64/* -DestinationPath ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
