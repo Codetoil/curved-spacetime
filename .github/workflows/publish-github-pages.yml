@@ -5,8 +5,7 @@ on:
     types: [ published ]
 
 jobs:
-  # Build job
-  build:
+  javadoc:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
@@ -29,12 +28,12 @@ jobs:
         id: deployment
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
-          path: build_outputs_folder/
+          path: build/docs/javadoc
 
   # Deploy job
   deploy:
     # Add a dependency to the build job
-    needs: build
+    needs: javadoc
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
