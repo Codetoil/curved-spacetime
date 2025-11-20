@@ -6,6 +6,9 @@ on:
     branches:
       - master
 
+env:
+  VERSION: 0.1.0
+
 jobs:
   create-debug-release:
     runs-on: ubuntu-24.04
@@ -20,8 +23,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ vars.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}
-          name: "Debug Release ${{ vars.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}"
+          tag_name: ${{ env.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}
+          name: "Debug Release ${{ env.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}"
           generate_release_notes: true
           draft: false
           prerelease: true
