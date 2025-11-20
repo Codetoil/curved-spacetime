@@ -53,7 +53,7 @@ jobs:
         with:
           name: javadoc
       - run: mkdir -p javadoc/curved-spacetime/${{ github.ref_name }}
-      - run: unzip -d javadoc/curved-spacetime/${{ github.ref_name }} javadoc.zip
+      - run: unzip -d javadoc/curved-spacetime/${{ github.ref_name }} javadoc
       - name: Preform Update
         run: |
           git add .
