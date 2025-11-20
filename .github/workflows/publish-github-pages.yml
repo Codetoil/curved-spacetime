@@ -4,6 +4,12 @@ on:
   release:
     types: [ published ]
 
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   javadoc:
     runs-on: ubuntu-24.04
@@ -28,26 +34,28 @@ jobs:
         id: deployment
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
+          name: javadoc
           path: build/docs/javadoc
 
-  # Deploy job
-  deploy:
-    # Add a dependency to the build job
-    needs: javadoc
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
+  publish-to-github-pages:
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    # Specify runner + deployment step
-    runs-on: ubuntu-24.04
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v5
+        with:
+          ref: pages
+      - name: Download the javadocs from earlier
+        uses: actions/download-artifact@v6
+        with:
+          name: javadoc
+      - run: mkdir javadoc/curved-spacetime/${{ github.ref_name }}
+      - run: unzip -d javadoc/curved-spacetime/${{ github.ref_name }} javadoc.zip
+      - name: Preform Update
+        run: |
+          git add .
+          git config --global user.name 'Codetoil'
+          git config --global user.email 'codetoil@users.noreply.github.com'
+          git commit -am "Automated update"
+          git push
