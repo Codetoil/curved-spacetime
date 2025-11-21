@@ -59,7 +59,8 @@ jobs:
         run: |
           mkdir -p javadocs/${{ github.ref_name }}
           tar -xvf artifact.tar -C javadocs/${{ github.ref_name }}
-          sed -i 's/[0-9]+\.[0-9]+\.[0-9]+-build\.[0-9]+\.[0-9]+/${{ github.ref_name }}/g' index.html
+      - name: Update index.html
+        run: sed -i 's/[0-9]+\.[0-9]+\.[0-9]+-build\.[0-9]+\.[0-9]+/${{ github.ref_name }}/g' index.html
       - name: Push update to repo
         run: |
           git add .
