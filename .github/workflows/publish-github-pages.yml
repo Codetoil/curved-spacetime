@@ -57,12 +57,13 @@ jobs:
           name: javadoc
       - name: Unpack artifact
         run: |
-          mkdir -p javadoc/curved-spacetime/${{ github.ref_name }}
-          tar -xvf artifact.tar -C javadoc/curved-spacetime/${{ github.ref_name }}
+          mkdir -p javadocs/${{ github.ref_name }}
+          tar -xvf artifact.tar -C javadocs/${{ github.ref_name }}
+          sed -i 's/\d+\.\d+\.\d+-build\.\d+\.\d+/${{ github.ref_name }}/g' index.html
       - name: Push update to repo
         run: |
           git add .
           git config --global user.name 'Codetoil'
           git config --global user.email 'codetoil@users.noreply.github.com'
-          git commit -am "Automated update"
+          git commit -am "Automated update ${{ github.ref_name }}"
           git push
