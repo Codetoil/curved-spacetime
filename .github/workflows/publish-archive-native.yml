@@ -65,6 +65,8 @@ jobs:
 
     permissions:
       contents: write
+    outputs:
+      sha1: ${{ steps.upload_archive_sha1.outputs.sha1 }}
 
     steps:
       - uses: actions/checkout@v5
@@ -80,6 +82,8 @@ jobs:
         run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-windows-x64/source.tar.gz HEAD
       - run: Compress-Archive -Path ./archive-closed-world-native-windows-x64/* -DestinationPath ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip
+      - id: upload_archive_sha1
+        run: echo "sha1=$(sha1sum ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip)" | sed 's/\s.*$// > "${GITHUB_OUTPUT}"
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
@@ -139,3 +143,28 @@ jobs:
         if: github.ref_type == 'tag'
         with:
           files: ./curved-spacetime-closed-world-native-variant-macos-arm64-${{ github.ref_name }}.zip
+  # Done in same script for now
+  publish-winget-to-github-pages:
+    runs-on: windows-2025
+    # Add a dependency to the build job
+    needs: publish-curved-spacetime-closed-windows-x64
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions: # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write      # 'write' access to pull requests
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: pages
+
+#      - env:
+#          SHA1: ${{needs.upload_archive_sha1.outputs.sha1}}
+      - name: Push update to repo
+        run: |
+          git add .
+          git config --global user.name 'Codetoil'
+          git config --global user.email 'codetoil@users.noreply.github.com'
+          git commit -am "Automated update ${{ github.ref_name }}"
+          git push
