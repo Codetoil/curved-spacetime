@@ -83,7 +83,7 @@ jobs:
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-windows-x64/source.tar.gz HEAD
       - run: Compress-Archive -Path ./archive-closed-world-native-windows-x64/* -DestinationPath ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip
       - id: upload_archive_sha1
-        run: echo "sha1=$(sha1sum ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip)" | sed 's/\s.*$// > "${GITHUB_OUTPUT}"
+        run: Get-FileHash -Path curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip -Algorithm SHA1 | Select-Object -ExpandProperty Hash > "${GITHUB_OUTPUT}"
       - name: Publish
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
