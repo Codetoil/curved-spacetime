@@ -23,8 +23,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}
-          name: "Debug Release ${{ env.VERSION }}-build.${{ github.run_number }}.${{ github.run_attempt }}"
+          tag_name: ${{ env.VERSION }}-build.${{ github.run_number }}
+          name: "Debug Release ${{ env.VERSION }}-build.${{ github.run_number }}"
           generate_release_notes: true
           draft: false
           prerelease: true
