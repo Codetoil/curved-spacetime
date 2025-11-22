@@ -23,7 +23,7 @@ import org.quiltmc.loader.impl.util.log.LogHandler;
 import org.quiltmc.loader.impl.util.log.LogLevel;
 import org.tinylog.Logger;
 
-public class TinyLogHandler implements LogHandler
+public class TinyLogLogHandler implements LogHandler
 {
 	@Override
 	public void log(long time, LogLevel level, LogCategory category, String msg, Throwable exc, boolean fromReplay,

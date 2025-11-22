@@ -35,7 +35,7 @@ The Native Variants (Closed-World Native Variants) support the following Operati
 
 - Linux on 64-Bit x86 (x86_64/AMD64)
 - Linux on 64-Bit ARM (AArch64/ARM64)
-- macOS on 64-Bit x86 (x86_64/AMD64)
+- macOS on 64-Bit x86 (x86_64/AMD64) (Must be built from source)
 - macOS on 64-Bit ARM (AArch64/ARM64)
 - Windows on 64-Bit x86 (x86_64/AMD64)
 

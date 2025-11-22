@@ -89,33 +89,6 @@ jobs:
       - run: gh workflow run publish-github-pages-winget.yml -f version="${{ github.ref_name }}" -f archive_hash="$(Get-FileHash -Path curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip -Algorithm SHA256 | Select-Object -ExpandProperty Hash)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  publish-curved-spacetime-closed-macos-x64:
-    name: Publish curved-spacetime (Closed-World Native Variant) macOS x64
-    runs-on: macos-15-intel
-
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v5
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '25'
-          distribution: 'graalvm-community'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-      - name: Compile
-        run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
-      - run: git archive --format=tar.gz -o ./archive-closed-world-native-macos-x64/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-closed-world-native-variant-macos-x64-${{ github.ref_name }}.zip .
-        working-directory: archive-closed-world-native-macos-x64
-      - name: Publish
-        uses: softprops/action-gh-release@v2
-        if: github.ref_type == 'tag'
-        with:
-          files: ./curved-spacetime-closed-world-native-variant-macos-x64-${{ github.ref_name }}.zip
   publish-curved-spacetime-closed-macos-arm64:
     name: Publish curved-spacetime (Closed-World Native Variant) macOS arm64
     runs-on: macos-26
