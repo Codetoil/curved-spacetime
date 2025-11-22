@@ -34,9 +34,9 @@ jobs:
           $content_version = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.yaml"
           $content_locale_en_US = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.locale.en-US.yaml"
           $content_installer = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.installer.yaml"
-          $content_version = $content_version -replace '${version}', '${{ inputs.version }}' -replace '${hash}', '${{ inputs.archive_hash }}'
-          $content_locale_en_US = $content_locale_enUS -replace '${version}', '${{ inputs.version }}' -replace '${hash}', '${{ inputs.archive_hash }}'
-          $content_installer = $content_installer -replace '${version}', '${{ inputs.version }}' -replace '${hash}', '${{ inputs.archive_hash }}'
+          $content_version = $content_version -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{sha1\}', '${{ inputs.archive_hash }}'
+          $content_locale_en_US = $content_locale_en_US -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{sha1\}', '${{ inputs.archive_hash }}'
+          $content_installer = $content_installer -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{sha1\}', '${{ inputs.archive_hash }}'
           Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.yaml" -Value $content_version
           Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.locale.en-US.yaml" -Value $content_locale_en_US
           Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.installer.yaml" -Value $content_installer
