@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
- * 2023-2025 Anthony Michalek (Codetoil)<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,22 +18,13 @@
 
 package io.codetoil.curved_spacetime.scene;
 
-import io.codetoil.curved_spacetime.engine.Engine;
-
-public abstract class SceneCallback
+public interface SceneCallback
 {
-	protected final Engine engine;
-	protected final Scene scene;
+	void init();
 
-	protected SceneCallback(Engine engine, Scene scene)
-	{
-		this.engine = engine;
-		this.scene = scene;
-	}
+	void loop();
 
-	public abstract void init();
+	void clean();
 
-	public abstract void loop();
-
-	public abstract void clean();
+	Scene scene();
 }

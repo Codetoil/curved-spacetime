@@ -18,7 +18,8 @@
 
 /**
  * Webserver Module of Curved Spacetime
- * */
+ *
+ */
 module io.codetoil.curved_spacetime.webserver {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
@@ -26,4 +27,5 @@ module io.codetoil.curved_spacetime.webserver {
 	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime.webserver;
+	exports io.codetoil.curved_spacetime.webserver.entrypoint;
 }

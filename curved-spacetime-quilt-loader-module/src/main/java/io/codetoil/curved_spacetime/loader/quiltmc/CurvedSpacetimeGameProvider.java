@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
- * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright 2016 FabricMC<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright 2016 FabricMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,7 +18,8 @@
 
 package io.codetoil.curved_spacetime.loader.quiltmc;
 
-import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
+import io.codetoil.curved_spacetime.api.loader.CurvedSpacetimeLoader;
+import org.jetbrains.annotations.Nullable;
 import org.quiltmc.loader.api.ModDependency;
 import org.quiltmc.loader.api.ModDependencyIdentifier;
 import org.quiltmc.loader.api.Version;
@@ -138,7 +139,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 	}
 
 	@Override
-	public List<Path> getGameJars(String namespace)
+	public List<Path> getGameJars(@Nullable String namespace)
 	{
 		if (namespace == null)
 		{

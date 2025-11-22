@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
- * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright FabricMC, QuiltMC<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright FabricMC, QuiltMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -23,7 +23,7 @@ import org.quiltmc.loader.impl.game.LibClassifier;
 
 enum CurvedSpacetimeModule implements LibClassifier.LibraryType
 {
-	MAIN_MODULE("io/codetoil/curved_spacetime/engine/Engine.class");
+	MAIN_MODULE("io/codetoil/curved_spacetime/api/engine/Engine.class");
 
 	private final String[] paths;
 

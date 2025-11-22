@@ -19,7 +19,7 @@
 
 /**
  * Closed-World Loader Module of Curved Spacetime
- * */
+ */
 module io.codetoil.curved_spacetime.loader.closed_world {
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.glfw;

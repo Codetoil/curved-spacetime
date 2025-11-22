@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
- * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -20,7 +20,10 @@ package io.codetoil.curved_spacetime;
 
 import org.tinylog.Logger;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Properties;
 
 public class MainModuleConfig
@@ -88,9 +91,6 @@ public class MainModuleConfig
 	{
 		Properties props = new Properties();
 		props.put("fps", String.valueOf(this.fps));
-
-		File configFile = new File(MainModuleConfig.FILENAME);
-		if (!configFile.getParentFile().mkdirs()) throw new IOException("Could not create config directory");
 
 		try (FileWriter writer = new FileWriter(MainModuleConfig.FILENAME))
 		{

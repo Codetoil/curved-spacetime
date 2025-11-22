@@ -1,6 +1,6 @@
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.scene.Scene;
 
 public abstract class RenderModuleSceneRenderContext
 {

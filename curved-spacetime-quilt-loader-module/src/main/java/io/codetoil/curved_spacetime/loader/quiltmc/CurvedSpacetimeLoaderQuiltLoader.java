@@ -1,6 +1,6 @@
 package io.codetoil.curved_spacetime.loader.quiltmc;
 
-import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
+import io.codetoil.curved_spacetime.api.loader.CurvedSpacetimeLoader;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
 import org.quiltmc.loader.impl.QuiltLoaderImpl;

@@ -18,7 +18,8 @@
 
 /**
  * Loader Module of Curved Spacetime
- * */
+ *
+ */
 module io.codetoil.curved_spacetime.loader {
 	exports io.codetoil.curved_spacetime.loader;
 	exports io.codetoil.curved_spacetime.loader.entrypoint;
