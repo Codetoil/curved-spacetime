@@ -6,7 +6,7 @@ ManifestType: defaultLocale
 PackageLocale: en-US
 Publisher: Codetoil
 PublisherSupportUrl: https://github.com/Codetoil/curved-spacetime/issues
-PackageName: Curved Spacetime Closed-World Native Variant
+PackageName: Curved Spacetime (Preview)
 License: GNU GPLv3 or Later
 LicenseUrl: https://github.com/Codetoil/curved-spacetime/tree/0.1.0-build.67/LICENSE.md
 ShortDescription: Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity. This is the Closed-World Native Variant.
