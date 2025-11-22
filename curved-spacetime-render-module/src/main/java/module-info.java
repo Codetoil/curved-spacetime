@@ -26,5 +26,5 @@ module io.codetoil.curved_spacetime.render {
 	requires io.codetoil.curved_spacetime.loader;
 
 	exports io.codetoil.curved_spacetime.render;
-	exports io.codetoil.curved_spacetime.api.render.entrypoint;
+	exports io.codetoil.curved_spacetime.render.entrypoint;
 }

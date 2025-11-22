@@ -16,46 +16,41 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.vulkan;
 
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkFramebufferCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 
 import java.nio.LongBuffer;
 
-public class VulkanFrameBuffer
+public class VulkanModuleSemaphore
 {
-	private final VulkanLogicalDevice logicalDevice;
-	private final long vkFrameBuffer;
+	private final VulkanModuleLogicalDevice logicalDevice;
+	private final long vkSemaphore;
 
-	public VulkanFrameBuffer(VulkanLogicalDevice logicalDevice, int width, int height, LongBuffer pAttachments,
-							 long renderPass)
+	public VulkanModuleSemaphore(VulkanModuleLogicalDevice logicalDevice)
 	{
 		this.logicalDevice = logicalDevice;
-
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkFramebufferCreateInfo framebufferCreateInfo =
-					VkFramebufferCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
-							.pAttachments(pAttachments).width(width).height(height).layers(1).renderPass(renderPass);
-
+			VkSemaphoreCreateInfo semaphoreCreateInfo =
+					VkSemaphoreCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo, null, lp),
-					"Failed to create FrameBuffer");
-			this.vkFrameBuffer = lp.get(0);
+			VulkanUtils.vkCheck(VK13.vkCreateSemaphore(logicalDevice.getVkDevice(), semaphoreCreateInfo, null, lp),
+					"Failed to create semaphore");
+			this.vkSemaphore = lp.get(0);
 		}
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
+		VK13.vkDestroySemaphore(this.logicalDevice.getVkDevice(), this.vkSemaphore, null);
 	}
 
-	public long getVkFrameBuffer()
+	public long getVkSemaphore()
 	{
-		return this.vkFrameBuffer;
+		return this.vkSemaphore;
 	}
 }

@@ -63,7 +63,7 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 			throw new RuntimeException(e);
 		}
 		Engine engine = Engine.getInstance();
-		engine.registerSceneCallback("vulkan_glfw_renderer", new VulkanGLFWRenderer(engine, engine.scene,
+		engine.registerSceneCallback("vulkan_glfw_renderer", new VulkanGLFWRenderModuleRenderer(engine, engine.scene,
 				this));
 		try
 		{

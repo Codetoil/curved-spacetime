@@ -24,12 +24,12 @@ import org.lwjgl.vulkan.*;
 
 import java.nio.LongBuffer;
 
-public class VulkanSwapChainRenderPass
+public class VulkanRenderModuleSwapChainRenderPass
 {
-	private final VulkanSwapChain swapChain;
+	private final VulkanRenderModuleSwapChain swapChain;
 	private final long vkRenderPass;
 
-	public VulkanSwapChainRenderPass(VulkanSwapChain swapChain)
+	public VulkanRenderModuleSwapChainRenderPass(VulkanRenderModuleSwapChain swapChain)
 	{
 		this.swapChain = swapChain;
 

@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
@@ -28,13 +28,13 @@ import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 
 import java.nio.IntBuffer;
 
-public abstract class VulkanSurface
+public abstract class VulkanRenderModuleSurface
 {
-	protected final VulkanPhysicalDevice vulkanPhysicalDevice;
+	protected final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
 
-	public VulkanSurface(VulkanPhysicalDevice vulkanPhysicalDevice)
+	public VulkanRenderModuleSurface(VulkanModulePhysicalDevice vulkanModulePhysicalDevice)
 	{
-		this.vulkanPhysicalDevice = vulkanPhysicalDevice;
+		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
 	}
 
 	public abstract void cleanup();
@@ -51,7 +51,7 @@ public abstract class VulkanSurface
 		{
 			IntBuffer ip = stack.mallocInt(1);
 			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
-							this.vulkanPhysicalDevice.getVkPhysicalDevice(), this.getVkSurface(), ip, null),
+							this.vulkanModulePhysicalDevice.getVkPhysicalDevice(), this.getVkSurface(), ip, null),
 					"Failed to get the number surface formats");
 			int numFormats = ip.get(0);
 			if (numFormats <= 0)
@@ -61,7 +61,8 @@ public abstract class VulkanSurface
 
 			var surfaceFormats = VkSurfaceFormatKHR.calloc(numFormats, stack);
 			VulkanUtils.vkCheck(
-					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(this.vulkanPhysicalDevice.getVkPhysicalDevice(),
+					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
+							this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
 							this.getVkSurface(), ip, surfaceFormats), "Failed to get surface formats");
 
 			imageFormat = VK13.VK_FORMAT_B8G8R8A8_SRGB;

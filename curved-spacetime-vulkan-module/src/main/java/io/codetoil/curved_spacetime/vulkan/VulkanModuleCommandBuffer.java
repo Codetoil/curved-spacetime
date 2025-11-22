@@ -24,14 +24,14 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 import org.tinylog.Logger;
 
-public class VulkanCommandBuffer
+public class VulkanModuleCommandBuffer
 {
-	private final VulkanCommandPool commandPool;
+	private final VulkanModuleCommandPool commandPool;
 	private final boolean oneTimeSubmit;
 	private final VkCommandBuffer vkCommandBuffer;
 	private final boolean primary;
 
-	public VulkanCommandBuffer(VulkanCommandPool commandPool, boolean primary, boolean oneTimeSubmit)
+	public VulkanModuleCommandBuffer(VulkanModuleCommandPool commandPool, boolean primary, boolean oneTimeSubmit)
 	{
 		Logger.trace("Creating command buffer");
 		this.commandPool = commandPool;

@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025
- * Anthony Michalek (Codetoil)<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -16,15 +16,16 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api.render.entrypoint;
+package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
+import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.scene.Scene;
+import io.codetoil.curved_spacetime.scene.SceneCallback;
 
-public interface RenderModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<RenderModuleEntrypoint>
+public abstract class GLFWRenderModuleRenderer extends SceneCallback
 {
-	/**
-	 * Runs the mod initializer.
-	 */
-	void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint);
+	protected GLFWRenderModuleRenderer(Engine engine, Scene scene)
+	{
+		super(engine, scene);
+	}
 }

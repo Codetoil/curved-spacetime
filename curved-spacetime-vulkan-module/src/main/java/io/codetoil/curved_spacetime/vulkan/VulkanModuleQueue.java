@@ -29,25 +29,26 @@ import org.tinylog.Logger;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
-public class VulkanQueue
+public class VulkanModuleQueue
 {
 
 	protected final int queueFamilyIndex;
 	protected final VkQueue vkQueue;
 
-	public VulkanQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueFamilyIndex, int queueIndex)
+	public VulkanModuleQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex, int queueIndex)
 	{
 		Logger.debug(
-				"Creating queue for " + vulkanLogicalDevice + " queueFamilyIndex " + queueFamilyIndex + " queueIndex " +
+				"Creating queue for " + vulkanModuleLogicalDevice + " queueFamilyIndex " + queueFamilyIndex +
+						" queueIndex " +
 						queueIndex);
 
 		this.queueFamilyIndex = queueFamilyIndex;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			PointerBuffer pQueue = stack.mallocPointer(1);
-			VK13.vkGetDeviceQueue(vulkanLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
+			VK13.vkGetDeviceQueue(vulkanModuleLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
 			long queue = pQueue.get(0);
-			this.vkQueue = new VkQueue(queue, vulkanLogicalDevice.getVkDevice());
+			this.vkQueue = new VkQueue(queue, vulkanModuleLogicalDevice.getVkDevice());
 		}
 	}
 
@@ -62,7 +63,8 @@ public class VulkanQueue
 	}
 
 	public void submit(PointerBuffer vulkanCommandBuffers, LongBuffer waitVulkanSemaphores,
-					   IntBuffer waitVulkanDstStageMasks, LongBuffer signalVulkanSemaphores, VulkanFence vulkanFence)
+					   IntBuffer waitVulkanDstStageMasks, LongBuffer signalVulkanSemaphores,
+					   VulkanModuleFence vulkanModuleFence)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
@@ -76,7 +78,7 @@ public class VulkanQueue
 			{
 				vkSubmitInfo.waitSemaphoreCount(0);
 			}
-			long vulkanFenceHandle = vulkanFence != null ? vulkanFence.getVkFence() : VK13.VK_NULL_HANDLE;
+			long vulkanFenceHandle = vulkanModuleFence != null ? vulkanModuleFence.getVkFence() : VK13.VK_NULL_HANDLE;
 			VulkanUtils.vkCheck(VK13.vkQueueSubmit(this.vkQueue, vkSubmitInfo, vulkanFenceHandle),
 					"Failed to submit command to queue");
 		}

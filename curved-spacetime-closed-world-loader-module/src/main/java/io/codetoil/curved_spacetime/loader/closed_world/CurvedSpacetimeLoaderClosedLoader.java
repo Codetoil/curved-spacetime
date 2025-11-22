@@ -1,11 +1,11 @@
 package io.codetoil.curved_spacetime.loader.closed_world;
 
-import io.codetoil.curved_spacetime.api.render.entrypoint.RenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.glfw.entrypoint.GLFWModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.glfw.GLFWModuleDependentGLFWRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.RenderModuleDependentGLFWRenderModuleEntrypoint;

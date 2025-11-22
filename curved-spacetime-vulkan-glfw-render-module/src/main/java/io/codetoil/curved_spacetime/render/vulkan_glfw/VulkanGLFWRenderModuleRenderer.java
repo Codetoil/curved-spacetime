@@ -20,35 +20,36 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.engine.Engine;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
-import io.codetoil.curved_spacetime.render.glfw.GLFWRenderer;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanForwardRenderActivity;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanGraphicsQueue;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanSurface;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanSwapChain;
+import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleRenderer;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleForwardRenderActivity;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsQueue;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsQueue.VulkanRenderPresentModuleGraphicsQueue;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSurface;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSwapChain;
 import io.codetoil.curved_spacetime.scene.Scene;
-import io.codetoil.curved_spacetime.vulkan.VulkanCommandPool;
-import io.codetoil.curved_spacetime.vulkan.VulkanInstance;
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
-import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
-import io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWWindow;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandPool;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance;
+import io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWModuleWindow;
 import org.lwjgl.glfw.GLFWVulkan;
 
-public class VulkanGLFWRenderer extends GLFWRenderer
+public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 {
 	private final VulkanGLFWRenderModuleEntrypoint entrypoint;
-	protected VulkanGLFWWindow vulkanGLFWWindow;
-	protected VulkanInstance vulkanInstance = null;
-	protected VulkanPhysicalDevice vulkanPhysicalDevice;
-	protected VulkanLogicalDevice vulkanLogicalDevice;
-	protected VulkanCommandPool vulkanGraphicsCommandPool = null;
-	protected VulkanGraphicsQueue vulkanGraphicsQueue = null;
-	protected VulkanSurface vulkanSurface = null;
-	protected VulkanSwapChain vulkanSwapChain = null;
-	protected VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanGraphicsPresentQueue = null;
-	protected VulkanForwardRenderActivity vulkanForwardRenderActivity = null;
+	protected VulkanGLFWModuleWindow vulkanGLFWWindow;
+	protected VulkanModuleVulkanInstance vulkanModuleVulkanInstance = null;
+	protected VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
+	protected VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
+	protected VulkanModuleCommandPool vulkanGraphicsCommandPool = null;
+	protected VulkanRenderModuleGraphicsQueue vulkanGraphicsQueue = null;
+	protected VulkanRenderModuleSurface vulkanRenderModuleSurface = null;
+	protected VulkanRenderModuleSwapChain vulkanRenderModuleSwapChain = null;
+	protected VulkanRenderPresentModuleGraphicsQueue vulkanGraphicsPresentQueue = null;
+	protected VulkanRenderModuleForwardRenderActivity vulkanRenderModuleForwardRenderActivity = null;
 
-	public VulkanGLFWRenderer(Engine engine, Scene scene,
-							  VulkanGLFWRenderModuleEntrypoint entrypoint)
+	public VulkanGLFWRenderModuleRenderer(Engine engine, Scene scene,
+										  VulkanGLFWRenderModuleEntrypoint entrypoint)
 	{
 		super(engine, scene);
 		this.entrypoint = entrypoint;
@@ -56,23 +57,25 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 
 	public void init()
 	{
-		this.vulkanGLFWWindow = new VulkanGLFWWindow(engine, "curved-spacetime");
+		this.vulkanGLFWWindow = new VulkanGLFWModuleWindow(engine, "curved-spacetime");
 
 		this.vulkanGLFWWindow.init();
 
-		this.vulkanInstance = new VulkanInstance(entrypoint.getVulkanModuleEntrypoint(),
+		this.vulkanModuleVulkanInstance = new VulkanModuleVulkanInstance(entrypoint.getVulkanModuleEntrypoint(),
 				GLFWVulkan::glfwGetRequiredInstanceExtensions);
-		this.vulkanPhysicalDevice =
-				VulkanPhysicalDevice.createPhysicalDevice(this.vulkanInstance, entrypoint.getVulkanModuleEntrypoint());
-		this.vulkanLogicalDevice = new VulkanLogicalDevice(this.vulkanPhysicalDevice);
-		this.vulkanSurface = new VulkanGLFWSurface(this.vulkanInstance, this.vulkanPhysicalDevice,
+		this.vulkanModulePhysicalDevice =
+				VulkanModulePhysicalDevice.createPhysicalDevice(this.vulkanModuleVulkanInstance,
+						entrypoint.getVulkanModuleEntrypoint());
+		this.vulkanModuleLogicalDevice = new VulkanModuleLogicalDevice(this.vulkanModulePhysicalDevice);
+		this.vulkanRenderModuleSurface = new VulkanGLFWRenderModuleRenderModuleSurface(this.vulkanModuleVulkanInstance,
+				this.vulkanModulePhysicalDevice,
 				this.vulkanGLFWWindow.getWindowHandle());
-		this.vulkanGraphicsQueue = new VulkanGraphicsQueue(this.vulkanLogicalDevice, 0);
+		this.vulkanGraphicsQueue = new VulkanRenderModuleGraphicsQueue(this.vulkanModuleLogicalDevice, 0);
 		//this.vulkanGraphicsPresentQueue =
 		//		new VulkanGraphicsQueue.VulkanGraphicsPresentQueue(this.vulkanInstance.getVulkanLogicalDevice(),
 		//				this.vulkanSurface, 0);
-		this.vulkanSwapChain =
-				new VulkanSwapChain(this.vulkanLogicalDevice, this.vulkanSurface,
+		this.vulkanRenderModuleSwapChain =
+				new VulkanRenderModuleSwapChain(this.vulkanModuleLogicalDevice, this.vulkanRenderModuleSurface,
 						this.vulkanGLFWWindow,
 						((VulkanGLFWRenderModuleConfig) this.entrypoint.getConfig())
 								.getRequestedImages(),
@@ -102,12 +105,12 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 		//this.vulkanGraphicsPresentQueue.waitIdle();
 		this.vulkanGraphicsQueue.waitIdle();
 		//this.vulkanForwardRenderActivity.cleanup();
-		this.vulkanSwapChain.cleanup();
-		this.vulkanSurface.cleanup();
-		this.vulkanLogicalDevice.waitIdle();
-		this.vulkanLogicalDevice.cleanup();
-		this.vulkanPhysicalDevice.cleanup();
-		this.vulkanInstance.cleanup();
+		this.vulkanRenderModuleSwapChain.cleanup();
+		this.vulkanRenderModuleSurface.cleanup();
+		this.vulkanModuleLogicalDevice.waitIdle();
+		this.vulkanModuleLogicalDevice.cleanup();
+		this.vulkanModulePhysicalDevice.cleanup();
+		this.vulkanModuleVulkanInstance.cleanup();
 		this.vulkanGLFWWindow.setShouldClose();
 		this.vulkanGLFWWindow.clean();
 	}

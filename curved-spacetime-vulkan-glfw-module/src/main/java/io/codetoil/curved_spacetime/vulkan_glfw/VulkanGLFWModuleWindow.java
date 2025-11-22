@@ -19,13 +19,13 @@
 package io.codetoil.curved_spacetime.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.engine.Engine;
-import io.codetoil.curved_spacetime.glfw.GLFWWindow;
+import io.codetoil.curved_spacetime.glfw.GLFWModuleWindow;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
 
-public class VulkanGLFWWindow extends GLFWWindow
+public class VulkanGLFWModuleWindow extends GLFWModuleWindow
 {
-	public VulkanGLFWWindow(Engine engine, String title)
+	public VulkanGLFWModuleWindow(Engine engine, String title)
 	{
 		super(engine, title);
 	}

@@ -16,53 +16,47 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.vulkan;
+package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
-import org.tinylog.Logger;
+import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 
 import java.nio.LongBuffer;
 
-public class VulkanCommandPool
+public class VulkanRenderModuleFrameBuffer
 {
-	private final VulkanLogicalDevice vulkanLogicalDevice;
-	private final long vkCommandPool;
+	private final VulkanModuleLogicalDevice logicalDevice;
+	private final long vkFrameBuffer;
 
-	public VulkanCommandPool(VulkanLogicalDevice vulkanLogicalDevice, int queueFamilyIndex)
+	public VulkanRenderModuleFrameBuffer(VulkanModuleLogicalDevice logicalDevice, int width, int height,
+										 LongBuffer pAttachments,
+										 long renderPass)
 	{
-		Logger.debug("Creating Vulkan CommandPool for " + vulkanLogicalDevice);
+		this.logicalDevice = logicalDevice;
 
-		this.vulkanLogicalDevice = vulkanLogicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
-			VkCommandPoolCreateInfo cmdPoolInfo =
-					VkCommandPoolCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
-							.flags(VK13.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT)
-							.queueFamilyIndex(queueFamilyIndex);
+			VkFramebufferCreateInfo framebufferCreateInfo =
+					VkFramebufferCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
+							.pAttachments(pAttachments).width(width).height(height).layers(1).renderPass(renderPass);
 
 			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateCommandPool(vulkanLogicalDevice.getVkDevice(), cmdPoolInfo, null, lp),
-					"failed to create command pool");
-
-			this.vkCommandPool = lp.get(0);
+			VulkanUtils.vkCheck(VK13.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo, null, lp),
+					"Failed to create FrameBuffer");
+			this.vkFrameBuffer = lp.get(0);
 		}
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroyCommandPool(this.vulkanLogicalDevice.getVkDevice(), this.vkCommandPool, null);
+		VK13.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
 	}
 
-	public VulkanLogicalDevice getVulkanLogicalDevice()
+	public long getVkFrameBuffer()
 	{
-		return this.vulkanLogicalDevice;
-	}
-
-	public long getVkCommandPool()
-	{
-		return this.vkCommandPool;
+		return this.vkFrameBuffer;
 	}
 }

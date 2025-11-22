@@ -18,9 +18,9 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
-import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
-import io.codetoil.curved_spacetime.vulkan.VulkanQueue;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleQueue;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
 import org.lwjgl.vulkan.VK13;
@@ -28,23 +28,24 @@ import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
 import java.nio.IntBuffer;
 
-public class VulkanGraphicsQueue extends VulkanQueue
+public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 {
-	public VulkanGraphicsQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueFamilyIndex, int queueIndex)
+	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex,
+										   int queueIndex)
 	{
-		super(vulkanLogicalDevice, queueFamilyIndex, queueIndex);
+		super(vulkanModuleLogicalDevice, queueFamilyIndex, queueIndex);
 	}
 
-	public VulkanGraphicsQueue(VulkanLogicalDevice vulkanLogicalDevice, int queueIndex)
+	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueIndex)
 	{
-		super(vulkanLogicalDevice, getGraphicsQueueFamilyIndex(vulkanLogicalDevice), queueIndex);
+		super(vulkanModuleLogicalDevice, getGraphicsQueueFamilyIndex(vulkanModuleLogicalDevice), queueIndex);
 	}
 
-	private static int getGraphicsQueueFamilyIndex(VulkanLogicalDevice vulkanLogicalDevice)
+	private static int getGraphicsQueueFamilyIndex(VulkanModuleLogicalDevice vulkanModuleLogicalDevice)
 	{
 		int result = -1;
-		VulkanPhysicalDevice vulkanPhysicalDevice = vulkanLogicalDevice.getPhysicalDevice();
-		VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanPhysicalDevice.getVkQueueFamilyProps();
+		VulkanModulePhysicalDevice vulkanModulePhysicalDevice = vulkanModuleLogicalDevice.getPhysicalDevice();
+		VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanModulePhysicalDevice.getVkQueueFamilyProps();
 		int numQueuesFamilies = queuePropsBuff.capacity();
 		for (int index = 0; index < numQueuesFamilies; index++)
 		{
@@ -64,20 +65,22 @@ public class VulkanGraphicsQueue extends VulkanQueue
 		return result;
 	}
 
-	public static class VulkanGraphicsPresentQueue extends VulkanGraphicsQueue
+	public static class VulkanRenderPresentModuleGraphicsQueue extends VulkanRenderModuleGraphicsQueue
 	{
 
-		public VulkanGraphicsPresentQueue(VulkanLogicalDevice logicalDevice, VulkanSurface surface, int queueIndex)
+		public VulkanRenderPresentModuleGraphicsQueue(VulkanModuleLogicalDevice logicalDevice,
+													  VulkanRenderModuleSurface surface, int queueIndex)
 		{
 			super(logicalDevice, getPresentQueueFamilyIndex(logicalDevice, surface), queueIndex);
 		}
 
-		private static int getPresentQueueFamilyIndex(VulkanLogicalDevice logicalDevice, VulkanSurface surface)
+		private static int getPresentQueueFamilyIndex(VulkanModuleLogicalDevice logicalDevice,
+													  VulkanRenderModuleSurface surface)
 		{
 			int index = -1;
 			try (MemoryStack stack = MemoryStack.stackPush())
 			{
-				VulkanPhysicalDevice physicalDevice = logicalDevice.getPhysicalDevice();
+				VulkanModulePhysicalDevice physicalDevice = logicalDevice.getPhysicalDevice();
 				VkQueueFamilyProperties.Buffer queuePropsBuff = physicalDevice.getVkQueueFamilyProps();
 				int numQueuesFamilies = queuePropsBuff.capacity();
 				IntBuffer intBuffer = stack.mallocInt(1);

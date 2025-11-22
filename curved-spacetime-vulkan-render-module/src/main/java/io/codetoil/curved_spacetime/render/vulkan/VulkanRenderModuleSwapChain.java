@@ -19,9 +19,9 @@
 package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.Window;
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
-import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
-import io.codetoil.curved_spacetime.vulkan.VulkanSemaphore;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleSemaphore;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
@@ -31,29 +31,30 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.Arrays;
 
-public class VulkanSwapChain
+public class VulkanRenderModuleSwapChain
 {
 
-	protected final VulkanLogicalDevice vulkanLogicalDevice;
-	protected final VulkanImageView[] vulkanImageViews;
-	protected final VulkanSwapChain.VulkanSurfaceFormat vulkanSurfaceFormat;
+	protected final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
+	protected final VulkanRenderModuleImageView[] vulkanRenderModuleImageViews;
+	protected final VulkanRenderModuleSwapChain.VulkanSurfaceFormat vulkanSurfaceFormat;
 	protected final VkExtent2D vulkanSwapChainExtent;
 	protected final long vkSwapChain;
 	//protected final SynchronizationVulkanSemaphores[] synchronizationVulkanSemaphoresList;
 	protected int currentFrame;
 
-	public VulkanSwapChain(VulkanLogicalDevice vulkanLogicalDevice, VulkanSurface surface, Window window,
-						   int requestedImages, boolean vsync//,
-						   // VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanPresentationQueue,
-						   // VulkanGraphicsQueue[] vulkanConcurrentQueues
+	public VulkanRenderModuleSwapChain(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
+									   VulkanRenderModuleSurface surface, Window window,
+									   int requestedImages, boolean vsync//,
+									   // VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanPresentationQueue,
+									   // VulkanGraphicsQueue[] vulkanConcurrentQueues
 	)
 	{
 		Logger.debug("Creating Vulkan SwapChain");
-		this.vulkanLogicalDevice = vulkanLogicalDevice;
+		this.vulkanModuleLogicalDevice = vulkanModuleLogicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 
-			VulkanPhysicalDevice vulkanPhysicalDevice = vulkanLogicalDevice.getPhysicalDevice();
+			VulkanModulePhysicalDevice vulkanModulePhysicalDevice = vulkanModuleLogicalDevice.getPhysicalDevice();
 
 			// Get surface capabilities
 			VkSurfaceCapabilitiesKHR surfaceCaps = surface.getSurfaceCaps();
@@ -67,7 +68,7 @@ public class VulkanSwapChain
 
 			this.vulkanSwapChainExtent = calcSwapChainExtent(window, surfaceCaps);
 
-			this.vulkanSurfaceFormat = calcSurfaceFormat(vulkanPhysicalDevice, surface);
+			this.vulkanSurfaceFormat = calcSurfaceFormat(vulkanModulePhysicalDevice, surface);
 
 			VkSwapchainCreateInfoKHR vkSwapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc(stack)
 					.sType$Default()
@@ -108,11 +109,12 @@ public class VulkanSwapChain
 
 			LongBuffer lp = stack.mallocLong(1);
 			VulkanUtils.vkCheck(
-					KHRSwapchain.vkCreateSwapchainKHR(vulkanLogicalDevice.getVkDevice(), vkSwapchainCreateInfo, null,
+					KHRSwapchain.vkCreateSwapchainKHR(vulkanModuleLogicalDevice.getVkDevice(), vkSwapchainCreateInfo,
+							null,
 							lp), "Failed to create swap chain");
 			this.vkSwapChain = lp.get(0);
 
-			this.vulkanImageViews = createImageViews(stack, vulkanLogicalDevice, this.vkSwapChain,
+			this.vulkanRenderModuleImageViews = createImageViews(stack, vulkanModuleLogicalDevice, this.vkSwapChain,
 					this.vulkanSurfaceFormat.imageFormat);
 		}
 	}
@@ -153,8 +155,9 @@ public class VulkanSwapChain
 		return result;
 	}
 
-	private VulkanSwapChain.VulkanSurfaceFormat calcSurfaceFormat(VulkanPhysicalDevice vulkanPhysicalDevice,
-																  VulkanSurface vulkanSurface)
+	private VulkanRenderModuleSwapChain.VulkanSurfaceFormat calcSurfaceFormat(
+			VulkanModulePhysicalDevice vulkanModulePhysicalDevice,
+			VulkanRenderModuleSurface vulkanRenderModuleSurface)
 	{
 		int imageFormat;
 		int colorSpace;
@@ -164,8 +167,9 @@ public class VulkanSwapChain
 
 			IntBuffer ip = stack.mallocInt(1);
 			VulkanUtils.vkCheck(
-					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice.getVkPhysicalDevice(),
-							vulkanSurface.getVkSurface(), ip, null), "Failed to get the number of surface formats");
+					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+							vulkanRenderModuleSurface.getVkSurface(), ip, null),
+					"Failed to get the number of surface formats");
 			int numFormats = ip.get(0);
 			if (numFormats <= 0)
 			{
@@ -174,8 +178,9 @@ public class VulkanSwapChain
 
 			VkSurfaceFormatKHR.Buffer surfaceFormats = VkSurfaceFormatKHR.calloc(numFormats, stack);
 			VulkanUtils.vkCheck(
-					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice.getVkPhysicalDevice(),
-							vulkanSurface.getVkSurface(), ip, surfaceFormats), "Failed to get surface formats");
+					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+							vulkanRenderModuleSurface.getVkSurface(), ip, surfaceFormats),
+					"Failed to get surface formats");
 
 			imageFormat = surfaceFormats.get(0).format();
 			colorSpace = surfaceFormats.get(0).colorSpace();
@@ -191,31 +196,35 @@ public class VulkanSwapChain
 				}
 			}
 		}
-		return new VulkanSwapChain.VulkanSurfaceFormat(imageFormat, colorSpace);
+		return new VulkanRenderModuleSwapChain.VulkanSurfaceFormat(imageFormat, colorSpace);
 	}
 
-	private VulkanImageView[] createImageViews(MemoryStack stack, VulkanLogicalDevice vulkanLogicalDevice,
-											   long swapChain, int format)
+	private VulkanRenderModuleImageView[] createImageViews(MemoryStack stack,
+														   VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
+														   long swapChain, int format)
 	{
-		VulkanImageView[] result;
+		VulkanRenderModuleImageView[] result;
 
 		IntBuffer ip = stack.mallocInt(1);
 		VulkanUtils.vkCheck(
-				KHRSwapchain.vkGetSwapchainImagesKHR(vulkanLogicalDevice.getVkDevice(), swapChain, ip, null),
+				KHRSwapchain.vkGetSwapchainImagesKHR(vulkanModuleLogicalDevice.getVkDevice(), swapChain, ip, null),
 				"Failed to get number of surface images");
 		int numImages = ip.get(0);
 
 		LongBuffer swapChainImages = stack.mallocLong(numImages);
 		VulkanUtils.vkCheck(
-				KHRSwapchain.vkGetSwapchainImagesKHR(vulkanLogicalDevice.getVkDevice(), swapChain, ip, swapChainImages),
+				KHRSwapchain.vkGetSwapchainImagesKHR(vulkanModuleLogicalDevice.getVkDevice(), swapChain, ip,
+						swapChainImages),
 				"Failed to get surface images");
 
-		result = new VulkanImageView[numImages];
-		VulkanImageView.VulkanImageViewData imageViewData =
-				new VulkanImageView.VulkanImageViewData().format(format).aspectMask(VK13.VK_IMAGE_ASPECT_COLOR_BIT);
+		result = new VulkanRenderModuleImageView[numImages];
+		VulkanRenderModuleImageView.VulkanImageViewData imageViewData =
+				new VulkanRenderModuleImageView.VulkanImageViewData().format(format)
+						.aspectMask(VK13.VK_IMAGE_ASPECT_COLOR_BIT);
 		for (int index = 0; index < numImages; index++)
 		{
-			result[index] = new VulkanImageView(vulkanLogicalDevice, swapChainImages.get(0), imageViewData);
+			result[index] =
+					new VulkanRenderModuleImageView(vulkanModuleLogicalDevice, swapChainImages.get(0), imageViewData);
 		}
 
 		return result;
@@ -227,8 +236,8 @@ public class VulkanSwapChain
 		Logger.debug("Destroying Vulkan SwapChain");
 		//Arrays.asList(synchronizationVulkanSemaphoresList).forEach(SynchronizationVulkanSemaphores::cleanup);
 		this.vulkanSwapChainExtent.free();
-		Arrays.asList(this.vulkanImageViews).forEach(VulkanImageView::cleanup);
-		KHRSwapchain.vkDestroySwapchainKHR(this.vulkanLogicalDevice.getVkDevice(), this.vkSwapChain, null);
+		Arrays.asList(this.vulkanRenderModuleImageViews).forEach(VulkanRenderModuleImageView::cleanup);
+		KHRSwapchain.vkDestroySwapchainKHR(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkSwapChain, null);
 	}
 
 	public VulkanSurfaceFormat getVulkanSurfaceFormat()
@@ -236,9 +245,9 @@ public class VulkanSwapChain
 		return this.vulkanSurfaceFormat;
 	}
 
-	public VulkanLogicalDevice getVulkanLogicalDevice()
+	public VulkanModuleLogicalDevice getVulkanLogicalDevice()
 	{
-		return this.vulkanLogicalDevice;
+		return this.vulkanModuleLogicalDevice;
 	}
 
 	public int getCurrentFrame()
@@ -256,9 +265,9 @@ public class VulkanSwapChain
 		return this.vulkanSwapChainExtent;
 	}
 
-	public VulkanImageView[] getVulkanImageViews()
+	public VulkanRenderModuleImageView[] getVulkanImageViews()
 	{
-		return this.vulkanImageViews;
+		return this.vulkanRenderModuleImageViews;
 	}
 
 	/*public int acquireNextImage()
@@ -313,18 +322,19 @@ public class VulkanSwapChain
 	{
 	}
 
-	public record SynchronizationVulkanSemaphores(VulkanSemaphore imageAcquisitionVulkanSemaphore,
-												  VulkanSemaphore renderCompleteVulkanSemaphore)
+	public record SynchronizationVulkanSemaphores(VulkanModuleSemaphore imageAcquisitionVulkanModuleSemaphore,
+												  VulkanModuleSemaphore renderCompleteVulkanModuleSemaphore)
 	{
-		public SynchronizationVulkanSemaphores(VulkanLogicalDevice vulkanLogicalDevice)
+		public SynchronizationVulkanSemaphores(VulkanModuleLogicalDevice vulkanModuleLogicalDevice)
 		{
-			this(new VulkanSemaphore(vulkanLogicalDevice), new VulkanSemaphore(vulkanLogicalDevice));
+			this(new VulkanModuleSemaphore(vulkanModuleLogicalDevice),
+					new VulkanModuleSemaphore(vulkanModuleLogicalDevice));
 		}
 
 		public void cleanup()
 		{
-			this.imageAcquisitionVulkanSemaphore.cleanup();
-			this.renderCompleteVulkanSemaphore.cleanup();
+			this.imageAcquisitionVulkanModuleSemaphore.cleanup();
+			this.renderCompleteVulkanModuleSemaphore.cleanup();
 		}
 	}
 }

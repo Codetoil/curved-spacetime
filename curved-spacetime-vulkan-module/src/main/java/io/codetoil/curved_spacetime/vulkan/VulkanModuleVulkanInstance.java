@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class VulkanInstance
+public class VulkanModuleVulkanInstance
 {
 	public static final int MESSAGE_SEVERITY_BITMASK = EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
@@ -57,7 +57,8 @@ public class VulkanInstance
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 	protected long vkDebugHandle;
 
-	public VulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint, Supplier<PointerBuffer> windowExtensionsGetter)
+	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint,
+									  Supplier<PointerBuffer> windowExtensionsGetter)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
@@ -235,8 +236,8 @@ public class VulkanInstance
 	{
 		return VkDebugUtilsMessengerCreateInfoEXT.calloc()
 				.sType$Default()
-				.messageSeverity(VulkanInstance.MESSAGE_SEVERITY_BITMASK)
-				.messageType(VulkanInstance.MESSAGE_TYPE_BITMASK)
+				.messageSeverity(VulkanModuleVulkanInstance.MESSAGE_SEVERITY_BITMASK)
+				.messageType(VulkanModuleVulkanInstance.MESSAGE_TYPE_BITMASK)
 				.pfnUserCallback((messageSeverity, messageTypes, callbackDataAddress, userData) -> {
 					VkDebugUtilsMessengerCallbackDataEXT callbackData =
 							VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);

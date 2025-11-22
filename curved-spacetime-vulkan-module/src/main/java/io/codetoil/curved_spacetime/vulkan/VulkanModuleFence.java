@@ -25,12 +25,12 @@ import org.lwjgl.vulkan.VkFenceCreateInfo;
 
 import java.nio.LongBuffer;
 
-public class VulkanFence
+public class VulkanModuleFence
 {
-	private final VulkanLogicalDevice logicalDevice;
+	private final VulkanModuleLogicalDevice logicalDevice;
 	private final long vkFence;
 
-	public VulkanFence(VulkanLogicalDevice logicalDevice, boolean signaled)
+	public VulkanModuleFence(VulkanModuleLogicalDevice logicalDevice, boolean signaled)
 	{
 		this.logicalDevice = logicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
