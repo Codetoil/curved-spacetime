@@ -22,6 +22,7 @@ import io.codetoil.curved_spacetime.engine.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
+import io.codetoil.curved_spacetime.webserver.openapi.entrypoint.WebserverOpenAPIModuleDependentModuleInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;

@@ -16,9 +16,10 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.webserver.openapi;
+package io.codetoil.curved_spacetime.webserver.openapi.entrypoint;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.webserver.openapi.WebserverOpenAPIModuleEntrypoint;
 
 public interface WebserverOpenAPIModuleDependentModuleInitializer
 		extends ModuleDependentModuleInitializer<WebserverOpenAPIModuleEntrypoint>
