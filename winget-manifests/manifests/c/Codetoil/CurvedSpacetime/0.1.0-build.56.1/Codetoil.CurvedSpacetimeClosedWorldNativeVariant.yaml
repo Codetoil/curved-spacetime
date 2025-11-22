@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.10.0.schema.json
+
+PackageIdentifier: Codetoil.CurvedSpacetime
+PackageVersion: 0.1.0-build.56.1
+ManifestType: version
+DefaultLocale: en-US
+Publisher: Codetoil
+PackageName: CurvedSpacetime
+ManifestVersion: 1.10.0
