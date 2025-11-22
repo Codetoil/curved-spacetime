@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -133,6 +133,26 @@ public class VulkanSwapChain
 		return result;
 	}
 
+	private VkExtent2D calcSwapChainExtent(Window window, VkSurfaceCapabilitiesKHR surfCapabilities)
+	{
+		VkExtent2D result = VkExtent2D.calloc();
+		if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF)
+		{
+			// Surface size undefined. Set to the window size if within bounds
+			int width = Math.min(window.getWidth(), surfCapabilities.maxImageExtent().width());
+			width = Math.max(width, surfCapabilities.minImageExtent().width());
+
+			int height = Math.min(window.getHeight(), surfCapabilities.maxImageExtent().height());
+			height = Math.max(height, surfCapabilities.minImageExtent().height());
+
+			result.set(width, height);
+		} else
+		{
+			result.set(surfCapabilities.currentExtent());
+		}
+		return result;
+	}
+
 	private VulkanSwapChain.VulkanSurfaceFormat calcSurfaceFormat(VulkanPhysicalDevice vulkanPhysicalDevice,
 																  VulkanSurface vulkanSurface)
 	{
@@ -172,26 +192,6 @@ public class VulkanSwapChain
 			}
 		}
 		return new VulkanSwapChain.VulkanSurfaceFormat(imageFormat, colorSpace);
-	}
-
-	private VkExtent2D calcSwapChainExtent(Window window, VkSurfaceCapabilitiesKHR surfCapabilities)
-	{
-		VkExtent2D result = VkExtent2D.calloc();
-		if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF)
-		{
-			// Surface size undefined. Set to the window size if within bounds
-			int width = Math.min(window.getWidth(), surfCapabilities.maxImageExtent().width());
-			width = Math.max(width, surfCapabilities.minImageExtent().width());
-
-			int height = Math.min(window.getHeight(), surfCapabilities.maxImageExtent().height());
-			height = Math.max(height, surfCapabilities.minImageExtent().height());
-
-			result.set(width, height);
-		} else
-		{
-			result.set(surfCapabilities.currentExtent());
-		}
-		return result;
 	}
 
 	private VulkanImageView[] createImageViews(MemoryStack stack, VulkanLogicalDevice vulkanLogicalDevice,

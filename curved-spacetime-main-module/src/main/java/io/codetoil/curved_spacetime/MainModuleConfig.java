@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -21,7 +21,6 @@ package io.codetoil.curved_spacetime;
 import org.tinylog.Logger;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.Properties;
 
 public class MainModuleConfig
