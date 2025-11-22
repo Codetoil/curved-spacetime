@@ -21,7 +21,7 @@ concurrency:
 jobs:
   upload:
     runs-on: windows-2025
-    permissions:                # Job-level permissions configuration starts here
+    permissions: # Job-level permissions configuration starts here
       contents: write           # 'write' access to repository contents
       pull-requests: write      # 'write' access to pull requests
     steps:

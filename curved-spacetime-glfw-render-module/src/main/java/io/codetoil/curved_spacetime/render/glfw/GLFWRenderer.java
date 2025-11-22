@@ -1,11 +1,10 @@
 /**
-<<<<<<<< HEAD:curved-spacetime-main-module/src/main/java/io/codetoil/curved_spacetime/engine/MainCallback.java
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br>
-========
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
->>>>>>>> master:curved-spacetime-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/glfw/GLFWRenderer.java
+ * <<<<<<<< HEAD:curved-spacetime-main-module/src/main/java/io/codetoil/curved_spacetime/engine/MainCallback.java Curved
+ * Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony Michalek
+ * (Codetoil)<br> ======== Curved Spacetime is a work-in-progress easy-to-use modular simulator for General
+ * Relativity.<br> Copyright (C) 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández
+ * Bejarano<br> >>>>>>>>
+ * master:curved-spacetime-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/glfw/GLFWRenderer.java
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -21,23 +20,23 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-<<<<<<<< HEAD:curved-spacetime-main-module/src/main/java/io/codetoil/curved_spacetime/engine/MainCallback.java
-package io.codetoil.curved_spacetime.api.engine;
+<<<<<<<<HEAD:curved-spacetime-main-module/src/main/java/io/codetoil/curved_spacetime/engine/MainCallback.java
+		package io.codetoil.curved_spacetime.api.engine;
 
-public interface MainCallback
-========
-package io.codetoil.curved_spacetime.render.glfw;
+		public interface MainCallback
+		========
+		package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.engine.Engine;
-import io.codetoil.curved_spacetime.scene.Scene;
-import io.codetoil.curved_spacetime.scene.SceneCallback;
+		import io.codetoil.curved_spacetime.engine.Engine;
+		import io.codetoil.curved_spacetime.scene.Scene;
+		import io.codetoil.curved_spacetime.scene.SceneCallback;
 
-public abstract class GLFWRenderer extends SceneCallback
->>>>>>>> master:curved-spacetime-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/glfw/GLFWRenderer.java
-{
-	void init();
+		public abstract class GLFWRenderer extends SceneCallback
+		>>>>>>>>master:curved-spacetime-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/glfw/GLFWRenderer.java
+		{
+		void init();
 
-	void loop();
+		void loop();
 
-	void clean();
-}
+		void clean();
+		}

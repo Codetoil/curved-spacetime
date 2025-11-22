@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,87 +18,87 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-<<<<<<<< HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleImageView.java
-import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleLogicalDevice;
-import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
-========
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
-import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
->>>>>>>> master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanImageView.java
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkImageViewCreateInfo;
+<<<<<<<<HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleImageView.java
+		import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleLogicalDevice;
+		import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
+		========
+		import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
+		import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
+		>>>>>>>>master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanImageView.java
+		import org.lwjgl.system.MemoryStack;
+		import org.lwjgl.vulkan.VK13;
+		import org.lwjgl.vulkan.VkImageViewCreateInfo;
 
-import java.nio.LongBuffer;
+		import java.nio.LongBuffer;
 
-public class VulkanRenderModuleImageView
-{
-	private final int aspectMask;
-	private final int mipLevels;
-
-	private final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
-	private final long vkImageView;
-	private final long vkImage;
-
-	public VulkanRenderModuleImageView(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, long vkImage,
-									   VulkanImageViewData vulkanImageViewData)
-	{
-		this.vulkanModuleLogicalDevice = vulkanModuleLogicalDevice;
-		this.aspectMask = vulkanImageViewData.aspectMask;
-		this.mipLevels = vulkanImageViewData.mipLevels;
-		this.vkImage = vkImage;
-		try (MemoryStack stack = MemoryStack.stackPush())
+		public class VulkanRenderModuleImageView
 		{
-			LongBuffer lp = stack.mallocLong(1);
-			VkImageViewCreateInfo viewCreateInfo =
-					VkImageViewCreateInfo
-							.calloc(stack)
-							.sType$Default()
-							.image(vkImage)
-							.viewType(vulkanImageViewData.viewType)
-							.format(vulkanImageViewData.format)
-							.subresourceRange(
-									it ->
-											it
-													.aspectMask(this.aspectMask)
-													.baseMipLevel(0)
-													.levelCount(this.mipLevels)
-													.baseMipLevel(vulkanImageViewData.baseArrayLayer)
-													.layerCount(vulkanImageViewData.layerCount));
-			VulkanUtils.vkCheck(
-					VK13.vkCreateImageView(vulkanModuleLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),
-					"Failed to create image view");
-			this.vkImageView = lp.get(0);
+		private final int aspectMask;
+		private final int mipLevels;
+
+		private final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
+		private final long vkImageView;
+		private final long vkImage;
+
+		public VulkanRenderModuleImageView(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,long vkImage,
+		VulkanImageViewData vulkanImageViewData)
+		{
+		this.vulkanModuleLogicalDevice=vulkanModuleLogicalDevice;
+		this.aspectMask=vulkanImageViewData.aspectMask;
+		this.mipLevels=vulkanImageViewData.mipLevels;
+		this.vkImage=vkImage;
+		try(MemoryStack stack=MemoryStack.stackPush())
+		{
+		LongBuffer lp=stack.mallocLong(1);
+		VkImageViewCreateInfo viewCreateInfo=
+		VkImageViewCreateInfo
+		.calloc(stack)
+		.sType$Default()
+		.image(vkImage)
+		.viewType(vulkanImageViewData.viewType)
+		.format(vulkanImageViewData.format)
+		.subresourceRange(
+		it->
+		it
+		.aspectMask(this.aspectMask)
+		.baseMipLevel(0)
+		.levelCount(this.mipLevels)
+		.baseMipLevel(vulkanImageViewData.baseArrayLayer)
+		.layerCount(vulkanImageViewData.layerCount));
+		VulkanUtils.vkCheck(
+		VK13.vkCreateImageView(vulkanModuleLogicalDevice.getVkDevice(),viewCreateInfo,null,lp),
+		"Failed to create image view");
+		this.vkImageView=lp.get(0);
 		}
-	}
+		}
 
-	public void cleanup()
-	{
-		VK13.vkDestroyImageView(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkImageView, null);
-	}
+		public void cleanup()
+		{
+		VK13.vkDestroyImageView(this.vulkanModuleLogicalDevice.getVkDevice(),this.vkImageView,null);
+		}
 
-	public int getAspectMask()
-	{
+		public int getAspectMask()
+		{
 		return aspectMask;
-	}
+		}
 
-	public int getMipLevels()
-	{
+		public int getMipLevels()
+		{
 		return mipLevels;
-	}
+		}
 
-	public long getVkImageView()
-	{
+		public long getVkImageView()
+		{
 		return this.vkImageView;
-	}
+		}
 
-	public long getVkImage()
-	{
+		public long getVkImage()
+		{
 		return vkImage;
-	}
+		}
 
-	public static class VulkanImageViewData
-	{
+		public static class VulkanImageViewData
+		{
 		private int baseArrayLayer;
 		private int mipLevels;
 		private int aspectMask;
@@ -108,47 +108,47 @@ public class VulkanRenderModuleImageView
 
 		public VulkanImageViewData()
 		{
-			this.baseArrayLayer = 0;
-			this.layerCount = 1;
-			this.mipLevels = 1;
-			this.viewType = VK13.VK_IMAGE_VIEW_TYPE_2D;
+		this.baseArrayLayer=0;
+		this.layerCount=1;
+		this.mipLevels=1;
+		this.viewType=VK13.VK_IMAGE_VIEW_TYPE_2D;
 		}
 
 		public VulkanRenderModuleImageView.VulkanImageViewData aspectMask(int aspectMask)
 		{
-			this.aspectMask = aspectMask;
-			return this;
+		this.aspectMask=aspectMask;
+		return this;
 		}
 
 		public VulkanRenderModuleImageView.VulkanImageViewData baseArrayLayer(int baseArrayLayer)
 		{
-			this.baseArrayLayer = baseArrayLayer;
-			return this;
+		this.baseArrayLayer=baseArrayLayer;
+		return this;
 		}
 
 		public VulkanRenderModuleImageView.VulkanImageViewData format(int format)
 		{
-			this.format = format;
-			return this;
+		this.format=format;
+		return this;
 		}
 
 		public VulkanRenderModuleImageView.VulkanImageViewData layerCount(int layerCount)
 		{
-			this.layerCount = layerCount;
-			return this;
+		this.layerCount=layerCount;
+		return this;
 		}
 
 		public VulkanRenderModuleImageView.VulkanImageViewData mipLevels(int mipLevels)
 		{
-			this.mipLevels = mipLevels;
-			return this;
+		this.mipLevels=mipLevels;
+		return this;
 		}
 
 		public VulkanRenderModuleImageView.VulkanImageViewData viewType(int viewType)
 		{
-			this.viewType = viewType;
-			return this;
+		this.viewType=viewType;
+		return this;
 		}
 
-	}
-}
+		}
+		}

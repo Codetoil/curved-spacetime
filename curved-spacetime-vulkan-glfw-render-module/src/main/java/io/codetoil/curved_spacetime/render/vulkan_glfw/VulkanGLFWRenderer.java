@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -19,6 +19,7 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanForwardRenderActivity;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanGraphicsQueue;
@@ -30,7 +31,6 @@ import io.codetoil.curved_spacetime.vulkan.VulkanInstance;
 import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan_glfw.VulkanGLFWWindow;
-import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
 import org.lwjgl.glfw.GLFWVulkan;
 
 public class VulkanGLFWRenderer extends GLFWRenderer
@@ -78,7 +78,7 @@ public class VulkanGLFWRenderer extends GLFWRenderer
 								.getRequestedImages(),
 						((GLFWRenderModuleConfig) this.entrypoint.getGlfwRenderModuleEntrypoint().getConfig())
 								.hasVSync());//, this.vulkanGraphicsPresentQueue,
-						// new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
+		// new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
 		/*this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
 		this.vulkanForwardRenderActivity =

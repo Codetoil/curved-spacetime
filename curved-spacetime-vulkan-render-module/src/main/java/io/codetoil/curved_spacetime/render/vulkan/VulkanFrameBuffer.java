@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
- * (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025
+ * Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,50 +18,50 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-<<<<<<<< HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleFrameBuffer.java
-import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleLogicalDevice;
-import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
-========
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
-import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
->>>>>>>> master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanFrameBuffer.java
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkFramebufferCreateInfo;
+<<<<<<<<HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleFrameBuffer.java
+		import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleLogicalDevice;
+		import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
+		========
+		import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
+		import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
+		>>>>>>>>master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanFrameBuffer.java
+		import org.lwjgl.system.MemoryStack;
+		import org.lwjgl.vulkan.VK13;
+		import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 
-import java.nio.LongBuffer;
+		import java.nio.LongBuffer;
 
-public class VulkanRenderModuleFrameBuffer
-{
-	private final VulkanModuleLogicalDevice logicalDevice;
-	private final long vkFrameBuffer;
-
-	public VulkanRenderModuleFrameBuffer(VulkanModuleLogicalDevice logicalDevice, int width, int height,
-										 LongBuffer pAttachments,
-										 long renderPass)
-	{
-		this.logicalDevice = logicalDevice;
-
-		try (MemoryStack stack = MemoryStack.stackPush())
+		public class VulkanRenderModuleFrameBuffer
 		{
-			VkFramebufferCreateInfo framebufferCreateInfo =
-					VkFramebufferCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
-							.pAttachments(pAttachments).width(width).height(height).layers(1).renderPass(renderPass);
+		private final VulkanModuleLogicalDevice logicalDevice;
+		private final long vkFrameBuffer;
 
-			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo, null, lp),
-					"Failed to create FrameBuffer");
-			this.vkFrameBuffer = lp.get(0);
+		public VulkanRenderModuleFrameBuffer(VulkanModuleLogicalDevice logicalDevice,int width,int height,
+		LongBuffer pAttachments,
+		long renderPass)
+		{
+		this.logicalDevice=logicalDevice;
+
+		try(MemoryStack stack=MemoryStack.stackPush())
+		{
+		VkFramebufferCreateInfo framebufferCreateInfo=
+		VkFramebufferCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
+		.pAttachments(pAttachments).width(width).height(height).layers(1).renderPass(renderPass);
+
+		LongBuffer lp=stack.mallocLong(1);
+		VulkanUtils.vkCheck(VK13.vkCreateFramebuffer(logicalDevice.getVkDevice(),framebufferCreateInfo,null,lp),
+		"Failed to create FrameBuffer");
+		this.vkFrameBuffer=lp.get(0);
 		}
-	}
+		}
 
-	public void cleanup()
-	{
-		VK13.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
-	}
+		public void cleanup()
+		{
+		VK13.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(),this.vkFrameBuffer,null);
+		}
 
-	public long getVkFrameBuffer()
-	{
+		public long getVkFrameBuffer()
+		{
 		return this.vkFrameBuffer;
-	}
-}
+		}
+		}

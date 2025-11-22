@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,76 +18,76 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-<<<<<<<< HEAD:curved-spacetime-vulkan-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan_glfw/VulkanGLFWRenderModuleSurface.java
-import io.codetoil.curved_spacetime.api.render.vulkan.VulkanRenderModuleSurface;
-import io.codetoil.curved_spacetime.api.vulkan.VulkanModulePhysicalDevice;
-import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleVulkanInstance;
-import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
-========
-import io.codetoil.curved_spacetime.render.vulkan.VulkanSurface;
-import io.codetoil.curved_spacetime.vulkan.VulkanInstance;
-import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
-import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
->>>>>>>> master:curved-spacetime-vulkan-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan_glfw/VulkanGLFWSurface.java
-import org.lwjgl.glfw.GLFWVulkan;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
-import org.tinylog.Logger;
+<<<<<<<<HEAD:curved-spacetime-vulkan-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan_glfw/VulkanGLFWRenderModuleSurface.java
+		import io.codetoil.curved_spacetime.api.render.vulkan.VulkanRenderModuleSurface;
+		import io.codetoil.curved_spacetime.api.vulkan.VulkanModulePhysicalDevice;
+		import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleVulkanInstance;
+		import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
+		========
+		import io.codetoil.curved_spacetime.render.vulkan.VulkanSurface;
+		import io.codetoil.curved_spacetime.vulkan.VulkanInstance;
+		import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
+		import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
+		>>>>>>>>master:curved-spacetime-vulkan-glfw-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan_glfw/VulkanGLFWSurface.java
+		import org.lwjgl.glfw.GLFWVulkan;
+		import org.lwjgl.system.MemoryStack;
+		import org.lwjgl.vulkan.KHRSurface;
+		import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
+		import org.tinylog.Logger;
 
-import java.nio.LongBuffer;
+		import java.nio.LongBuffer;
 
-public class VulkanGLFWRenderModuleSurface extends VulkanRenderModuleSurface
-{
+		public class VulkanGLFWRenderModuleSurface extends VulkanRenderModuleSurface
+		{
 
-	protected final VkSurfaceCapabilitiesKHR surfaceCaps;
-	protected final SurfaceFormat surfaceFormat;
-	protected final long vkSurface;
+		protected final VkSurfaceCapabilitiesKHR surfaceCaps;
+		protected final SurfaceFormat surfaceFormat;
+		protected final long vkSurface;
 
-	public VulkanGLFWRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
-										 VulkanModulePhysicalDevice vulkanModulePhysicalDevice,
-										 long windowHandle)
-	{
+		public VulkanGLFWRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
+		VulkanModulePhysicalDevice vulkanModulePhysicalDevice,
+		long windowHandle)
+		{
 		super(vulkanModulePhysicalDevice);
 		Logger.debug("Creating vulkan glfw surface");
-		try (MemoryStack stack = MemoryStack.stackPush())
+		try(MemoryStack stack=MemoryStack.stackPush())
 		{
-			LongBuffer pSurface = stack.mallocLong(1);
-			GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(),
-					windowHandle, null, pSurface);
-			this.vkSurface = pSurface.get(0);
-			this.surfaceCaps = VkSurfaceCapabilitiesKHR.calloc();
+		LongBuffer pSurface=stack.mallocLong(1);
+		GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(),
+		windowHandle,null,pSurface);
+		this.vkSurface=pSurface.get(0);
+		this.surfaceCaps=VkSurfaceCapabilitiesKHR.calloc();
 
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this.vulkanModulePhysicalDevice
-							.getVkPhysicalDevice(), vkSurface, surfaceCaps),
-					"Failed to get surface capabilities");
+		VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this.vulkanModulePhysicalDevice
+		.getVkPhysicalDevice(),vkSurface,surfaceCaps),
+		"Failed to get surface capabilities");
 
-			this.surfaceFormat = calcSurfaceFormat();
+		this.surfaceFormat=calcSurfaceFormat();
 		}
-	}
+		}
 
-	public void cleanup()
-	{
+		public void cleanup()
+		{
 		Logger.debug("Destroying Vulkan surface");
 		this.surfaceCaps.free();
-		KHRSurface.vkDestroySurfaceKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice().getInstance(), this.vkSurface,
-				null);
-	}
+		KHRSurface.vkDestroySurfaceKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice().getInstance(),this.vkSurface,
+		null);
+		}
 
-	@Override
-	public VkSurfaceCapabilitiesKHR getSurfaceCaps()
-	{
+		@Override
+		public VkSurfaceCapabilitiesKHR getSurfaceCaps()
+		{
 		return this.surfaceCaps;
-	}
+		}
 
-	@Override
-	public SurfaceFormat getSurfaceFormat()
-	{
+		@Override
+		public SurfaceFormat getSurfaceFormat()
+		{
 		return this.surfaceFormat;
-	}
+		}
 
-	public long getVkSurface()
-	{
+		public long getVkSurface()
+		{
 		return this.vkSurface;
-	}
-}
+		}
+		}

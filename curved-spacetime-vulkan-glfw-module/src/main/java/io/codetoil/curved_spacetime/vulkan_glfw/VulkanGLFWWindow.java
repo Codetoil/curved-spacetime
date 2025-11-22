@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,39 +18,39 @@
 
 package io.codetoil.curved_spacetime.vulkan_glfw;
 
-<<<<<<<< HEAD:curved-spacetime-vulkan-glfw-module/src/main/java/io/codetoil/curved_spacetime/vulkan_glfw/VulkanGLFWModuleWindow.java
-import io.codetoil.curved_spacetime.api.glfw.GLFWModuleWindow;
-========
-import io.codetoil.curved_spacetime.engine.Engine;
-import io.codetoil.curved_spacetime.glfw.GLFWWindow;
->>>>>>>> master:curved-spacetime-vulkan-glfw-module/src/main/java/io/codetoil/curved_spacetime/vulkan_glfw/VulkanGLFWWindow.java
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWVulkan;
+<<<<<<<<HEAD:curved-spacetime-vulkan-glfw-module/src/main/java/io/codetoil/curved_spacetime/vulkan_glfw/VulkanGLFWModuleWindow.java
+		import io.codetoil.curved_spacetime.api.glfw.GLFWModuleWindow;
+		========
+		import io.codetoil.curved_spacetime.engine.Engine;
+		import io.codetoil.curved_spacetime.glfw.GLFWWindow;
+		>>>>>>>>master:curved-spacetime-vulkan-glfw-module/src/main/java/io/codetoil/curved_spacetime/vulkan_glfw/VulkanGLFWWindow.java
+		import org.lwjgl.glfw.GLFW;
+		import org.lwjgl.glfw.GLFWVulkan;
 
-public class VulkanGLFWModuleWindow extends GLFWModuleWindow
-{
-	public VulkanGLFWModuleWindow(String title)
-	{
+		public class VulkanGLFWModuleWindow extends GLFWModuleWindow
+		{
+		public VulkanGLFWModuleWindow(String title)
+		{
 		super(title);
-	}
+		}
 
-	@Override
-	public boolean doesDriverExist()
-	{
+		@Override
+		public boolean doesDriverExist()
+		{
 		return GLFWVulkan.glfwVulkanSupported();
-	}
+		}
 
-	@Override
-	protected void throwDriverNotFoundException()
-	{
+		@Override
+		protected void throwDriverNotFoundException()
+		{
 		throw new IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)");
-	}
+		}
 
-	@Override
-	protected void setWindowHints()
-	{
+		@Override
+		protected void setWindowHints()
+		{
 		GLFW.glfwDefaultWindowHints();
-		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_FALSE);
-		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API);
-	}
-}
+		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED,GLFW.GLFW_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API,GLFW.GLFW_NO_API);
+		}
+		}

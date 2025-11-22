@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,78 +18,78 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-<<<<<<<< HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleSurface.java
-import io.codetoil.curved_spacetime.api.vulkan.VulkanModulePhysicalDevice;
-import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
-========
-import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
-import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
->>>>>>>> master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanSurface.java
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
-import org.lwjgl.vulkan.VkSurfaceFormatKHR;
+<<<<<<<<HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleSurface.java
+		import io.codetoil.curved_spacetime.api.vulkan.VulkanModulePhysicalDevice;
+		import io.codetoil.curved_spacetime.api.vulkan.utils.VulkanUtils;
+		========
+		import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
+		import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
+		>>>>>>>>master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanSurface.java
+		import org.lwjgl.system.MemoryStack;
+		import org.lwjgl.vulkan.KHRSurface;
+		import org.lwjgl.vulkan.VK13;
+		import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
+		import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 
-import java.nio.IntBuffer;
+		import java.nio.IntBuffer;
 
-public abstract class VulkanRenderModuleSurface
-{
-	protected final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
+		public abstract class VulkanRenderModuleSurface
+		{
+		protected final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
 
-	public VulkanRenderModuleSurface(VulkanModulePhysicalDevice vulkanModulePhysicalDevice)
-	{
-		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
-	}
+		public VulkanRenderModuleSurface(VulkanModulePhysicalDevice vulkanModulePhysicalDevice)
+		{
+		this.vulkanModulePhysicalDevice=vulkanModulePhysicalDevice;
+		}
 
-	public abstract void cleanup();
+		public abstract void cleanup();
 
-	public abstract VkSurfaceCapabilitiesKHR getSurfaceCaps();
+		public abstract VkSurfaceCapabilitiesKHR getSurfaceCaps();
 
-	public abstract SurfaceFormat getSurfaceFormat();
+		public abstract SurfaceFormat getSurfaceFormat();
 
-	protected SurfaceFormat calcSurfaceFormat()
-	{
+		protected SurfaceFormat calcSurfaceFormat()
+		{
 		int imageFormat;
 		int colorSpace;
-		try (var stack = MemoryStack.stackPush())
+		try(var stack=MemoryStack.stackPush())
 		{
-			IntBuffer ip = stack.mallocInt(1);
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
-							this.vulkanModulePhysicalDevice.getVkPhysicalDevice(), this.getVkSurface(), ip, null),
-					"Failed to get the number surface formats");
-			int numFormats = ip.get(0);
-			if (numFormats <= 0)
-			{
-				throw new RuntimeException("No surface formats retrieved");
-			}
-
-			var surfaceFormats = VkSurfaceFormatKHR.calloc(numFormats, stack);
-			VulkanUtils.vkCheck(
-					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
-							this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
-							this.getVkSurface(), ip, surfaceFormats), "Failed to get surface formats");
-
-			imageFormat = VK13.VK_FORMAT_B8G8R8A8_SRGB;
-			colorSpace = surfaceFormats.get(0).colorSpace();
-			for (int i = 0; i < numFormats; i++)
-			{
-				VkSurfaceFormatKHR surfaceFormatKHR = surfaceFormats.get(i);
-				if (surfaceFormatKHR.format() == VK13.VK_FORMAT_B8G8R8A8_SRGB &&
-						surfaceFormatKHR.colorSpace() == KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-				{
-					imageFormat = surfaceFormatKHR.format();
-					colorSpace = surfaceFormatKHR.colorSpace();
-					break;
-				}
-			}
+		IntBuffer ip=stack.mallocInt(1);
+		VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
+		this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),this.getVkSurface(),ip,null),
+		"Failed to get the number surface formats");
+		int numFormats=ip.get(0);
+		if(numFormats<=0)
+		{
+		throw new RuntimeException("No surface formats retrieved");
 		}
-		return new SurfaceFormat(imageFormat, colorSpace);
-	}
 
-	public abstract long getVkSurface();
+		var surfaceFormats=VkSurfaceFormatKHR.calloc(numFormats,stack);
+		VulkanUtils.vkCheck(
+		KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
+		this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+		this.getVkSurface(),ip,surfaceFormats),"Failed to get surface formats");
 
-	public record SurfaceFormat(int imageFormat, int colorSpace)
-	{
-	}
-}
+		imageFormat=VK13.VK_FORMAT_B8G8R8A8_SRGB;
+		colorSpace=surfaceFormats.get(0).colorSpace();
+		for(int i=0;i<numFormats;i++)
+		{
+		VkSurfaceFormatKHR surfaceFormatKHR=surfaceFormats.get(i);
+		if(surfaceFormatKHR.format()==VK13.VK_FORMAT_B8G8R8A8_SRGB&&
+		surfaceFormatKHR.colorSpace()==KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+		{
+		imageFormat=surfaceFormatKHR.format();
+		colorSpace=surfaceFormatKHR.colorSpace();
+		break;
+		}
+		}
+		}
+		return new SurfaceFormat(imageFormat,colorSpace);
+		}
+
+		public abstract long getVkSurface();
+
+		public record SurfaceFormat(int imageFormat,int colorSpace)
+		{
+		}
+		}

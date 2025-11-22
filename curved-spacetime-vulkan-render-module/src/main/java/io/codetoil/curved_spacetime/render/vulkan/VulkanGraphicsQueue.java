@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -18,95 +18,95 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-<<<<<<<< HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleGraphicsModuleQueue.java
-import io.codetoil.curved_spacetime.api.vulkan.VulkanModulePhysicalDevice;
-import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleQueue;
-========
-import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
-import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
-import io.codetoil.curved_spacetime.vulkan.VulkanQueue;
->>>>>>>> master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanGraphicsQueue.java
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkQueueFamilyProperties;
+<<<<<<<<HEAD:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanRenderModuleGraphicsModuleQueue.java
+		import io.codetoil.curved_spacetime.api.vulkan.VulkanModulePhysicalDevice;
+		import io.codetoil.curved_spacetime.api.vulkan.VulkanModuleQueue;
+		========
+		import io.codetoil.curved_spacetime.vulkan.VulkanLogicalDevice;
+		import io.codetoil.curved_spacetime.vulkan.VulkanPhysicalDevice;
+		import io.codetoil.curved_spacetime.vulkan.VulkanQueue;
+		>>>>>>>>master:curved-spacetime-vulkan-render-module/src/main/java/io/codetoil/curved_spacetime/render/vulkan/VulkanGraphicsQueue.java
+		import org.lwjgl.system.MemoryStack;
+		import org.lwjgl.vulkan.KHRSurface;
+		import org.lwjgl.vulkan.VK13;
+		import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
-import java.nio.IntBuffer;
+		import java.nio.IntBuffer;
 
-public class VulkanRenderModuleGraphicsModuleQueue extends VulkanModuleQueue
-{
-	public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleRenderContext context, int queueFamilyIndex,
-												 int queueIndex)
-	{
-		super(context.getContext(), queueFamilyIndex, queueIndex);
-	}
-
-	public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleRenderContext context, int queueIndex)
-	{
-		super(context.getContext(), getGraphicsQueueFamilyIndex(context), queueIndex);
-	}
-
-	private static int getGraphicsQueueFamilyIndex(VulkanRenderModuleRenderContext context)
-	{
-		int result = -1;
-		VulkanModulePhysicalDevice vulkanModulePhysicalDevice =
-				context.getContext().getLogicalDevice().getPhysicalDevice();
-		VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanModulePhysicalDevice.getVkQueueFamilyProps();
-		int numQueuesFamilies = queuePropsBuff.capacity();
-		for (int index = 0; index < numQueuesFamilies; index++)
+		public class VulkanRenderModuleGraphicsModuleQueue extends VulkanModuleQueue
 		{
-			VkQueueFamilyProperties props = queuePropsBuff.get(index);
-			boolean graphicsQueue = (props.queueFlags() & VK13.VK_QUEUE_GRAPHICS_BIT) != 0;
-			if (graphicsQueue)
-			{
-				result = index;
-				break;
-			}
+		public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleRenderContext context,int queueFamilyIndex,
+		int queueIndex)
+		{
+		super(context.getContext(),queueFamilyIndex,queueIndex);
 		}
 
-		if (result < 0)
+		public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleRenderContext context,int queueIndex)
 		{
-			throw new RuntimeException("Failed to get graphics Queue family index.");
+		super(context.getContext(),getGraphicsQueueFamilyIndex(context),queueIndex);
+		}
+
+		private static int getGraphicsQueueFamilyIndex(VulkanRenderModuleRenderContext context)
+		{
+		int result=-1;
+		VulkanModulePhysicalDevice vulkanModulePhysicalDevice=
+		context.getContext().getLogicalDevice().getPhysicalDevice();
+		VkQueueFamilyProperties.Buffer queuePropsBuff=vulkanModulePhysicalDevice.getVkQueueFamilyProps();
+		int numQueuesFamilies=queuePropsBuff.capacity();
+		for(int index=0;index<numQueuesFamilies;index++)
+		{
+		VkQueueFamilyProperties props=queuePropsBuff.get(index);
+		boolean graphicsQueue=(props.queueFlags()&VK13.VK_QUEUE_GRAPHICS_BIT)!=0;
+		if(graphicsQueue)
+		{
+		result=index;
+		break;
+		}
+		}
+
+		if(result<0)
+		{
+		throw new RuntimeException("Failed to get graphics Queue family index.");
 		}
 		return result;
-	}
+		}
 
-	public static class VulkanRenderModuleGraphicsPresentModuleQueue extends VulkanRenderModuleGraphicsModuleQueue
-	{
-		public VulkanRenderModuleGraphicsPresentModuleQueue(VulkanRenderModuleSceneRenderContext context,
-															int queueIndex)
+		public static class VulkanRenderModuleGraphicsPresentModuleQueue extends VulkanRenderModuleGraphicsModuleQueue
 		{
-			super(context.getRenderContext(), getPresentQueueFamilyIndex(context), queueIndex);
+		public VulkanRenderModuleGraphicsPresentModuleQueue(VulkanRenderModuleSceneRenderContext context,
+		int queueIndex)
+		{
+		super(context.getRenderContext(),getPresentQueueFamilyIndex(context),queueIndex);
 		}
 
 		private static int getPresentQueueFamilyIndex(VulkanRenderModuleSceneRenderContext context)
 		{
-			int index = -1;
-			try (MemoryStack stack = MemoryStack.stackPush())
-			{
-				VulkanModulePhysicalDevice physicalDevice = context.getRenderContext().getContext().getLogicalDevice()
-						.getPhysicalDevice();
-				VkQueueFamilyProperties.Buffer queuePropsBuff = physicalDevice.getVkQueueFamilyProps();
-				int numQueuesFamilies = queuePropsBuff.capacity();
-				IntBuffer intBuffer = stack.mallocInt(1);
-				for (int i = 0; i < numQueuesFamilies; i++)
-				{
-					KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(), i,
-							context.getSurface().getVkSurface(), intBuffer);
-					boolean supportsPresentation = intBuffer.get(0) == VK13.VK_TRUE;
-					if (supportsPresentation)
-					{
-						index = i;
-						break;
-					}
-				}
-
-				if (index < 0)
-				{
-					throw new RuntimeException("Failed to get Presentation Queue family index.");
-				}
-				return index;
-			}
+		int index=-1;
+		try(MemoryStack stack=MemoryStack.stackPush())
+		{
+		VulkanModulePhysicalDevice physicalDevice=context.getRenderContext().getContext().getLogicalDevice()
+		.getPhysicalDevice();
+		VkQueueFamilyProperties.Buffer queuePropsBuff=physicalDevice.getVkQueueFamilyProps();
+		int numQueuesFamilies=queuePropsBuff.capacity();
+		IntBuffer intBuffer=stack.mallocInt(1);
+		for(int i=0;i<numQueuesFamilies;i++)
+		{
+		KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(),i,
+		context.getSurface().getVkSurface(),intBuffer);
+		boolean supportsPresentation=intBuffer.get(0)==VK13.VK_TRUE;
+		if(supportsPresentation)
+		{
+		index=i;
+		break;
 		}
-	}
-}
+		}
+
+		if(index<0)
+		{
+		throw new RuntimeException("Failed to get Presentation Queue family index.");
+		}
+		return index;
+		}
+		}
+		}
+		}
