@@ -64,6 +64,7 @@ jobs:
     runs-on: windows-2025
 
     permissions:
+      contents: write
       actions: write
 
     steps:
