@@ -45,5 +45,5 @@ jobs:
           git add .
           git config --global user.name 'Codetoil'
           git config --global user.email 'codetoil@users.noreply.github.com'
-          git commit -am "Automated update ${{ github.ref_name }}"
+          git commit -am "Automated update ${{ inputs.version }} (WinGet)"
           git push
