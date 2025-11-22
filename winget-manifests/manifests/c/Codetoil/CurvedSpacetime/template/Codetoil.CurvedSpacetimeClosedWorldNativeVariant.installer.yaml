@@ -7,7 +7,7 @@ Installers:
   - Architecture: x64
     InstallerType: zip
     InstallerUrl: https://github.com/Codetoil/curved-spacetime/releases/download/${version}/curved-spacetime-closed-world-native-variant-windows-x64-${version}.zip
-    InstallerSha256: ${sha1}
+    InstallerSha256: ${hash}
     NestedInstallerType: portable
     NestedInstallerFiles:
       - RelativeFilePath: ./curved-spacetime-0.1.0-SNAPSHOT-windows-x64.exe
