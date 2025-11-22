@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run (Closed World Jar Variant) Production" type="JarApplication">
+  <configuration default="false" name="Run (Closed-World Jar Variant) Production" type="JarApplication">
     <option name="JAR_PATH" value="$PROJECT_DIR$/archive-closed-world-jar/curved-spacetime-0.1.0-SNAPSHOT-all.jar" />
     <option name="VM_PARAMETERS" value="-Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8" />
     <option name="WORKING_DIRECTORY" value="archive-closed-world-jar" />

@@ -152,7 +152,7 @@ publishing {
             pom {
                 packaging = "jar"
 
-                name = "Curved Spacetime Closed World Loader Module"
+                name = "Curved Spacetime Closed-World Loader Module"
                 url = "https://github.com/Codetoil/curved-spacetime"
                 inceptionYear = "2025"
                 licenses {

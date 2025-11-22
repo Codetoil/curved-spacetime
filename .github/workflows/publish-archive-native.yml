@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish-curved-spacetime-closed-linux-x64:
-    name: Publish curved-spacetime (Closed World Native Variant) Linux x64
+    name: Publish curved-spacetime (Closed-World Native Variant) Linux x64
     runs-on: ubuntu-24.04
 
     permissions:
@@ -33,7 +33,7 @@ jobs:
         with:
           files: ./curved-spacetime-closed-world-native-variant-linux-x64-${{ github.ref_name }}.zip
   publish-curved-spacetime-closed-linux-arm64:
-    name: Publish curved-spacetime (Closed World Native Variant) Linux arm64
+    name: Publish curved-spacetime (Closed-World Native Variant) Linux arm64
     runs-on: ubuntu-24.04-arm
 
     permissions:
@@ -60,7 +60,7 @@ jobs:
         with:
           files: ./curved-spacetime-closed-world-native-variant-linux-arm64-${{ github.ref_name }}.zip
   publish-curved-spacetime-closed-windows-x64:
-    name: Publish curved-spacetime (Closed World Native Variant) Windows x64
+    name: Publish curved-spacetime (Closed-World Native Variant) Windows x64
     runs-on: windows-2025
 
     permissions:
@@ -90,7 +90,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-curved-spacetime-closed-macos-x64:
-    name: Publish curved-spacetime (Closed World Native Variant) macOS x64
+    name: Publish curved-spacetime (Closed-World Native Variant) macOS x64
     runs-on: macos-15-intel
 
     permissions:
@@ -117,7 +117,7 @@ jobs:
         with:
           files: ./curved-spacetime-closed-world-native-variant-macos-x64-${{ github.ref_name }}.zip
   publish-curved-spacetime-closed-macos-arm64:
-    name: Publish curved-spacetime (Closed World Native Variant) macOS arm64
+    name: Publish curved-spacetime (Closed-World Native Variant) macOS arm64
     runs-on: macos-26
 
     permissions:
