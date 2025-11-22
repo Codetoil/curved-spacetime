@@ -86,7 +86,7 @@ jobs:
         if: github.ref_type == 'tag'
         with:
           files: ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip
-      - run: gh workflow run publish-github-pages-winget.yml -f version="${{ github.ref_name }}" -f archive_hash="$(Get-FileHash -Path curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip -Algorithm SHA1 | Select-Object -ExpandProperty Hash)"
+      - run: gh workflow run publish-github-pages-winget.yml -f version="${{ github.ref_name }}" -f archive_hash="$(Get-FileHash -Path curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip -Algorithm SHA256 | Select-Object -ExpandProperty Hash)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-curved-spacetime-closed-macos-x64:
