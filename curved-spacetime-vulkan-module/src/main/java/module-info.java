@@ -18,7 +18,8 @@
 
 /**
  * Vulkan Module of Curved Spacetime
- * */
+ *
+ */
 module io.codetoil.curved_spacetime.vulkan {
 	requires org.tinylog.api;
 	requires org.lwjgl;

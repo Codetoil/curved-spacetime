@@ -18,7 +18,8 @@
 
 /**
  * Quilt Loader Module of Curved Spacetime
- * */
+ *
+ */
 module io.codetoil.curved_spacetime.loader.quiltmc {
 	requires io.codetoil.curved_spacetime.loader;
 	requires org.quiltmc.loader;

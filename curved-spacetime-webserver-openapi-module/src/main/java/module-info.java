@@ -17,7 +17,8 @@
  */
 /**
  * Webserver OpenAPI Module of Curved Spacetime
- * */
+ *
+ */
 module io.codetoil.curved_spacetime.webserver.openapi {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
