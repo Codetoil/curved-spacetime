@@ -19,8 +19,8 @@
 package io.codetoil.curved_spacetime.engine;
 
 import io.codetoil.curved_spacetime.MainModuleConfig;
-import io.codetoil.curved_spacetime.api.loader.CurvedSpacetimeLoader;
-import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
+import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.scene.Scene;
 import io.codetoil.curved_spacetime.scene.SceneCallback;
 import org.tinylog.Logger;

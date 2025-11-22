@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
- * Michalek (Codetoil)<br> Copyright 2022, 2023 QuiltMC<br>
+ * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025 Anthony Michalek
+ * (Codetoil)<br> Copyright (c) 2025 Antonio Hernández Bejarano<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -16,24 +16,15 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.api.loader.entrypoint;
+package io.codetoil.curved_spacetime.loader.entrypoint;
 
-import java.util.concurrent.TransferQueue;
+import java.io.IOException;
 
-public interface ModuleInitializer
+public interface ModuleConfig
 {
-	/**
-	 * Runs the mod initializer.
-	 */
-	void onInitialize();
+	ModuleConfig load() throws IOException;
 
-	/**
-	 * Gets the config for this module.
-	 */
-	ModuleConfig getConfig();
+	void save() throws IOException;
 
-	/**
-	 *
-	 */
-	TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue();
+	boolean isDirty();
 }

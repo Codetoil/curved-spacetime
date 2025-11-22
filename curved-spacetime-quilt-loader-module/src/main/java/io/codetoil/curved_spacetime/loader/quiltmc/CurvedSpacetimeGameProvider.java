@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.loader.quiltmc;
 
-import io.codetoil.curved_spacetime.api.loader.CurvedSpacetimeLoader;
+import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import org.jetbrains.annotations.Nullable;
 import org.quiltmc.loader.api.ModDependency;
 import org.quiltmc.loader.api.ModDependencyIdentifier;

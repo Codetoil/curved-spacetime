@@ -19,7 +19,7 @@
 
 package io.codetoil.curved_spacetime.glfw;
 
-import io.codetoil.curved_spacetime.api.loader.entrypoint.ModuleConfig;
+import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;

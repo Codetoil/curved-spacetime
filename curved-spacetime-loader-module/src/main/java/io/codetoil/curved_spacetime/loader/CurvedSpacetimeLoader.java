@@ -1,4 +1,4 @@
-package io.codetoil.curved_spacetime.api.loader;
+package io.codetoil.curved_spacetime.loader;
 
 import java.nio.file.Path;
 import java.util.List;
