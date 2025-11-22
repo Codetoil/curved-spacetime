@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json
+
+PackageIdentifier: Codetoil.CurvedSpacetime
+PackageVersion: 0.1.0-build.64
+ManifestType: installer
+Installers:
+  - Architecture: x64
+    InstallerType: zip
+    InstallerUrl: https://github.com/Codetoil/curved-spacetime/releases/download/0.1.0-build.64/curved-spacetime-closed-world-native-variant-windows-x64-0.1.0-build.64.zip
+    InstallerSha256: 73E974E046B2AAA213EA01950951C861F0BAA234AF1E6FB2E1C6735C71A4A9CE
+    NestedInstallerType: portable
+    NestedInstallerFiles:
+      - RelativeFilePath: ./curved-spacetime-0.1.0-SNAPSHOT-windows-x64.exe
+ManifestVersion: 1.10.0
