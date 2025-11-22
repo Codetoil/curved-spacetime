@@ -31,15 +31,15 @@ jobs:
       - run: |
           cd .\winget-manifests\manifests\c\Codetoil\CurvedSpacetimePreview
           Copy-Item -Path ".\template" -Destination ".\${{ inputs.version }}\" -Recurse
-          $content_version = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreviewClosedWorldNativeVariant.yaml"
-          $content_locale_en_US = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreviewClosedWorldNativeVariant.locale.en-US.yaml"
-          $content_installer = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreviewClosedWorldNativeVariant.installer.yaml"
+          $content_version = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreview.yaml"
+          $content_locale_en_US = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreview.locale.en-US.yaml"
+          $content_installer = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreview.installer.yaml"
           $content_version = $content_version -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{hash\}', '${{ inputs.archive_hash }}'
           $content_locale_en_US = $content_locale_en_US -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{hash\}', '${{ inputs.archive_hash }}'
           $content_installer = $content_installer -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{hash\}', '${{ inputs.archive_hash }}'
-          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreviewClosedWorldNativeVariant.yaml" -Value $content_version
-          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreviewClosedWorldNativeVariant.locale.en-US.yaml" -Value $content_locale_en_US
-          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreviewClosedWorldNativeVariant.installer.yaml" -Value $content_installer
+          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreview.yaml" -Value $content_version
+          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreview.locale.en-US.yaml" -Value $content_locale_en_US
+          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimePreview.installer.yaml" -Value $content_installer
       - name: Push update to repo
         run: |
           git add .
