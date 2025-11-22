@@ -1,5 +1,6 @@
 plugins {
-    java
+    id("io.freefair.aggregate-javadoc") version "9.1.0"
+    id("io.github.sgtsilvio.gradle.javadoc-links") version "0.9.0" apply false
     id("org.jetbrains.qodana") version "2025.2.2"
 }
 
@@ -67,6 +68,25 @@ val nonJar by configurations.creating
 
 dependencies {
     nonJar(files("LICENSE.md", "Notices.md"))
+
+    rootProject.subprojects.filter { project -> !project.name.contains("quilt-loader-patches") }
+        .forEach { subproject ->
+            subproject.plugins.withId("java") {
+                javadoc(subproject)
+            }
+        }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            url = uri("https://maven.fabricmc.net/")
+        }
+        maven {
+            url = uri("https://maven.quiltmc.org/repository/release/")
+        }
+    }
 }
 
 tasks.register("cleanJar") {
@@ -102,13 +122,15 @@ tasks.register("cleanJar") {
 tasks.register<Copy>("nonJarCopyClosedJar") {
     from(nonJar)
     into("$rootDir/archive-closed-world-jar/")
-    mustRunAfter(rootProject.subprojects.map { it.tasks.build })
+    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
+        .map { it.tasks.build })
 }
 
 tasks.register<Copy>("nonJarCopyQuilt") {
     from(nonJar)
     into("$rootDir/archive-quilt/")
-    mustRunAfter(rootProject.subprojects.map { it.tasks.build })
+    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
+        .map { it.tasks.build })
 }
 
 tasks.build {

@@ -1,5 +1,5 @@
 /**
- * Curved Spacetime is an easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2023-2025 Anthony
  * Michalek (Codetoil)<br> Copyright 2025 QuiltMC<br>
  * <br>
  * This file is part of Curved Spacetime<br>
@@ -18,7 +18,6 @@
 
 package io.codetoil.curved_spacetime.loader.quiltmc;
 
-import org.jetbrains.annotations.Nullable;
 import org.quiltmc.loader.impl.game.MappingConfiguration;
 import org.quiltmc.loader.impl.lib.mappingio.tree.MappingTreeView;
 
@@ -28,7 +27,7 @@ import java.util.List;
 public class MappingConfigurationCurvedSpacetime implements MappingConfiguration
 {
 	@Override
-	public @Nullable MappingTreeView getMappings()
+	public MappingTreeView getMappings()
 	{
 		return null;
 	}

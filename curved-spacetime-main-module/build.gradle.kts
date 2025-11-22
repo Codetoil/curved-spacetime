@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("java-library")
+    id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
     id("com.gradleup.shadow") version "9.2.2"
 }
@@ -9,16 +10,6 @@ group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
 val nonJar by configurations.creating
-
-repositories {
-    mavenCentral()
-    maven {
-        url = uri("https://maven.fabricmc.net/")
-    }
-    maven {
-        url = uri("https://maven.quiltmc.org/repository/release/")
-    }
-}
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
@@ -102,4 +93,8 @@ publishing {
             from(components["shadow"])
         }
     }
+}
+
+tasks.javadocLinks {
+    urlProvider = { id -> urlProviderFunc(id) }
 }

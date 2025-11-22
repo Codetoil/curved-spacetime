@@ -1,0 +1,49 @@
+name: Publish GitHub Pages (WinGet)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'version of file being published'
+      archive_hash:
+        required: true
+        type: string
+        description: 'sha256 hash of file being published'
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: windows-2025
+    permissions:                # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write      # 'write' access to pull requests
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: pages
+      - run: |
+          cd .\winget-manifests\manifests\c\Codetoil\CurvedSpacetime
+          Copy-Item -Path ".\template" -Destination ".\${{ inputs.version }}\" -Recurse
+          $content_version = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.yaml"
+          $content_locale_en_US = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.locale.en-US.yaml"
+          $content_installer = Get-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.installer.yaml"
+          $content_version = $content_version -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{hash\}', '${{ inputs.archive_hash }}'
+          $content_locale_en_US = $content_locale_en_US -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{hash\}', '${{ inputs.archive_hash }}'
+          $content_installer = $content_installer -replace '\$\{version\}', '${{ inputs.version }}' -replace '\$\{hash\}', '${{ inputs.archive_hash }}'
+          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.yaml" -Value $content_version
+          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.locale.en-US.yaml" -Value $content_locale_en_US
+          Set-Content -Path ".\${{ inputs.version }}\Codetoil.CurvedSpacetimeClosedWorldNativeVariant.installer.yaml" -Value $content_installer
+      - name: Push update to repo
+        run: |
+          git add .
+          git config --global user.name 'Codetoil'
+          git config --global user.email 'codetoil@users.noreply.github.com'
+          git commit -am "Automated update ${{ github.ref_name }}"
+          git push
