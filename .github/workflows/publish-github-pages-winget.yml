@@ -1,11 +1,5 @@
 name: Publish GitHub Pages (WinGet)
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 on:
   workflow_dispatch:
     inputs:
@@ -17,10 +11,19 @@ on:
         required: true
         type: string
         description: 'hash of file being published'
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   upload:
     runs-on: windows-2025
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:                # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write      # 'write' access to pull requests
     steps:
       - uses: actions/checkout@v5
         with:
