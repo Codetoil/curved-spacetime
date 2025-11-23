@@ -16,11 +16,15 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan_glfw;
+package io.codetoil.curved_spacetime.render.vulkan_glfw.scene_renderer;
 
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
-import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnvironment;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSceneRenderContext;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleConfig;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleSurface;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleWindow;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanContext;
 import org.lwjgl.glfw.GLFWVulkan;
 
@@ -29,13 +33,13 @@ public class VulkanGLFWRenderModuleSceneRenderContext extends VulkanRenderModule
 	protected final VulkanGLFWRenderModuleEntrypoint entrypoint;
 
 	public VulkanGLFWRenderModuleSceneRenderContext(VulkanGLFWRenderModuleEntrypoint entrypoint,
-													RenderEnvironment renderEnvironment)
+													RenderModuleSceneRenderer renderModuleSceneRenderer)
 	{
-		super(renderEnvironment);
+		super(renderModuleSceneRenderer);
 		this.entrypoint = entrypoint;
 	}
 
-	public void init(VulkanGLFWRenderEnviornmentCallback renderer)
+	public void init()
 	{
 		VulkanModuleVulkanContext context = new VulkanModuleVulkanContext();
 		context.init(entrypoint.getVulkanModuleEntrypoint(),

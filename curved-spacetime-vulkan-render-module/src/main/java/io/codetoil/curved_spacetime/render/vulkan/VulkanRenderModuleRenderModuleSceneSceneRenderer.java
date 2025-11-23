@@ -1,7 +1,7 @@
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnviornmentCallback;
-import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnvironment;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderCallback;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsModuleQueue.VulkanRenderModuleGraphicsPresentModuleQueue;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandBuffer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandPool;
@@ -14,13 +14,13 @@ import org.lwjgl.vulkan.VkSemaphoreSubmitInfo;
 
 import java.util.Arrays;
 
-public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornmentCallback
+public abstract class VulkanRenderModuleRenderModuleSceneSceneRenderer implements RenderModuleSceneRenderCallback
 {
 	public static final int MAX_IN_FLIGHT = 2;
 	protected final VulkanRenderModuleSceneRenderContext sceneRenderContext;
 	protected final VulkanRenderModuleGraphicsPresentModuleQueue presentQueue;
 	protected final VulkanModuleSemaphore[] renderCompleteSemaphores;
-	protected final RenderEnvironment renderEnviornment;
+	protected final RenderModuleSceneRenderer renderEnviornment;
 	protected VulkanModuleCommandBuffer[] commandBuffers;
 	protected VulkanModuleCommandPool[] commandPools;
 	protected VulkanModuleFence[] fences;
@@ -28,10 +28,10 @@ public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornme
 	protected VulkanModuleSemaphore[] presentationCompleteSemaphores;
 	protected int currentFrame;
 
-	public VulkanRenderEnviornmentCallback(VulkanRenderModuleSceneRenderContext sceneRenderContext,
-										   RenderEnvironment renderEnvironment)
+	public VulkanRenderModuleRenderModuleSceneSceneRenderer(VulkanRenderModuleSceneRenderContext sceneRenderContext,
+															RenderModuleSceneRenderer renderModuleSceneRenderer)
 	{
-		this.renderEnviornment = renderEnvironment;
+		this.renderEnviornment = renderModuleSceneRenderer;
 		this.sceneRenderContext = sceneRenderContext;
 		presentQueue = new VulkanRenderModuleGraphicsPresentModuleQueue(this.getSceneRenderContext(), 0);
 		renderCompleteSemaphores = new VulkanModuleSemaphore[this.getSceneRenderContext().getSwapChain()
@@ -86,7 +86,7 @@ public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornme
 		submit(commandBuffer, this.currentFrame, imageIndex);
 		swapChain.presentImage(presentQueue, renderCompleteSemaphores[imageIndex], imageIndex);
 		this.currentFrame =
-				(this.currentFrame + 1) % VulkanRenderEnviornmentCallback.MAX_IN_FLIGHT;
+				(this.currentFrame + 1) % VulkanRenderModuleRenderModuleSceneSceneRenderer.MAX_IN_FLIGHT;
 	}
 
 	public void clean()
@@ -105,7 +105,7 @@ public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornme
 	}
 
 	@Override
-	public RenderEnvironment renderEnviornment()
+	public RenderModuleSceneRenderer renderEnviornment()
 	{
 		return this.renderEnviornment;
 	}

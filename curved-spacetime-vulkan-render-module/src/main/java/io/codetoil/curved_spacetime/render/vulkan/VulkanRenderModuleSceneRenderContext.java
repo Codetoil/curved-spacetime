@@ -1,8 +1,8 @@
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.render.RenderModuleSceneRenderContext;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
-import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnvironment;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderContext;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanContext;
 
 import java.util.function.BooleanSupplier;
@@ -17,9 +17,9 @@ public abstract class VulkanRenderModuleSceneRenderContext extends RenderModuleS
 	protected VulkanModuleVulkanContext context;
 	protected VulkanRenderModuleGraphicsModuleQueue vulkanRenderModuleGraphicsQueue = null;
 
-	protected VulkanRenderModuleSceneRenderContext(RenderEnvironment renderEnvironment)
+	protected VulkanRenderModuleSceneRenderContext(RenderModuleSceneRenderer renderModuleSceneRenderer)
 	{
-		super(renderEnvironment);
+		super(renderModuleSceneRenderer);
 	}
 
 	protected void init(VulkanModuleVulkanContext context,

@@ -35,6 +35,7 @@ import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Engine
 {
@@ -68,13 +69,17 @@ public class Engine
 		Logger.info("Initializing Callbacks");
 		this.callbackInitializeHandler = this.callbackExecutor.submit(() ->
 		{
+			Logger.info("Accumulating Main Callbacks");
 			accumulateCallbacks(
 					MainCallbackSupplier.class,
 					Sets.newHashSet((Void) null),
 					this.mainCallbacks);
+			Logger.info("Initializing Main Callbacks");
 			this.mainCallbacks.forEach(MainCallback::init);
 
+			Logger.info("Accumulating Scene Callbacks");
 			accumulateCallbacks(SceneCallbackSupplier.class, this.scenes, this.sceneCallbacks);
+			Logger.info("Initializing Scene Callbacks");
 			this.sceneCallbacks.forEach(SceneCallback::init);
 		});
 		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() ->
@@ -82,8 +87,8 @@ public class Engine
 					this.mainCallbacks.forEach(MainCallback::loop);
 					this.sceneCallbacks.forEach(SceneCallback::loop);
 				},
-				1_000 / this.mainModuleConfig.getFPS(),
-				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
+				1_000 / this.mainModuleConfig.getTPS(),
+				1_000 / this.mainModuleConfig.getTPS(), TimeUnit.MILLISECONDS);
 	}
 
 	public void runEntrypoints()
@@ -98,6 +103,8 @@ public class Engine
 			throw new RuntimeException(e);
 		}
 	}
+
+	/* Utility Methods */
 
 	public <A, C, S extends Function<A, C>> void accumulateCallbacks(Class<S> supplierClass, Set<A> argsSet,
 																	 Set<C> callbacks)
@@ -153,28 +160,24 @@ public class Engine
 		return INSTANCE;
 	}
 
-	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
+	public MainCallback registerMainCallbackAndInit(Supplier<MainCallback> callbackSupplier)
 	{
-		return loader;
-	}
-
-	public void registerMainCallbackAndInit(Supplier<MainCallback> callbackSupplier)
-	{
-		this.registerCallbackAndInit((Void _) -> callbackSupplier.get(),
+		return this.registerCallbackAndInit((Void _) -> callbackSupplier.get(),
 				Sets.newHashSet((Void) null), this.mainCallbacks,
-				MainCallback::init);
+				MainCallback::init).stream().findFirst().get();
 	}
 
-	public <A, C> void registerCallbackAndInit(Function<A, C> callbackSupplier, Set<A> argsSet, Set<C> callbacks,
-											   Consumer<C> init)
+	public <A, C> Set<C> registerCallbackAndInit(Function<A, C> callbackSupplier, Set<A> argsSet, Set<C> callbacks,
+												 Consumer<C> init)
 	{
 		if (!callbackSuppliers.contains(callbackSupplier))
 			addCallbackSupplier(callbackSupplier);
-		argsSet.forEach(args -> {
+		return argsSet.stream().map(args -> {
 			C callback = callbackSupplier.apply(args);
 			callbacks.add(callback);
 			init.accept(callback);
-		});
+			return callback;
+		}).collect(Collectors.toSet());
 	}
 
 	public <A, C> void addCallbackSupplier(Function<A, C> callbackSupplier)
@@ -182,9 +185,9 @@ public class Engine
 		this.callbackSuppliers.add(callbackSupplier);
 	}
 
-	public void registerSceneCallbackAndInit(Function<Scene, SceneCallback> callbackSupplier)
+	public Set<SceneCallback> registerSceneCallbackAndInit(Function<Scene, SceneCallback> callbackSupplier)
 	{
-		this.registerCallbackAndInit(callbackSupplier, this.scenes,
+		return this.registerCallbackAndInit(callbackSupplier, this.scenes,
 				this.sceneCallbacks, SceneCallback::init);
 	}
 
@@ -209,6 +212,11 @@ public class Engine
 					this.sceneCallbacks.remove(callback);
 				});
 		this.scenes.remove(scene);
+	}
+
+	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
+	{
+		return loader;
 	}
 
 	public Set<Scene> getScenes()

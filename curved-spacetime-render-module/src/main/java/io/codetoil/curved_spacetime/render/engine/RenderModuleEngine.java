@@ -3,9 +3,10 @@ package io.codetoil.curved_spacetime.render.engine;
 import com.google.common.collect.Sets;
 import io.codetoil.curved_spacetime.MainCallback;
 import io.codetoil.curved_spacetime.engine.Engine;
-import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnviornmentCallback;
-import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnviornmentCallbackSupplier;
-import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnvironment;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderCallback;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRendererCallbackSupplier;
+import org.tinylog.Logger;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -14,54 +15,56 @@ import java.util.function.Function;
 
 public class RenderModuleEngine implements MainCallback
 {
-	protected final Set<RenderEnvironment> renderEnvironments = new HashSet<>();
-	private final Set<RenderEnviornmentCallback> renderEnvironmentCallbacks = Sets.newConcurrentHashSet();
+	protected final Set<RenderModuleSceneRenderer> renderModuleSceneRenderers = new HashSet<>();
+	private final Set<RenderModuleSceneRenderCallback> renderEnvironmentCallbacks = Sets.newConcurrentHashSet();
 
 	@Override
 	public void init()
 	{
-		Engine.getInstance().accumulateCallbacks(RenderEnviornmentCallbackSupplier.class,
-				this.renderEnvironments, this.renderEnvironmentCallbacks);
-		this.renderEnvironmentCallbacks.forEach(RenderEnviornmentCallback::init);
+		Logger.info("Accumulating Render Environment Callbacks");
+		Engine.getInstance().accumulateCallbacks(RenderModuleSceneRendererCallbackSupplier.class,
+				this.renderModuleSceneRenderers, this.renderEnvironmentCallbacks);
+		Logger.info("Initializing Render Environment Callbacks");
+		this.renderEnvironmentCallbacks.forEach(RenderModuleSceneRenderCallback::init);
 	}
 
 	@Override
 	public void loop()
 	{
-		this.renderEnvironmentCallbacks.forEach(RenderEnviornmentCallback::loop);
+		this.renderEnvironmentCallbacks.forEach(RenderModuleSceneRenderCallback::loop);
 	}
 
 	@Override
 	public void clean()
 	{
-		this.renderEnvironments.forEach(this::deregisterRenderEnvironment);
+		this.renderModuleSceneRenderers.forEach(this::deregisterRenderEnvironment);
 	}
 
-	public void deregisterRenderEnvironment(RenderEnvironment renderEnvironment)
+	public void deregisterRenderEnvironment(RenderModuleSceneRenderer renderModuleSceneRenderer)
 	{
 		this.renderEnvironmentCallbacks.stream()
 				.filter(callback ->
-						Objects.equals(callback.renderEnviornment(), renderEnvironment))
+						Objects.equals(callback.renderEnviornment(), renderModuleSceneRenderer))
 				.toList().forEach(callback -> {
 					callback.clean();
 					this.renderEnvironmentCallbacks.remove(callback);
 				});
-		this.renderEnvironments.remove(renderEnvironment);
+		this.renderModuleSceneRenderers.remove(renderModuleSceneRenderer);
 	}
 
-	public void registerRenderEnvironmentCallbackAndInit
-			(Function<RenderEnvironment, RenderEnviornmentCallback> callbackSupplier)
+	public Set<RenderModuleSceneRenderCallback> registerRenderEnvironmentCallbackAndInit
+			(Function<RenderModuleSceneRenderer, RenderModuleSceneRenderCallback> callbackSupplier)
 	{
-		Engine.getInstance().registerCallbackAndInit(callbackSupplier, this.renderEnvironments,
-				this.renderEnvironmentCallbacks, RenderEnviornmentCallback::init);
+		return Engine.getInstance().registerCallbackAndInit(callbackSupplier, this.renderModuleSceneRenderers,
+				this.renderEnvironmentCallbacks, RenderModuleSceneRenderCallback::init);
 	}
 
-	public Set<RenderEnvironment> getRenderEnvironments()
+	public Set<RenderModuleSceneRenderer> getRenderEnvironments()
 	{
-		return renderEnvironments;
+		return renderModuleSceneRenderers;
 	}
 
-	public Set<RenderEnviornmentCallback> getRenderEnvironmentCallbacks()
+	public Set<RenderModuleSceneRenderCallback> getRenderEnvironmentCallbacks()
 	{
 		return renderEnvironmentCallbacks;
 	}

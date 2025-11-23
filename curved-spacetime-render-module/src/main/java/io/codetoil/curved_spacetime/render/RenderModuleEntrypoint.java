@@ -32,6 +32,7 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
+	private RenderModuleEngine renderModuleEngine;
 
 	@Override
 	public void onInitialize()
@@ -44,7 +45,8 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Render Module Config", ex);
 		}
-		Engine.getInstance().registerMainCallbackAndInit(RenderModuleEngine::new);
+		renderModuleEngine =
+				(RenderModuleEngine) Engine.getInstance().registerMainCallbackAndInit(RenderModuleEngine::new);
 		try
 		{
 			Engine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
@@ -66,5 +68,10 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.depdencyModuleTransferQueue;
+	}
+
+	public RenderModuleEngine getRenderModuleEngine()
+	{
+		return this.renderModuleEngine;
 	}
 }

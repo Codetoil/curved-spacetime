@@ -38,7 +38,7 @@ public class MainModuleConfig
 
 	}
 
-	public int getFPS()
+	public int getTPS()
 	{
 		return this.tps;
 	}

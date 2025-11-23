@@ -16,11 +16,11 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.render_enviornments;
+package io.codetoil.curved_spacetime.render.scene_renderer;
 
 import io.codetoil.curved_spacetime.render.engine.RenderModuleEngine;
 
-public record RenderEnvironment(RenderModuleEngine renderModuleEngine)
+public record RenderModuleSceneRenderer(RenderModuleEngine renderModuleEngine)
 {
 
 }
