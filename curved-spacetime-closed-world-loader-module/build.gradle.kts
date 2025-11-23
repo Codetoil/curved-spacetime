@@ -22,9 +22,11 @@ dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     implementation(project(":curved-spacetime-main-module"))
+    implementation(project(":curved-spacetime-cli-module"))
     implementation(project(":curved-spacetime-vulkan-module"))
     implementation(project(":curved-spacetime-glfw-module"))
     implementation(project(":curved-spacetime-render-module"))
+    implementation(project(":curved-spacetime-simulator-module"))
     implementation(project(":curved-spacetime-glfw-render-module"))
     implementation(project(":curved-spacetime-vulkan-glfw-module"))
     implementation(project(":curved-spacetime-vulkan-render-module"))

@@ -93,7 +93,9 @@ tasks.register("cleanJar") {
     run {
         files(
             "$rootDir/archive-quilt/",
-            "$rootDir/archive-quilt/webserver-openapi",
+            "$rootDir/archive-quilt/webserver-modules",
+            "$rootDir/archive-quilt/cli-modules",
+            "$rootDir/archive-quilt/simulator-modules",
             "$rootDir/archive-quilt/modules",
             "$rootDir/archive-closed-world-jar/",
         ).forEach { folderIt ->
