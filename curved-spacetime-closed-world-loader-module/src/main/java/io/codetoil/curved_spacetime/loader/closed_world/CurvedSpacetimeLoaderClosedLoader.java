@@ -1,5 +1,6 @@
 package io.codetoil.curved_spacetime.loader.closed_world;
 
+import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
@@ -13,6 +14,7 @@ import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan.entrypoint.VulkanRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.*;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.simulator.entrypoint.SimulatorModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.entrypoint.WebserverModuleDependentModuleInitializer;
@@ -27,14 +29,20 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 {
 	private static final String MAIN_ENTRYPOINT_NAME = "main";
 	private static final List<ModuleInitializer> MAIN_ENTRYPOINTS = List.of(
+			// new CLIModuleEntrypoint(),
 			new VulkanModuleEntrypoint(),
 			new RenderModuleEntrypoint(),
+			// new SimulatorModuleEntrypoint(),
 			new GLFWRenderModuleEntrypoint(),
 			new VulkanRenderModuleEntrypoint(),
 			new VulkanGLFWRenderModuleEntrypoint()//,
 			//new WebserverModuleEntrypoint(),
 			//new WebserverOpenAPIModuleEntrypoint()
 	);
+	private static final String CLI_MODULE_DEPENDENT_ENTRYPOINT_NAME
+			= "cli_module_dependent";
+	private static final List<CLIModuleDependentModuleInitializer>
+			CLI_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
 	private static final String RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "render_module_dependent";
 	private static final List<RenderModuleDependentModuleInitializer> RENDER_MODULE_DEPENDENT_ENTRYPOINTS = List.of(
 			new RenderModuleDependentGLFWRenderModuleEntrypoint(),
@@ -46,6 +54,10 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			new VulkanModuleDependentVulkanRenderModuleEntrypoint(),
 			new VulkanModuleDependentVulkanGLFWRenderModuleEntrypoint()
 	);
+	private static final String SIMULATOR_MODULE_DEPENDENT_ENTRYPOINT_NAME
+			= "simulator_module_dependent";
+	private static final List<SimulatorModuleDependentModuleInitializer>
+			SIMULATOR_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
 	private static final String GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "glfw_render_module_dependent";
 	private static final List<GLFWRenderModuleDependentModuleInitializer> GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS
 			= List.of(new GLFWRenderModuleDependentVulkanGLFWRenderModuleEntrypoint());
@@ -79,7 +91,11 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 		{
 			return (List<E>) MAIN_ENTRYPOINTS;
 		}
-
+		if (CLI_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
+				moduleInitializerClass.isAssignableFrom(CLIModuleDependentModuleInitializer.class))
+		{
+			return (List<E>) CLI_MODULE_DEPENDENT_ENTRYPOINTS;
+		}
 		if (RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
 				moduleInitializerClass.isAssignableFrom(RenderModuleDependentModuleInitializer.class))
 		{
@@ -89,6 +105,11 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 				moduleInitializerClass.isAssignableFrom(VulkanModuleDependentModuleInitializer.class))
 		{
 			return (List<E>) VULKAN_MODULE_DEPENDENT_ENTRYPOINTS;
+		}
+		if (SIMULATOR_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
+				moduleInitializerClass.isAssignableFrom(SimulatorModuleDependentModuleInitializer.class))
+		{
+			return (List<E>) SIMULATOR_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
 				moduleInitializerClass.isAssignableFrom(GLFWRenderModuleDependentModuleInitializer.class))
