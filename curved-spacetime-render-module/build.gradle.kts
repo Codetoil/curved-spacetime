@@ -46,9 +46,9 @@ publishing {
             pom {
                 packaging = "jar"
 
-                name = "Curved Spacetime Webserver OpenAPI Module"
+                name = "Curved Spacetime Render Module"
                 url = "https://github.com/Codetoil/curved-spacetime"
-                inceptionYear = "2023"
+                inceptionYear = "2025"
                 licenses {
                     license {
                         name = "GPL-3.0-or-later"
