@@ -3,7 +3,7 @@ package io.codetoil.curved_spacetime.render.engine;
 import com.google.common.collect.Sets;
 import io.codetoil.curved_spacetime.MainCallback;
 import io.codetoil.curved_spacetime.engine.Engine;
-import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderCallback;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRendererCallback;
 import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
 import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRendererCallbackSupplier;
 import org.tinylog.Logger;
@@ -15,57 +15,57 @@ import java.util.function.Function;
 
 public class RenderModuleEngine implements MainCallback
 {
-	protected final Set<RenderModuleSceneRenderer> renderModuleSceneRenderers = new HashSet<>();
-	private final Set<RenderModuleSceneRenderCallback> renderEnvironmentCallbacks = Sets.newConcurrentHashSet();
+	protected final Set<RenderModuleSceneRenderer> sceneRenderers = new HashSet<>();
+	private final Set<RenderModuleSceneRendererCallback> sceneRendererCallbacks = Sets.newConcurrentHashSet();
 
 	@Override
 	public void init()
 	{
-		Logger.info("Accumulating Render Environment Callbacks");
+		Logger.info("Accumulating Scene Renderer Callbacks");
 		Engine.getInstance().accumulateCallbacks(RenderModuleSceneRendererCallbackSupplier.class,
-				this.renderModuleSceneRenderers, this.renderEnvironmentCallbacks);
-		Logger.info("Initializing Render Environment Callbacks");
-		this.renderEnvironmentCallbacks.forEach(RenderModuleSceneRenderCallback::init);
+				this.sceneRenderers, this.sceneRendererCallbacks);
+		Logger.info("Initializing Scene Renderer Callbacks");
+		this.sceneRendererCallbacks.forEach(RenderModuleSceneRendererCallback::init);
 	}
 
 	@Override
 	public void loop()
 	{
-		this.renderEnvironmentCallbacks.forEach(RenderModuleSceneRenderCallback::loop);
+		this.sceneRendererCallbacks.forEach(RenderModuleSceneRendererCallback::loop);
 	}
 
 	@Override
 	public void clean()
 	{
-		this.renderModuleSceneRenderers.forEach(this::deregisterRenderEnvironment);
+		this.sceneRenderers.forEach(this::deregisterRenderEnvironment);
 	}
 
 	public void deregisterRenderEnvironment(RenderModuleSceneRenderer renderModuleSceneRenderer)
 	{
-		this.renderEnvironmentCallbacks.stream()
+		this.sceneRendererCallbacks.stream()
 				.filter(callback ->
-						Objects.equals(callback.renderEnviornment(), renderModuleSceneRenderer))
+						Objects.equals(callback.renderEnvironment(), renderModuleSceneRenderer))
 				.toList().forEach(callback -> {
 					callback.clean();
-					this.renderEnvironmentCallbacks.remove(callback);
+					this.sceneRendererCallbacks.remove(callback);
 				});
-		this.renderModuleSceneRenderers.remove(renderModuleSceneRenderer);
+		this.sceneRenderers.remove(renderModuleSceneRenderer);
 	}
 
-	public Set<RenderModuleSceneRenderCallback> registerRenderEnvironmentCallbackAndInit
-			(Function<RenderModuleSceneRenderer, RenderModuleSceneRenderCallback> callbackSupplier)
+	public Set<RenderModuleSceneRendererCallback> registerSceneRenderCallbackAndInit
+			(Function<RenderModuleSceneRenderer, RenderModuleSceneRendererCallback> callbackSupplier)
 	{
-		return Engine.getInstance().registerCallbackAndInit(callbackSupplier, this.renderModuleSceneRenderers,
-				this.renderEnvironmentCallbacks, RenderModuleSceneRenderCallback::init);
+		return Engine.getInstance().registerCallbackAndInit(callbackSupplier, this.sceneRenderers,
+				this.sceneRendererCallbacks, RenderModuleSceneRendererCallback::init);
 	}
 
-	public Set<RenderModuleSceneRenderer> getRenderEnvironments()
+	public Set<RenderModuleSceneRenderer> getSceneRenderers()
 	{
-		return renderModuleSceneRenderers;
+		return sceneRenderers;
 	}
 
-	public Set<RenderModuleSceneRenderCallback> getRenderEnvironmentCallbacks()
+	public Set<RenderModuleSceneRendererCallback> getSceneRendererCallbacks()
 	{
-		return renderEnvironmentCallbacks;
+		return sceneRendererCallbacks;
 	}
 }

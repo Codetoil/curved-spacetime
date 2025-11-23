@@ -1,6 +1,6 @@
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderCallback;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRendererCallback;
 import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsModuleQueue.VulkanRenderModuleGraphicsPresentModuleQueue;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandBuffer;
@@ -14,7 +14,7 @@ import org.lwjgl.vulkan.VkSemaphoreSubmitInfo;
 
 import java.util.Arrays;
 
-public abstract class VulkanRenderModuleRenderModuleSceneSceneRenderer implements RenderModuleSceneRenderCallback
+public abstract class VulkanRenderModuleRendererModuleSceneRenderer implements RenderModuleSceneRendererCallback
 {
 	public static final int MAX_IN_FLIGHT = 2;
 	protected final VulkanRenderModuleSceneRenderContext sceneRenderContext;
@@ -28,8 +28,8 @@ public abstract class VulkanRenderModuleRenderModuleSceneSceneRenderer implement
 	protected VulkanModuleSemaphore[] presentationCompleteSemaphores;
 	protected int currentFrame;
 
-	public VulkanRenderModuleRenderModuleSceneSceneRenderer(VulkanRenderModuleSceneRenderContext sceneRenderContext,
-															RenderModuleSceneRenderer renderModuleSceneRenderer)
+	public VulkanRenderModuleRendererModuleSceneRenderer(VulkanRenderModuleSceneRenderContext sceneRenderContext,
+														 RenderModuleSceneRenderer renderModuleSceneRenderer)
 	{
 		this.renderEnviornment = renderModuleSceneRenderer;
 		this.sceneRenderContext = sceneRenderContext;
@@ -86,7 +86,7 @@ public abstract class VulkanRenderModuleRenderModuleSceneSceneRenderer implement
 		submit(commandBuffer, this.currentFrame, imageIndex);
 		swapChain.presentImage(presentQueue, renderCompleteSemaphores[imageIndex], imageIndex);
 		this.currentFrame =
-				(this.currentFrame + 1) % VulkanRenderModuleRenderModuleSceneSceneRenderer.MAX_IN_FLIGHT;
+				(this.currentFrame + 1) % VulkanRenderModuleRendererModuleSceneRenderer.MAX_IN_FLIGHT;
 	}
 
 	public void clean()
@@ -105,7 +105,7 @@ public abstract class VulkanRenderModuleRenderModuleSceneSceneRenderer implement
 	}
 
 	@Override
-	public RenderModuleSceneRenderer renderEnviornment()
+	public RenderModuleSceneRenderer renderEnvironment()
 	{
 		return this.renderEnviornment;
 	}

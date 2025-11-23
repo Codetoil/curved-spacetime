@@ -1,12 +1,12 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw.scene_renderer;
 
 import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleRenderModuleSceneSceneRenderer;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleRendererModuleSceneRenderer;
 
-public class VulkanGLFWRenderModuleSceneRenderer
-		extends VulkanRenderModuleRenderModuleSceneSceneRenderer
+public class VulkanGLFWRendererModuleSceneRenderer
+		extends VulkanRenderModuleRendererModuleSceneRenderer
 {
-	public VulkanGLFWRenderModuleSceneRenderer(
+	public VulkanGLFWRendererModuleSceneRenderer(
 			VulkanGLFWRenderModuleSceneRenderContext sceneRenderContext,
 			RenderModuleSceneRenderer renderModuleSceneRenderer)
 	{

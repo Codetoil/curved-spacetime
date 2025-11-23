@@ -23,12 +23,12 @@ import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint;
-import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderCallback;
+import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRendererCallback;
 import io.codetoil.curved_spacetime.render.scene_renderer.RenderModuleSceneRenderer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.scene_renderer.VulkanGLFWRenderModuleSceneRenderContext;
-import io.codetoil.curved_spacetime.render.vulkan_glfw.scene_renderer.VulkanGLFWRenderModuleSceneRenderer;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.scene_renderer.VulkanGLFWRendererModuleSceneRenderer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint = null;
-	private Set<RenderModuleSceneRenderCallback> vulkanRenderModuleSceneRenderCallbacks = null;
+	private Set<RenderModuleSceneRendererCallback> vulkanRenderModuleSceneRendererCallbacks = null;
 
 	@Override
 	public void onInitialize()
@@ -65,9 +65,9 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 			throw new RuntimeException(e);
 		}
 
-		vulkanRenderModuleSceneRenderCallbacks =
-				this.renderModuleEntrypoint.getRenderModuleEngine().registerRenderEnvironmentCallbackAndInit(
-						(RenderModuleSceneRenderer renderModuleSceneRenderer) -> new VulkanGLFWRenderModuleSceneRenderer(
+		vulkanRenderModuleSceneRendererCallbacks =
+				this.renderModuleEntrypoint.getRenderModuleEngine().registerSceneRenderCallbackAndInit(
+						(RenderModuleSceneRenderer renderModuleSceneRenderer) -> new VulkanGLFWRendererModuleSceneRenderer(
 								new VulkanGLFWRenderModuleSceneRenderContext(this, renderModuleSceneRenderer),
 								renderModuleSceneRenderer));
 		try

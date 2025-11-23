@@ -1,6 +1,6 @@
 package io.codetoil.curved_spacetime.render.scene_renderer;
 
-public interface RenderModuleSceneRenderCallback
+public interface RenderModuleSceneRendererCallback
 {
 
 	void init();
@@ -9,5 +9,5 @@ public interface RenderModuleSceneRenderCallback
 
 	void clean();
 
-	RenderModuleSceneRenderer renderEnviornment();
+	RenderModuleSceneRenderer renderEnvironment();
 }
