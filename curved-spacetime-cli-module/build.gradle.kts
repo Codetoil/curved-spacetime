@@ -14,17 +14,10 @@ dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
-    api(project(":curved-spacetime-render-module"))
-    api(project(":curved-spacetime-vulkan-module"))
-    api(project(":curved-spacetime-glfw-render-module"))
-    api(project(":curved-spacetime-vulkan-render-module"))
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
-
-    implementation("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
-    implementation("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
 }
 
 tasks.named<Test>("test") {
@@ -53,9 +46,9 @@ publishing {
             pom {
                 packaging = "jar"
 
-                name = "Curved Spacetime Vulkan GLFW Render Module"
+                name = "Curved Spacetime CLI Module"
                 url = "https://github.com/Codetoil/curved-spacetime"
-                inceptionYear = "2023"
+                inceptionYear = "2025"
                 licenses {
                     license {
                         name = "GPL-3.0-or-later"
