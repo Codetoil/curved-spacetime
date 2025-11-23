@@ -29,18 +29,18 @@ import java.nio.IntBuffer;
 
 public class VulkanRenderModuleGraphicsModuleQueue extends VulkanModuleQueue
 {
-	public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleRenderContext context, int queueFamilyIndex,
+	public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleSceneRenderContext context, int queueFamilyIndex,
 												 int queueIndex)
 	{
 		super(context.getContext(), queueFamilyIndex, queueIndex);
 	}
 
-	public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleRenderContext context, int queueIndex)
+	public VulkanRenderModuleGraphicsModuleQueue(VulkanRenderModuleSceneRenderContext context, int queueIndex)
 	{
 		super(context.getContext(), getGraphicsQueueFamilyIndex(context), queueIndex);
 	}
 
-	private static int getGraphicsQueueFamilyIndex(VulkanRenderModuleRenderContext context)
+	private static int getGraphicsQueueFamilyIndex(VulkanRenderModuleSceneRenderContext context)
 	{
 		int result = -1;
 		VulkanModulePhysicalDevice vulkanModulePhysicalDevice =
@@ -70,7 +70,7 @@ public class VulkanRenderModuleGraphicsModuleQueue extends VulkanModuleQueue
 		public VulkanRenderModuleGraphicsPresentModuleQueue(VulkanRenderModuleSceneRenderContext context,
 															int queueIndex)
 		{
-			super(context.getRenderContext(), getPresentQueueFamilyIndex(context), queueIndex);
+			super(context, getPresentQueueFamilyIndex(context), queueIndex);
 		}
 
 		private static int getPresentQueueFamilyIndex(VulkanRenderModuleSceneRenderContext context)
@@ -78,7 +78,7 @@ public class VulkanRenderModuleGraphicsModuleQueue extends VulkanModuleQueue
 			int index = -1;
 			try (MemoryStack stack = MemoryStack.stackPush())
 			{
-				VulkanModulePhysicalDevice physicalDevice = context.getRenderContext().getContext().getLogicalDevice()
+				VulkanModulePhysicalDevice physicalDevice = context.getContext().getLogicalDevice()
 						.getPhysicalDevice();
 				VkQueueFamilyProperties.Buffer queuePropsBuff = physicalDevice.getVkQueueFamilyProps();
 				int numQueuesFamilies = queuePropsBuff.capacity();

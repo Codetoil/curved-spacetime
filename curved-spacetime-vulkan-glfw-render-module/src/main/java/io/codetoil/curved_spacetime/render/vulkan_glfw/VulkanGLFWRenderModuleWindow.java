@@ -16,17 +16,36 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-/**
- * Render Module of Curved Spacetime
- *
- */
-module io.codetoil.curved_spacetime.render {
-	requires org.tinylog.api;
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.loader;
-	requires com.google.common;
+package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-	exports io.codetoil.curved_spacetime.render;
-	exports io.codetoil.curved_spacetime.render.entrypoint;
-	exports io.codetoil.curved_spacetime.render.render_enviornments;
+import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleWindow;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWVulkan;
+
+public class VulkanGLFWRenderModuleWindow extends GLFWRenderModuleWindow
+{
+	public VulkanGLFWRenderModuleWindow(String title)
+	{
+		super(title);
+	}
+
+	@Override
+	public boolean doesDriverExist()
+	{
+		return GLFWVulkan.glfwVulkanSupported();
+	}
+
+	@Override
+	protected void throwDriverNotFoundException()
+	{
+		throw new IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)");
+	}
+
+	@Override
+	protected void setWindowHints()
+	{
+		GLFW.glfwDefaultWindowHints();
+		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API);
+	}
 }

@@ -23,10 +23,8 @@ dependencies {
 
     implementation(project(":curved-spacetime-main-module"))
     implementation(project(":curved-spacetime-vulkan-module"))
-    implementation(project(":curved-spacetime-glfw-module"))
     implementation(project(":curved-spacetime-render-module"))
     implementation(project(":curved-spacetime-glfw-render-module"))
-    implementation(project(":curved-spacetime-vulkan-glfw-module"))
     implementation(project(":curved-spacetime-vulkan-render-module"))
     implementation(project(":curved-spacetime-vulkan-glfw-render-module"))
     implementation(project(":curved-spacetime-loader-module"))

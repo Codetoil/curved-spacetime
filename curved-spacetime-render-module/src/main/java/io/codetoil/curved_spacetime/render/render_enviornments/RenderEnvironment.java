@@ -16,17 +16,11 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-/**
- * Render Module of Curved Spacetime
- *
- */
-module io.codetoil.curved_spacetime.render {
-	requires org.tinylog.api;
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.loader;
-	requires com.google.common;
+package io.codetoil.curved_spacetime.render.render_enviornments;
 
-	exports io.codetoil.curved_spacetime.render;
-	exports io.codetoil.curved_spacetime.render.entrypoint;
-	exports io.codetoil.curved_spacetime.render.render_enviornments;
+public class RenderEnvironment
+{
+	public RenderEnvironment()
+	{
+	}
 }

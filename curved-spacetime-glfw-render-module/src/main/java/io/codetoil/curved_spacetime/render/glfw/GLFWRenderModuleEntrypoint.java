@@ -19,7 +19,6 @@
 package io.codetoil.curved_spacetime.render.glfw;
 
 import io.codetoil.curved_spacetime.engine.Engine;
-import io.codetoil.curved_spacetime.glfw.GLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
@@ -33,7 +32,6 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
-	private GLFWModuleEntrypoint glfwModuleEntrypoint;
 	private RenderModuleEntrypoint renderModuleEntrypoint;
 
 	@Override
@@ -70,21 +68,6 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	{
 		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
 
-		if (moduleInitializer instanceof GLFWModuleEntrypoint)
-		{
-			this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
-		}
-		if (moduleInitializer instanceof RenderModuleEntrypoint)
-		{
-			this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
-		}
-
-		moduleInitializer = this.dependencyModuleTransferQueue.take();
-
-		if (moduleInitializer instanceof GLFWModuleEntrypoint)
-		{
-			this.glfwModuleEntrypoint = (GLFWModuleEntrypoint) moduleInitializer;
-		}
 		if (moduleInitializer instanceof RenderModuleEntrypoint)
 		{
 			this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;

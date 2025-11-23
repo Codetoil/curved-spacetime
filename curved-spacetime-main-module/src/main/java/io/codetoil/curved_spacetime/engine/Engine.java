@@ -18,11 +18,10 @@
 
 package io.codetoil.curved_spacetime.engine;
 
-import io.codetoil.curved_spacetime.MainModuleConfig;
+import com.google.common.collect.Sets;
+import io.codetoil.curved_spacetime.*;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.scene.Scene;
-import io.codetoil.curved_spacetime.scene.SceneCallback;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -31,6 +30,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Engine
 {
@@ -38,9 +38,10 @@ public class Engine
 	public final MainModuleConfig mainModuleConfig;
 	protected final ScheduledExecutorService callbackExecutor;
 	protected final CurvedSpacetimeLoader loader;
-	protected final Set<Scene> scenes = new HashSet<>();
-	private final Map<String, MainCallback> mainCallbackMap = new HashMap<>();
-	private final Map<String, SceneCallback> sceneCallbackMap = new HashMap<>();
+	protected final Set<Function<?, ?>> callbackSuppliers = Sets.newConcurrentHashSet();
+	private final Set<MainCallback> mainCallbacks = Sets.newConcurrentHashSet();
+	private final Set<SceneCallback> sceneCallbacks = Sets.newConcurrentHashSet();
+	protected final Set<Scene> scenes = Sets.newConcurrentHashSet();
 	protected Future<?> callbackInitializeHandler;
 	protected ScheduledFuture<?> callbackLoopHandler;
 
@@ -63,13 +64,18 @@ public class Engine
 		Logger.info("Initializing Callbacks");
 		this.callbackInitializeHandler = this.callbackExecutor.submit(() ->
 		{
-			this.mainCallbackMap.forEach((_, mainCallback) -> mainCallback.init());
-			this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.init());
+			accumulateCallbacks(Sets.newHashSet((Void) null),
+					MainCallbackSupplier.class,
+					this.mainCallbacks);
+			this.mainCallbacks.forEach(MainCallback::init);
+
+			accumulateCallbacks(this.scenes, SceneCallbackSupplier.class, this.sceneCallbacks);
+			this.sceneCallbacks.forEach(SceneCallback::init);
 		});
 		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() ->
 				{
-					this.mainCallbackMap.forEach((_, mainCallback) -> mainCallback.loop());
-					this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop());
+					this.mainCallbacks.forEach(MainCallback::loop);
+					this.sceneCallbacks.forEach(SceneCallback::loop);
 				},
 				1_000 / this.mainModuleConfig.getFPS(),
 				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
@@ -136,14 +142,31 @@ public class Engine
 		return loader;
 	}
 
-	public void registerMainCallback(String id, MainCallback mainCallback)
+	public <A, C> void registerCallback(Function<A, C> callbackSupplier)
 	{
-		this.mainCallbackMap.put(id, mainCallback);
+		this.callbackSuppliers.add(callbackSupplier);
 	}
 
-	public void registerSceneCallback(String id, SceneCallback sceneCallback)
+	public <A, C, S extends Function<A, C>> void accumulateCallbacks(Set<A> argsSet, Class<S> supplierClass,
+																	 Set<C> callbacks)
 	{
-		this.sceneCallbackMap.put(id, sceneCallback);
+		argsSet.forEach(args ->
+				this.callbackSuppliers.stream()
+						.filter(supplierClass::isInstance)
+						.map(supplierClass::cast)
+						.map(supplier -> supplier.apply(args))
+						.forEach(callbacks::add));
+	}
+
+	public void deregisterScene(Scene scene)
+	{
+		this.sceneCallbacks.stream()
+				.filter(callback -> Objects.equals(callback.scene(), scene))
+				.toList().forEach(callback -> {
+					callback.clean();
+					this.sceneCallbacks.remove(callback);
+				});
+		this.scenes.remove(scene);
 	}
 
 	public void stop()
@@ -152,10 +175,10 @@ public class Engine
 		this.clean();
 	}
 
-	public void clean()
+	protected void clean()
 	{
+		this.scenes.forEach(this::deregisterScene);
 		this.callbackExecutor.shutdown();
-		this.sceneCallbackMap.forEach((_, mainCallback) -> mainCallback.clean());
 	}
 
 	public Set<Scene> getScenes()

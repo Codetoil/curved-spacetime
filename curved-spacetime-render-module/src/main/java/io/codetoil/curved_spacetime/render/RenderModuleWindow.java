@@ -16,17 +16,51 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-/**
- * Render Module of Curved Spacetime
- *
- */
-module io.codetoil.curved_spacetime.render {
-	requires org.tinylog.api;
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.loader;
-	requires com.google.common;
+package io.codetoil.curved_spacetime.render;
 
-	exports io.codetoil.curved_spacetime.render;
-	exports io.codetoil.curved_spacetime.render.entrypoint;
-	exports io.codetoil.curved_spacetime.render.render_enviornments;
+public abstract class RenderModuleWindow
+{
+	protected final String title;
+	protected RenderModuleKeyboardInput keyboardInput;
+	protected RenderModuleMouseInput mouseInput;
+
+	protected RenderModuleWindow(String title)
+	{
+		this.title = title;
+	}
+
+	public abstract void init();
+
+	public abstract void loop();
+
+	public abstract int getHeight();
+
+	public abstract int getWidth();
+
+	public abstract void setShouldClose();
+
+	public abstract boolean shouldClose();
+
+	public abstract void clean();
+
+	public RenderModuleKeyboardInput getKeyboardInput()
+	{
+		return keyboardInput;
+	}
+
+	public RenderModuleMouseInput getMouseInput()
+	{
+		return mouseInput;
+	}
+
+	public void pollEvents()
+	{
+		keyboardInput.poll();
+		mouseInput.poll();
+	}
+
+	public void resetInput()
+	{
+		keyboardInput.clean();
+	}
 }

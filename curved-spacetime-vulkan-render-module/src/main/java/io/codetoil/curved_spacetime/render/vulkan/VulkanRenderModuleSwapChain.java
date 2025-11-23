@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.Window;
+import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsModuleQueue.VulkanRenderModuleGraphicsPresentModuleQueue;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
@@ -44,7 +44,7 @@ public class VulkanRenderModuleSwapChain
 	protected int currentFrame;
 
 	public VulkanRenderModuleSwapChain(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
-									   VulkanRenderModuleSurface surface, Window window,
+									   VulkanRenderModuleSurface surface, RenderModuleWindow window,
 									   int requestedImages, boolean vsync
 	)
 	{
@@ -107,7 +107,7 @@ public class VulkanRenderModuleSwapChain
 		return result;
 	}
 
-	private VkExtent2D calcSwapChainExtent(Window window, VkSurfaceCapabilitiesKHR surfCapabilities)
+	private VkExtent2D calcSwapChainExtent(RenderModuleWindow window, VkSurfaceCapabilitiesKHR surfCapabilities)
 	{
 		VkExtent2D result = VkExtent2D.calloc();
 		if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF)

@@ -14,12 +14,15 @@ dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
-    api(project(":curved-spacetime-glfw-module"))
     api(project(":curved-spacetime-render-module"))
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
+
+    api("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
+    (rootProject.extra["lwjglNativesNames"] as List<*>)
+        .forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${it}") }
 }
 
 tasks.named<Test>("test") {

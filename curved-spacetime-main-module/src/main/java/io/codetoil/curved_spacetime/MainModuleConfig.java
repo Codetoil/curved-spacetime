@@ -28,10 +28,10 @@ import java.util.Properties;
 
 public class MainModuleConfig
 {
-	private static final int DEFAULT_FPS = 60;
+	private static final int DEFAULT_TPS = 60;
 	private static final String FILENAME = "config/main-module.config";
 	private boolean dirty = false;
-	private int fps;
+	private int tps;
 
 	public MainModuleConfig()
 	{
@@ -40,7 +40,7 @@ public class MainModuleConfig
 
 	public int getFPS()
 	{
-		return this.fps;
+		return this.tps;
 	}
 
 	public MainModuleConfig load() throws IOException
@@ -56,31 +56,31 @@ public class MainModuleConfig
 			this.dirty = true;
 		}
 
-		Object fpsPropValue = props.get("fps");
+		Object fpsPropValue = props.get("tps");
 		if (fpsPropValue != null)
 		{
 			try
 			{
-				this.fps = Integer.parseInt(fpsPropValue.toString());
+				this.tps = Integer.parseInt(fpsPropValue.toString());
 			} catch (NumberFormatException ex)
 			{
-				Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-						fpsPropValue, MainModuleConfig.DEFAULT_FPS);
-				this.fps = MainModuleConfig.DEFAULT_FPS;
+				Logger.warn(ex, "Invalid value for key tps: {}, valid bounds [1,1000], resetting to default {}",
+						fpsPropValue, MainModuleConfig.DEFAULT_TPS);
+				this.tps = MainModuleConfig.DEFAULT_TPS;
 				this.dirty = true;
 			}
-			if (this.fps < 1 || this.fps > 1000)
+			if (this.tps < 1 || this.tps > 1000)
 			{
-				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
-						MainModuleConfig.DEFAULT_FPS);
-				this.fps = MainModuleConfig.DEFAULT_FPS;
+				Logger.warn("Invalid value for key tps: {}, valid bounds [1,1000], resetting to default {}", this.tps,
+						MainModuleConfig.DEFAULT_TPS);
+				this.tps = MainModuleConfig.DEFAULT_TPS;
 				this.dirty = true;
 			}
 		} else
 		{
-			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
-					MainModuleConfig.DEFAULT_FPS);
-			this.fps = MainModuleConfig.DEFAULT_FPS;
+			Logger.warn("Could not find required key tps, valid bounds [1,1000], resetting to default {}",
+					MainModuleConfig.DEFAULT_TPS);
+			this.tps = MainModuleConfig.DEFAULT_TPS;
 			this.dirty = true;
 		}
 
@@ -90,7 +90,7 @@ public class MainModuleConfig
 	public void save() throws IOException
 	{
 		Properties props = new Properties();
-		props.put("fps", String.valueOf(this.fps));
+		props.put("fps", String.valueOf(this.tps));
 
 		try (FileWriter writer = new FileWriter(MainModuleConfig.FILENAME))
 		{

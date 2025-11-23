@@ -23,8 +23,8 @@
 module io.codetoil.curved_spacetime {
 	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime.loader;
+	requires com.google.common;
 
 	exports io.codetoil.curved_spacetime;
-	exports io.codetoil.curved_spacetime.scene;
 	exports io.codetoil.curved_spacetime.engine;
 }

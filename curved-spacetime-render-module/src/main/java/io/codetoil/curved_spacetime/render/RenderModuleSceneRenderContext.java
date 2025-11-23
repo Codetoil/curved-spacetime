@@ -1,13 +1,13 @@
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.scene.Scene;
+import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnvironment;
 
 public abstract class RenderModuleSceneRenderContext
 {
-	protected final Scene scene;
+	protected final RenderEnvironment renderEnvironment;
 
-	protected RenderModuleSceneRenderContext(Scene scene)
+	protected RenderModuleSceneRenderContext(RenderEnvironment renderEnvironment)
 	{
-		this.scene = scene;
+		this.renderEnvironment = renderEnvironment;
 	}
 }

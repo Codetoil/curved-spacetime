@@ -22,13 +22,11 @@
  */
 module io.codetoil.curved_spacetime.loader.closed_world {
 	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.glfw;
 	requires io.codetoil.curved_spacetime.loader;
 	requires io.codetoil.curved_spacetime.render;
 	requires io.codetoil.curved_spacetime.render.glfw;
 	requires io.codetoil.curved_spacetime.render.vulkan;
 	requires io.codetoil.curved_spacetime.vulkan;
-	requires io.codetoil.curved_spacetime.vulkan_glfw;
 	requires io.codetoil.curved_spacetime.webserver;
 	requires io.codetoil.curved_spacetime.webserver.openapi;
 	requires io.codetoil.curved_spacetime.render.vulkan_glfw;
