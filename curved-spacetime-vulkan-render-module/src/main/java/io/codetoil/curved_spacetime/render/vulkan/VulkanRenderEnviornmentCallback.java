@@ -28,7 +28,8 @@ public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornme
 	protected VulkanModuleSemaphore[] presentationCompleteSemaphores;
 	protected int currentFrame;
 
-	public VulkanRenderEnviornmentCallback(VulkanRenderModuleSceneRenderContext sceneRenderContext, RenderEnvironment renderEnvironment)
+	public VulkanRenderEnviornmentCallback(VulkanRenderModuleSceneRenderContext sceneRenderContext,
+										   RenderEnvironment renderEnvironment)
 	{
 		this.renderEnviornment = renderEnvironment;
 		this.sceneRenderContext = sceneRenderContext;
@@ -39,6 +40,11 @@ public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornme
 		{
 			renderCompleteSemaphores[i] = new VulkanModuleSemaphore(this.getSceneRenderContext().getContext());
 		}
+	}
+
+	public VulkanRenderModuleSceneRenderContext getSceneRenderContext()
+	{
+		return sceneRenderContext;
 	}
 
 	public void init()
@@ -98,9 +104,27 @@ public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornme
 		Arrays.asList(renderCompleteSemaphores).forEach(VulkanModuleSemaphore::clean);
 	}
 
-	public VulkanRenderModuleSceneRenderContext getSceneRenderContext()
+	@Override
+	public RenderEnvironment renderEnviornment()
 	{
-		return sceneRenderContext;
+		return this.renderEnviornment;
+	}
+
+	protected void waitForFence(int currentFrame)
+	{
+		VulkanModuleFence fence = fences[currentFrame];
+		fence.fenceWait();
+	}
+
+	protected void recordingStart(VulkanModuleCommandBuffer commandBuffer)
+	{
+		commandBuffer.getCommandPool().reset();
+		commandBuffer.beginRecording();
+	}
+
+	protected void recordingEnd(VulkanModuleCommandBuffer commandBuffer)
+	{
+		commandBuffer.endRecording();
 	}
 
 	protected void submit(VulkanModuleCommandBuffer commandBuffer, int currentFrame, int imageIndex)
@@ -123,28 +147,5 @@ public abstract class VulkanRenderEnviornmentCallback implements RenderEnviornme
 					.semaphore(renderCompleteSemaphores[imageIndex].getVkSemaphore());
 			this.graphicsQueue.submit(commands, waitSemaphores, signalSemaphore, fence);
 		}
-	}
-
-	protected void recordingStart(VulkanModuleCommandBuffer commandBuffer)
-	{
-		commandBuffer.getCommandPool().reset();
-		commandBuffer.beginRecording();
-	}
-
-	protected void recordingEnd(VulkanModuleCommandBuffer commandBuffer)
-	{
-		commandBuffer.endRecording();
-	}
-
-	protected void waitForFence(int currentFrame)
-	{
-		VulkanModuleFence fence = fences[currentFrame];
-		fence.fenceWait();
-	}
-
-	@Override
-	public RenderEnvironment renderEnviornment()
-	{
-		return this.renderEnviornment;
 	}
 }

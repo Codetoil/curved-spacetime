@@ -38,6 +38,21 @@ public abstract class VulkanRenderModuleSceneRenderContext extends RenderModuleS
 						this.getWindow(), requestImagesSupplier.getAsInt(), vSyncSupplier.getAsBoolean());
 	}
 
+	public VulkanModuleVulkanContext getContext()
+	{
+		return context;
+	}
+
+	public VulkanRenderModuleSurface getSurface()
+	{
+		return vulkanRenderModuleSurface;
+	}
+
+	public RenderModuleWindow getWindow()
+	{
+		return window;
+	}
+
 	protected void loop()
 	{
 		this.window.loop();
@@ -52,11 +67,6 @@ public abstract class VulkanRenderModuleSceneRenderContext extends RenderModuleS
 		this.window.clean();
 	}
 
-	public VulkanModuleVulkanContext getContext()
-	{
-		return context;
-	}
-
 	public VulkanRenderModuleSwapChain getSwapChain()
 	{
 		return vulkanRenderModuleSwapChain;
@@ -65,15 +75,5 @@ public abstract class VulkanRenderModuleSceneRenderContext extends RenderModuleS
 	public VulkanRenderModuleGraphicsModuleQueue getGraphicsQueue()
 	{
 		return vulkanRenderModuleGraphicsQueue;
-	}
-
-	public VulkanRenderModuleSurface getSurface()
-	{
-		return vulkanRenderModuleSurface;
-	}
-
-	public RenderModuleWindow getWindow()
-	{
-		return window;
 	}
 }

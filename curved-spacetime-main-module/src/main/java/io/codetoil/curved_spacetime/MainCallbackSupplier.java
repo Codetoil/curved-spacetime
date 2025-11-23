@@ -6,7 +6,8 @@ import java.util.function.Supplier;
 public record MainCallbackSupplier(Supplier<MainCallback> supplier)
 		implements Function<Void, MainCallback>
 {
-	public MainCallback apply(Void args) {
+	public MainCallback apply(Void args)
+	{
 		return supplier.get();
 	}
 }

@@ -19,8 +19,8 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
-import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSceneRenderContext;
 import io.codetoil.curved_spacetime.render.render_enviornments.RenderEnvironment;
+import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSceneRenderContext;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanContext;
 import org.lwjgl.glfw.GLFWVulkan;
 
@@ -28,7 +28,8 @@ public class VulkanGLFWRenderModuleSceneRenderContext extends VulkanRenderModule
 {
 	protected final VulkanGLFWRenderModuleEntrypoint entrypoint;
 
-	public VulkanGLFWRenderModuleSceneRenderContext(VulkanGLFWRenderModuleEntrypoint entrypoint, RenderEnvironment renderEnvironment)
+	public VulkanGLFWRenderModuleSceneRenderContext(VulkanGLFWRenderModuleEntrypoint entrypoint,
+													RenderEnvironment renderEnvironment)
 	{
 		super(renderEnvironment);
 		this.entrypoint = entrypoint;

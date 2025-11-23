@@ -26,7 +26,10 @@ import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
@@ -40,9 +43,9 @@ public class Engine
 	protected final ScheduledExecutorService callbackExecutor;
 	protected final CurvedSpacetimeLoader loader;
 	protected final Set<Function<?, ?>> callbackSuppliers = Sets.newConcurrentHashSet();
+	protected final Set<Scene> scenes = Sets.newConcurrentHashSet();
 	private final Set<MainCallback> mainCallbacks = Sets.newConcurrentHashSet();
 	private final Set<SceneCallback> sceneCallbacks = Sets.newConcurrentHashSet();
-	protected final Set<Scene> scenes = Sets.newConcurrentHashSet();
 	protected Future<?> callbackInitializeHandler;
 	protected ScheduledFuture<?> callbackLoopHandler;
 
@@ -96,6 +99,17 @@ public class Engine
 		}
 	}
 
+	public <A, C, S extends Function<A, C>> void accumulateCallbacks(Class<S> supplierClass, Set<A> argsSet,
+																	 Set<C> callbacks)
+	{
+		argsSet.forEach(args ->
+				this.callbackSuppliers.stream()
+						.filter(supplierClass::isInstance)
+						.map(supplierClass::cast)
+						.map(supplier -> supplier.apply(args))
+						.forEach(callbacks::add));
+	}
+
 	public static <E> void callDependents(String name,
 										  Class<E> moduleInitializerClass,
 										  Consumer<E> onInitialize)
@@ -144,12 +158,15 @@ public class Engine
 		return loader;
 	}
 
-	public <A, C> void addCallbackSupplier(Function<A, C> callbackSupplier)
+	public void registerMainCallbackAndInit(Supplier<MainCallback> callbackSupplier)
 	{
-		this.callbackSuppliers.add(callbackSupplier);
+		this.registerCallbackAndInit((Void _) -> callbackSupplier.get(),
+				Sets.newHashSet((Void) null), this.mainCallbacks,
+				MainCallback::init);
 	}
 
-	public <A, C> void registerCallbackAndInit(Function<A, C> callbackSupplier, Set<A> argsSet, Set<C> callbacks, Consumer<C> init)
+	public <A, C> void registerCallbackAndInit(Function<A, C> callbackSupplier, Set<A> argsSet, Set<C> callbacks,
+											   Consumer<C> init)
 	{
 		if (!callbackSuppliers.contains(callbackSupplier))
 			addCallbackSupplier(callbackSupplier);
@@ -160,39 +177,15 @@ public class Engine
 		});
 	}
 
-	public void registerMainCallbackAndInit(Supplier<MainCallback> callbackSupplier)
+	public <A, C> void addCallbackSupplier(Function<A, C> callbackSupplier)
 	{
-		this.registerCallbackAndInit((Void _) -> callbackSupplier.get(),
-				Sets.newHashSet((Void) null), this.mainCallbacks,
-				MainCallback::init);
+		this.callbackSuppliers.add(callbackSupplier);
 	}
 
 	public void registerSceneCallbackAndInit(Function<Scene, SceneCallback> callbackSupplier)
 	{
 		this.registerCallbackAndInit(callbackSupplier, this.scenes,
 				this.sceneCallbacks, SceneCallback::init);
-	}
-
-	public <A, C, S extends Function<A, C>> void accumulateCallbacks(Class<S> supplierClass, Set<A> argsSet,
-																	 Set<C> callbacks)
-	{
-		argsSet.forEach(args ->
-				this.callbackSuppliers.stream()
-						.filter(supplierClass::isInstance)
-						.map(supplierClass::cast)
-						.map(supplier -> supplier.apply(args))
-						.forEach(callbacks::add));
-	}
-
-	public void deregisterScene(Scene scene)
-	{
-		this.sceneCallbacks.stream()
-				.filter(callback -> Objects.equals(callback.scene(), scene))
-				.toList().forEach(callback -> {
-					callback.clean();
-					this.sceneCallbacks.remove(callback);
-				});
-		this.scenes.remove(scene);
 	}
 
 	public void stop()
@@ -205,6 +198,17 @@ public class Engine
 	{
 		this.scenes.forEach(this::deregisterScene);
 		this.callbackExecutor.shutdown();
+	}
+
+	public void deregisterScene(Scene scene)
+	{
+		this.sceneCallbacks.stream()
+				.filter(callback -> Objects.equals(callback.scene(), scene))
+				.toList().forEach(callback -> {
+					callback.clean();
+					this.sceneCallbacks.remove(callback);
+				});
+		this.scenes.remove(scene);
 	}
 
 	public Set<Scene> getScenes()

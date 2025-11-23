@@ -7,7 +7,8 @@ import java.util.function.Function;
 public record SceneCallbackSupplier(Function<Scene, SceneCallback> supplier)
 		implements Function<Scene, SceneCallback>
 {
-	public SceneCallback apply(Scene args) {
+	public SceneCallback apply(Scene args)
+	{
 		return supplier.apply(args);
 	}
 }

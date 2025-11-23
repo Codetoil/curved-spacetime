@@ -62,7 +62,7 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 
 		Engine.getInstance()
 				.addCallbackSupplier((RenderEnvironment renderEnvironment) -> new VulkanGLFWRenderEnviornmentCallback(
-								new VulkanGLFWRenderModuleSceneRenderContext(this, renderEnvironment),
+						new VulkanGLFWRenderModuleSceneRenderContext(this, renderEnvironment),
 						renderEnvironment));
 		try
 		{
