@@ -28,5 +28,6 @@ module io.codetoil.curved_spacetime.render {
 
 	exports io.codetoil.curved_spacetime.render;
 	exports io.codetoil.curved_spacetime.render.entrypoint;
+	exports io.codetoil.curved_spacetime.render.engine;
 	exports io.codetoil.curved_spacetime.render.render_enviornments;
 }

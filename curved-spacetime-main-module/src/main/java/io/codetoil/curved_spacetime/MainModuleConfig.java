@@ -90,7 +90,7 @@ public class MainModuleConfig
 	public void save() throws IOException
 	{
 		Properties props = new Properties();
-		props.put("fps", String.valueOf(this.tps));
+		props.put("tps", String.valueOf(this.tps));
 
 		try (FileWriter writer = new FileWriter(MainModuleConfig.FILENAME))
 		{

@@ -18,9 +18,9 @@
 
 package io.codetoil.curved_spacetime.render.render_enviornments;
 
-public class RenderEnvironment
+import io.codetoil.curved_spacetime.render.engine.RenderModuleEngine;
+
+public record RenderEnvironment(RenderModuleEngine renderModuleEngine)
 {
-	public RenderEnvironment()
-	{
-	}
+
 }

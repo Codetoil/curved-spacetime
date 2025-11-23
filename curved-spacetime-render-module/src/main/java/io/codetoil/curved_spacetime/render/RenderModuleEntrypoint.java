@@ -21,6 +21,7 @@ package io.codetoil.curved_spacetime.render;
 import io.codetoil.curved_spacetime.engine.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.render.engine.RenderModuleEngine;
 import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -43,6 +44,7 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Render Module Config", ex);
 		}
+		Engine.getInstance().registerMainCallbackAndInit(RenderModuleEngine::new);
 		try
 		{
 			Engine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,

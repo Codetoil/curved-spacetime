@@ -31,6 +31,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Engine
 {
@@ -64,12 +65,13 @@ public class Engine
 		Logger.info("Initializing Callbacks");
 		this.callbackInitializeHandler = this.callbackExecutor.submit(() ->
 		{
-			accumulateCallbacks(Sets.newHashSet((Void) null),
+			accumulateCallbacks(
 					MainCallbackSupplier.class,
+					Sets.newHashSet((Void) null),
 					this.mainCallbacks);
 			this.mainCallbacks.forEach(MainCallback::init);
 
-			accumulateCallbacks(this.scenes, SceneCallbackSupplier.class, this.sceneCallbacks);
+			accumulateCallbacks(SceneCallbackSupplier.class, this.scenes, this.sceneCallbacks);
 			this.sceneCallbacks.forEach(SceneCallback::init);
 		});
 		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() ->
@@ -142,12 +144,36 @@ public class Engine
 		return loader;
 	}
 
-	public <A, C> void registerCallback(Function<A, C> callbackSupplier)
+	public <A, C> void addCallbackSupplier(Function<A, C> callbackSupplier)
 	{
 		this.callbackSuppliers.add(callbackSupplier);
 	}
 
-	public <A, C, S extends Function<A, C>> void accumulateCallbacks(Set<A> argsSet, Class<S> supplierClass,
+	public <A, C> void registerCallbackAndInit(Function<A, C> callbackSupplier, Set<A> argsSet, Set<C> callbacks, Consumer<C> init)
+	{
+		if (!callbackSuppliers.contains(callbackSupplier))
+			addCallbackSupplier(callbackSupplier);
+		argsSet.forEach(args -> {
+			C callback = callbackSupplier.apply(args);
+			callbacks.add(callback);
+			init.accept(callback);
+		});
+	}
+
+	public void registerMainCallbackAndInit(Supplier<MainCallback> callbackSupplier)
+	{
+		this.registerCallbackAndInit((Void _) -> callbackSupplier.get(),
+				Sets.newHashSet((Void) null), this.mainCallbacks,
+				MainCallback::init);
+	}
+
+	public void registerSceneCallbackAndInit(Function<Scene, SceneCallback> callbackSupplier)
+	{
+		this.registerCallbackAndInit(callbackSupplier, this.scenes,
+				this.sceneCallbacks, SceneCallback::init);
+	}
+
+	public <A, C, S extends Function<A, C>> void accumulateCallbacks(Class<S> supplierClass, Set<A> argsSet,
 																	 Set<C> callbacks)
 	{
 		argsSet.forEach(args ->
