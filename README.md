@@ -43,3 +43,8 @@ The Native Variants (Closed-World Native Variants) support the following Operati
 
 To build the application, you need a copy of JDK 8, JDK 25, and GraalVM CE 25, along with the Vulkan SDK Installed.
 Then run `./gradlew build nativeCompile`.
+If you plan to distribute binaries, you will need to distribute the 
+[Correspoonding Source](https://www.gnu.org/licenses/gpl-faq.html#DistributeExtendedBinary) with it in accordance with
+the GPLv3 License.
+And easy way to get it is to run 
+`git archive --format=tar.gz -o ./source.tar.gz HEAD` within the repository.
