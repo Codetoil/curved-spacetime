@@ -14,7 +14,7 @@ jobs:
   javadoc:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up JDK 8
         uses: actions/setup-java@v5
         with:
@@ -48,7 +48,7 @@ jobs:
       contents: write           # 'write' access to repository contents
       pull-requests: write      # 'write' access to pull requests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: pages
       - name: Download the javadocs from earlier
