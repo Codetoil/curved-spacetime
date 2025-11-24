@@ -12,7 +12,7 @@ A Graphics Card with Ray Tracing and Vulkan 1.3 support is required to run this 
 There are three main variants of this software:
 
 - The Quilt Variant, which runs Quilt Loader and is the most extendable. Requires Java 25 to be installed.
-- The Closed-World Jar Variant, which boots up faster but less extendable. Requires Java 25 to be installed.
+- The Closed-World Jar Variant, which boots up faster but is less extendable. Requires Java 25 to be installed.
 - The Closed-World Native Variant, which is boots up the fastest and runs the fastest (presumably) but is the least
 - extendable. Does not require Java 25 to be installed, but less Operating Systems are supported.
 
