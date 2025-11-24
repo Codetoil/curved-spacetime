@@ -2,6 +2,7 @@
 # package ecosystems to update and where the package manifests are located.
 
 version: 2
+target-branch: dev
 updates:
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/" # Location of package manifests
