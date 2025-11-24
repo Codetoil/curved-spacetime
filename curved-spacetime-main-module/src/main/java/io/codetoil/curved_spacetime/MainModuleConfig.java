@@ -90,7 +90,8 @@ public class MainModuleConfig
 		props.put("fps", String.valueOf(this.fps));
 
 		File configFile = new File(MainModuleConfig.FILENAME);
-		if (!configFile.getParentFile().mkdirs()) throw new IOException("Could not create config directory");
+		if (!configFile.getParentFile().exists() && !configFile.getParentFile().mkdirs())
+			throw new IOException("Could not create config directory");
 
 		try (FileWriter writer = new FileWriter(MainModuleConfig.FILENAME))
 		{

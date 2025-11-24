@@ -1,8 +1,8 @@
-package io.codetoil.curved_spacetime;
+package io.codetoil.curved_spacetime.render;
 
-public interface MouseInput
+public interface RenderModuleMouseInput
 {
-	Window window();
+	RenderModuleWindow window();
 
 	void poll();
 

@@ -15,11 +15,9 @@ dependencies {
 
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
-    api(project(":curved-spacetime-glfw-module"))
     api(project(":curved-spacetime-vulkan-module"))
     api(project(":curved-spacetime-glfw-render-module"))
     api(project(":curved-spacetime-vulkan-render-module"))
-    api(project(":curved-spacetime-vulkan-glfw-module"))
 
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 

@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.Window;
+import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleSemaphore;
@@ -43,7 +43,7 @@ public class VulkanRenderModuleSwapChain
 	protected int currentFrame;
 
 	public VulkanRenderModuleSwapChain(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
-									   VulkanRenderModuleSurface surface, Window window,
+									   VulkanRenderModuleSurface surface, RenderModuleWindow renderModuleWindow,
 									   int requestedImages, boolean vsync//,
 									   // VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanPresentationQueue,
 									   // VulkanGraphicsQueue[] vulkanConcurrentQueues
@@ -66,7 +66,7 @@ public class VulkanRenderModuleSwapChain
 					i -> new SynchronizationVulkanSemaphores(this.vulkanLogicalDevice));
 			this.currentFrame = 0;*/
 
-			this.vulkanSwapChainExtent = calcSwapChainExtent(window, surfaceCaps);
+			this.vulkanSwapChainExtent = calcSwapChainExtent(renderModuleWindow, surfaceCaps);
 
 			this.vulkanSurfaceFormat = calcSurfaceFormat(vulkanModulePhysicalDevice, surface);
 
@@ -135,16 +135,16 @@ public class VulkanRenderModuleSwapChain
 		return result;
 	}
 
-	private VkExtent2D calcSwapChainExtent(Window window, VkSurfaceCapabilitiesKHR surfCapabilities)
+	private VkExtent2D calcSwapChainExtent(RenderModuleWindow renderModuleWindow, VkSurfaceCapabilitiesKHR surfCapabilities)
 	{
 		VkExtent2D result = VkExtent2D.calloc();
 		if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF)
 		{
 			// Surface size undefined. Set to the window size if within bounds
-			int width = Math.min(window.getWidth(), surfCapabilities.maxImageExtent().width());
+			int width = Math.min(renderModuleWindow.getWidth(), surfCapabilities.maxImageExtent().width());
 			width = Math.max(width, surfCapabilities.minImageExtent().width());
 
-			int height = Math.min(window.getHeight(), surfCapabilities.maxImageExtent().height());
+			int height = Math.min(renderModuleWindow.getHeight(), surfCapabilities.maxImageExtent().height());
 			height = Math.max(height, surfCapabilities.minImageExtent().height());
 
 			result.set(width, height);

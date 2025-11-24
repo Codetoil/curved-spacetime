@@ -16,37 +16,55 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.vulkan_glfw;
+package io.codetoil.curved_spacetime.render;
 
 import io.codetoil.curved_spacetime.engine.Engine;
-import io.codetoil.curved_spacetime.glfw.GLFWModuleWindow;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWVulkan;
 
-public class VulkanGLFWModuleWindow extends GLFWModuleWindow
+public abstract class RenderModuleWindow
 {
-	public VulkanGLFWModuleWindow(Engine engine, String title)
+	protected final Engine engine;
+	protected final String title;
+	protected RenderModuleKeyboardInput renderModuleKeyboardInput;
+	protected RenderModuleMouseInput renderModuleMouseInput;
+
+	protected RenderModuleWindow(Engine engine, String title)
 	{
-		super(engine, title);
+		this.engine = engine;
+		this.title = title;
 	}
 
-	@Override
-	public boolean doesDriverExist()
+	public abstract void init();
+
+	public abstract void loop();
+
+	public abstract int getHeight();
+
+	public abstract int getWidth();
+
+	public abstract void setShouldClose();
+
+	public abstract boolean shouldClose();
+
+	public abstract void clean();
+
+	public RenderModuleKeyboardInput getKeyboardInput()
 	{
-		return GLFWVulkan.glfwVulkanSupported();
+		return renderModuleKeyboardInput;
 	}
 
-	@Override
-	protected void throwDriverNotFoundException()
+	public RenderModuleMouseInput getMouseInput()
 	{
-		throw new IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)");
+		return renderModuleMouseInput;
 	}
 
-	@Override
-	protected void setWindowHints()
+	public void pollEvents()
 	{
-		GLFW.glfwDefaultWindowHints();
-		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_FALSE);
-		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API);
+		renderModuleKeyboardInput.poll();
+		renderModuleMouseInput.poll();
+	}
+
+	public void resetInput()
+	{
+		renderModuleKeyboardInput.clean();
 	}
 }

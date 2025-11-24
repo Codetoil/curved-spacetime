@@ -1,7 +1,7 @@
-package io.codetoil.curved_spacetime.glfw;
+package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.KeyboardInput;
-import io.codetoil.curved_spacetime.Window;
+import io.codetoil.curved_spacetime.render.RenderModuleKeyboardInput;
+import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GLFWModuleKeyboardInput implements KeyboardInput, GLFWKeyCallbackI
+public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput, GLFWKeyCallbackI
 {
 	protected final Map<Integer, Boolean> tappedKeyMap;
-	protected final GLFWModuleWindow window;
+	protected final GLFWRenderModuleWindow window;
 	protected final List<KeyCallback> callbacks;
 
-	public GLFWModuleKeyboardInput(GLFWModuleWindow window)
+	public GLFWRenderModuleKeyboardInput(GLFWRenderModuleWindow window)
 	{
 		this.window = window;
 		tappedKeyMap = new HashMap<>();
@@ -25,7 +25,7 @@ public class GLFWModuleKeyboardInput implements KeyboardInput, GLFWKeyCallbackI
 	}
 
 	@Override
-	public Window window()
+	public RenderModuleWindow window()
 	{
 		return this.window;
 	}
@@ -48,13 +48,13 @@ public class GLFWModuleKeyboardInput implements KeyboardInput, GLFWKeyCallbackI
 	}
 
 	@Override
-	public boolean keyPressed(KeyboardInput.KeyCtx keyCtx)
+	public boolean keyPressed(RenderModuleKeyboardInput.KeyCtx keyCtx)
 	{
 		return GLFW.glfwGetKey(this.window.windowHandle, ((KeyCtx) keyCtx).keycode()) == GLFW.GLFW_PRESS;
 	}
 
 	@Override
-	public boolean keyTapped(KeyboardInput.KeyCtx keyCtx)
+	public boolean keyTapped(RenderModuleKeyboardInput.KeyCtx keyCtx)
 	{
 		Boolean value = tappedKeyMap.get(((KeyCtx) keyCtx).keycode());
 		return value != null && value;
@@ -71,7 +71,7 @@ public class GLFWModuleKeyboardInput implements KeyboardInput, GLFWKeyCallbackI
 		}
 	}
 
-	public record KeyCtx(int keycode, int scanCode, int action, int mods) implements KeyboardInput.KeyCtx
+	public record KeyCtx(int keycode, int scanCode, int action, int mods) implements RenderModuleKeyboardInput.KeyCtx
 	{
 
 	}
