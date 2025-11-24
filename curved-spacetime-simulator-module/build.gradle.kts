@@ -26,7 +26,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/archive-quilt/webserver-modules")
+    destinationDirectory = File("$rootDir/archive-quilt/simulator-modules")
     from(nonJar)
 }
 
@@ -46,7 +46,7 @@ publishing {
             pom {
                 packaging = "jar"
 
-                name = "Curved Spacetime Webserver Module"
+                name = "Curved Spacetime Simulator Module"
                 url = "https://github.com/Codetoil/curved-spacetime"
                 inceptionYear = "2025"
                 licenses {
