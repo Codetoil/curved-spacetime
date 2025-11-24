@@ -39,7 +39,7 @@ The Native Variants (Closed-World Native Variants) support the following Operati
 - macOS on 64-Bit ARM (AArch64/ARM64)
 - Windows on 64-Bit x86 (x86_64/AMD64)
 
-## Build
+## Building and Distribution
 
 To build the application, you need a copy of JDK 8 and JDK 25 for the Jar Variants, and GraalVM CE 25 for the Native
 Variant of your Host's Operating System (Cross compilation is unfortunately not support by GraalVM as of the time
