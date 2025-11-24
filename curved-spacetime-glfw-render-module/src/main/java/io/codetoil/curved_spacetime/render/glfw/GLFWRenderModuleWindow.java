@@ -16,9 +16,9 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.glfw;
+package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.Window;
+import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 import io.codetoil.curved_spacetime.engine.Engine;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -26,13 +26,13 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
-public abstract class GLFWModuleWindow extends Window
+public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 {
 	protected long windowHandle;
 	protected int width;
 	protected int height;
 
-	protected GLFWModuleWindow(Engine engine, String title)
+	protected GLFWRenderModuleWindow(Engine engine, String title)
 	{
 		super(engine, title);
 	}
@@ -64,13 +64,13 @@ public abstract class GLFWModuleWindow extends Window
 				GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
 		if (this.windowHandle == MemoryUtil.NULL) throw new RuntimeException("Failed to create the GLFW window");
 
-		this.keyboardInput = new GLFWModuleKeyboardInput(this);
+		this.renderModuleKeyboardInput = new GLFWRenderModuleKeyboardInput(this);
 		GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (window, w, h) -> {
 			width = w;
 			height = h;
 		});
 
-		this.mouseInput = new GLFWModuleMouseInput(this);
+		this.renderModuleMouseInput = new GLFWRenderModuleMouseInput(this);
 	}
 
 	public void loop()

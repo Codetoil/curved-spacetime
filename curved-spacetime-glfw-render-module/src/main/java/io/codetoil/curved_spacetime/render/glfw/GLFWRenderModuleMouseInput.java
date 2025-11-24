@@ -1,12 +1,12 @@
-package io.codetoil.curved_spacetime.glfw;
+package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.MouseInput;
-import io.codetoil.curved_spacetime.Window;
+import io.codetoil.curved_spacetime.render.RenderModuleMouseInput;
+import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 import org.lwjgl.glfw.GLFW;
 
-public class GLFWModuleMouseInput implements MouseInput
+public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 {
-	protected final GLFWModuleWindow window;
+	protected final GLFWRenderModuleWindow window;
 	protected float currentX = -1.0f;
 	protected float currentY = -1.0f;
 	protected float deltaX = 0.0f;
@@ -18,7 +18,7 @@ public class GLFWModuleMouseInput implements MouseInput
 	protected boolean rightButtonPressed = false;
 	protected boolean middleButtonPressed = false;
 
-	public GLFWModuleMouseInput(GLFWModuleWindow window)
+	public GLFWRenderModuleMouseInput(GLFWRenderModuleWindow window)
 	{
 		this.window = window;
 		GLFW.glfwSetCursorPosCallback(this.window.windowHandle, (handle, xpos, ypos) -> {
@@ -35,7 +35,7 @@ public class GLFWModuleMouseInput implements MouseInput
 	}
 
 	@Override
-	public Window window()
+	public RenderModuleWindow window()
 	{
 		return this.window;
 	}

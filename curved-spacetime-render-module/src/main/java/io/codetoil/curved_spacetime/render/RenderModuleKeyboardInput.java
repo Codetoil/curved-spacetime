@@ -1,8 +1,8 @@
-package io.codetoil.curved_spacetime;
+package io.codetoil.curved_spacetime.render;
 
-public interface KeyboardInput
+public interface RenderModuleKeyboardInput
 {
-	Window window();
+	RenderModuleWindow window();
 
 	void addKeyCallBack(KeyCallback callback);
 
