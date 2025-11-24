@@ -17,7 +17,7 @@
  */
 
 /**
- * Simulator Module of Curved Spacetime
+ * CLI Module of Curved Spacetime
  *
  */
 module io.codetoil.curved_spacetime.cli {
