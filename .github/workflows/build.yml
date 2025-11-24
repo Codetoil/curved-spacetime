@@ -3,8 +3,8 @@ name: Build
 on: push
 
 jobs:
-  build-curved-spacetime-linux-x64:
-    name: Build curved-spacetime Linux x64
+  build-curved-spacetime:
+    name: Build curved-spacetime
     runs-on: ubuntu-24.04
 
     steps:
@@ -19,6 +19,16 @@ jobs:
         with:
           java-version: '25'
           distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Compile
+        run: ./gradlew build
+  build-curved-spacetime-linux-x64:
+    name: Build curved-spacetime Linux x64
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v6
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: '25'
@@ -28,7 +38,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Compile
-        run: ./gradlew build nativeCompile
+        run: ./gradlew nativeCompile
   build-curved-spacetime-linux-arm64:
     name: Build curved-spacetime Linux arm64
     runs-on: ubuntu-24.04-arm
