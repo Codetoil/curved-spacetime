@@ -33,7 +33,6 @@ tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
     dependencies {
-        exclude(dependency("io.codetoil:.*"))
         include(dependency("org.lwjgl:.*"))
     }
     destinationDirectory = File("$rootDir/archive-quilt/modules")

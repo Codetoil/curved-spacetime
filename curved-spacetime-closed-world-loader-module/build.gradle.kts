@@ -30,8 +30,7 @@ dependencies {
     implementation(project(":curved-spacetime-vulkan-render-module"))
     implementation(project(":curved-spacetime-vulkan-glfw-render-module"))
     implementation(project(":curved-spacetime-loader-module"))
-    implementation(project(":curved-spacetime-webserver-module"))
-    implementation(project(":curved-spacetime-webserver-openapi-module"))
+    implementation(project(":curved-spacetime-spring-web-module"))
 
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 

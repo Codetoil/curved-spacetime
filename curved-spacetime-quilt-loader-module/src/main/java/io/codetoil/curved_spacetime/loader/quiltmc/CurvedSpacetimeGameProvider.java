@@ -25,10 +25,7 @@ import org.quiltmc.loader.api.Version;
 import org.quiltmc.loader.api.VersionRange;
 import org.quiltmc.loader.impl.FormattedException;
 import org.quiltmc.loader.impl.entrypoint.GameTransformer;
-import org.quiltmc.loader.impl.game.GameProvider;
-import org.quiltmc.loader.impl.game.GameProviderHelper;
-import org.quiltmc.loader.impl.game.LibClassifier;
-import org.quiltmc.loader.impl.game.MappingConfiguration;
+import org.quiltmc.loader.impl.game.*;
 import org.quiltmc.loader.impl.launch.common.QuiltLauncher;
 import org.quiltmc.loader.impl.launch.common.QuiltLauncherBase;
 import org.quiltmc.loader.impl.metadata.qmj.Icons;
@@ -53,7 +50,7 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 	private final List<Path> miscGameLibraries = new ArrayList<>();
 	private final GameTransformer transformer = new GameTransformer();
 	@SuppressWarnings("UnstableApiUsage")
-	private final MappingConfiguration mappingConfiguration = new MappingConfigurationCurvedSpacetime();
+	private final MappingConfiguration mappingConfiguration = new EmptyMappingConfiguration("curved-spacetime");
 	private Arguments arguments;
 	private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
 
