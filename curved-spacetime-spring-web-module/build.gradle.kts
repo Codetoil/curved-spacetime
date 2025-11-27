@@ -3,6 +3,7 @@ plugins {
     id("java-library")
     id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "io.codetoil"
@@ -18,15 +19,29 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
 
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
+
+    api("io.netty:netty-all:${rootProject.extra["nettyVersion"]}")
+    api("io.projectreactor:reactor-core:${rootProject.extra["reactorVersion"]}")
+    api("io.projectreactor.netty:reactor-netty:${rootProject.extra["reactorNettyVersion"]}")
+    api("org.springframework:spring-core:${rootProject.extra["springVersion"]}")
+    api("org.springframework:spring-context:${rootProject.extra["springVersion"]}")
+    api("org.springframework:spring-web:${rootProject.extra["springVersion"]}")
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.jar {
+tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/archive-quilt/webserver-modules")
+    mergeServiceFiles()
+    dependencies {
+        include(dependency("io.netty:.*"))
+        include(dependency("io.projectreactor:.*"))
+        include(dependency("io.projectreactor.netty:.*"))
+        include(dependency("io.springframework:.*"))
+    }
+    destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)
 }
 
@@ -46,7 +61,7 @@ publishing {
             pom {
                 packaging = "jar"
 
-                name = "Curved Spacetime Webserver Module"
+                name = "Curved Spacetime Spring Web Module"
                 url = "https://github.com/Codetoil/curved-spacetime"
                 inceptionYear = "2025"
                 licenses {
@@ -79,7 +94,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            from(components["java"])
+            from(components["shadow"])
         }
     }
 }

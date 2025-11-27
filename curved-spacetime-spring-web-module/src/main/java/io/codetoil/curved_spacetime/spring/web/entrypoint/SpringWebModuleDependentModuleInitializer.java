@@ -1,6 +1,6 @@
 /**
- * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
- * 2023-2025 Anthony Michalek (Codetoil)<br>
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C) 2025
+ * Anthony Michalek (Codetoil)<br>
  * <br>
  * This file is part of Curved Spacetime<br>
  * <br>
@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU General Public License<br> along with this program.  If not, see <a
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
-/**
- * Webserver OpenAPI Module of Curved Spacetime
- *
- */
-module io.codetoil.curved_spacetime.webserver.openapi {
-	requires org.tinylog.api;
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.webserver;
-	requires io.codetoil.curved_spacetime.loader;
 
-	exports io.codetoil.curved_spacetime.webserver.openapi;
-	exports io.codetoil.curved_spacetime.webserver.openapi.entrypoint;
+package io.codetoil.curved_spacetime.spring.web.entrypoint;
+
+import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.spring.web.SpringWebModuleEntrypoint;
+
+public interface SpringWebModuleDependentModuleInitializer
+		extends ModuleDependentModuleInitializer<SpringWebModuleEntrypoint>
+{
+	/**
+	 * Runs the mod initializer.
+	 */
+	void onInitialize(SpringWebModuleEntrypoint springWebModuleEntrypoint);
 }

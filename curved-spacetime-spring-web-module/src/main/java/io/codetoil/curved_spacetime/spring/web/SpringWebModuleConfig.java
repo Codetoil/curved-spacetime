@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.webserver.openapi;
+package io.codetoil.curved_spacetime.spring.web;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import org.tinylog.Logger;
@@ -27,26 +27,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-public class WebserverOpenAPIModuleConfig implements ModuleConfig
+public class SpringWebModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/webserver-openapi-module.config";
+	private static final String FILENAME = "config/spring-web-module.config";
 	private boolean dirty = false;
 
-	public WebserverOpenAPIModuleConfig()
+	public SpringWebModuleConfig()
 	{
 
 	}
 
-	public WebserverOpenAPIModuleConfig load() throws IOException
+	public SpringWebModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(WebserverOpenAPIModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(SpringWebModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + WebserverOpenAPIModuleConfig.FILENAME);
+			Logger.warn(ex, "Could not find config file " + SpringWebModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -57,9 +57,9 @@ public class WebserverOpenAPIModuleConfig implements ModuleConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(WebserverOpenAPIModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(SpringWebModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the GLFW Render Module.");
+			props.store(writer, "Config for the Spring Web Module.");
 		}
 		this.dirty = false;
 	}

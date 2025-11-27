@@ -28,8 +28,7 @@ module io.codetoil.curved_spacetime.loader.closed_world {
 	requires io.codetoil.curved_spacetime.render.glfw;
 	requires io.codetoil.curved_spacetime.render.vulkan;
 	requires io.codetoil.curved_spacetime.vulkan;
-	requires io.codetoil.curved_spacetime.webserver;
-	requires io.codetoil.curved_spacetime.webserver.openapi;
+	requires io.codetoil.curved_spacetime.spring.web;
 	requires io.codetoil.curved_spacetime.render.vulkan_glfw;
 	requires io.codetoil.curved_spacetime.cli;
 	requires io.codetoil.curved_spacetime.simulator;

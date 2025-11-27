@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "io.codetoil.curved_spacetime.render.mixin",
+  "package": "io.codetoil.curved_spacetime.spring.web.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
   ],

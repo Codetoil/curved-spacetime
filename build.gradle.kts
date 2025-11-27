@@ -10,6 +10,10 @@ project.extra["junitVersion"] = "6.0.1" // org.junit:junit-bom
 project.extra["tinyLoggerVersion"] = "2.8.0-M1" // org.tinylog:tinylog-impl
 project.extra["gsonVersion"] = "2.13.2" // com.google.code.gson:gson
 project.extra["guavaVersion"] = "33.5.0-jre" // com.google.guava:guava
+project.extra["nettyVersion"] = "4.2.7.Final" // io.netty:netty-all
+project.extra["reactorVersion"] = "3.8.0" // io.projectreactor:reactor-core
+project.extra["reactorNettyVersion"] = "1.3.0" // io.projectreactor.netty:reactor-netty
+project.extra["springVersion"] = "7.0.1" // org.springframework:spring-web
 
 // FabricMC Maven - https://maven.fabricmc.net/
 project.extra["fabricMixinVersion"] = "0.16.5+mixin.0.8.7" // net.fabricmc:sponge-mixin

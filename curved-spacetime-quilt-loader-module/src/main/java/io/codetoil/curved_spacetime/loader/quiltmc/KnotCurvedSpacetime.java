@@ -36,8 +36,6 @@ public class KnotCurvedSpacetime
 			System.setProperty(SystemProperties.SKIP_MC_PROVIDER, "true");
 		if (!System.getProperties().containsValue(SystemProperties.MODS_DIRECTORY))
 			System.setProperty(SystemProperties.MODS_DIRECTORY, "modules");
-		if (!System.getProperties().containsValue(SystemProperties.TARGET_NAMESPACE))
-			System.setProperty(SystemProperties.TARGET_NAMESPACE, "official");
 		Knot.launch(args, KnotCurvedSpacetime.CURVED_SPACETIME);
 	}
 }
