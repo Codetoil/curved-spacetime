@@ -2,6 +2,7 @@ plugins {
     id("io.freefair.aggregate-javadoc") version "9.1.0"
     id("io.github.sgtsilvio.gradle.javadoc-links") version "0.9.0" apply false
     id("org.jetbrains.qodana") version "2025.2.3"
+    id("com.gradleup.shadow") version "9.3.0" apply false
 }
 
 // Maven Central - https://repo1.maven.org/maven2/
