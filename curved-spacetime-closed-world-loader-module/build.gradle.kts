@@ -2,7 +2,7 @@ plugins {
     id("java")
     id("maven-publish")
     id("org.graalvm.buildtools.native") version "0.11.3"
-    id("com.gradleup.shadow") version "9.3.0"
+    id("com.gradleup.shadow")
 }
 
 group = "io.codetoil"
@@ -30,8 +30,7 @@ dependencies {
     implementation(project(":curved-spacetime-vulkan-render-module"))
     implementation(project(":curved-spacetime-vulkan-glfw-render-module"))
     implementation(project(":curved-spacetime-loader-module"))
-    implementation(project(":curved-spacetime-webserver-module"))
-    implementation(project(":curved-spacetime-webserver-openapi-module"))
+    implementation(project(":curved-spacetime-spring-web-module"))
 
     implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
 
@@ -81,6 +80,8 @@ graalvmNative {
             })
 
             System.setProperty("java.io.tmpdir", "$projectDir/build/tmp")
+
+            classpath.setFrom(classpath.map { !it.name.contains(".SF") && !it.name.contains(".DSA") })
         }
     }
 }

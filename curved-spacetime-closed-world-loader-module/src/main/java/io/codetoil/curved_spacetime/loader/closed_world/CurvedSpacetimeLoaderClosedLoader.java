@@ -15,11 +15,10 @@ import io.codetoil.curved_spacetime.render.vulkan.entrypoint.VulkanRenderModuleD
 import io.codetoil.curved_spacetime.render.vulkan_glfw.*;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint.VulkanGLFWRenderModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.simulator.entrypoint.SimulatorModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.spring.web.SpringWebModuleEntrypoint;
+import io.codetoil.curved_spacetime.spring.web.entrypoint.SpringWebModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.webserver.entrypoint.WebserverModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.webserver.openapi.WebserverModuleDependentWebserverOpenAPIModuleEntrypoint;
-import io.codetoil.curved_spacetime.webserver.openapi.entrypoint.WebserverOpenAPIModuleDependentModuleInitializer;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -35,9 +34,8 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			// new SimulatorModuleEntrypoint(),
 			new GLFWRenderModuleEntrypoint(),
 			new VulkanRenderModuleEntrypoint(),
-			new VulkanGLFWRenderModuleEntrypoint()//,
-			//new WebserverModuleEntrypoint(),
-			//new WebserverOpenAPIModuleEntrypoint()
+			new VulkanGLFWRenderModuleEntrypoint(),
+			new SpringWebModuleEntrypoint()
 	);
 	private static final String CLI_MODULE_DEPENDENT_ENTRYPOINT_NAME
 			= "cli_module_dependent";
@@ -68,13 +66,9 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			= "vulkan_glfw_render_module_dependent";
 	private static final List<VulkanGLFWRenderModuleDependentModuleInitializer>
 			VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
-	private static final String WEBSERVER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "webserver_module_dependent";
-	private static final List<WebserverModuleDependentModuleInitializer> WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS
-			= List.of(new WebserverModuleDependentWebserverOpenAPIModuleEntrypoint());
-	private static final String WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINT_NAME
-			= "webserver_openapi_module_dependent";
-	private static final List<WebserverOpenAPIModuleDependentModuleInitializer>
-			WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
+	private static final String SPRING_WEB_MODULE_DEPENDENT_ENTRYPOINT_NAME = "spring_web_module_dependent";
+	private static final List<SpringWebModuleDependentModuleInitializer> SPRING_WEB_MODULE_DEPENDENT_ENTRYPOINTS
+			= List.of();
 	private Object engine;
 
 	@Override
@@ -127,15 +121,10 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			return (List<E>) VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 
-		if (WEBSERVER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(WebserverModuleDependentModuleInitializer.class))
+		if (SPRING_WEB_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
+				moduleInitializerClass.isAssignableFrom(SpringWebModuleDependentModuleInitializer.class))
 		{
-			return (List<E>) WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS;
-		}
-		if (WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(WebserverOpenAPIModuleDependentModuleInitializer.class))
-		{
-			return (List<E>) WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINTS;
+			return (List<E>) SPRING_WEB_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 
 		throw new IllegalArgumentException("Cannot get Entrypoints: Invalid entrypoint type: " + name + " with class "

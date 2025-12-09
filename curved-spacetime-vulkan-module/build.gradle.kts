@@ -3,7 +3,7 @@ plugins {
     id("java-library")
     id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
-    id("com.gradleup.shadow") version "9.3.0"
+    id("com.gradleup.shadow")
 }
 
 group = "io.codetoil"
@@ -33,7 +33,6 @@ tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
     dependencies {
-        exclude(dependency("io.codetoil:.*"))
         include(dependency("org.lwjgl:.*"))
     }
     destinationDirectory = File("$rootDir/archive-quilt/modules")
