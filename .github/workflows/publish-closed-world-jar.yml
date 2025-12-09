@@ -3,7 +3,7 @@ name: Publish (Closed-World Jar Variant)
 on:
   push:
     branches:
-      - master
+      - preview
 
 jobs:
   publish-curved-spacetime:
