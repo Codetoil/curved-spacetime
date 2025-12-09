@@ -1,8 +1,8 @@
 plugins {
     id("java")
     id("maven-publish")
-    id("org.graalvm.buildtools.native") version "0.11.3"
-    id("com.gradleup.shadow") version "9.3.0"
+    id("org.graalvm.buildtools.native")
+    id("com.gradleup.shadow")
 }
 
 group = "io.codetoil"
