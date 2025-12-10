@@ -1,5 +1,6 @@
 package io.codetoil.curved_spacetime.loader.closed_world;
 
+import io.codetoil.curved_spacetime.cli.CLIModuleEntrypoint;
 import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
@@ -29,7 +30,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 {
 	private static final String MAIN_ENTRYPOINT_NAME = "main";
 	private static final List<ModuleInitializer> MAIN_ENTRYPOINTS = List.of(
-			// new CLIModuleEntrypoint(),
+			new CLIModuleEntrypoint(),
 			new VulkanModuleEntrypoint(),
 			new RenderModuleEntrypoint(),
 			// new SimulatorModuleEntrypoint(),
