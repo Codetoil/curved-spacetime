@@ -1,6 +1,6 @@
 plugins {
     `kotlin-dsl`
-    kotlin("jvm") version "2.3.0-RC3"
+    kotlin("jvm") version "2.3.20-Beta1"
 }
 
 repositories {
