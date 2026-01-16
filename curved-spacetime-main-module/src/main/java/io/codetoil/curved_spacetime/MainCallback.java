@@ -16,55 +16,20 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render;
+package io.codetoil.curved_spacetime;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
-
-public abstract class RenderModuleWindow
+public abstract class MainCallback
 {
 	protected final MainModuleEngine mainModuleEngine;
-	protected final String title;
-	protected RenderModuleKeyboardInput renderModuleKeyboardInput;
-	protected RenderModuleMouseInput renderModuleMouseInput;
 
-	protected RenderModuleWindow(MainModuleEngine mainModuleEngine, String title)
+	protected MainCallback(MainModuleEngine mainModuleEngine)
 	{
 		this.mainModuleEngine = mainModuleEngine;
-		this.title = title;
 	}
 
 	public abstract void init();
 
 	public abstract void loop();
 
-	public abstract int getHeight();
-
-	public abstract int getWidth();
-
-	public abstract void setShouldClose();
-
-	public abstract boolean shouldClose();
-
 	public abstract void clean();
-
-	public RenderModuleKeyboardInput getKeyboardInput()
-	{
-		return renderModuleKeyboardInput;
-	}
-
-	public RenderModuleMouseInput getMouseInput()
-	{
-		return renderModuleMouseInput;
-	}
-
-	public void pollEvents()
-	{
-		renderModuleKeyboardInput.poll();
-		renderModuleMouseInput.poll();
-	}
-
-	public void resetInput()
-	{
-		renderModuleKeyboardInput.clean();
-	}
 }

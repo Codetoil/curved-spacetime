@@ -18,16 +18,16 @@
 
 package io.codetoil.curved_spacetime.scene;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 
 public abstract class SceneCallback
 {
-	protected final Engine engine;
+	protected final MainModuleEngine mainModuleEngine;
 	protected final Scene scene;
 
-	protected SceneCallback(Engine engine, Scene scene)
+	protected SceneCallback(MainModuleEngine mainModuleEngine, Scene scene)
 	{
-		this.engine = engine;
+		this.mainModuleEngine = mainModuleEngine;
 		this.scene = scene;
 	}
 

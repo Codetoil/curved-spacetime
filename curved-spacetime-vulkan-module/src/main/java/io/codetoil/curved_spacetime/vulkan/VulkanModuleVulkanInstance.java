@@ -57,8 +57,7 @@ public class VulkanModuleVulkanInstance
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 	protected long vkDebugHandle;
 
-	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint,
-									  Supplier<PointerBuffer> windowExtensionsGetter)
+	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
@@ -106,12 +105,6 @@ public class VulkanModuleVulkanInstance
 			boolean usePortability = instanceExtensions.contains(PORTABILITY_EXTENSION) &&
 					VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
 
-			PointerBuffer windowExtensions = windowExtensionsGetter.get();
-			if (windowExtensions == null)
-			{
-				throw new RuntimeException("Failed to find the Window extensions");
-			}
-
 			List<ByteBuffer> additionalExtensions = new ArrayList<>();
 			if (validation)
 			{
@@ -123,9 +116,7 @@ public class VulkanModuleVulkanInstance
 			}
 			int numAdditionalExtensions = additionalExtensions.size();
 
-			PointerBuffer requiredExtensions = stack.mallocPointer(windowExtensions.remaining() +
-					numAdditionalExtensions);
-			requiredExtensions.put(windowExtensions);
+			PointerBuffer requiredExtensions = stack.mallocPointer(numAdditionalExtensions);
 			for (int i = 0; i < numAdditionalExtensions; i++)
 			{
 				requiredExtensions.put(additionalExtensions.get(i));

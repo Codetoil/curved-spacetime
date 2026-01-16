@@ -16,9 +16,8 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.engine;
+package io.codetoil.curved_spacetime;
 
-import io.codetoil.curved_spacetime.MainModuleConfig;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.scene.Scene;
@@ -34,19 +33,21 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class Engine
+public class MainModuleEngine
 {
-	protected static Engine INSTANCE;
+	protected static MainModuleEngine INSTANCE;
 	public final MainModuleConfig mainModuleConfig;
-	protected final ScheduledExecutorService sceneCallbackExecutor;
+	protected final ScheduledExecutorService callbackExecutor;
 	protected final CurvedSpacetimeLoader loader;
-	private final Map<String, SceneCallback> sceneCallbackMap = new HashMap<>();
-	public Scene scene;
-	protected Future<?> sceneCallbackInitializeHandler;
-	protected ScheduledFuture<?> sceneCallbackLoopHandler;
+	private final List<MainCallback> mainCallbacks = new ArrayList<>();
+	private final Map<Function<Scene, SceneCallback>, List<SceneCallback>> sceneCallbacks = new HashMap<>();
+	private final List<Scene> scenes = new ArrayList<>();
+	protected Future<?> callbackInitializeHandler;
+	protected ScheduledFuture<?> callbackLoopHandler;
 
-	public Engine(CurvedSpacetimeLoader loader)
+	public MainModuleEngine(CurvedSpacetimeLoader loader)
 	{
 		INSTANCE = this;
 		this.loader = loader;
@@ -58,16 +59,25 @@ public class Engine
 		{
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
-		this.scene = new Scene();
-		this.sceneCallbackExecutor = Executors.newSingleThreadScheduledExecutor();
+		registerScene(new Scene());
+		//registerScene(new Scene());
+		this.callbackExecutor = Executors.newSingleThreadScheduledExecutor();
 		Logger.info("Running Entrypoints in parallel");
 		this.runEntrypoints();
 		Logger.info("Initializing Scene Callbacks");
-		this.sceneCallbackInitializeHandler = this.sceneCallbackExecutor.submit(() ->
-				this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.init()));
+		this.callbackInitializeHandler = this.callbackExecutor.submit(() -> {
+			this.mainCallbacks.forEach(MainCallback::init);
+			this.sceneCallbacks.forEach((_,
+										 sceneCallbacksForGenerator) ->
+					sceneCallbacksForGenerator.forEach(SceneCallback::init));
+		});
 		Logger.info("Looping Scene Callbacks");
-		this.sceneCallbackLoopHandler = this.sceneCallbackExecutor.scheduleAtFixedRate(() ->
-						this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.loop()),
+		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() -> {
+					this.mainCallbacks.forEach(MainCallback::loop);
+					this.sceneCallbacks.forEach((_,
+												 sceneCallbacksForGenerator) ->
+							sceneCallbacksForGenerator.forEach(SceneCallback::loop));
+				},
 				1_000 / this.mainModuleConfig.getFPS(),
 				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
@@ -77,7 +87,7 @@ public class Engine
 		this.loader.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
 		try
 		{
-			Engine.callDependents("main", ModuleInitializer.class,
+			MainModuleEngine.callDependents("main", ModuleInitializer.class,
 					ModuleInitializer::onInitialize);
 		} catch (Throwable e)
 		{
@@ -118,12 +128,13 @@ public class Engine
 
 	}
 
-	public static void main(String[] args, CurvedSpacetimeLoader loader)
+	public static void start(String[] args, CurvedSpacetimeLoader loader)
 	{
-		INSTANCE = new Engine(loader);
+		INSTANCE = new MainModuleEngine(loader);
+		// TODO implement argument handling
 	}
 
-	public static Engine getInstance()
+	public static MainModuleEngine getInstance()
 	{
 		return INSTANCE;
 	}
@@ -133,20 +144,35 @@ public class Engine
 		return loader;
 	}
 
-	public void registerSceneCallback(String id, SceneCallback sceneCallback)
+	public void registerScene(Scene scene)
 	{
-		this.sceneCallbackMap.put(id, sceneCallback);
+		this.scenes.add(scene);
+		this.sceneCallbacks.forEach((sceneCallbackGenerator,
+									 sceneCallbacksForGenerator) -> {
+			sceneCallbacksForGenerator.add(sceneCallbackGenerator.apply(scene));
+		});
+	}
+
+	public void registerMainCallback(MainCallback mainCallback)
+	{
+		this.mainCallbacks.add(mainCallback);
+	}
+
+	public void registerSceneCallbackGenerator(Function<Scene, SceneCallback> sceneCallbackGenerator)
+	{
+		this.sceneCallbacks.put(sceneCallbackGenerator, this.scenes.stream().map(sceneCallbackGenerator).toList());
 	}
 
 	public void stop()
 	{
-		this.sceneCallbackLoopHandler.cancel(true);
+		this.callbackLoopHandler.cancel(true);
 		this.clean();
 	}
 
 	public void clean()
 	{
-		this.sceneCallbackExecutor.shutdown();
-		this.sceneCallbackMap.forEach((_, sceneCallback) -> sceneCallback.clean());
+		this.callbackExecutor.shutdown();
+		this.sceneCallbacks.forEach((_, sceneCallbacks) ->
+				sceneCallbacks.forEach(SceneCallback::clean));
 	}
 }

@@ -19,7 +19,7 @@
 package io.codetoil.curved_spacetime.render.glfw;
 
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -32,9 +32,9 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	protected int width;
 	protected int height;
 
-	protected GLFWRenderModuleWindow(Engine engine, String title)
+	protected GLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title)
 	{
-		super(engine, title);
+		super(mainModuleEngine, title);
 	}
 
 	public void init()
@@ -80,7 +80,7 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		this.pollEvents();
 		if (this.shouldClose())
 		{
-			this.engine.stop();
+			this.mainModuleEngine.stop();
 		}
 	}
 

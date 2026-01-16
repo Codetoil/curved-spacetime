@@ -26,5 +26,4 @@ module io.codetoil.curved_spacetime {
 
 	exports io.codetoil.curved_spacetime;
 	exports io.codetoil.curved_spacetime.scene;
-	exports io.codetoil.curved_spacetime.engine;
 }

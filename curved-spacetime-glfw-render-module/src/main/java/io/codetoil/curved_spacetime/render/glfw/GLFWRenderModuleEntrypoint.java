@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
@@ -54,7 +54,7 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			Engine.callDependents("glfw_render_module_dependent",
+			MainModuleEngine.callDependents("glfw_render_module_dependent",
 					GLFWRenderModuleDependentModuleInitializer.class,
 					(GLFWRenderModuleDependentModuleInitializer glfwRenderModuleDependentModuleInitializer) ->
 							glfwRenderModuleDependentModuleInitializer.onInitialize(this));

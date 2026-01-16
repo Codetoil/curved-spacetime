@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
@@ -45,7 +45,7 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			Engine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
 					(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
 							renderModuleDependentModuleInitializer.onInitialize(this));
 		} catch (Throwable e)

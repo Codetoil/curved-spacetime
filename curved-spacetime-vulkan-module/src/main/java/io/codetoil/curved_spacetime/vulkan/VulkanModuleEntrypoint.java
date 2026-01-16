@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
@@ -31,6 +31,7 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
+	private VulkanModuleVulkan vulkan;
 
 	@Override
 	public void onInitialize()
@@ -43,9 +44,11 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		MainModuleEngine.getInstance().registerMainCallback(this.vulkan
+				= new VulkanModuleVulkan(MainModuleEngine.getInstance(), this));
 		try
 		{
-			Engine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
 					(VulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
 							vulkanModuleDependentModuleInitializer.onInitialize(this));
 		} catch (Throwable e)
@@ -64,5 +67,10 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
+	}
+
+	public VulkanModuleVulkan getVulkan()
+	{
+		return vulkan;
 	}
 }

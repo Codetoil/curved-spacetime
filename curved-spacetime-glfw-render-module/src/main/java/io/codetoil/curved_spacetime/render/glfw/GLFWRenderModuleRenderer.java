@@ -18,14 +18,14 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.scene.Scene;
 import io.codetoil.curved_spacetime.scene.SceneCallback;
 
 public abstract class GLFWRenderModuleRenderer extends SceneCallback
 {
-	protected GLFWRenderModuleRenderer(Engine engine, Scene scene)
+	protected GLFWRenderModuleRenderer(MainModuleEngine mainModuleEngine, Scene scene)
 	{
-		super(engine, scene);
+		super(mainModuleEngine, scene);
 	}
 }

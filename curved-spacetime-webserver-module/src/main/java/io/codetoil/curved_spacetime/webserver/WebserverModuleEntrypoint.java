@@ -19,7 +19,7 @@
 package io.codetoil.curved_spacetime.webserver;
 
 import com.sun.net.httpserver.HttpServer;
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.entrypoint.WebserverModuleDependentModuleInitializer;
@@ -66,7 +66,7 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 		System.out.println("Started test server");
 		try
 		{
-			Engine.callDependents("webserver_module_dependent", WebserverModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("webserver_module_dependent", WebserverModuleDependentModuleInitializer.class,
 					(WebserverModuleDependentModuleInitializer webserverModuleDependentModuleInitializer) ->
 							webserverModuleDependentModuleInitializer.onInitialize(this));
 		} catch (Throwable e)
