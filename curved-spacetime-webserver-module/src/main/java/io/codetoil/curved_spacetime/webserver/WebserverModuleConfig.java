@@ -19,22 +19,25 @@
 package io.codetoil.curved_spacetime.webserver;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WebserverModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "config/webserver-module.config";
+	private final Logger logger;
 	private boolean dirty = false;
 
-	public WebserverModuleConfig()
+	public WebserverModuleConfig(Logger logger)
 	{
 
+		this.logger = logger;
 	}
 
 	public WebserverModuleConfig load() throws IOException
@@ -46,7 +49,7 @@ public class WebserverModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + WebserverModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex, () -> "Could not find config file " + WebserverModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 

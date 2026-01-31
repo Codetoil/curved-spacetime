@@ -19,23 +19,26 @@
 package io.codetoil.curved_spacetime.render.glfw;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GLFWRenderModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VSYNC = true;
 	private static final String FILENAME = "config/glfw-render-module.config";
+	private final Logger logger;
 	private boolean dirty = false;
 	private boolean vsync;
 
-	public GLFWRenderModuleConfig()
+	public GLFWRenderModuleConfig(Logger logger)
 	{
+		this.logger = logger;
 	}
 
 	public boolean hasVSync()
@@ -53,7 +56,7 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + GLFWRenderModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex, () -> "Could not find config file " + GLFWRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -63,7 +66,7 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 			this.vsync = Boolean.parseBoolean(vsyncPropValue.toString());
 		} else
 		{
-			Logger.warn("Could not find required key vsync, resetting to default {}",
+			logger.warning("Could not find required key vsync, resetting to default " +
 					GLFWRenderModuleConfig.DEFAULT_VSYNC);
 			this.vsync = GLFWRenderModuleConfig.DEFAULT_VSYNC;
 			this.dirty = true;
@@ -74,7 +77,7 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + GLFWRenderModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex, () -> "Could not find config file " + GLFWRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 

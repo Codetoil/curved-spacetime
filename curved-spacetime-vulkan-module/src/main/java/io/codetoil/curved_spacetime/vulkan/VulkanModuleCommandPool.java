@@ -22,18 +22,20 @@ import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
-import org.tinylog.Logger;
 
 import java.nio.LongBuffer;
+import java.util.logging.Logger;
 
 public class VulkanModuleCommandPool
 {
 	private final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
 	private final long vkCommandPool;
+	private final Logger logger;
 
-	public VulkanModuleCommandPool(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex)
+	public VulkanModuleCommandPool(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex, Logger logger)
 	{
-		Logger.debug("Creating Vulkan CommandPool for " + vulkanModuleLogicalDevice);
+		this.logger = logger;
+		this.logger.fine("Creating Vulkan CommandPool for " + vulkanModuleLogicalDevice);
 
 		this.vulkanModuleLogicalDevice = vulkanModuleLogicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())

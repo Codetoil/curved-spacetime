@@ -76,7 +76,7 @@ public class MainModuleConfig
 			}
 		} else
 		{
-			logger.warning(() -> "Could not find required key fps, valid bounds [1,1000], resetting to default " +
+			logger.warning("Could not find required key fps, valid bounds [1,1000], resetting to default " +
 					MainModuleConfig.DEFAULT_FPS);
 			this.fps = MainModuleConfig.DEFAULT_FPS;
 			this.dirty = true;

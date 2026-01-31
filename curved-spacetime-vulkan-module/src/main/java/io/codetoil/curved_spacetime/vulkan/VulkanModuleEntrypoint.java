@@ -26,11 +26,13 @@ import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModul
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class VulkanModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
+	private final Logger logger = Logger.getLogger("Curved Spacetime Vulkan Module Logger");
 	private VulkanModuleVulkan vulkan;
 
 	@Override
@@ -38,7 +40,7 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 	{
 		try
 		{
-			this.config = new VulkanModuleConfig().load();
+			this.config = new VulkanModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -50,7 +52,7 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 		{
 			MainModuleEngine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
 					(VulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
-							vulkanModuleDependentModuleInitializer.onInitialize(this));
+							vulkanModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -61,6 +63,12 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

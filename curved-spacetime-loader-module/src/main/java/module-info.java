@@ -21,6 +21,7 @@
  *
  */
 module io.codetoil.curved_spacetime.loader {
+	requires java.logging;
 	exports io.codetoil.curved_spacetime.loader;
 	exports io.codetoil.curved_spacetime.loader.entrypoint;
 }

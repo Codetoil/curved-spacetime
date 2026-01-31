@@ -24,20 +24,23 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkSubmitInfo;
-import org.tinylog.Logger;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
+import java.util.logging.Logger;
 
 public class VulkanModuleQueue
 {
 
 	protected final int queueFamilyIndex;
 	protected final VkQueue vkQueue;
+	protected final Logger logger;
 
-	public VulkanModuleQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex, int queueIndex)
+	public VulkanModuleQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex, int queueIndex,
+							 Logger logger)
 	{
-		Logger.debug(
+		this.logger = logger;
+		this.logger.fine(
 				"Creating queue for " + vulkanModuleLogicalDevice + " queueFamilyIndex " + queueFamilyIndex +
 						" queueIndex " +
 						queueIndex);

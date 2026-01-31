@@ -18,18 +18,20 @@
 
 package io.codetoil.curved_spacetime.simulator;
 
-import io.codetoil.curved_spacetime.simulator.entrypoint.SimulatorModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.simulator.entrypoint.SimulatorModuleDependentModuleInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class SimulatorModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final Logger logger = Logger.getLogger("Curved Spacetime Simulator Module Logger");
 	private ModuleConfig config;
 
 	@Override
@@ -37,7 +39,7 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 	{
 		try
 		{
-			this.config = new SimulatorModuleConfig().load();
+			this.config = new SimulatorModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -45,9 +47,10 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			MainModuleEngine.callDependents("simulator_module_dependent", SimulatorModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("simulator_module_dependent",
+					SimulatorModuleDependentModuleInitializer.class,
 					(SimulatorModuleDependentModuleInitializer simulatorModuleDependentModuleInitializer) ->
-							simulatorModuleDependentModuleInitializer.onInitialize(this));
+							simulatorModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -58,6 +61,12 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

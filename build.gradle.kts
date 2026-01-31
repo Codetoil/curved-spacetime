@@ -45,7 +45,7 @@ tasks.register("cleanJar") {
                 folderIt.listFiles()!!.forEach { fileIt ->
                     run {
                         if (fileIt.name.contains(".jar")) {
-                            fileIt.delete();
+                            fileIt.delete()
                             println("deleted: ${fileIt.path}")
                         }
                         if (fileIt.name.contains("LICENSE.md")) {

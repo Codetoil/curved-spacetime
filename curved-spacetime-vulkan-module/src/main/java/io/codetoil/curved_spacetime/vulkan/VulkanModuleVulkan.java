@@ -18,11 +18,12 @@ public class VulkanModuleVulkan extends MainCallback
 
 	public void init()
 	{
-		this.vulkanModuleVulkanInstance = new VulkanModuleVulkanInstance(entrypoint);
+		this.vulkanModuleVulkanInstance = new VulkanModuleVulkanInstance(this.entrypoint,
+				this.entrypoint.getLogger());
 		this.vulkanModulePhysicalDevice =
 				VulkanModulePhysicalDevice.createPhysicalDevice(this.vulkanModuleVulkanInstance,
-						entrypoint);
-		this.vulkanModuleLogicalDevice = new VulkanModuleLogicalDevice(this.vulkanModulePhysicalDevice);
+						entrypoint, this.entrypoint.getLogger());
+		this.vulkanModuleLogicalDevice = new VulkanModuleLogicalDevice(this.vulkanModulePhysicalDevice, this.entrypoint.getLogger());
 	}
 
 	@Override

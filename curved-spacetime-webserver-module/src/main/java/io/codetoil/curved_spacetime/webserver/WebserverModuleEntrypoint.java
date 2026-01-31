@@ -29,10 +29,12 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class WebserverModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final Logger logger = Logger.getLogger("Curved Spacetime Webserver Module Logger");
 	private ModuleConfig config;
 
 	@Override
@@ -40,11 +42,11 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 	{
 		try
 		{
-			this.config = new WebserverModuleConfig().load();
+			this.config = new WebserverModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+			throw new RuntimeException("Failed to load Webserver Module Config", ex);
 		}
 
 		try
@@ -66,9 +68,10 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 		System.out.println("Started test server");
 		try
 		{
-			MainModuleEngine.callDependents("webserver_module_dependent", WebserverModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("webserver_module_dependent",
+					WebserverModuleDependentModuleInitializer.class,
 					(WebserverModuleDependentModuleInitializer webserverModuleDependentModuleInitializer) ->
-							webserverModuleDependentModuleInitializer.onInitialize(this));
+							webserverModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -79,6 +82,12 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

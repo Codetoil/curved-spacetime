@@ -27,19 +27,21 @@ import io.codetoil.curved_spacetime.render.glfw.entrypoint.GLFWRenderModuleDepen
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
 	private RenderModuleEntrypoint renderModuleEntrypoint;
+	private final Logger logger = Logger.getLogger("Curved Spacetime GLFW Render Module Logger");
 
 	@Override
 	public void onInitialize()
 	{
 		try
 		{
-			this.config = new GLFWRenderModuleConfig().load();
+			this.config = new GLFWRenderModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -57,7 +59,8 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 			MainModuleEngine.callDependents("glfw_render_module_dependent",
 					GLFWRenderModuleDependentModuleInitializer.class,
 					(GLFWRenderModuleDependentModuleInitializer glfwRenderModuleDependentModuleInitializer) ->
-							glfwRenderModuleDependentModuleInitializer.onInitialize(this));
+							glfwRenderModuleDependentModuleInitializer.onInitialize(this),
+					this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -78,6 +81,12 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override
