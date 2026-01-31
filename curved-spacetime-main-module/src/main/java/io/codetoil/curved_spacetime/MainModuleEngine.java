@@ -22,7 +22,6 @@ import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.scene.Scene;
 import io.codetoil.curved_spacetime.scene.SceneCallback;
-import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -34,6 +33,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class MainModuleEngine
 {
@@ -46,6 +46,7 @@ public class MainModuleEngine
 	private final List<Scene> scenes = new ArrayList<>();
 	protected Future<?> callbackInitializeHandler;
 	protected ScheduledFuture<?> callbackLoopHandler;
+	public final Logger mainModuleLogger = Logger.getLogger("Curved Spacetime Main Module");
 
 	public MainModuleEngine(CurvedSpacetimeLoader loader)
 	{
@@ -53,7 +54,7 @@ public class MainModuleEngine
 		this.loader = loader;
 		try
 		{
-			this.mainModuleConfig = new MainModuleConfig().load();
+			this.mainModuleConfig = new MainModuleConfig(this.mainModuleLogger).load();
 			if (this.mainModuleConfig.isDirty()) this.mainModuleConfig.save();
 		} catch (IOException ex)
 		{
@@ -62,16 +63,16 @@ public class MainModuleEngine
 		registerScene(new Scene());
 		//registerScene(new Scene());
 		this.callbackExecutor = Executors.newSingleThreadScheduledExecutor();
-		Logger.info("Running Entrypoints in parallel");
+		mainModuleLogger.info(() -> "Running Entrypoints in parallel");
 		this.runEntrypoints();
-		Logger.info("Initializing Scene Callbacks");
+		mainModuleLogger.info(() -> "Initializing Scene Callbacks");
 		this.callbackInitializeHandler = this.callbackExecutor.submit(() -> {
 			this.mainCallbacks.forEach(MainCallback::init);
 			this.sceneCallbacks.forEach((_,
 										 sceneCallbacksForGenerator) ->
 					sceneCallbacksForGenerator.forEach(SceneCallback::init));
 		});
-		Logger.info("Looping Scene Callbacks");
+		mainModuleLogger.info(() -> "Looping Scene Callbacks");
 		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() -> {
 					this.mainCallbacks.forEach(MainCallback::loop);
 					this.sceneCallbacks.forEach((_,
@@ -88,7 +89,7 @@ public class MainModuleEngine
 		try
 		{
 			MainModuleEngine.callDependents("main", ModuleInitializer.class,
-					ModuleInitializer::onInitialize);
+					ModuleInitializer::onInitialize, this.mainModuleLogger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -97,18 +98,18 @@ public class MainModuleEngine
 
 	public static <E> void callDependents(String name,
 										  Class<E> moduleInitializerClass,
-										  Consumer<E> onInitialize)
+										  Consumer<E> onInitialize,
+										  Logger logger)
 			throws Throwable
 	{
-		Logger.trace("Dependents of {}: {}\n", name,
-				INSTANCE.loader.getEntrypoints(name, moduleInitializerClass));
+		logger.fine(() -> "Dependents of " + name + ": " + moduleInitializerClass + "\n");
 		try (ExecutorService moduleInitializerThreadPool = Executors.newCachedThreadPool())
 		{
 			CompletionService<?> completionService = new ExecutorCompletionService<>(moduleInitializerThreadPool);
 			List<Future<?>> futures = new ArrayList<>();
 			INSTANCE.loader.invokeEntrypoints(name, moduleInitializerClass, moduleInitializer ->
 					futures.add(completionService.submit(() -> {
-						Logger.trace("{}: Calling {}.", name, moduleInitializer);
+						logger.finer(() -> name + ": Calling " + moduleInitializer + ".");
 						onInitialize.accept(moduleInitializer);
 					}, null)));
 			moduleInitializerThreadPool.shutdown();

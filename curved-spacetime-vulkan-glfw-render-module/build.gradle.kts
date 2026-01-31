@@ -8,6 +8,11 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
+val lwjglVersion: String by project
+val junitVersion: String by project
+val fabricMixinVersion: String by project
+val quiltLoaderVersion: String by project
+
 val nonJar by configurations.creating
 
 dependencies {
@@ -19,12 +24,7 @@ dependencies {
     api(project(":curved-spacetime-glfw-render-module"))
     api(project(":curved-spacetime-vulkan-render-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
-
-    implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
-
-    implementation("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
-    implementation("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }
 
 tasks.named<Test>("test") {

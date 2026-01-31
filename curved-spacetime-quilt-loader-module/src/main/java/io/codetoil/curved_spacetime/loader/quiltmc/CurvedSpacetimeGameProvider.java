@@ -48,7 +48,7 @@ import java.util.*;
 
 public class CurvedSpacetimeGameProvider implements GameProvider
 {
-	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.engine.Engine";
+	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.MainModuleEngine";
 	private final List<Path> gameJars = new ArrayList<>();
 	private final List<Path> miscGameLibraries = new ArrayList<>();
 	private final GameTransformer transformer = new GameTransformer();

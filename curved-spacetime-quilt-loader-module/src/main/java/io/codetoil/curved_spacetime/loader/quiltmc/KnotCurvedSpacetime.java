@@ -18,16 +18,17 @@
 
 package io.codetoil.curved_spacetime.loader.quiltmc;
 
-import io.codetoil.curved_spacetime.loader.quiltmc.log.TinyLogLogHandler;
 import net.fabricmc.api.EnvType;
 import org.quiltmc.loader.impl.launch.knot.Knot;
 import org.quiltmc.loader.impl.util.SystemProperties;
+import org.quiltmc.loader.impl.util.log.ConsoleLogHandler;
 import org.quiltmc.loader.impl.util.log.Log;
+import org.quiltmc.loader.impl.util.log.LogHandler;
 
 public class KnotCurvedSpacetime
 {
 	public static final EnvType CURVED_SPACETIME = EnvType.valueOf("CURVED_SPACETIME");
-	public static final TinyLogLogHandler LOG_HANDLER = new TinyLogLogHandler();
+	public static final LogHandler LOG_HANDLER = new ConsoleLogHandler();
 
 	static void main(String[] args)
 	{
