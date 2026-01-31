@@ -102,7 +102,7 @@ public class MainModuleEngine
 										  Logger logger)
 			throws Throwable
 	{
-		logger.fine("Dependents of " + name + ": " + moduleInitializerClass + "\n");
+		logger.finer("Dependents of " + name + ": " + moduleInitializerClass + "\n");
 		try (ExecutorService moduleInitializerThreadPool = Executors.newCachedThreadPool())
 		{
 			CompletionService<?> completionService = new ExecutorCompletionService<>(moduleInitializerThreadPool);
