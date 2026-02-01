@@ -27,11 +27,13 @@ import io.codetoil.curved_spacetime.webserver.openapi.entrypoint.WebserverOpenAP
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
+	private final Logger logger = Logger.getLogger("Webserver OpenAPI Module Logger");
 	private WebserverModuleEntrypoint webserverModuleEntrypoint = null;
 
 	@Override
@@ -39,7 +41,7 @@ public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 	{
 		try
 		{
-			this.config = new WebserverOpenAPIModuleConfig().load();
+			this.config = new WebserverOpenAPIModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -51,7 +53,7 @@ public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 					WebserverOpenAPIModuleDependentModuleInitializer.class,
 					(WebserverOpenAPIModuleDependentModuleInitializer webserverOpenAPIModuleDependentModuleInitializer)
 							-> webserverOpenAPIModuleDependentModuleInitializer
-							.onInitialize(this));
+							.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -62,6 +64,12 @@ public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

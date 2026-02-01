@@ -30,11 +30,13 @@ import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
+	private final Logger logger = Logger.getLogger("Vulkan GLFW Render Module Logger");
 	private GLFWRenderModuleEntrypoint glfwRenderModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
@@ -45,7 +47,7 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	{
 		try
 		{
-			this.config = new VulkanGLFWRenderModuleConfig().load();
+			this.config = new VulkanGLFWRenderModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -66,7 +68,7 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 			MainModuleEngine.callDependents("vulkan_glfw_render_module_dependent",
 					VulkanGLFWRenderModuleDependentModuleInitializer.class,
 					(VulkanGLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
-							vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
+							vulkanGLFWModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -104,6 +106,12 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

@@ -1,16 +1,5 @@
 {
   "reflection": [
-    {
-      "type": "org.tinylog.writers.ConsoleWriter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        }
-      ]
-    }
   ],
   "resources": [
     {

@@ -27,14 +27,17 @@ import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 
 import java.nio.IntBuffer;
+import java.util.logging.Logger;
 
 public abstract class VulkanRenderModuleSurface
 {
 	protected final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
+	protected final Logger logger;
 
-	public VulkanRenderModuleSurface(VulkanModulePhysicalDevice vulkanModulePhysicalDevice)
+	public VulkanRenderModuleSurface(VulkanModulePhysicalDevice vulkanModulePhysicalDevice, Logger logger)
 	{
 		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
+		this.logger = logger;
 	}
 
 	public abstract void cleanup();

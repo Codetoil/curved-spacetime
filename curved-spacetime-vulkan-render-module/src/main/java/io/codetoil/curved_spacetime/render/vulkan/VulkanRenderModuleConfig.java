@@ -19,22 +19,25 @@
 package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VulkanRenderModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "config/vulkan-render-module.config";
+	private final Logger logger;
 	private boolean dirty = false;
 
-	public VulkanRenderModuleConfig()
+	public VulkanRenderModuleConfig(Logger logger)
 	{
 
+		this.logger = logger;
 	}
 
 	public VulkanRenderModuleConfig load() throws IOException
@@ -46,7 +49,7 @@ public class VulkanRenderModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + VulkanRenderModuleConfig.FILENAME);
+			this.logger.log(Level.WARNING, ex, () -> "Could not find config file " + VulkanRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 

@@ -21,7 +21,6 @@
  *
  */
 module io.codetoil.curved_spacetime.render.vulkan_glfw {
-	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.vulkan;
 	requires io.codetoil.curved_spacetime.render;
@@ -31,6 +30,7 @@ module io.codetoil.curved_spacetime.render.vulkan_glfw {
 	requires org.lwjgl.vulkan;
 	requires org.lwjgl.glfw;
 	requires io.codetoil.curved_spacetime.loader;
+	requires java.logging;
 
 	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
 	exports io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint;

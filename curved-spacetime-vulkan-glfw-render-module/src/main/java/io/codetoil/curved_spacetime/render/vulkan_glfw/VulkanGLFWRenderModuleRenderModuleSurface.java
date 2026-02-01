@@ -26,9 +26,9 @@ import org.lwjgl.glfw.GLFWVulkan;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
-import org.tinylog.Logger;
 
 import java.nio.LongBuffer;
+import java.util.logging.Logger;
 
 public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModuleSurface
 {
@@ -39,10 +39,10 @@ public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModul
 
 	public VulkanGLFWRenderModuleRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
 													 VulkanModulePhysicalDevice vulkanModulePhysicalDevice,
-													 long windowHandle)
+													 long windowHandle, Logger logger)
 	{
-		super(vulkanModulePhysicalDevice);
-		Logger.debug("Creating vulkan glfw surface");
+		super(vulkanModulePhysicalDevice, logger);
+		this.logger.fine("Creating vulkan glfw surface");
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			LongBuffer pSurface = stack.mallocLong(1);
@@ -61,7 +61,7 @@ public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModul
 
 	public void cleanup()
 	{
-		Logger.debug("Destroying Vulkan surface");
+		this.logger.fine("Destroying Vulkan surface");
 		this.surfaceCaps.free();
 		KHRSurface.vkDestroySurfaceKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice().getInstance(), this.vkSurface,
 				null);

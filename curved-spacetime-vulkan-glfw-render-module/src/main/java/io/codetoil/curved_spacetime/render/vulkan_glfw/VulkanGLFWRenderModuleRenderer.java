@@ -29,6 +29,8 @@ import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSwapChain;
 import io.codetoil.curved_spacetime.scene.Scene;
 import io.codetoil.curved_spacetime.vulkan.*;
 
+import java.util.logging.Logger;
+
 public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 {
 	private final VulkanGLFWRenderModuleEntrypoint entrypoint;
@@ -48,6 +50,8 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 
 	public void init()
 	{
+		Logger logger = this.entrypoint.getLogger();
+
 		VulkanModuleVulkanInstance vulkanModuleVulkanInstance = entrypoint.getVulkanModuleEntrypoint().getVulkan()
 				.getVulkanModuleVulkanInstance();
 		VulkanModulePhysicalDevice vulkanModulePhysicalDevice = entrypoint.getVulkanModuleEntrypoint().getVulkan()
@@ -61,8 +65,8 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 
 		this.vulkanRenderModuleSurface = new VulkanGLFWRenderModuleRenderModuleSurface(vulkanModuleVulkanInstance,
 				vulkanModulePhysicalDevice,
-				this.vulkanGLFWRenderWindow.getWindowHandle());
-		this.vulkanGraphicsQueue = new VulkanRenderModuleGraphicsQueue(vulkanModuleLogicalDevice, 0);
+				this.vulkanGLFWRenderWindow.getWindowHandle(), logger);
+		this.vulkanGraphicsQueue = new VulkanRenderModuleGraphicsQueue(vulkanModuleLogicalDevice, 0, logger);
 		//this.vulkanGraphicsPresentQueue =
 		//		new VulkanGraphicsQueue.VulkanGraphicsPresentQueue(this.vulkanInstance.getVulkanLogicalDevice(),
 		//				this.vulkanSurface, 0);
@@ -72,7 +76,7 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 						((VulkanGLFWRenderModuleConfig) this.entrypoint.getConfig())
 								.getRequestedImages(),
 						((GLFWRenderModuleConfig) this.entrypoint.getGlfwRenderModuleEntrypoint().getConfig())
-								.hasVSync());//, this.vulkanGraphicsPresentQueue,
+								.hasVSync(), logger);//, this.vulkanGraphicsPresentQueue,
 		// new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
 		/*this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
