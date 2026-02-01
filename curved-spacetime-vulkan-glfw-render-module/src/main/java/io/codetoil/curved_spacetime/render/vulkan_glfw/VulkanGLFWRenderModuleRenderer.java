@@ -82,7 +82,7 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 				this.vulkanGraphicsQueue.getQueueFamilyIndex());
 		this.vulkanForwardRenderActivity =
 				new VulkanForwardRenderActivity(this.vulkanSwapChain, this.vulkanGraphicsCommandPool);*/
-
+		this.initialized = true;
 	}
 
 	public void loop()

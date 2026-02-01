@@ -21,10 +21,16 @@ package io.codetoil.curved_spacetime;
 public abstract class MainCallback
 {
 	protected final MainModuleEngine mainModuleEngine;
+	protected boolean initialized = false;
 
 	protected MainCallback(MainModuleEngine mainModuleEngine)
 	{
 		this.mainModuleEngine = mainModuleEngine;
+	}
+
+	public boolean isInitialized()
+	{
+		return this.initialized;
 	}
 
 	public abstract void init();

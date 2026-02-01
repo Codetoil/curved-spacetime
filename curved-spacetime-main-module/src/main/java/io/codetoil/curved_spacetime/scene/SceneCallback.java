@@ -24,11 +24,17 @@ public abstract class SceneCallback
 {
 	protected final MainModuleEngine mainModuleEngine;
 	protected final Scene scene;
+	protected boolean initialized = false;
 
 	protected SceneCallback(MainModuleEngine mainModuleEngine, Scene scene)
 	{
 		this.mainModuleEngine = mainModuleEngine;
 		this.scene = scene;
+	}
+
+	public boolean isInitialized()
+	{
+		return this.initialized;
 	}
 
 	public abstract void init();

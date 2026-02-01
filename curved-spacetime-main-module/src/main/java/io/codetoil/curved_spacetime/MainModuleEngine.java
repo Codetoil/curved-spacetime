@@ -156,12 +156,18 @@ public class MainModuleEngine
 
 	public void registerMainCallback(MainCallback mainCallback)
 	{
-		this.mainCallbacks.add(mainCallback);
+		callbackExecutor.submit(() -> {
+			this.mainCallbacks.add(mainCallback);
+			mainCallback.init();
+		});
 	}
 
 	public void registerSceneCallbackGenerator(Function<Scene, SceneCallback> sceneCallbackGenerator)
 	{
-		this.sceneCallbacks.put(sceneCallbackGenerator, this.scenes.stream().map(sceneCallbackGenerator).toList());
+		callbackExecutor.submit(() -> {
+			this.sceneCallbacks.put(sceneCallbackGenerator, this.scenes.stream().map(sceneCallbackGenerator).toList());
+			this.sceneCallbacks.get(sceneCallbackGenerator).forEach(SceneCallback::init);
+		});
 	}
 
 	public void stop()
