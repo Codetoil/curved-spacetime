@@ -2,7 +2,7 @@
 
 ## Vulkan Book
 
-https://github.com/lwjglgamedev/vulkanbook/tree/ebe25ab57930b80b62e915fed8de5f97169ecd72
+https://github.com/lwjglgamedev/vulkanbook/tree/ee8d2d583f8c5f30768081646cffcde8bda9a9d4
 ./vulkanbook.epub
 
 ```
