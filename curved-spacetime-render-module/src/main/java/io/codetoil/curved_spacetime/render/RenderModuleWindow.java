@@ -18,18 +18,18 @@
 
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 
 public abstract class RenderModuleWindow
 {
-	protected final Engine engine;
+	protected final MainModuleEngine mainModuleEngine;
 	protected final String title;
 	protected RenderModuleKeyboardInput renderModuleKeyboardInput;
 	protected RenderModuleMouseInput renderModuleMouseInput;
 
-	protected RenderModuleWindow(Engine engine, String title)
+	protected RenderModuleWindow(MainModuleEngine mainModuleEngine, String title)
 	{
-		this.engine = engine;
+		this.mainModuleEngine = mainModuleEngine;
 		this.title = title;
 	}
 

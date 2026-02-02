@@ -22,7 +22,8 @@ import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
-import org.tinylog.Logger;
+
+import java.util.logging.Logger;
 
 public class VulkanModuleCommandBuffer
 {
@@ -30,10 +31,13 @@ public class VulkanModuleCommandBuffer
 	private final boolean oneTimeSubmit;
 	private final VkCommandBuffer vkCommandBuffer;
 	private final boolean primary;
+	private final Logger logger;
 
-	public VulkanModuleCommandBuffer(VulkanModuleCommandPool commandPool, boolean primary, boolean oneTimeSubmit)
+	public VulkanModuleCommandBuffer(VulkanModuleCommandPool commandPool, boolean primary, boolean oneTimeSubmit,
+									 Logger logger)
 	{
-		Logger.trace("Creating command buffer");
+		this.logger = logger;
+		this.logger.finer("Creating command buffer");
 		this.commandPool = commandPool;
 		this.primary = primary;
 		this.oneTimeSubmit = oneTimeSubmit;
@@ -90,7 +94,7 @@ public class VulkanModuleCommandBuffer
 
 	public void cleanup()
 	{
-		Logger.trace("Destroying command buffer");
+		this.logger.finer("Destroying command buffer");
 		VK13.vkFreeCommandBuffers(this.commandPool.getVulkanLogicalDevice().getVkDevice(),
 				this.commandPool.getVkCommandPool(), this.vkCommandBuffer);
 	}

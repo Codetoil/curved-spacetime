@@ -9,6 +9,11 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
+val lwjglVersion: String by project
+val junitVersion: String by project
+val fabricMixinVersion: String by project
+val quiltLoaderVersion: String by project
+
 val nonJar by configurations.creating
 
 tasks.named<Test>("test") {
@@ -28,17 +33,13 @@ tasks.shadowJar {
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
-    api("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
-    api("com.google.guava:guava:${rootProject.extra["guavaVersion"]}")
     api(project(":curved-spacetime-loader-module"))
 
-    implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 
-    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
-
-    runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}")
-    (rootProject.extra["lwjglNativesNames"] as List<*>)
-        .forEach { runtimeOnly("org.lwjgl:lwjgl:${rootProject.extra["lwjglVersion"]}:${it}") }
+    runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}")
+    (lwjglNativesNames as List<*>)
+        .forEach { runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}:${it}") }
 }
 
 publishing {

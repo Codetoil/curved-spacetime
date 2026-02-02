@@ -18,26 +18,28 @@
 
 package io.codetoil.curved_spacetime.cli;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.engine.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class CLIModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
+	private Logger logger = Logger.getLogger("Curved Spacetime CLI Module Logger");
 
 	@Override
 	public void onInitialize()
 	{
 		try
 		{
-			this.config = new CLIModuleConfig().load();
+			this.config = new CLIModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -45,9 +47,9 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			Engine.callDependents("cli_module_dependent", CLIModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("cli_module_dependent", CLIModuleDependentModuleInitializer.class,
 					(CLIModuleDependentModuleInitializer cliModuleDependentModuleInitializer) ->
-							cliModuleDependentModuleInitializer.onInitialize(this));
+							cliModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -58,6 +60,12 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

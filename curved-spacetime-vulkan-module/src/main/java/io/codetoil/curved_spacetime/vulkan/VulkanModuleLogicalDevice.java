@@ -22,7 +22,6 @@ import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
-import org.tinylog.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -30,15 +29,19 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class VulkanModuleLogicalDevice
 {
 	private final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
 	private final VkDevice vkDevice;
 
-	public VulkanModuleLogicalDevice(VulkanModulePhysicalDevice vulkanModulePhysicalDevice)
+	private final Logger logger;
+
+	public VulkanModuleLogicalDevice(VulkanModulePhysicalDevice vulkanModulePhysicalDevice, Logger logger)
 	{
-		Logger.debug("Creating logical device");
+		this.logger = logger;
+		this.logger.fine("Creating logical device");
 
 		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
@@ -106,7 +109,7 @@ public class VulkanModuleLogicalDevice
 					(String) null,
 					numExtensionsBuf, null);
 			int numExtensions = numExtensionsBuf.get(0);
-			Logger.debug("Device supports [{}] extensions", numExtensions);
+			this.logger.fine("Device supports [" + numExtensions + "] extensions");
 
 			VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions, stack);
 			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
@@ -117,7 +120,7 @@ public class VulkanModuleLogicalDevice
 				VkExtensionProperties props = propsBuff.get(index);
 				String extensionName = props.extensionNameString();
 				deviceExtensions.add(extensionName);
-				Logger.debug("Supported device extension [{}]", extensionName);
+				this.logger.fine("Supported device extension [" + extensionName + "]");
 			}
 		}
 		return deviceExtensions;
@@ -125,7 +128,7 @@ public class VulkanModuleLogicalDevice
 
 	public void cleanup()
 	{
-		Logger.debug("Destroying Vulkan device");
+		this.logger.fine("Destroying Vulkan device");
 		VK13.vkDestroyDevice(this.vkDevice, null);
 	}
 

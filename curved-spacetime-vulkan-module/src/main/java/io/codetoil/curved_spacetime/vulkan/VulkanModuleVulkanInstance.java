@@ -23,7 +23,6 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.*;
-import org.tinylog.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class VulkanModuleVulkanInstance
 {
@@ -51,15 +50,15 @@ public class VulkanModuleVulkanInstance
 			"VK_LAYER_GOOGLE_unique_objects");
 	public static final String PORTABILITY_EXTENSION =
 			KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
-	public static final String DBG_CALLBACK_PREF = "VkDebugUtilsCallback, {}";
-
+	public static final String DBG_CALLBACK_PREF = "VkDebugUtilsCallback, ";
+	protected final Logger logger;
 	protected VkInstance vkInstance;
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 	protected long vkDebugHandle;
 
-	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint,
-									  Supplier<PointerBuffer> windowExtensionsGetter)
+	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint, Logger logger)
 	{
+		this.logger = logger;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			ByteBuffer appShortName = stack.UTF8("CurvedSpacetime");
@@ -73,7 +72,7 @@ public class VulkanModuleVulkanInstance
 
 			// Validation layers
 			boolean validation = ((VulkanModuleConfig) vulkanModuleEntrypoint.getConfig()).validation();
-			List<String> validationLayers = List.of();
+			List<String> validationLayers;
 			int numValidationLayers = 0;
 
 			if (validation)
@@ -83,11 +82,14 @@ public class VulkanModuleVulkanInstance
 				if (numValidationLayers == 0)
 				{
 					validation = false;
-					Logger.warn("Request validation but no supported validation layers found. " +
+					this.logger.warning("Request validation but no supported validation layers found. " +
 							"Falling back to no validation");
 				}
+			} else
+			{
+				validationLayers = List.of();
 			}
-			Logger.debug("Validation: {}", validation);
+			this.logger.fine("Validation: " + validation);
 
 			// Set required layers
 			PointerBuffer requiredLayers = null;
@@ -96,7 +98,7 @@ public class VulkanModuleVulkanInstance
 				requiredLayers = stack.mallocPointer(numValidationLayers);
 				for (int i = 0; i < numValidationLayers; i++)
 				{
-					Logger.debug("Using validation layer [{}]", validationLayers.get(i));
+					this.logger.fine("Using validation layer [" + validationLayers.get(i) + "]");
 					requiredLayers.put(i, stack.ASCII(validationLayers.get(i)));
 				}
 			}
@@ -105,12 +107,6 @@ public class VulkanModuleVulkanInstance
 
 			boolean usePortability = instanceExtensions.contains(PORTABILITY_EXTENSION) &&
 					VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
-
-			PointerBuffer windowExtensions = windowExtensionsGetter.get();
-			if (windowExtensions == null)
-			{
-				throw new RuntimeException("Failed to find the Window extensions");
-			}
 
 			List<ByteBuffer> additionalExtensions = new ArrayList<>();
 			if (validation)
@@ -123,9 +119,7 @@ public class VulkanModuleVulkanInstance
 			}
 			int numAdditionalExtensions = additionalExtensions.size();
 
-			PointerBuffer requiredExtensions = stack.mallocPointer(windowExtensions.remaining() +
-					numAdditionalExtensions);
-			requiredExtensions.put(windowExtensions);
+			PointerBuffer requiredExtensions = stack.mallocPointer(numAdditionalExtensions);
 			for (int i = 0; i < numAdditionalExtensions; i++)
 			{
 				requiredExtensions.put(additionalExtensions.get(i));
@@ -135,11 +129,12 @@ public class VulkanModuleVulkanInstance
 			long extension = MemoryUtil.NULL;
 			if (validation)
 			{
-				this.debugUtils = createDebugCallback();
+				this.debugUtils = createDebugCallback(this.logger);
 				extension = this.debugUtils.address();
 			}
 
 			// Create instance info
+			assert requiredLayers != null;
 			VkInstanceCreateInfo instanceInfo =
 					VkInstanceCreateInfo.calloc(stack)
 							.sType$Default()
@@ -175,7 +170,7 @@ public class VulkanModuleVulkanInstance
 			IntBuffer numLayersArray = stack.callocInt(1);
 			VK13.vkEnumerateInstanceLayerProperties(numLayersArray, null);
 			int numLayers = numLayersArray.get(0);
-			Logger.debug("Instance supports [{}] layers", numLayers);
+			this.logger.fine("Instance supports [" + numLayers + "] layers");
 			VkLayerProperties.Buffer propsBuffer = VkLayerProperties.calloc(numLayers, stack);
 			VK13.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
 			List<String> supportedLayers = new ArrayList<>();
@@ -184,7 +179,7 @@ public class VulkanModuleVulkanInstance
 				VkLayerProperties props = propsBuffer.get(index);
 				String layerName = props.layerNameString();
 				supportedLayers.add(layerName);
-				Logger.debug("Supported Layer [{}]", layerName);
+				this.logger.fine("Supported Layer [" + layerName + "]");
 			}
 			List<String> layersToUse = new ArrayList<>();
 
@@ -217,7 +212,7 @@ public class VulkanModuleVulkanInstance
 			IntBuffer numExtensionsBuf = stack.callocInt(1);
 			VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, null);
 			int numExtensions = numExtensionsBuf.get(0);
-			Logger.debug("Instance supports [{}] extensions", numExtensions);
+			this.logger.fine("Instance supports [" + numExtensions + "] extensions");
 
 			VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions, stack);
 			VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
@@ -226,13 +221,13 @@ public class VulkanModuleVulkanInstance
 				VkExtensionProperties props = instanceExtensionProps.get(index);
 				String extensionName = props.extensionNameString();
 				instanceExtensions.add(extensionName);
-				Logger.debug("Supported instance extension [{}]", extensionName);
+				this.logger.fine("Supported instance extension [" + extensionName + "]");
 			}
 			return instanceExtensions;
 		}
 	}
 
-	private static VkDebugUtilsMessengerCreateInfoEXT createDebugCallback()
+	private static VkDebugUtilsMessengerCreateInfoEXT createDebugCallback(Logger logger)
 	{
 		return VkDebugUtilsMessengerCreateInfoEXT.calloc()
 				.sType$Default()
@@ -243,18 +238,18 @@ public class VulkanModuleVulkanInstance
 							VkDebugUtilsMessengerCallbackDataEXT.create(callbackDataAddress);
 					if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0)
 					{
-						Logger.info(DBG_CALLBACK_PREF, callbackData.pMessageString());
+						logger.info(DBG_CALLBACK_PREF + callbackData.pMessageString());
 					} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) !=
 							0)
 					{
-						Logger.warn(DBG_CALLBACK_PREF, callbackData.pMessageString());
+						logger.warning(DBG_CALLBACK_PREF + callbackData.pMessageString());
 					} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0)
 					{
-						Logger.error(DBG_CALLBACK_PREF, callbackData.pMessageString());
+						logger.severe(DBG_CALLBACK_PREF + callbackData.pMessageString());
 					} else if ((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) !=
 							0)
 					{
-						Logger.debug(DBG_CALLBACK_PREF, callbackData.pMessageString());
+						logger.fine(DBG_CALLBACK_PREF + callbackData.pMessageString());
 					}
 					return VK13.VK_FALSE;
 				});
@@ -262,7 +257,7 @@ public class VulkanModuleVulkanInstance
 
 	public void cleanup()
 	{
-		Logger.debug("Destroying Vulkan Instance");
+		this.logger.fine("Destroying Vulkan Instance");
 		if (this.vkDebugHandle != VK13.VK_NULL_HANDLE)
 		{
 			EXTDebugUtils.vkDestroyDebugUtilsMessengerEXT(this.vkInstance, this.vkDebugHandle, null);

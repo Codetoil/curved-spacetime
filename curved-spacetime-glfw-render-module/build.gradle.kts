@@ -9,6 +9,11 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
+val lwjglVersion: String by project
+val junitVersion: String by project
+val fabricMixinVersion: String by project
+val quiltLoaderVersion: String by project
+
 val nonJar by configurations.creating
 
 dependencies {
@@ -17,13 +22,10 @@ dependencies {
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 
-    implementation("org.tinylog:tinylog-impl:${rootProject.extra["tinyLoggerVersion"]}")
-
-    api("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}")
-    (rootProject.extra["lwjglNativesNames"] as List<*>)
-        .forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${rootProject.extra["lwjglVersion"]}:${it}") }
+    api("org.lwjgl:lwjgl-glfw:${lwjglVersion}")
+    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}:${it}") }
 }
 
 tasks.named<Test>("test") {

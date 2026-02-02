@@ -21,10 +21,9 @@
  *
  */
 module io.codetoil.curved_spacetime.cli {
-	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.loader;
-	requires com.google.common;
+	requires java.logging;
 
 	exports io.codetoil.curved_spacetime.cli;
 	exports io.codetoil.curved_spacetime.cli.entrypoint;

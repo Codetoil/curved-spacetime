@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
@@ -31,7 +31,7 @@ public class RenderModuleDependentGLFWRenderModuleEntrypoint implements RenderMo
 	{
 		try
 		{
-			Engine.getInstance().getCurvedSpacetimeLoader()
+			MainModuleEngine.getInstance().getCurvedSpacetimeLoader()
 					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(GLFWRenderModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(renderModuleEntrypoint);

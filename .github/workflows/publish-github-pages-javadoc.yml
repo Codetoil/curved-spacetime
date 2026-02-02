@@ -52,7 +52,7 @@ jobs:
         with:
           ref: pages
       - name: Download the javadocs from earlier
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: javadoc
       - name: Unpack artifact

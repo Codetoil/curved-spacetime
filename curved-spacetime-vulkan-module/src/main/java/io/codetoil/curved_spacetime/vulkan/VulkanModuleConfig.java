@@ -19,26 +19,29 @@
 package io.codetoil.curved_spacetime.vulkan;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VulkanModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VALIDATE = false;
 	private static final String DEFAULT_PREFERRED_DEVICE_NAME = null;
 	private static final String FILENAME = "config/vulkan-module.config";
+	private final Logger logger;
 	private boolean _validation;
 	private String preferredDeviceName;
 	private boolean dirty = false;
 
-	public VulkanModuleConfig()
+	public VulkanModuleConfig(Logger logger)
 	{
 
+		this.logger = logger;
 	}
 
 	public VulkanModuleConfig load() throws IOException
@@ -50,7 +53,7 @@ public class VulkanModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + VulkanModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex, () -> "Could not find config file " + VulkanModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -60,7 +63,7 @@ public class VulkanModuleConfig implements ModuleConfig
 			this._validation = Boolean.parseBoolean(validatePropValue.toString());
 		} else
 		{
-			Logger.warn("Could not find required key validation, resetting to default {}",
+			logger.warning("Could not find required key validation, resetting to default {}" +
 					VulkanModuleConfig.DEFAULT_VALIDATE);
 			this._validation = VulkanModuleConfig.DEFAULT_VALIDATE;
 			this.dirty = true;

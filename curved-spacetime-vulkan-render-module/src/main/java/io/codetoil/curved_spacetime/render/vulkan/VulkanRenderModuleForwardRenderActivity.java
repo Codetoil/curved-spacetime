@@ -30,6 +30,7 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 
 import java.nio.LongBuffer;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class VulkanRenderModuleForwardRenderActivity
 {
@@ -38,10 +39,13 @@ public class VulkanRenderModuleForwardRenderActivity
 	private final VulkanRenderModuleFrameBuffer[] vulkanRenderModuleFrameBuffers;
 	private final VulkanModuleCommandBuffer[] vulkanModuleCommandBuffers;
 	private final VulkanModuleFence[] vulkanModuleFences;
+	private final Logger logger;
 
 	public VulkanRenderModuleForwardRenderActivity(VulkanRenderModuleSwapChain vulkanRenderModuleSwapChain,
-												   VulkanModuleCommandPool vulkanModuleCommandPool)
+												   VulkanModuleCommandPool vulkanModuleCommandPool,
+												   Logger logger)
 	{
+		this.logger = logger;
 		this.vulkanRenderModuleSwapChain = vulkanRenderModuleSwapChain;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
@@ -71,7 +75,7 @@ public class VulkanRenderModuleForwardRenderActivity
 			for (int i = 0; i < numImages; i++)
 			{
 				this.vulkanModuleCommandBuffers[i] =
-						new VulkanModuleCommandBuffer(vulkanModuleCommandPool, true, false);
+						new VulkanModuleCommandBuffer(vulkanModuleCommandPool, true, false, this.logger);
 				this.vulkanModuleFences[i] = new VulkanModuleFence(vulkanModuleLogicalDevice, true);
 				recordVulkanCommandBuffer(this.vulkanModuleCommandBuffers[i], this.vulkanRenderModuleFrameBuffers[i],
 						vulkanSwapChainExtent.width(), vulkanSwapChainExtent.height());

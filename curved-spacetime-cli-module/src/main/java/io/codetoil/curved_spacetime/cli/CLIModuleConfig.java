@@ -19,22 +19,25 @@
 package io.codetoil.curved_spacetime.cli;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CLIModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "config/cli-module.config";
+	private final Logger logger;
 	private boolean dirty = false;
 
-	public CLIModuleConfig()
+	public CLIModuleConfig(Logger logger)
 	{
 
+		this.logger = logger;
 	}
 
 	public CLIModuleConfig load() throws IOException
@@ -46,7 +49,7 @@ public class CLIModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + CLIModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex, () -> "Could not find config file " + CLIModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 

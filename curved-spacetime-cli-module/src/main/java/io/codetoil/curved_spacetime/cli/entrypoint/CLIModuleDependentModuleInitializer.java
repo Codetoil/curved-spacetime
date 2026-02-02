@@ -18,8 +18,8 @@
 
 package io.codetoil.curved_spacetime.cli.entrypoint;
 
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.cli.CLIModuleEntrypoint;
+import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 
 public interface CLIModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<CLIModuleEntrypoint>
 {

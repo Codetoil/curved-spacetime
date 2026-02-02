@@ -21,11 +21,11 @@
  *
  */
 module io.codetoil.curved_spacetime.render.glfw {
-	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.render;
 	requires io.codetoil.curved_spacetime.loader;
 	requires org.lwjgl.glfw;
+	requires java.logging;
 
 	exports io.codetoil.curved_spacetime.render.glfw;
 	exports io.codetoil.curved_spacetime.render.glfw.entrypoint;

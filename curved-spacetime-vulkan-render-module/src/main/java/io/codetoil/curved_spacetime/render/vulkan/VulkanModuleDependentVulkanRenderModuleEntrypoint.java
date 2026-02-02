@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
@@ -31,7 +31,7 @@ public class VulkanModuleDependentVulkanRenderModuleEntrypoint implements Vulkan
 	{
 		try
 		{
-			Engine.getInstance().getCurvedSpacetimeLoader()
+			MainModuleEngine.getInstance().getCurvedSpacetimeLoader()
 					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(VulkanRenderModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(vulkanModuleEntrypoint);

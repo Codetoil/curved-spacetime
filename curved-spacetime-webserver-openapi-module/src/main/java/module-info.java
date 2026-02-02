@@ -20,10 +20,10 @@
  *
  */
 module io.codetoil.curved_spacetime.webserver.openapi {
-	requires org.tinylog.api;
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.webserver;
 	requires io.codetoil.curved_spacetime.loader;
+	requires java.logging;
 
 	exports io.codetoil.curved_spacetime.webserver.openapi;
 	exports io.codetoil.curved_spacetime.webserver.openapi.entrypoint;

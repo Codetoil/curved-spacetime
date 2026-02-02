@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.webserver.openapi;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
 import io.codetoil.curved_spacetime.webserver.entrypoint.WebserverModuleDependentModuleInitializer;
@@ -32,7 +32,7 @@ public class WebserverModuleDependentWebserverOpenAPIModuleEntrypoint implements
 	{
 		try
 		{
-			Engine.getInstance().getCurvedSpacetimeLoader()
+			MainModuleEngine.getInstance().getCurvedSpacetimeLoader()
 					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(WebserverOpenAPIModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(webserverModuleEntrypoint);

@@ -25,11 +25,11 @@ import io.codetoil.curved_spacetime.vulkan.VulkanModuleSemaphore;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
-import org.tinylog.Logger;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class VulkanRenderModuleSwapChain
 {
@@ -39,17 +39,20 @@ public class VulkanRenderModuleSwapChain
 	protected final VulkanRenderModuleSwapChain.VulkanSurfaceFormat vulkanSurfaceFormat;
 	protected final VkExtent2D vulkanSwapChainExtent;
 	protected final long vkSwapChain;
+	protected final Logger logger;
 	//protected final SynchronizationVulkanSemaphores[] synchronizationVulkanSemaphoresList;
 	protected int currentFrame;
 
 	public VulkanRenderModuleSwapChain(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
 									   VulkanRenderModuleSurface surface, RenderModuleWindow renderModuleWindow,
-									   int requestedImages, boolean vsync//,
+									   int requestedImages, boolean vsync,
+									   Logger logger//,
 									   // VulkanGraphicsQueue.VulkanGraphicsPresentQueue vulkanPresentationQueue,
 									   // VulkanGraphicsQueue[] vulkanConcurrentQueues
 	)
 	{
-		Logger.debug("Creating Vulkan SwapChain");
+		this.logger = logger;
+		this.logger.fine("Creating Vulkan SwapChain");
 		this.vulkanModuleLogicalDevice = vulkanModuleLogicalDevice;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
@@ -129,13 +132,15 @@ public class VulkanRenderModuleSwapChain
 			result = Math.min(requestedImages, maxImages);
 		}
 		result = Math.max(result, minImages);
-		Logger.debug(
-				"Requested [{}] images, got [{}] images. Surface capabilities, maxImages: [{}], minImages: [{}]",
-				requestedImages, result, maxImages, minImages);
+		this.logger.fine(
+				"Requested [" + requestedImages + "] images, got [" + result +
+						"] images. Surface capabilities, maxImages: [" + maxImages + "], minImages: [" + minImages +
+						"]");
 		return result;
 	}
 
-	private VkExtent2D calcSwapChainExtent(RenderModuleWindow renderModuleWindow, VkSurfaceCapabilitiesKHR surfCapabilities)
+	private VkExtent2D calcSwapChainExtent(RenderModuleWindow renderModuleWindow,
+										   VkSurfaceCapabilitiesKHR surfCapabilities)
 	{
 		VkExtent2D result = VkExtent2D.calloc();
 		if (surfCapabilities.currentExtent().width() == 0xFFFFFFFF)
@@ -233,7 +238,7 @@ public class VulkanRenderModuleSwapChain
 
 	public void cleanup()
 	{
-		Logger.debug("Destroying Vulkan SwapChain");
+		this.logger.fine("Destroying Vulkan SwapChain");
 		//Arrays.asList(synchronizationVulkanSemaphoresList).forEach(SynchronizationVulkanSemaphores::cleanup);
 		this.vulkanSwapChainExtent.free();
 		Arrays.asList(this.vulkanRenderModuleImageViews).forEach(VulkanRenderModuleImageView::cleanup);

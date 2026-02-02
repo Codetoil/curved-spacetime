@@ -19,23 +19,26 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 {
 	private static final int DEFAULT_REQUESTED_IMAGES = 2;
 	private static final String FILENAME = "config/vulkan-glfw-render-module.config";
+	private final Logger logger;
 	private int requestedImages;
 	private boolean dirty = false;
 
-	public VulkanGLFWRenderModuleConfig()
+	public VulkanGLFWRenderModuleConfig(Logger logger)
 	{
+		this.logger = logger;
 	}
 
 	public int getRequestedImages()
@@ -52,7 +55,8 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + VulkanGLFWRenderModuleConfig.FILENAME);
+			this.logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + VulkanGLFWRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -65,22 +69,24 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 				this.requestedImages = Integer.parseInt(requestedImagesPropValue.toString());
 			} catch (NumberFormatException ex)
 			{
-				Logger.warn(ex,
-						"Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
-						requestedImagesPropValue, VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+				this.logger.log(Level.WARNING, ex,
+						() -> "Invalid value for key requestedImages: " + requestedImagesPropValue +
+								", lower bound 2, resetting to default " +
+								VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
 				this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 			if (this.requestedImages < 2)
 			{
-				Logger.warn("Invalid value for key requestedImages: {}, " + "lower bound 2, resetting to default {}",
-						this.requestedImages, VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+				this.logger.log(Level.WARNING, "Invalid value for key requestedImages: " + this.requestedImages +
+						", lower bound 2, resetting to default " +
+						VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
 				this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 		} else
 		{
-			Logger.warn("Could not find required key requestedImages, " + "lower bound 2, resetting to default {}",
+			this.logger.warning("Could not find required key requestedImages, lower bound 2, resetting to default " +
 					VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
 			this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 			this.dirty = true;

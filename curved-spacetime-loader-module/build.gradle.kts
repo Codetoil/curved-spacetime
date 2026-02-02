@@ -7,13 +7,17 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
+val lwjglVersion: String by project
+val junitVersion: String by project
+val fabricMixinVersion: String by project
+val quiltLoaderVersion: String by project
+
 val nonJar by configurations.creating
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
-    api("org.tinylog:tinylog-api:${rootProject.extra["tinyLoggerVersion"]}")
 
-    testImplementation(platform("org.junit:junit-bom:${rootProject.extra["junitVersion"]}"))
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }
 
 tasks.test {

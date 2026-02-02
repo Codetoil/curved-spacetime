@@ -19,6 +19,7 @@
 package io.codetoil.curved_spacetime.loader.entrypoint;
 
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public interface ModuleInitializer
 {
@@ -33,7 +34,12 @@ public interface ModuleInitializer
 	ModuleConfig getConfig();
 
 	/**
-	 *
+	 * Gets the logger for this module.
+	 */
+	Logger getLogger();
+
+	/**
+	 * Used to transfer information between modules.
 	 */
 	TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue();
 }

@@ -22,13 +22,13 @@ import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
-import org.tinylog.Logger;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class VulkanModulePhysicalDevice
 {
@@ -47,8 +47,11 @@ public class VulkanModulePhysicalDevice
 	private final VkPhysicalDeviceProperties2 vkPhysicalDeviceProperties;
 	private final VkQueueFamilyProperties.Buffer vkQueueFamilyProps;
 
-	private VulkanModulePhysicalDevice(VkPhysicalDevice vkPhysicalDevice)
+	private final Logger logger;
+
+	private VulkanModulePhysicalDevice(VkPhysicalDevice vkPhysicalDevice, Logger logger)
 	{
+		this.logger = logger;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			this.vkPhysicalDevice = vkPhysicalDevice;
@@ -82,14 +85,15 @@ public class VulkanModulePhysicalDevice
 	}
 
 	public static VulkanModulePhysicalDevice createPhysicalDevice(VulkanModuleVulkanInstance instance,
-																  VulkanModuleEntrypoint vulkanModuleEntrypoint)
+																  VulkanModuleEntrypoint vulkanModuleEntrypoint,
+																  Logger logger)
 	{
-		Logger.debug("Selecting physical devices");
+		logger.fine(() -> "Selecting physical devices");
 		VulkanModulePhysicalDevice selectedVulkanModulePhysicalDevice = null;
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			// Get available devices
-			PointerBuffer pPhysicalDevices = getPhysicalDevices(instance, stack);
+			PointerBuffer pPhysicalDevices = getPhysicalDevices(instance, stack, logger);
 			int numDevices = pPhysicalDevices.capacity();
 			if (numDevices <= 0)
 			{
@@ -101,19 +105,19 @@ public class VulkanModulePhysicalDevice
 			for (int i = 0; i < numDevices; i++)
 			{
 				var vkPhysicalDevice = new VkPhysicalDevice(pPhysicalDevices.get(i), instance.getVkInstance());
-				var physDevice = new VulkanModulePhysicalDevice(vkPhysicalDevice);
+				var physDevice = new VulkanModulePhysicalDevice(vkPhysicalDevice, logger);
 
 				String deviceName = physDevice.getDeviceName();
 				if (!physDevice.hasGraphicsQueueFamily())
 				{
-					Logger.debug("Device [{}] does not support graphics queue family", deviceName);
+					logger.fine(() -> "Device [" + deviceName + "] does not support graphics queue family");
 					physDevice.cleanup();
 					continue;
 				}
 
 				if (!physDevice.supportsExtensions(REQUIRED_EXTENSIONS))
 				{
-					Logger.debug("Device [{}] does not support required extensions", deviceName);
+					logger.fine("Device [" + deviceName + "] does not support required extensions");
 					physDevice.cleanup();
 					continue;
 				}
@@ -147,13 +151,14 @@ public class VulkanModulePhysicalDevice
 				throw new RuntimeException("No suitable physical devices found");
 			}
 
-			Logger.debug("Selected device: [{}]", selectedVulkanModulePhysicalDevice.getDeviceName());
+			logger.fine("Selected device: [" + selectedVulkanModulePhysicalDevice.getDeviceName() + "]");
 
 			return selectedVulkanModulePhysicalDevice;
 		}
 	}
 
-	protected static PointerBuffer getPhysicalDevices(VulkanModuleVulkanInstance instance, MemoryStack stack)
+	protected static PointerBuffer getPhysicalDevices(VulkanModuleVulkanInstance instance, MemoryStack stack,
+													  Logger logger)
 	{
 		PointerBuffer pPhysicalDevices;
 		// Get number of physical devices
@@ -161,7 +166,7 @@ public class VulkanModulePhysicalDevice
 		VulkanUtils.vkCheck(VK13.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, null),
 				"Failed to get number of physical devices");
 		int numDevices = intBuffer.get(0);
-		Logger.debug("Detected {} physical device(s)", numDevices);
+		logger.fine("Detected " + numDevices + " physical device(s)");
 
 		// Populate physical devices list pointer
 		pPhysicalDevices = stack.mallocPointer(numDevices);
@@ -193,8 +198,8 @@ public class VulkanModulePhysicalDevice
 
 	public void cleanup()
 	{
-		Logger.debug("Destroying physical device [{}]",
-				this.vkPhysicalDeviceProperties.properties().deviceNameString());
+		this.logger.fine(
+				"Destroying physical device [" + this.vkPhysicalDeviceProperties.properties().deviceNameString() + "]");
 		this.vkMemoryProperties.free();
 		this.vkPhysicalDeviceFeatures.free();
 		this.vkQueueFamilyProps.free();
@@ -215,9 +220,8 @@ public class VulkanModulePhysicalDevice
 		boolean result = copyExtensions.isEmpty();
 		if (!result)
 		{
-			Logger.debug("At least [{}] extension is not supported by device [{}]",
-					copyExtensions.iterator().next(),
-					getDeviceName());
+			logger.fine("At least [" + copyExtensions.iterator().next() +
+					"] extension is not supported by device [" + getDeviceName() + "]");
 		}
 		return result;
 	}

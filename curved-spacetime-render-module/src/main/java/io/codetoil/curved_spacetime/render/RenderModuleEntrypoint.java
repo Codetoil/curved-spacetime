@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
@@ -26,10 +26,12 @@ import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModul
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class RenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final Logger logger = Logger.getLogger("Curved Spacetime Render Module Logger");
 	private ModuleConfig config;
 
 	@Override
@@ -37,7 +39,7 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 	{
 		try
 		{
-			this.config = new RenderModuleConfig().load();
+			this.config = new RenderModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -45,9 +47,9 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			Engine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
 					(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
-							renderModuleDependentModuleInitializer.onInitialize(this));
+							renderModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -58,6 +60,12 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

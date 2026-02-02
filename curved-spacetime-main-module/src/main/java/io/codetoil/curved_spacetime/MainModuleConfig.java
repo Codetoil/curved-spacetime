@@ -18,21 +18,22 @@
 
 package io.codetoil.curved_spacetime;
 
-import org.tinylog.Logger;
-
 import java.io.*;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainModuleConfig
 {
 	private static final int DEFAULT_FPS = 60;
 	private static final String FILENAME = "config/main-module.config";
+	private final Logger logger;
 	private boolean dirty = false;
 	private int fps;
 
-	public MainModuleConfig()
+	public MainModuleConfig(Logger logger)
 	{
-
+		this.logger = logger;
 	}
 
 	public int getFPS()
@@ -49,7 +50,7 @@ public class MainModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + MainModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex, () -> "Could not find config file " + MainModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -61,21 +62,21 @@ public class MainModuleConfig
 				this.fps = Integer.parseInt(fpsPropValue.toString());
 			} catch (NumberFormatException ex)
 			{
-				Logger.warn(ex, "Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}",
-						fpsPropValue, MainModuleConfig.DEFAULT_FPS);
+				logger.log(Level.WARNING, ex, () -> "Invalid value for key fps: " + fpsPropValue +
+						", valid bounds [1,1000], resetting to default " + MainModuleConfig.DEFAULT_FPS);
 				this.fps = MainModuleConfig.DEFAULT_FPS;
 				this.dirty = true;
 			}
 			if (this.fps < 1 || this.fps > 1000)
 			{
-				Logger.warn("Invalid value for key fps: {}, valid bounds [1,1000], resetting to default {}", this.fps,
-						MainModuleConfig.DEFAULT_FPS);
+				logger.log(Level.WARNING, () -> "Invalid value for key fps: " + fpsPropValue +
+						", valid bounds [1,1000], resetting to default " + MainModuleConfig.DEFAULT_FPS);
 				this.fps = MainModuleConfig.DEFAULT_FPS;
 				this.dirty = true;
 			}
 		} else
 		{
-			Logger.warn("Could not find required key fps, valid bounds [1,1000], resetting to default {}",
+			logger.warning("Could not find required key fps, valid bounds [1,1000], resetting to default " +
 					MainModuleConfig.DEFAULT_FPS);
 			this.fps = MainModuleConfig.DEFAULT_FPS;
 			this.dirty = true;

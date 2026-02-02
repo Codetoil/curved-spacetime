@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
@@ -30,10 +30,12 @@ import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final Logger logger = Logger.getLogger("Vulkan GLFW Render Module Logger");
 	private ModuleConfig config;
 	private GLFWRenderModuleEntrypoint glfwRenderModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
@@ -45,7 +47,7 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	{
 		try
 		{
-			this.config = new VulkanGLFWRenderModuleConfig().load();
+			this.config = new VulkanGLFWRenderModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
@@ -58,15 +60,15 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException(e);
 		}
-		Engine engine = Engine.getInstance();
-		engine.registerSceneCallback("vulkan_glfw_renderer", new VulkanGLFWRenderModuleRenderer(engine, engine.scene,
-				this));
+		MainModuleEngine mainModuleEngine = MainModuleEngine.getInstance();
+		mainModuleEngine.registerSceneCallbackGenerator(scene ->
+				new VulkanGLFWRenderModuleRenderer(mainModuleEngine, scene, this));
 		try
 		{
-			Engine.callDependents("vulkan_glfw_render_module_dependent",
+			MainModuleEngine.callDependents("vulkan_glfw_render_module_dependent",
 					VulkanGLFWRenderModuleDependentModuleInitializer.class,
 					(VulkanGLFWRenderModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
-							vulkanGLFWModuleDependentModuleInitializer.onInitialize(this));
+							vulkanGLFWModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -104,6 +106,12 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	public ModuleConfig getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
 	}
 
 	@Override

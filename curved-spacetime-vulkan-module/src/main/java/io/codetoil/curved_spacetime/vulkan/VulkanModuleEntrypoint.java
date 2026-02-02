@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
-import io.codetoil.curved_spacetime.engine.Engine;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
@@ -26,28 +26,33 @@ import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModul
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
 
 public class VulkanModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final Logger logger = Logger.getLogger("Curved Spacetime Vulkan Module Logger");
 	private ModuleConfig config;
+	private VulkanModuleVulkan vulkan;
 
 	@Override
 	public void onInitialize()
 	{
 		try
 		{
-			this.config = new VulkanModuleConfig().load();
+			this.config = new VulkanModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
+		MainModuleEngine.getInstance().registerMainCallback(this.vulkan
+				= new VulkanModuleVulkan(MainModuleEngine.getInstance(), this));
 		try
 		{
-			Engine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
+			MainModuleEngine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
 					(VulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
-							vulkanModuleDependentModuleInitializer.onInitialize(this));
+							vulkanModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -61,8 +66,19 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
+	public Logger getLogger()
+	{
+		return this.logger;
+	}
+
+	@Override
 	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
+	}
+
+	public VulkanModuleVulkan getVulkan()
+	{
+		return vulkan;
 	}
 }

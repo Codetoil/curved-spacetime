@@ -16,20 +16,16 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.scene;
+package io.codetoil.curved_spacetime;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
-
-public abstract class SceneCallback
+public abstract class MainCallback
 {
 	protected final MainModuleEngine mainModuleEngine;
-	protected final Scene scene;
 	protected boolean initialized = false;
 
-	protected SceneCallback(MainModuleEngine mainModuleEngine, Scene scene)
+	protected MainCallback(MainModuleEngine mainModuleEngine)
 	{
 		this.mainModuleEngine = mainModuleEngine;
-		this.scene = scene;
 	}
 
 	public boolean isInitialized()

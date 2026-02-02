@@ -19,22 +19,25 @@
 package io.codetoil.curved_spacetime.webserver.openapi;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WebserverOpenAPIModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "config/webserver-openapi-module.config";
+	private final Logger logger;
 	private boolean dirty = false;
 
-	public WebserverOpenAPIModuleConfig()
+	public WebserverOpenAPIModuleConfig(Logger logger)
 	{
 
+		this.logger = logger;
 	}
 
 	public WebserverOpenAPIModuleConfig load() throws IOException
@@ -46,7 +49,8 @@ public class WebserverOpenAPIModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			Logger.warn(ex, "Could not find config file " + WebserverOpenAPIModuleConfig.FILENAME);
+			this.logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + WebserverOpenAPIModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 

@@ -27,18 +27,20 @@ import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
 import java.nio.IntBuffer;
+import java.util.logging.Logger;
 
 public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 {
 	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex,
-										   int queueIndex)
+										   int queueIndex, Logger logger)
 	{
-		super(vulkanModuleLogicalDevice, queueFamilyIndex, queueIndex);
+		super(vulkanModuleLogicalDevice, queueFamilyIndex, queueIndex, logger);
 	}
 
-	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueIndex)
+	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueIndex,
+										   Logger logger)
 	{
-		super(vulkanModuleLogicalDevice, getGraphicsQueueFamilyIndex(vulkanModuleLogicalDevice), queueIndex);
+		super(vulkanModuleLogicalDevice, getGraphicsQueueFamilyIndex(vulkanModuleLogicalDevice), queueIndex, logger);
 	}
 
 	private static int getGraphicsQueueFamilyIndex(VulkanModuleLogicalDevice vulkanModuleLogicalDevice)
@@ -69,9 +71,9 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 	{
 
 		public VulkanRenderPresentModuleGraphicsQueue(VulkanModuleLogicalDevice logicalDevice,
-													  VulkanRenderModuleSurface surface, int queueIndex)
+													  VulkanRenderModuleSurface surface, int queueIndex, Logger logger)
 		{
-			super(logicalDevice, getPresentQueueFamilyIndex(logicalDevice, surface), queueIndex);
+			super(logicalDevice, getPresentQueueFamilyIndex(logicalDevice, surface), queueIndex, logger);
 		}
 
 		private static int getPresentQueueFamilyIndex(VulkanModuleLogicalDevice logicalDevice,
