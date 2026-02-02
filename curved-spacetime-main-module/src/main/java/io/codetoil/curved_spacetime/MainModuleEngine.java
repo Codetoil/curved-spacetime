@@ -39,6 +39,7 @@ public class MainModuleEngine
 {
 	protected static MainModuleEngine INSTANCE;
 	public final MainModuleConfig mainModuleConfig;
+	public final Logger logger = Logger.getLogger("Curved Spacetime Main Module Logger");
 	protected final ScheduledExecutorService callbackExecutor;
 	protected final CurvedSpacetimeLoader loader;
 	private final List<MainCallback> mainCallbacks = new ArrayList<>();
@@ -46,7 +47,6 @@ public class MainModuleEngine
 	private final List<Scene> scenes = new ArrayList<>();
 	protected Future<?> callbackInitializeHandler;
 	protected ScheduledFuture<?> callbackLoopHandler;
-	public final Logger logger = Logger.getLogger("Curved Spacetime Main Module Logger");
 
 	public MainModuleEngine(CurvedSpacetimeLoader loader)
 	{
@@ -81,6 +81,15 @@ public class MainModuleEngine
 				},
 				1_000 / this.mainModuleConfig.getFPS(),
 				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
+	}
+
+	public void registerScene(Scene scene)
+	{
+		this.scenes.add(scene);
+		this.sceneCallbacks.forEach((sceneCallbackGenerator,
+									 sceneCallbacksForGenerator) -> {
+			sceneCallbacksForGenerator.add(sceneCallbackGenerator.apply(scene));
+		});
 	}
 
 	public void runEntrypoints()
@@ -143,15 +152,6 @@ public class MainModuleEngine
 	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
 	{
 		return loader;
-	}
-
-	public void registerScene(Scene scene)
-	{
-		this.scenes.add(scene);
-		this.sceneCallbacks.forEach((sceneCallbackGenerator,
-									 sceneCallbacksForGenerator) -> {
-			sceneCallbacksForGenerator.add(sceneCallbackGenerator.apply(scene));
-		});
 	}
 
 	public void registerMainCallback(MainCallback mainCallback)

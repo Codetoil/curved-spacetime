@@ -32,7 +32,8 @@ public class VulkanModuleCommandPool
 	private final long vkCommandPool;
 	private final Logger logger;
 
-	public VulkanModuleCommandPool(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex, Logger logger)
+	public VulkanModuleCommandPool(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex,
+								   Logger logger)
 	{
 		this.logger = logger;
 		this.logger.fine("Creating Vulkan CommandPool for " + vulkanModuleLogicalDevice);

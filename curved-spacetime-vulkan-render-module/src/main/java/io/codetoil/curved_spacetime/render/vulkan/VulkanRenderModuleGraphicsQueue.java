@@ -37,7 +37,8 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 		super(vulkanModuleLogicalDevice, queueFamilyIndex, queueIndex, logger);
 	}
 
-	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueIndex, Logger logger)
+	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueIndex,
+										   Logger logger)
 	{
 		super(vulkanModuleLogicalDevice, getGraphicsQueueFamilyIndex(vulkanModuleLogicalDevice), queueIndex, logger);
 	}

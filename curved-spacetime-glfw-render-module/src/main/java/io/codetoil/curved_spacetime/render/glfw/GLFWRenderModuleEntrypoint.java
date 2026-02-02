@@ -32,9 +32,9 @@ import java.util.logging.Logger;
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final Logger logger = Logger.getLogger("Curved Spacetime GLFW Render Module Logger");
 	private ModuleConfig config;
 	private RenderModuleEntrypoint renderModuleEntrypoint;
-	private final Logger logger = Logger.getLogger("Curved Spacetime GLFW Render Module Logger");
 
 	@Override
 	public void onInitialize()

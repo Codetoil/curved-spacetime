@@ -1,7 +1,7 @@
 package io.codetoil.curved_spacetime.vulkan;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.MainCallback;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 
 public class VulkanModuleVulkan extends MainCallback
 {
@@ -23,7 +23,8 @@ public class VulkanModuleVulkan extends MainCallback
 		this.vulkanModulePhysicalDevice =
 				VulkanModulePhysicalDevice.createPhysicalDevice(this.vulkanModuleVulkanInstance,
 						entrypoint, this.entrypoint.getLogger());
-		this.vulkanModuleLogicalDevice = new VulkanModuleLogicalDevice(this.vulkanModulePhysicalDevice, this.entrypoint.getLogger());
+		this.vulkanModuleLogicalDevice =
+				new VulkanModuleLogicalDevice(this.vulkanModulePhysicalDevice, this.entrypoint.getLogger());
 	}
 
 	@Override

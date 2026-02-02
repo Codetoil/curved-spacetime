@@ -33,7 +33,8 @@ public class VulkanModuleCommandBuffer
 	private final boolean primary;
 	private final Logger logger;
 
-	public VulkanModuleCommandBuffer(VulkanModuleCommandPool commandPool, boolean primary, boolean oneTimeSubmit, Logger logger)
+	public VulkanModuleCommandBuffer(VulkanModuleCommandPool commandPool, boolean primary, boolean oneTimeSubmit,
+									 Logger logger)
 	{
 		this.logger = logger;
 		this.logger.finer("Creating command buffer");

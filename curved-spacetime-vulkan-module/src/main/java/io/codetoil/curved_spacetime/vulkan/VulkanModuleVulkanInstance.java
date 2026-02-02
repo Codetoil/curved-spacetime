@@ -51,12 +51,10 @@ public class VulkanModuleVulkanInstance
 	public static final String PORTABILITY_EXTENSION =
 			KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
 	public static final String DBG_CALLBACK_PREF = "VkDebugUtilsCallback, ";
-
+	protected final Logger logger;
 	protected VkInstance vkInstance;
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 	protected long vkDebugHandle;
-
-	protected final Logger logger;
 
 	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint, Logger logger)
 	{

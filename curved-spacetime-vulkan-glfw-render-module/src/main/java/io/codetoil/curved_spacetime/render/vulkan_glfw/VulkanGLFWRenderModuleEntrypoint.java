@@ -35,8 +35,8 @@ import java.util.logging.Logger;
 public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
-	private ModuleConfig config;
 	private final Logger logger = Logger.getLogger("Vulkan GLFW Render Module Logger");
+	private ModuleConfig config;
 	private GLFWRenderModuleEntrypoint glfwRenderModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;

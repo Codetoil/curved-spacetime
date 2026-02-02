@@ -27,7 +27,10 @@ import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsQueu
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSurface;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSwapChain;
 import io.codetoil.curved_spacetime.scene.Scene;
-import io.codetoil.curved_spacetime.vulkan.*;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandPool;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
+import io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance;
 
 import java.util.logging.Logger;
 
@@ -42,7 +45,8 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 	protected VulkanRenderPresentModuleGraphicsQueue vulkanGraphicsPresentQueue = null;
 	protected VulkanRenderModuleForwardRenderActivity vulkanRenderModuleForwardRenderActivity = null;
 
-	public VulkanGLFWRenderModuleRenderer(MainModuleEngine mainModuleEngine, Scene scene, VulkanGLFWRenderModuleEntrypoint entrypoint)
+	public VulkanGLFWRenderModuleRenderer(MainModuleEngine mainModuleEngine, Scene scene,
+										  VulkanGLFWRenderModuleEntrypoint entrypoint)
 	{
 		super(mainModuleEngine, scene);
 		this.entrypoint = entrypoint;

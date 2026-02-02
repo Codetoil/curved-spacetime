@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 public class VulkanModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
-	private ModuleConfig config;
 	private final Logger logger = Logger.getLogger("Curved Spacetime Vulkan Module Logger");
+	private ModuleConfig config;
 	private VulkanModuleVulkan vulkan;
 
 	@Override

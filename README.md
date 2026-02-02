@@ -43,12 +43,12 @@ The Native Variants (Closed-World Native Variants) support the following Operati
 
 To build the application, you need a copy of JDK 8 and JDK 25 for the Jar Variants, and GraalVM CE 25 for the Native
 Variant of your Host's Operating System (Cross compilation is unfortunately not support by GraalVM as of the time
-of writing), along with the Vulkan SDK Installed. Then run `./gradlew build` for the Jar Variants and 
+of writing), along with the Vulkan SDK Installed. Then run `./gradlew build` for the Jar Variants and
 `./gradle nativeCompile` for the Native Variants.
 
-If you plan to distribute binaries, you will need to distribute the 
+If you plan to distribute binaries, you will need to distribute the
 [Corresponding Source](https://www.gnu.org/licenses/gpl-faq.html#DistributeExtendedBinary) with it in accordance with
 the GPLv3 or Later License.
-And easy way to pack it is to run 
+And easy way to pack it is to run
 `git archive --format=tar.gz -o ./source.tar.gz HEAD` within the repository. It will automatically exclude certain
 unwanted folders like the build directories.

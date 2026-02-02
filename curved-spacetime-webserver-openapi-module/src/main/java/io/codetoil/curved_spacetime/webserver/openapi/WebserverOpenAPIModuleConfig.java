@@ -49,7 +49,8 @@ public class WebserverOpenAPIModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			this.logger.log(Level.WARNING, ex, () -> "Could not find config file " + WebserverOpenAPIModuleConfig.FILENAME);
+			this.logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + WebserverOpenAPIModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 

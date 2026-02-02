@@ -32,8 +32,8 @@ import java.util.logging.Logger;
 public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
-	private ModuleConfig config;
 	private final Logger logger = Logger.getLogger("Webserver OpenAPI Module Logger");
+	private ModuleConfig config;
 	private WebserverModuleEntrypoint webserverModuleEntrypoint = null;
 
 	@Override

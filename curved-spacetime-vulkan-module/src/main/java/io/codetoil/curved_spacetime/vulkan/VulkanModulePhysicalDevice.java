@@ -221,7 +221,7 @@ public class VulkanModulePhysicalDevice
 		if (!result)
 		{
 			logger.fine("At least [" + copyExtensions.iterator().next() +
-							"] extension is not supported by device [" + getDeviceName() + "]");
+					"] extension is not supported by device [" + getDeviceName() + "]");
 		}
 		return result;
 	}

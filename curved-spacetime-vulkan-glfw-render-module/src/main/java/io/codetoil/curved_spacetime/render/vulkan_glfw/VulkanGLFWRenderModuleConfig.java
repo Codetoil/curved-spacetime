@@ -55,7 +55,8 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			this.logger.log(Level.WARNING, ex, () -> "Could not find config file " + VulkanGLFWRenderModuleConfig.FILENAME);
+			this.logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + VulkanGLFWRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -69,19 +70,24 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 			} catch (NumberFormatException ex)
 			{
 				this.logger.log(Level.WARNING, ex,
-						() -> "Invalid value for key requestedImages: " + requestedImagesPropValue + ", lower bound 2, resetting to default " + VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+						() -> "Invalid value for key requestedImages: " + requestedImagesPropValue +
+								", lower bound 2, resetting to default " +
+								VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
 				this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 			if (this.requestedImages < 2)
 			{
-				this.logger.log(Level.WARNING, "Invalid value for key requestedImages: " + this.requestedImages + ", lower bound 2, resetting to default " + VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+				this.logger.log(Level.WARNING, "Invalid value for key requestedImages: " + this.requestedImages +
+						", lower bound 2, resetting to default " +
+						VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
 				this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 		} else
 		{
-			this.logger.warning("Could not find required key requestedImages, lower bound 2, resetting to default " + VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
+			this.logger.warning("Could not find required key requestedImages, lower bound 2, resetting to default " +
+					VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES);
 			this.requestedImages = VulkanGLFWRenderModuleConfig.DEFAULT_REQUESTED_IMAGES;
 			this.dirty = true;
 		}
