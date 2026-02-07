@@ -2,7 +2,7 @@
 
 ## Vulkan Book
 
-https://github.com/lwjglgamedev/vulkanbook/tree/ee8d2d583f8c5f30768081646cffcde8bda9a9d4
+https://github.com/lwjglgamedev/vulkanbook/tree/ee8d2d583f8c5f30768081646cffcde8bda9a9d4<br>
 ./vulkanbook.epub
 
 ```
@@ -31,7 +31,8 @@ SOFTWARE.
 
 ## Quilt Loader
 
-https://github.com/QuiltMC/quilt-loader/tree/0.29.0-beta.5
+https://github.com/QuiltMC/quilt-loader/tree/d132345267127467502a1218ce9985b998702cec<br>
+Quilt Loader 0.30.0-beta.0
 
 ```
                                  Apache License
