@@ -1,0 +1,3 @@
+module vulkan {
+	exports vulkan;
+}

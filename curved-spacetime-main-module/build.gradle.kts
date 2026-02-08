@@ -3,13 +3,11 @@ plugins {
     id("java-library")
     id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
-    id("com.gradleup.shadow")
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
 val junitVersion: String by project
 val fabricMixinVersion: String by project
 val quiltLoaderVersion: String by project
@@ -20,12 +18,8 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.shadowJar {
+tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    mergeServiceFiles()
-    dependencies {
-        include(dependency("org.lwjgl:lwjgl"))
-    }
     destinationDirectory = File("$rootDir/archive-quilt")
     from(nonJar)
 }
@@ -36,10 +30,6 @@ dependencies {
     api(project(":curved-spacetime-loader-module"))
 
     testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
-
-    runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}")
-    (lwjglNativesNames as List<*>)
-        .forEach { runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}:${it}") }
 }
 
 publishing {
@@ -91,7 +81,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            from(components["shadow"])
+            from(components["java"])
         }
     }
 }

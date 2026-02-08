@@ -9,12 +9,18 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
 val junitVersion: String by project
 val fabricMixinVersion: String by project
 val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
+
+sourceSets {
+    create("glfw") {
+        java.srcDir("src/glfw/java")
+        resources.srcDir("src/glfw/resources")
+    }
+}
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
@@ -22,14 +28,18 @@ dependencies {
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    implementation(sourceSets.named("glfw").get().output)
+    testImplementation(sourceSets.named("glfw").get().output)
 
-    api("org.lwjgl:lwjgl-glfw:${lwjglVersion}")
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}:${it}") }
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks.named<ProcessResources>("processGlfwResources") {
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.shadowJar {
@@ -37,7 +47,6 @@ tasks.shadowJar {
     mergeServiceFiles()
     dependencies {
         exclude(dependency("io.codetoil:.*"))
-        include(dependency("org.lwjgl:.*"))
     }
     destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)

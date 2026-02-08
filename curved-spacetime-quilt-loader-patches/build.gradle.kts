@@ -8,7 +8,6 @@ java {
     }
 }
 
-val lwjglVersion: String by project
 val junitVersion: String by project
 val fabricMixinVersion: String by project
 val quiltLoaderVersion: String by project

@@ -12,7 +12,6 @@ base {
     archivesName = "curved-spacetime"
 }
 
-val lwjglVersion: String by project
 val junitVersion: String by project
 val fabricMixinVersion: String by project
 val quiltLoaderVersion: String by project
@@ -28,24 +27,15 @@ dependencies {
 
     implementation(project(":curved-spacetime-main-module"))
     implementation(project(":curved-spacetime-cli-module"))
-    implementation(project(":curved-spacetime-vulkan-module"))
+    //implementation(project(":curved-spacetime-vulkan-module"))
     implementation(project(":curved-spacetime-render-module"))
     implementation(project(":curved-spacetime-simulator-module"))
     implementation(project(":curved-spacetime-glfw-render-module"))
-    implementation(project(":curved-spacetime-vulkan-render-module"))
-    implementation(project(":curved-spacetime-vulkan-glfw-render-module"))
+    //implementation(project(":curved-spacetime-vulkan-render-module"))
+    //implementation(project(":curved-spacetime-vulkan-glfw-render-module"))
     implementation(project(":curved-spacetime-loader-module"))
     implementation(project(":curved-spacetime-webserver-module"))
     implementation(project(":curved-spacetime-webserver-openapi-module"))
-
-    runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}")
-
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}:${it}") }
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}:${it}") }
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos-arm64")
 
 }
 

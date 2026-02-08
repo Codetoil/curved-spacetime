@@ -3,42 +3,47 @@ plugins {
     id("java-library")
     id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
-    id("com.gradleup.shadow")
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
 val junitVersion: String by project
 val fabricMixinVersion: String by project
 val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
 
+sourceSets {
+    create("vulkan") {
+        java.srcDir("src/vulkan/java")
+        resources.srcDir("src/vulkan/resources")
+    }
+}
+
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    implementation(sourceSets.named("vulkan").get().output)
+    testImplementation(sourceSets.named("vulkan").get().output)
 
-    api("org.lwjgl:lwjgl-vulkan:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos-arm64")
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.shadowJar {
+
+tasks.named<ProcessResources>("processVulkanResources") {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
+
+
+tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    mergeServiceFiles()
-    dependencies {
-        exclude(dependency("io.codetoil:.*"))
-        include(dependency("org.lwjgl:.*"))
-    }
     destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)
 }
@@ -92,7 +97,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            from(components["shadow"])
+            from(components["java"])
         }
     }
 }

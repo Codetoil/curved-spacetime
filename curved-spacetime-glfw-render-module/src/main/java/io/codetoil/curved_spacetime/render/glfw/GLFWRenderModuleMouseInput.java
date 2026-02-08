@@ -1,8 +1,13 @@
 package io.codetoil.curved_spacetime.render.glfw;
 
+import glfw3.GLFW;
+import glfw3.GLFWcursorenterfun;
+import glfw3.GLFWcursorposfun;
+import glfw3.GLFWmousebuttonfun;
 import io.codetoil.curved_spacetime.render.RenderModuleMouseInput;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
-import org.lwjgl.glfw.GLFW;
+
+import java.lang.foreign.MemorySegment;
 
 public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 {
@@ -21,17 +26,24 @@ public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 	public GLFWRenderModuleMouseInput(GLFWRenderModuleWindow window)
 	{
 		this.window = window;
-		GLFW.glfwSetCursorPosCallback(this.window.windowHandle, (handle, xpos, ypos) -> {
-			this.currentX = (float) xpos;
-			this.currentY = (float) ypos;
-		});
-		GLFW.glfwSetCursorEnterCallback(this.window.windowHandle, (handle, entered) -> inWindow = entered);
-		GLFW.glfwSetMouseButtonCallback(this.window.windowHandle, (handle, button, action, mode) -> {
-			leftButtonPressed = button == GLFW.GLFW_MOUSE_BUTTON_1 && action == GLFW.GLFW_PRESS;
-			rightButtonPressed = button == GLFW.GLFW_MOUSE_BUTTON_2 && action == GLFW.GLFW_PRESS;
-			leftButtonPressed = button == GLFW.GLFW_MOUSE_BUTTON_1 && action == GLFW.GLFW_PRESS;
-			middleButtonPressed = button == GLFW.GLFW_MOUSE_BUTTON_3 && action == GLFW.GLFW_PRESS;
-		});
+		GLFW.glfwSetCursorPosCallback(this.window.window,
+				GLFWcursorposfun.allocate((MemorySegment _, double xPos, double yPos) -> {
+					this.currentX = (float) xPos;
+					this.currentY = (float) yPos;
+				}, window.arena));
+		GLFW.glfwSetCursorEnterCallback(this.window.window,
+				GLFWcursorenterfun.allocate((MemorySegment _, int entered) ->
+						this.inWindow = entered == GLFW.GLFW_TRUE(), window.arena));
+		GLFW.glfwSetMouseButtonCallback(this.window.window,
+				GLFWmousebuttonfun.allocate((MemorySegment _, int button, int action, int _) ->
+				{
+					this.leftButtonPressed =
+							button == GLFW.GLFW_MOUSE_BUTTON_1() && action == GLFW.GLFW_PRESS();
+					this.rightButtonPressed =
+							button == GLFW.GLFW_MOUSE_BUTTON_2() && action == GLFW.GLFW_PRESS();
+					this.middleButtonPressed =
+							button == GLFW.GLFW_MOUSE_BUTTON_3() && action == GLFW.GLFW_PRESS();
+				}, window.arena));
 	}
 
 	@Override
