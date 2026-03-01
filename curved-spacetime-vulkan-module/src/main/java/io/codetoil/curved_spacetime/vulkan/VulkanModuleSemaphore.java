@@ -19,37 +19,36 @@
 package io.codetoil.curved_spacetime.vulkan;
 
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
+import vulkan.VkSemaphoreCreateInfo;
+import vulkan.Vulkan;
 
+
+import java.lang.foreign.MemorySegment;
 import java.nio.LongBuffer;
+
+import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleSemaphore
 {
 	private final VulkanModuleLogicalDevice logicalDevice;
-	private final long vkSemaphore;
+	private final MemorySegment vkSemaphore;
 
 	public VulkanModuleSemaphore(VulkanModuleLogicalDevice logicalDevice)
 	{
 		this.logicalDevice = logicalDevice;
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			VkSemaphoreCreateInfo semaphoreCreateInfo =
-					VkSemaphoreCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
-			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateSemaphore(logicalDevice.getVkDevice(), semaphoreCreateInfo, null, lp),
-					"Failed to create semaphore");
-			this.vkSemaphore = lp.get(0);
-		}
+		MemorySegment semaphoreCreateInfo = VkSemaphoreCreateInfo.allocate(arena);
+		VkSemaphoreCreateInfo.sType(semaphoreCreateInfo, Vulkan.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO());
+		this.vkSemaphore = arena.allocate(Vulkan.VkSemaphore);
+		VulkanUtils.vkCheck(Vulkan.vkCreateSemaphore(logicalDevice.getVkDevice(), semaphoreCreateInfo, null,
+						this.vkSemaphore), "Failed to create semaphore");
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroySemaphore(this.logicalDevice.getVkDevice(), this.vkSemaphore, null);
+		Vulkan.vkDestroySemaphore(this.logicalDevice.getVkDevice(), this.vkSemaphore, null);
 	}
 
-	public long getVkSemaphore()
+	public MemorySegment getVkSemaphore()
 	{
 		return this.vkSemaphore;
 	}

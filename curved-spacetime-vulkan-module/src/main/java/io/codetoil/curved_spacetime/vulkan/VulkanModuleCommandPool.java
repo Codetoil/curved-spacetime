@@ -19,17 +19,19 @@
 package io.codetoil.curved_spacetime.vulkan;
 
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
+import vulkan.VkCommandPoolCreateInfo;
+import vulkan.Vulkan;
 
-import java.nio.LongBuffer;
+
+import java.lang.foreign.MemorySegment;
 import java.util.logging.Logger;
+
+import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleCommandPool
 {
 	private final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
-	private final long vkCommandPool;
+	private final MemorySegment vkCommandPool;
 	private final Logger logger;
 
 	public VulkanModuleCommandPool(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex,
@@ -39,25 +41,20 @@ public class VulkanModuleCommandPool
 		this.logger.fine("Creating Vulkan CommandPool for " + vulkanModuleLogicalDevice);
 
 		this.vulkanModuleLogicalDevice = vulkanModuleLogicalDevice;
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			VkCommandPoolCreateInfo cmdPoolInfo =
-					VkCommandPoolCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
-							.flags(VK13.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT)
-							.queueFamilyIndex(queueFamilyIndex);
+		MemorySegment cmdPoolInfo = VkCommandPoolCreateInfo.allocate(arena);
+		VkCommandPoolCreateInfo.sType(cmdPoolInfo, Vulkan.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO());
+		VkCommandPoolCreateInfo.flags(cmdPoolInfo, Vulkan.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT());
+		VkCommandPoolCreateInfo.queueFamilyIndex(cmdPoolInfo, queueFamilyIndex);
 
-			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(
-					VK13.vkCreateCommandPool(vulkanModuleLogicalDevice.getVkDevice(), cmdPoolInfo, null, lp),
-					"failed to create command pool");
-
-			this.vkCommandPool = lp.get(0);
-		}
+		this.vkCommandPool = arena.allocate(Vulkan.VkCommandPool);
+		VulkanUtils.vkCheck(
+				Vulkan.vkCreateCommandPool(vulkanModuleLogicalDevice.getVkDevice(), cmdPoolInfo, null,
+						this.vkCommandPool), "failed to create command pool");
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroyCommandPool(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkCommandPool, null);
+		Vulkan.vkDestroyCommandPool(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkCommandPool, null);
 	}
 
 	public VulkanModuleLogicalDevice getVulkanLogicalDevice()
@@ -65,7 +62,7 @@ public class VulkanModuleCommandPool
 		return this.vulkanModuleLogicalDevice;
 	}
 
-	public long getVkCommandPool()
+	public MemorySegment getVkCommandPool()
 	{
 		return this.vkCommandPool;
 	}

@@ -18,8 +18,10 @@
 
 package io.codetoil.curved_spacetime.vulkan.utils;
 
-import org.lwjgl.vulkan.VK13;
+import vulkan.Vulkan;
 
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.util.Locale;
 
 public class VulkanUtils
@@ -50,30 +52,45 @@ public class VulkanUtils
 		return result;
 	}
 
+	/**
+	 * Reverses the byte order of the given MemorySegment in-place. (Generated using Bing AI)
+	 */
+	public static void reverseBytes(MemorySegment segment) {
+		long size = segment.byteSize();
+		for (long i = 0; i < size / 2; i++) {
+			byte b1 = segment.get(ValueLayout.JAVA_BYTE, i);
+			byte b2 = segment.get(ValueLayout.JAVA_BYTE, size - 1 - i);
+
+			// Swap
+			segment.set(ValueLayout.JAVA_BYTE, i, b2);
+			segment.set(ValueLayout.JAVA_BYTE, size - 1 - i, b1);
+		}
+	}
+
 	public static void vkCheck(int err, String errMsg)
 	{
-		if (err != VK13.VK_SUCCESS)
+		if (err != Vulkan.VK_SUCCESS())
 		{
 			String errCode = switch (err)
 			{
-				case VK13.VK_NOT_READY -> "VK_NOT_READY";
-				case VK13.VK_TIMEOUT -> "VK_TIMEOUT";
-				case VK13.VK_EVENT_SET -> "VK_EVENT_SET";
-				case VK13.VK_EVENT_RESET -> "VK_EVENT_RESET";
-				case VK13.VK_INCOMPLETE -> "VK_INCOMPLETE";
-				case VK13.VK_ERROR_OUT_OF_HOST_MEMORY -> "VK_ERROR_OUT_OF_HOST_MEMORY";
-				case VK13.VK_ERROR_OUT_OF_DEVICE_MEMORY -> "VK_ERROR_OUT_OF_DEVICE_MEMORY";
-				case VK13.VK_ERROR_INITIALIZATION_FAILED -> "VK_ERROR_INITIALIZATION_FAILED";
-				case VK13.VK_ERROR_DEVICE_LOST -> "VK_ERROR_DEVICE_LOST";
-				case VK13.VK_ERROR_MEMORY_MAP_FAILED -> "VK_ERROR_MEMORY_MAP_FAILED";
-				case VK13.VK_ERROR_LAYER_NOT_PRESENT -> "VK_ERROR_LAYER_NOT_PRESENT";
-				case VK13.VK_ERROR_EXTENSION_NOT_PRESENT -> "VK_ERROR_EXTENSION_NOT_PRESENT";
-				case VK13.VK_ERROR_FEATURE_NOT_PRESENT -> "VK_ERROR_FEATURE_NOT_PRESENT";
-				case VK13.VK_ERROR_INCOMPATIBLE_DRIVER -> "VK_ERROR_INCOMPATIBLE_DRIVER";
-				case VK13.VK_ERROR_TOO_MANY_OBJECTS -> "VK_ERROR_TOO_MANY_OBJECTS";
-				case VK13.VK_ERROR_FORMAT_NOT_SUPPORTED -> "VK_ERROR_FORMAT_NOT_SUPPORTED";
-				case VK13.VK_ERROR_FRAGMENTED_POOL -> "VK_ERROR_FRAGMENTED_POOL";
-				case VK13.VK_ERROR_UNKNOWN -> "VK_ERROR_UNKNOWN";
+				case Vulkan.VK_NOT_READY() -> "VK_NOT_READY";
+				case Vulkan.VK_TIMEOUT() -> "VK_TIMEOUT";
+				case Vulkan.VK_EVENT_SET() -> "VK_EVENT_SET";
+				case Vulkan.VK_EVENT_RESET() -> "VK_EVENT_RESET";
+				case Vulkan.VK_INCOMPLETE() -> "VK_INCOMPLETE";
+				case Vulkan.VK_ERROR_OUT_OF_HOST_MEMORY() -> "VK_ERROR_OUT_OF_HOST_MEMORY";
+				case Vulkan.VK_ERROR_OUT_OF_DEVICE_MEMORY() -> "VK_ERROR_OUT_OF_DEVICE_MEMORY";
+				case Vulkan.VK_ERROR_INITIALIZATION_FAILED() -> "VK_ERROR_INITIALIZATION_FAILED";
+				case Vulkan.VK_ERROR_DEVICE_LOST() -> "VK_ERROR_DEVICE_LOST";
+				case Vulkan.VK_ERROR_MEMORY_MAP_FAILED() -> "VK_ERROR_MEMORY_MAP_FAILED";
+				case Vulkan.VK_ERROR_LAYER_NOT_PRESENT() -> "VK_ERROR_LAYER_NOT_PRESENT";
+				case Vulkan.VK_ERROR_EXTENSION_NOT_PRESENT() -> "VK_ERROR_EXTENSION_NOT_PRESENT";
+				case Vulkan.VK_ERROR_FEATURE_NOT_PRESENT() -> "VK_ERROR_FEATURE_NOT_PRESENT";
+				case Vulkan.VK_ERROR_INCOMPATIBLE_DRIVER() -> "VK_ERROR_INCOMPATIBLE_DRIVER";
+				case Vulkan.VK_ERROR_TOO_MANY_OBJECTS() -> "VK_ERROR_TOO_MANY_OBJECTS";
+				case Vulkan.VK_ERROR_FORMAT_NOT_SUPPORTED() -> "VK_ERROR_FORMAT_NOT_SUPPORTED";
+				case Vulkan.VK_ERROR_FRAGMENTED_POOL() -> "VK_ERROR_FRAGMENTED_POOL";
+				case Vulkan.VK_ERROR_UNKNOWN() -> "VK_ERROR_UNKNOWN";
 				default -> "Not mapped";
 			};
 			throw new AssertionError(errMsg + ": " + errCode + "[" + err + "]");

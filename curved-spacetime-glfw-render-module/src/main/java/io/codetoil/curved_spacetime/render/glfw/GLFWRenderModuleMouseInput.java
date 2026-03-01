@@ -9,6 +9,8 @@ import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 
 import java.lang.foreign.MemorySegment;
 
+import static io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleWindow.arena;
+
 public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 {
 	protected final GLFWRenderModuleWindow window;
@@ -30,10 +32,10 @@ public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 				GLFWcursorposfun.allocate((MemorySegment _, double xPos, double yPos) -> {
 					this.currentX = (float) xPos;
 					this.currentY = (float) yPos;
-				}, window.arena));
+				}, arena));
 		GLFW.glfwSetCursorEnterCallback(this.window.window,
 				GLFWcursorenterfun.allocate((MemorySegment _, int entered) ->
-						this.inWindow = entered == GLFW.GLFW_TRUE(), window.arena));
+						this.inWindow = entered == GLFW.GLFW_TRUE(), arena));
 		GLFW.glfwSetMouseButtonCallback(this.window.window,
 				GLFWmousebuttonfun.allocate((MemorySegment _, int button, int action, int _) ->
 				{
@@ -43,7 +45,7 @@ public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 							button == GLFW.GLFW_MOUSE_BUTTON_2() && action == GLFW.GLFW_PRESS();
 					this.middleButtonPressed =
 							button == GLFW.GLFW_MOUSE_BUTTON_3() && action == GLFW.GLFW_PRESS();
-				}, window.arena));
+				}, arena));
 	}
 
 	@Override

@@ -19,50 +19,49 @@
 package io.codetoil.curved_spacetime.vulkan;
 
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkFenceCreateInfo;
+import vulkan.VkFenceCreateInfo;
+import vulkan.Vulkan;
 
-import java.nio.LongBuffer;
+import java.lang.foreign.MemorySegment;
+
+import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleFence
 {
 	private final VulkanModuleLogicalDevice logicalDevice;
-	private final long vkFence;
+	private final MemorySegment vkFence;
 
 	public VulkanModuleFence(VulkanModuleLogicalDevice logicalDevice, boolean signaled)
 	{
 		this.logicalDevice = logicalDevice;
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			VkFenceCreateInfo fenceCreateInfo =
-					VkFenceCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO)
-							.flags(signaled ? VK13.VK_FENCE_CREATE_SIGNALED_BIT : 0);
+		MemorySegment fenceCreateInfo = VkFenceCreateInfo.allocate(arena);
+		VkFenceCreateInfo.sType(fenceCreateInfo, Vulkan.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO());
+		VkFenceCreateInfo.flags(fenceCreateInfo, signaled ? Vulkan.VK_FENCE_CREATE_SIGNALED_BIT() : 0);
 
-			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateFence(logicalDevice.getVkDevice(), fenceCreateInfo, null, lp),
-					"Failed to create fence");
-			this.vkFence = lp.get(0);
-		}
+		this.vkFence = arena.allocate(Vulkan.VkFence);
+		VulkanUtils.vkCheck(Vulkan.vkCreateFence(logicalDevice.getVkDevice(), fenceCreateInfo, null,
+						this.vkFence),
+				"Failed to create fence");
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroyFence(this.logicalDevice.getVkDevice(), this.vkFence, null);
+		Vulkan.vkDestroyFence(this.logicalDevice.getVkDevice(), this.vkFence, null);
 	}
 
 	public void vulkanFenceWait()
 	{
-		VK13.vkWaitForFences(this.logicalDevice.getVkDevice(), this.vkFence, true, Long.MAX_VALUE);
+		Vulkan.vkWaitForFences(this.logicalDevice.getVkDevice(), 1, this.vkFence,
+				Vulkan.VK_TRUE(), Long.MAX_VALUE);
 	}
 
-	public long getVkFence()
+	public MemorySegment getVkFence()
 	{
 		return this.vkFence;
 	}
 
 	public void reset()
 	{
-		VK13.vkResetFences(this.logicalDevice.getVkDevice(), this.vkFence);
+		Vulkan.vkResetFences(this.logicalDevice.getVkDevice(), 1, this.vkFence);
 	}
 }

@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 {
 	protected MemorySegment window;
-	protected Arena arena;
+	protected static Arena arena = Arena.ofShared();
 	protected int width;
 	protected int height;
 
@@ -44,8 +44,6 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 
 	public void init()
 	{
-		arena = Arena.ofShared();
-
 		GLFW.glfwSetErrorCallback(GLFWerrorfun.allocate((int error_code, MemorySegment s_description) ->
 		{
 			String description = s_description.getString(0);

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleWindow.arena;
+
 public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput
 {
 	protected final Map<Integer, Boolean> tappedKeyMap;
@@ -32,7 +34,7 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput
 					{
 						callback.invoke(new KeyCtx(keyCode, scanCode, action, mods));
 					}
-				}, window.arena));
+				}, arena));
 	}
 
 	@Override
