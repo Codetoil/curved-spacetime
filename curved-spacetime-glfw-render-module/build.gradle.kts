@@ -10,8 +10,7 @@ group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
 val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
+val sgffmBindingsVersion: String by project
 
 val nonJar by configurations.creating
 
@@ -20,9 +19,9 @@ dependencies {
 
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
-    api("io.codetoil:simple-graphics-ffm-bindings-glfw:0.1.0-SNAPSHOT")
+    api("io.codetoil:simple-graphics-ffm-bindings-glfw::$sgffmBindingsVersion")
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 }
 
 tasks.named<Test>("test") {

@@ -9,8 +9,6 @@ group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
 val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
 
@@ -20,7 +18,7 @@ dependencies {
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-webserver-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 }
 
 tasks.named<Test>("test") {
