@@ -9,6 +9,9 @@ pluginManagement {
 
 rootProject.name = "curved-spacetime"
 
+include("curved-spacetime-bindings-glfw")
+include("curved-spacetime-bindings-vulkan")
+include("curved-spacetime-bindings-glfw-vulkan")
 include("curved-spacetime-quilt-loader-patches")
 include("curved-spacetime-cli-module")
 include("curved-spacetime-vulkan-module")
@@ -24,6 +27,9 @@ include("curved-spacetime-loader-module")
 include("curved-spacetime-quilt-loader-module")
 include("curved-spacetime-closed-world-loader-module")
 
+project(":curved-spacetime-bindings-glfw").name = "curved-spacetime-bindings-glfw"
+project(":curved-spacetime-bindings-vulkan").name = "curved-spacetime-bindings-vulkan"
+project(":curved-spacetime-bindings-glfw-vulkan").name = "curved-spacetime-bindings-glfw-vulkan"
 project(":curved-spacetime-quilt-loader-patches").name = "curved-spacetime-quilt-loader-patches"
 project(":curved-spacetime-cli-module").name = "curved-spacetime-cli-module"
 project(":curved-spacetime-vulkan-module").name = "curved-spacetime-vulkan-module"

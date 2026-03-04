@@ -15,31 +15,18 @@ val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
 
-sourceSets {
-    create("glfw") {
-        java.srcDir("src/glfw/java")
-        resources.srcDir("src/glfw/resources")
-    }
-}
-
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
-    api(sourceSets.named("glfw").get().output)
-
-    testImplementation(sourceSets.named("glfw").get().output)
+    api(project(":curved-spacetime-bindings-glfw"))
 
     testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
-}
-
-tasks.named<ProcessResources>("processGlfwResources") {
-    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.shadowJar {

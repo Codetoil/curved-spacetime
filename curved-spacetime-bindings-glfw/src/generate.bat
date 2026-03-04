@@ -1,0 +1,1 @@
+jextract --include-dir .\include --output main\java --target-package glfw3 --library glfw3 --symbols-class-name GLFWsymbols --header-class-name GLFW .\include\GLFW\glfw3.h
