@@ -37,6 +37,7 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 	@Override
 	public void onInitialize()
 	{
+		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
 		try
 		{
 			this.config = new RenderModuleConfig(this.logger).load();

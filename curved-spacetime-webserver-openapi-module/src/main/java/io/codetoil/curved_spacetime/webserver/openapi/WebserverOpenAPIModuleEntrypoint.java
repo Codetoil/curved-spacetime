@@ -39,6 +39,7 @@ public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 	@Override
 	public void onInitialize()
 	{
+		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
 		try
 		{
 			this.config = new WebserverOpenAPIModuleConfig(this.logger).load();

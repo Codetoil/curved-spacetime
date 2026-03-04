@@ -60,6 +60,7 @@ public class MainModuleEngine
 		{
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
+		this.logger.setLevel(this.mainModuleConfig.getLoggerLevel());
 		registerScene(new Scene());
 		//registerScene(new Scene());
 		this.callbackExecutor = Executors.newSingleThreadScheduledExecutor();
