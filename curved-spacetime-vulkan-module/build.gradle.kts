@@ -19,7 +19,7 @@ dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
-    api(project(":curved-spacetime-bindings-vulkan"))
+    api("io.codetoil:")
 
     testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }
