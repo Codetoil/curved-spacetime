@@ -25,8 +25,8 @@ dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
+    api(sourceSets.named("vulkan").get().output)
 
-    implementation(sourceSets.named("vulkan").get().output)
     testImplementation(sourceSets.named("vulkan").get().output)
 
     testImplementation(platform("org.junit:junit-bom:${junitVersion}"))

@@ -24,14 +24,9 @@ import vulkan.*;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
@@ -53,7 +48,7 @@ public class VulkanModuleLogicalDevice
 		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
 		MemorySegment reqExtensions = this.createReqExtensions();
 		// Enable all the queue families
-		MemorySegment queuePropsArray = vulkanModulePhysicalDevice.getVkQueueFamilyProps();
+		MemorySegment queuePropsArray = vulkanModulePhysicalDevice.getVkQueueFamilyProps2();
 		long numQueueFamilies = queuePropsArray.byteSize() / VkQueueFamilyProperties.sizeof();
 		MemorySegment queueCreateInfoArray =
 				VkDeviceQueueCreateInfo.allocateArray(numQueueFamilies, arena);

@@ -34,7 +34,7 @@ public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModul
 {
 
 	protected final VkSurfaceCapabilitiesKHR surfaceCaps;
-	protected final SurfaceFormat surfaceFormat;
+	protected final VulkanRenderSurfaceFormat vulkanRenderSurfaceFormat;
 	protected final long vkSurface;
 
 	public VulkanGLFWRenderModuleRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
@@ -55,7 +55,7 @@ public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModul
 							.getVkPhysicalDevice(), vkSurface, surfaceCaps),
 					"Failed to get surface capabilities");
 
-			this.surfaceFormat = calcSurfaceFormat();
+			this.vulkanRenderSurfaceFormat = calcSurfaceFormat();
 		}
 	}
 
@@ -74,9 +74,9 @@ public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModul
 	}
 
 	@Override
-	public SurfaceFormat getSurfaceFormat()
+	public VulkanRenderSurfaceFormat getSurfaceFormat()
 	{
-		return this.surfaceFormat;
+		return this.vulkanRenderSurfaceFormat;
 	}
 
 	public long getVkSurface()

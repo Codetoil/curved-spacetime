@@ -21,13 +21,15 @@ package io.codetoil.curved_spacetime.render.vulkan;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleQueue;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkQueueFamilyProperties;
+import vulkan.VkQueueFamilyProperties;
+import vulkan.VkQueueFamilyProperties2;
+import vulkan.Vulkan;
 
-import java.nio.IntBuffer;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.util.logging.Logger;
+
+import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 {
@@ -47,12 +49,15 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 	{
 		int result = -1;
 		VulkanModulePhysicalDevice vulkanModulePhysicalDevice = vulkanModuleLogicalDevice.getPhysicalDevice();
-		VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanModulePhysicalDevice.getVkQueueFamilyProps();
-		int numQueuesFamilies = queuePropsBuff.capacity();
+		MemorySegment queuePropsArray = vulkanModulePhysicalDevice.getVkQueueFamilyProps2();
+		int numQueuesFamilies = Math.toIntExact(queuePropsArray.byteSize() / VkQueueFamilyProperties2.sizeof());
 		for (int index = 0; index < numQueuesFamilies; index++)
 		{
-			VkQueueFamilyProperties props = queuePropsBuff.get(index);
-			boolean graphicsQueue = (props.queueFlags() & VK13.VK_QUEUE_GRAPHICS_BIT) != 0;
+			MemorySegment props2 = queuePropsArray.asSlice(index * VkQueueFamilyProperties2.sizeof(),
+					VkQueueFamilyProperties2.layout());
+			boolean graphicsQueue =
+					(VkQueueFamilyProperties.queueFlags(VkQueueFamilyProperties2.queueFamilyProperties(props2)) &
+							Vulkan.VK_QUEUE_GRAPHICS_BIT()) != 0;
 			if (graphicsQueue)
 			{
 				result = index;
@@ -80,30 +85,30 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 													  VulkanRenderModuleSurface surface)
 		{
 			int index = -1;
-			try (MemoryStack stack = MemoryStack.stackPush())
+			VulkanModulePhysicalDevice physicalDevice = logicalDevice.getPhysicalDevice();
+			MemorySegment queueProps2Array = physicalDevice.getVkQueueFamilyProps2();
+			int numQueuesFamilies = Math.toIntExact(queueProps2Array.byteSize() / VkQueueFamilyProperties2.sizeof());
+			MemorySegment supportsPresentationSegment = arena.allocateFrom(ValueLayout.ADDRESS,
+					arena.allocate(ValueLayout.JAVA_INT));
+			for (int i = 0; i < numQueuesFamilies; i++)
 			{
-				VulkanModulePhysicalDevice physicalDevice = logicalDevice.getPhysicalDevice();
-				VkQueueFamilyProperties.Buffer queuePropsBuff = physicalDevice.getVkQueueFamilyProps();
-				int numQueuesFamilies = queuePropsBuff.capacity();
-				IntBuffer intBuffer = stack.mallocInt(1);
-				for (int i = 0; i < numQueuesFamilies; i++)
+				Vulkan.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(), i,
+						surface.getVkSurface(), supportsPresentationSegment);
+				boolean supportsPresentation =
+						supportsPresentationSegment.get(ValueLayout.ADDRESS, 0).get(ValueLayout.JAVA_INT, 0)
+								== Vulkan.VK_TRUE();
+				if (supportsPresentation)
 				{
-					KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(), i,
-							surface.getVkSurface(), intBuffer);
-					boolean supportsPresentation = intBuffer.get(0) == VK13.VK_TRUE;
-					if (supportsPresentation)
-					{
-						index = i;
-						break;
-					}
+					index = i;
+					break;
 				}
-
-				if (index < 0)
-				{
-					throw new RuntimeException("Failed to get Presentation Queue family index.");
-				}
-				return index;
 			}
+
+			if (index < 0)
+			{
+				throw new RuntimeException("Failed to get Presentation Queue family index.");
+			}
+			return index;
 		}
 	}
 }

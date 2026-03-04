@@ -47,7 +47,7 @@ public class VulkanModuleVulkanInstance
 	public static final String DBG_CALLBACK_PREF = "VkDebugUtilsCallback, ";
 	protected final Logger logger;
 	protected MemorySegment vkInstance;
-	protected static Arena arena = Arena.ofShared();
+	public static final Arena arena = Arena.ofShared();
 	protected MemorySegment debugUtils;
 	protected MemorySegment vkDebugHandle;
 

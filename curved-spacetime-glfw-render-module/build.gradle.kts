@@ -27,8 +27,8 @@ dependencies {
 
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
+    api(sourceSets.named("glfw").get().output)
 
-    implementation(sourceSets.named("glfw").get().output)
     testImplementation(sourceSets.named("glfw").get().output)
 
     testImplementation(platform("org.junit:junit-bom:${junitVersion}"))

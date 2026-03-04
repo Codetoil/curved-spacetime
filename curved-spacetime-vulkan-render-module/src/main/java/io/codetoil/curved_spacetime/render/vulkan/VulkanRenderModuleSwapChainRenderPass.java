@@ -19,61 +19,70 @@
 package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.*;
+import vulkan.*;
 
-import java.nio.LongBuffer;
+import java.lang.foreign.MemorySegment;
+
+import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleSwapChainRenderPass
 {
 	private final VulkanRenderModuleSwapChain swapChain;
-	private final long vkRenderPass;
+	private final MemorySegment vkRenderPass;
 
 	public VulkanRenderModuleSwapChainRenderPass(VulkanRenderModuleSwapChain swapChain)
 	{
 		this.swapChain = swapChain;
 
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			VkAttachmentDescription.Buffer attachments = VkAttachmentDescription.calloc(1, stack);
+		// Color attachment
+		MemorySegment attachments = VkAttachmentDescription.allocateArray(1, arena);
+		MemorySegment attachment = attachments.asSlice(0, VkAttachmentDescription.layout());
+		VkAttachmentDescription.format(attachment, swapChain.getVulkanSurfaceFormat().imageFormat());
+		VkAttachmentDescription.samples(attachment, Vulkan.VK_SAMPLE_COUNT_1_BIT());
+		VkAttachmentDescription.loadOp(attachment, Vulkan.VK_ATTACHMENT_LOAD_OP_CLEAR());
+		VkAttachmentDescription.storeOp(attachment, Vulkan.VK_ATTACHMENT_STORE_OP_STORE());
+		VkAttachmentDescription.initialLayout(attachment, Vulkan.VK_IMAGE_LAYOUT_UNDEFINED());
+		VkAttachmentDescription.finalLayout(attachment, Vulkan.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR());
 
-			// Color attachment
-			attachments.get(0).format(swapChain.getVulkanSurfaceFormat().imageFormat())
-					.samples(VK13.VK_SAMPLE_COUNT_1_BIT).loadOp(VK13.VK_ATTACHMENT_LOAD_OP_CLEAR)
-					.storeOp(VK13.VK_ATTACHMENT_STORE_OP_STORE).initialLayout(VK13.VK_IMAGE_LAYOUT_UNDEFINED)
-					.finalLayout(KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+		MemorySegment colorReferences = VkAttachmentReference.allocateArray(1, arena);
+		MemorySegment colorReference = colorReferences.asSlice(0, VkAttachmentReference.layout());
+		VkAttachmentReference.attachment(colorReference, 0);
+		VkAttachmentReference.layout(colorReference, Vulkan.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL());
 
-			VkAttachmentReference.Buffer colorReference = VkAttachmentReference.calloc(1, stack).attachment(0)
-					.layout(VK13.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+		MemorySegment subPassDescriptions = VkSubpassDescription.allocateArray(1, arena);
+		MemorySegment subPassDescription = subPassDescriptions.asSlice(0, VkSubpassDescription.layout());
+		VkSubpassDescription.pipelineBindPoint(subPassDescription, Vulkan.VK_PIPELINE_BIND_POINT_GRAPHICS());
+		VkSubpassDescription.colorAttachmentCount(subPassDescription,
+				(int) (colorReferences.byteSize() / VkAttachmentReference.sizeof()));
+		VkSubpassDescription.pColorAttachments(subPassDescription, colorReferences);
 
-			VkSubpassDescription.Buffer subPass =
-					VkSubpassDescription.calloc(1, stack).pipelineBindPoint(VK13.VK_PIPELINE_BIND_POINT_GRAPHICS)
-							.colorAttachmentCount(colorReference.remaining()).pColorAttachments(colorReference);
+		MemorySegment subpassDependencies = VkSubpassDependency.allocateArray(1, arena);
+		MemorySegment subpassDependency = subpassDependencies.asSlice(0, VkSubpassDependency.layout());
+		VkSubpassDependency.srcSubpass(subpassDependency, Vulkan.VK_SUBPASS_EXTERNAL());
+		VkSubpassDependency.dstSubpass(subpassDependency, 0);
+		VkSubpassDependency.srcStageMask(subpassDependency, Vulkan.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT());
+		VkSubpassDependency.dstStageMask(subpassDependency, Vulkan.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT());
+		VkSubpassDependency.srcAccessMask(subpassDependency, 0);
+		VkSubpassDependency.dstAccessMask(subpassDependency, Vulkan.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT());
 
-			VkSubpassDependency.Buffer subpassDependencies = VkSubpassDependency.calloc(1, stack);
-			subpassDependencies.get(0).srcSubpass(VK13.VK_SUBPASS_EXTERNAL).dstSubpass(0)
-					.srcStageMask(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-					.dstStageMask(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT).srcAccessMask(0)
-					.dstAccessMask(VK13.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+		MemorySegment renderPassInfo = VkRenderPassCreateInfo.allocate(arena);
+		VkRenderPassCreateInfo.sType(renderPassInfo, Vulkan.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO());
+		VkRenderPassCreateInfo.pAttachments(renderPassInfo, attachments);
+		VkRenderPassCreateInfo.pSubpasses(renderPassInfo, subPassDescriptions);
+		VkRenderPassCreateInfo.pDependencies(renderPassInfo, subpassDependencies);
 
-			VkRenderPassCreateInfo renderPassInfo =
-					VkRenderPassCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
-							.pAttachments(attachments).pSubpasses(subPass).pDependencies(subpassDependencies);
+		this.vkRenderPass = arena.allocate(Vulkan.VkRenderPass);
+		VulkanUtils.vkCheck(Vulkan.vkCreateRenderPass(swapChain.getVulkanLogicalDevice().getVkDevice(),
+						renderPassInfo, null, this.vkRenderPass),"Failed to create render pass");
 
-			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(
-					VK13.vkCreateRenderPass(swapChain.getVulkanLogicalDevice().getVkDevice(), renderPassInfo, null, lp),
-					"Failed to create render pass");
-			this.vkRenderPass = lp.get(0);
-		}
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroyRenderPass(this.swapChain.getVulkanLogicalDevice().getVkDevice(), this.vkRenderPass, null);
+		Vulkan.vkDestroyRenderPass(this.swapChain.getVulkanLogicalDevice().getVkDevice(), this.vkRenderPass, null);
 	}
 
-	public long getVkRenderPass()
+	public MemorySegment getVkRenderPass()
 	{
 		return this.vkRenderPass;
 	}

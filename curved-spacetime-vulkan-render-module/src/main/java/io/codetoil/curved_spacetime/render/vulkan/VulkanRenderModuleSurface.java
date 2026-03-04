@@ -20,14 +20,14 @@ package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
-import org.lwjgl.vulkan.VkSurfaceFormatKHR;
+import vulkan.VkSurfaceFormatKHR;
+import vulkan.Vulkan;
 
-import java.nio.IntBuffer;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.util.logging.Logger;
+
+import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public abstract class VulkanRenderModuleSurface
 {
@@ -42,52 +42,49 @@ public abstract class VulkanRenderModuleSurface
 
 	public abstract void cleanup();
 
-	public abstract VkSurfaceCapabilitiesKHR getSurfaceCaps();
+	public abstract MemorySegment getSurfaceCaps();
 
-	public abstract SurfaceFormat getSurfaceFormat();
+	public abstract VulkanRenderSurfaceFormat getSurfaceFormat();
 
-	protected SurfaceFormat calcSurfaceFormat()
+	protected VulkanRenderSurfaceFormat calcSurfaceFormat()
 	{
 		int imageFormat;
 		int colorSpace;
-		try (var stack = MemoryStack.stackPush())
+		MemorySegment numFormatsSegment = arena.allocateFrom(ValueLayout.ADDRESS, arena.allocate(ValueLayout.JAVA_INT));
+		VulkanUtils.vkCheck(Vulkan.vkGetPhysicalDeviceSurfaceFormatsKHR(this.vulkanModulePhysicalDevice
+								.getVkPhysicalDevice(), this.getVkSurface(), numFormatsSegment, null),
+				"Failed to get the number surface formats");
+		int numFormats = numFormatsSegment.get(ValueLayout.ADDRESS, 0).get(ValueLayout.JAVA_INT, 0);
+		if (numFormats <= 0)
 		{
-			IntBuffer ip = stack.mallocInt(1);
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
-							this.vulkanModulePhysicalDevice.getVkPhysicalDevice(), this.getVkSurface(), ip, null),
-					"Failed to get the number surface formats");
-			int numFormats = ip.get(0);
-			if (numFormats <= 0)
-			{
-				throw new RuntimeException("No surface formats retrieved");
-			}
+			throw new RuntimeException("No surface formats retrieved");
+		}
 
-			var surfaceFormats = VkSurfaceFormatKHR.calloc(numFormats, stack);
-			VulkanUtils.vkCheck(
-					KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
-							this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
-							this.getVkSurface(), ip, surfaceFormats), "Failed to get surface formats");
+		var surfaceFormats = VkSurfaceFormatKHR.allocateArray(numFormats, arena);
+		VulkanUtils.vkCheck(Vulkan.vkGetPhysicalDeviceSurfaceFormatsKHR(this.vulkanModulePhysicalDevice
+								.getVkPhysicalDevice(), this.getVkSurface(), numFormatsSegment, surfaceFormats),
+				"Failed to get surface formats");
 
-			imageFormat = VK13.VK_FORMAT_B8G8R8A8_SRGB;
-			colorSpace = surfaceFormats.get(0).colorSpace();
-			for (int i = 0; i < numFormats; i++)
+		imageFormat = Vulkan.VK_FORMAT_B8G8R8A8_SRGB();
+		colorSpace = VkSurfaceFormatKHR.colorSpace(surfaceFormats.asSlice(0, VkSurfaceFormatKHR.layout()));
+		for (int i = 0; i < numFormats; i++)
+		{
+			MemorySegment surfaceFormatKHR = surfaceFormats.asSlice(i * VkSurfaceFormatKHR.sizeof(),
+					VkSurfaceFormatKHR.layout());
+			if (VkSurfaceFormatKHR.format(surfaceFormatKHR) == Vulkan.VK_FORMAT_B8G8R8A8_SRGB() &&
+					VkSurfaceFormatKHR.colorSpace(surfaceFormatKHR) == Vulkan.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR())
 			{
-				VkSurfaceFormatKHR surfaceFormatKHR = surfaceFormats.get(i);
-				if (surfaceFormatKHR.format() == VK13.VK_FORMAT_B8G8R8A8_SRGB &&
-						surfaceFormatKHR.colorSpace() == KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-				{
-					imageFormat = surfaceFormatKHR.format();
-					colorSpace = surfaceFormatKHR.colorSpace();
-					break;
-				}
+				imageFormat = VkSurfaceFormatKHR.format(surfaceFormatKHR);
+				colorSpace = VkSurfaceFormatKHR.colorSpace(surfaceFormatKHR);
+				break;
 			}
 		}
-		return new SurfaceFormat(imageFormat, colorSpace);
+		return new VulkanRenderSurfaceFormat(imageFormat, colorSpace);
 	}
 
-	public abstract long getVkSurface();
+	public abstract MemorySegment getVkSurface();
 
-	public record SurfaceFormat(int imageFormat, int colorSpace)
+	public record VulkanRenderSurfaceFormat(int imageFormat, int colorSpace)
 	{
 	}
 }
