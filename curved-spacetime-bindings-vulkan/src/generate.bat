@@ -1,1 +1,0 @@
-jextract --include-dir .\Include --output vulkan\java --target-package vulkan --symbols-class-name Vulkansymbols --header-class-name Vulkan .\Include\vulkan\vulkan.h
