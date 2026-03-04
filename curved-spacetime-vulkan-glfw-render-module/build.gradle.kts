@@ -23,7 +23,7 @@ dependencies {
     api(project(":curved-spacetime-vulkan-module"))
     api(project(":curved-spacetime-glfw-render-module"))
     api(project(":curved-spacetime-vulkan-render-module"))
-    api(project(":curved-spacetime-bindings-glfw-vulkan"))
+    api("io.codetoil:simple-graphics-ffm-bindings-glfw-vulkan:0.1.0-SNAPSHOT")
 
     testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }

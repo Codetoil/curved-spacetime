@@ -20,7 +20,7 @@ dependencies {
 
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
-    api(project(":curved-spacetime-bindings-glfw"))
+    api("io.codetoil:simple-graphics-ffm-bindings-glfw:0.1.0-SNAPSHOT")
 
     testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
 }
