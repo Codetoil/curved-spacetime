@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkSurfaceFormatKHR;
@@ -26,8 +27,6 @@ import vulkan.Vulkan;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.util.logging.Logger;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public abstract class VulkanRenderModuleSurface
 {
@@ -50,9 +49,11 @@ public abstract class VulkanRenderModuleSurface
 	{
 		int imageFormat;
 		int colorSpace;
-		MemorySegment numFormatsSegment = arena.allocateFrom(ValueLayout.ADDRESS, arena.allocate(ValueLayout.JAVA_INT));
+		MemorySegment numFormatsSegment =
+				MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.ADDRESS,
+						MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT));
 		VulkanUtils.vkCheck(Vulkan.vkGetPhysicalDeviceSurfaceFormatsKHR(this.vulkanModulePhysicalDevice
-								.getVkPhysicalDevice(), this.getVkSurface(), numFormatsSegment, null),
+						.getVkPhysicalDevice(), this.getVkSurface(), numFormatsSegment, null),
 				"Failed to get the number surface formats");
 		int numFormats = numFormatsSegment.get(ValueLayout.ADDRESS, 0).get(ValueLayout.JAVA_INT, 0);
 		if (numFormats <= 0)
@@ -60,9 +61,10 @@ public abstract class VulkanRenderModuleSurface
 			throw new RuntimeException("No surface formats retrieved");
 		}
 
-		var surfaceFormats = VkSurfaceFormatKHR.allocateArray(numFormats, arena);
+		var surfaceFormats =
+				VkSurfaceFormatKHR.allocateArray(numFormats, MainModuleEngine.getInstance().nativeAllocator);
 		VulkanUtils.vkCheck(Vulkan.vkGetPhysicalDeviceSurfaceFormatsKHR(this.vulkanModulePhysicalDevice
-								.getVkPhysicalDevice(), this.getVkSurface(), numFormatsSegment, surfaceFormats),
+						.getVkPhysicalDevice(), this.getVkSurface(), numFormatsSegment, surfaceFormats),
 				"Failed to get surface formats");
 
 		imageFormat = Vulkan.VK_FORMAT_B8G8R8A8_SRGB();

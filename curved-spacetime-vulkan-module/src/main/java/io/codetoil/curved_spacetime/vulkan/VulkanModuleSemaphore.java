@@ -18,15 +18,12 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkSemaphoreCreateInfo;
 import vulkan.Vulkan;
 
-
 import java.lang.foreign.MemorySegment;
-import java.nio.LongBuffer;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleSemaphore
 {
@@ -36,11 +33,12 @@ public class VulkanModuleSemaphore
 	public VulkanModuleSemaphore(VulkanModuleLogicalDevice logicalDevice)
 	{
 		this.logicalDevice = logicalDevice;
-		MemorySegment semaphoreCreateInfo = VkSemaphoreCreateInfo.allocate(arena);
+		MemorySegment semaphoreCreateInfo =
+				VkSemaphoreCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkSemaphoreCreateInfo.sType(semaphoreCreateInfo, Vulkan.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO());
-		this.vkSemaphore = arena.allocate(Vulkan.VkSemaphore);
+		this.vkSemaphore = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkSemaphore);
 		VulkanUtils.vkCheck(Vulkan.vkCreateSemaphore(logicalDevice.getVkDevice(), semaphoreCreateInfo, null,
-						this.vkSemaphore), "Failed to create semaphore");
+				this.vkSemaphore), "Failed to create semaphore");
 	}
 
 	public void cleanup()

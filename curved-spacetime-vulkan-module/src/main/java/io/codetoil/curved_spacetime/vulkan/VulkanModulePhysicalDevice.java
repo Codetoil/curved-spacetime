@@ -18,16 +18,19 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.*;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
+import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance;
 
 public class VulkanModulePhysicalDevice
 {
@@ -54,36 +57,44 @@ public class VulkanModulePhysicalDevice
 		this.vkPhysicalDevice = vkPhysicalDevice;
 
 		// Get device properties
-		this.vkPhysicalDeviceProperties2 = VkPhysicalDeviceProperties2.allocate(arena);
+		this.vkPhysicalDeviceProperties2 =
+				VkPhysicalDeviceProperties2.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkPhysicalDeviceProperties2.sType(this.vkPhysicalDeviceProperties2,
 				Vulkan.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2());
 		Vulkan.vkGetPhysicalDeviceProperties2(vkPhysicalDevice, this.vkPhysicalDeviceProperties2);
 
 		// Get device extensions
 		MemorySegment numberExtensionsPtr =
-				arena.allocateFrom(ValueLayout.ADDRESS, arena.allocate(ValueLayout.JAVA_INT));
+				MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.ADDRESS,
+						MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT));
 		VulkanUtils.vkCheck(
 				Vulkan.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, null, numberExtensionsPtr,
 						null),
 				"Failed to get number of device extension properties");
 		int numberExtensions = numberExtensionsPtr.get(ValueLayout.ADDRESS, 0).get(ValueLayout.JAVA_INT, 0);
-		this.vkDeviceExtensions = VkExtensionProperties.allocateArray(numberExtensions, arena);
+		this.vkDeviceExtensions =
+				VkExtensionProperties.allocateArray(numberExtensions, MainModuleEngine.getInstance().nativeAllocator);
 		VulkanUtils.vkCheck(Vulkan.vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, null,
 				numberExtensionsPtr, this.vkDeviceExtensions), "Failed to get extension properties");
 
 		// Get Queue family properties
 		MemorySegment numberQueueFamiliesPtr =
-				arena.allocateFrom(ValueLayout.ADDRESS, arena.allocate(ValueLayout.JAVA_INT));
+				MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.ADDRESS,
+						MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT));
 		Vulkan.vkGetPhysicalDeviceQueueFamilyProperties2(vkPhysicalDevice, numberQueueFamiliesPtr, null);
 		int numberQueueFamilies = numberQueueFamiliesPtr.get(ValueLayout.ADDRESS, 0).get(ValueLayout.JAVA_INT, 0);
-		this.vkQueueFamilyProps2 = VkQueueFamilyProperties.allocateArray(numberQueueFamilies, arena);
-		Vulkan.vkGetPhysicalDeviceQueueFamilyProperties2(vkPhysicalDevice, numberQueueFamiliesPtr, this.vkQueueFamilyProps2);
+		this.vkQueueFamilyProps2 = VkQueueFamilyProperties.allocateArray(numberQueueFamilies,
+				MainModuleEngine.getInstance().nativeAllocator);
+		Vulkan.vkGetPhysicalDeviceQueueFamilyProperties2(vkPhysicalDevice, numberQueueFamiliesPtr,
+				this.vkQueueFamilyProps2);
 
-		this.vkPhysicalDeviceFeatures2 = VkPhysicalDeviceFeatures2.allocate(arena);
+		this.vkPhysicalDeviceFeatures2 =
+				VkPhysicalDeviceFeatures2.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		Vulkan.vkGetPhysicalDeviceFeatures2(vkPhysicalDevice, this.vkPhysicalDeviceFeatures2);
 
 		// Get Memory information and properties
-		this.vkMemoryProperties2 = VkPhysicalDeviceMemoryProperties2.allocate(arena);
+		this.vkMemoryProperties2 =
+				VkPhysicalDeviceMemoryProperties2.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		Vulkan.vkGetPhysicalDeviceMemoryProperties2(vkPhysicalDevice, this.vkMemoryProperties2);
 	}
 
@@ -106,7 +117,8 @@ public class VulkanModulePhysicalDevice
 		List<VulkanModulePhysicalDevice> physDevices = new ArrayList<>();
 		VulkanModulePhysicalDevice selectedVulkanModulePhysicalDevice = null;
 
-		for (int i = 0; i < numPhysicalDevices; i++) {
+		for (int i = 0; i < numPhysicalDevices; i++)
+		{
 			MemorySegment vkPhysicalDevice =
 					pPhysicalDevices.asSlice(i * Vulkan.VkPhysicalDevice.byteSize(), Vulkan.VkPhysicalDevice);
 			var physDevice = new VulkanModulePhysicalDevice(vkPhysicalDevice, logger);
@@ -165,7 +177,9 @@ public class VulkanModulePhysicalDevice
 	{
 		MemorySegment pPhysicalDevices;
 		// Get number of physical devices
-		MemorySegment numberDevicesPtr = arena.allocateFrom(ValueLayout.ADDRESS, arena.allocate(ValueLayout.JAVA_INT));
+		MemorySegment numberDevicesPtr =
+				MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.ADDRESS,
+						MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT));
 		VulkanUtils.vkCheck(
 				Vulkan.vkEnumeratePhysicalDevices(instance.getVkInstance(), numberDevicesPtr, null),
 				"Failed to get number of physical devices");
@@ -173,9 +187,9 @@ public class VulkanModulePhysicalDevice
 		logger.fine("Detected " + numDevices + " physical device(s)");
 
 		// Populate physical devices list pointer
-		pPhysicalDevices = arena.allocate(Vulkan.VkPhysicalDevice, numDevices);
+		pPhysicalDevices = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkPhysicalDevice, numDevices);
 		VulkanUtils.vkCheck(Vulkan.vkEnumeratePhysicalDevices(instance.getVkInstance(), numberDevicesPtr,
-						pPhysicalDevices), "Failed to get physical devices");
+				pPhysicalDevices), "Failed to get physical devices");
 		return pPhysicalDevices;
 	}
 

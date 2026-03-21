@@ -18,17 +18,14 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkCommandBufferAllocateInfo;
 import vulkan.VkCommandBufferBeginInfo;
-import vulkan.VkCommandBufferInheritanceInfo;
 import vulkan.Vulkan;
-
 
 import java.lang.foreign.MemorySegment;
 import java.util.logging.Logger;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleCommandBuffer
 {
@@ -48,13 +45,14 @@ public class VulkanModuleCommandBuffer
 		this.oneTimeSubmit = oneTimeSubmit;
 		MemorySegment vkDevice = commandPool.getVulkanLogicalDevice().getVkDevice();
 
-		MemorySegment cmdBufAllocateInfo = VkCommandBufferAllocateInfo.allocate(arena);
+		MemorySegment cmdBufAllocateInfo =
+				VkCommandBufferAllocateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkCommandBufferAllocateInfo.sType(cmdBufAllocateInfo, Vulkan.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO());
 		VkCommandBufferAllocateInfo.commandPool(cmdBufAllocateInfo, commandPool.getVkCommandPool());
 		VkCommandBufferAllocateInfo.level(cmdBufAllocateInfo, primary ? Vulkan.VK_COMMAND_BUFFER_LEVEL_PRIMARY() :
 				Vulkan.VK_COMMAND_BUFFER_LEVEL_SECONDARY());
 		VkCommandBufferAllocateInfo.commandBufferCount(cmdBufAllocateInfo, 1);
-		this.vkCommandBuffer = arena.allocate(Vulkan.VkCommandBuffer);
+		this.vkCommandBuffer = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkCommandBuffer);
 		VulkanUtils.vkCheck(Vulkan.vkAllocateCommandBuffers(vkDevice, cmdBufAllocateInfo, this.vkCommandBuffer),
 				"Failed to allocate render command buffer");
 	}
@@ -66,7 +64,7 @@ public class VulkanModuleCommandBuffer
 
 	public void beginRecording(MemorySegment inheritanceInfo)
 	{
-		MemorySegment cmdBufInfo = VkCommandBufferBeginInfo.allocate(arena);
+		MemorySegment cmdBufInfo = VkCommandBufferBeginInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkCommandBufferBeginInfo.sType(cmdBufInfo, Vulkan.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO());
 
 		if (this.oneTimeSubmit)

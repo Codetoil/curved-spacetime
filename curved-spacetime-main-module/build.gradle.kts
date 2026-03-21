@@ -12,6 +12,11 @@ val junitVersion: String by project
 
 val nonJar by configurations.creating
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }

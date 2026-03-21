@@ -18,17 +18,13 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkSubmitInfo;
 import vulkan.Vulkan;
 
-
 import java.lang.foreign.MemorySegment;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
 import java.util.logging.Logger;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleQueue
 {
@@ -47,7 +43,7 @@ public class VulkanModuleQueue
 						queueIndex);
 
 		this.queueFamilyIndex = queueFamilyIndex;
-		this.vkQueue = arena.allocate(Vulkan.VkQueue);
+		this.vkQueue = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkQueue);
 		Vulkan.vkGetDeviceQueue(vulkanModuleLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, this.vkQueue);
 	}
 
@@ -65,7 +61,7 @@ public class VulkanModuleQueue
 					   MemorySegment waitVulkanDstStageMasks, MemorySegment signalVulkanSemaphores,
 					   VulkanModuleFence vulkanModuleFence)
 	{
-		MemorySegment vkSubmitInfo = VkSubmitInfo.allocate(arena);
+		MemorySegment vkSubmitInfo = VkSubmitInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkSubmitInfo.sType(vkSubmitInfo, Vulkan.VK_STRUCTURE_TYPE_SUBMIT_INFO());
 		VkSubmitInfo.pCommandBuffers(vkSubmitInfo, vulkanCommandBuffers);
 		VkSubmitInfo.pSignalSemaphores(vkSubmitInfo, signalVulkanSemaphores);

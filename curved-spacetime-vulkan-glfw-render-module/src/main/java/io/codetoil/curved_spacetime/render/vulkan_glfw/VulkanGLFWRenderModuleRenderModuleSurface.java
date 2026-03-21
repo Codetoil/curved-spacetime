@@ -18,13 +18,14 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
+import glfw_vulkan.GLFWVulkan;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSurface;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkSurfaceCapabilitiesKHR;
 import vulkan.Vulkan;
-import glfw_vulkan.GLFWVulkan;
 
 import java.lang.foreign.MemorySegment;
 import java.util.logging.Logger;
@@ -43,9 +44,10 @@ public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModul
 		super(vulkanModulePhysicalDevice, logger);
 		this.logger.fine("Creating vulkan glfw surface");
 
-		this.vkSurface = VulkanModuleVulkanInstance.arena.allocate(Vulkan.VkSurfaceKHR);
-		GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(), windowHandle, null, this.vkSurface);
-		this.surfaceCaps = VkSurfaceCapabilitiesKHR.allocate(VulkanModuleVulkanInstance.arena);
+		this.vkSurface = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkSurfaceKHR);
+		GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(), windowHandle, null,
+				this.vkSurface);
+		this.surfaceCaps = VkSurfaceCapabilitiesKHR.allocate(MainModuleEngine.getInstance().nativeAllocator);
 
 		VulkanUtils.vkCheck(Vulkan.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this.vulkanModulePhysicalDevice
 						.getVkPhysicalDevice(), vkSurface, surfaceCaps),

@@ -18,19 +18,21 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSurface.VulkanRenderSurfaceFormat;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleSemaphore;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import vulkan.*;
+import vulkan.VkExtent2D;
+import vulkan.VkSurfaceCapabilitiesKHR;
+import vulkan.VkSwapchainCreateInfoKHR;
+import vulkan.Vulkan;
 
 import java.lang.foreign.MemorySegment;
 import java.util.Arrays;
 import java.util.logging.Logger;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleSwapChain
 {
@@ -72,7 +74,8 @@ public class VulkanRenderModuleSwapChain
 
 		this.vulkanRenderSurfaceFormat = surface.calcSurfaceFormat();
 
-		MemorySegment vkSwapchainCreateInfo = VkSwapchainCreateInfoKHR.allocate(arena);
+		MemorySegment vkSwapchainCreateInfo =
+				VkSwapchainCreateInfoKHR.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkSwapchainCreateInfoKHR.sType(vkSwapchainCreateInfo, Vulkan.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR());
 		VkSwapchainCreateInfoKHR.surface(vkSwapchainCreateInfo, surface.getVkSurface());
 		VkSwapchainCreateInfoKHR.minImageCount(vkSwapchainCreateInfo, requiredImages);
@@ -110,7 +113,7 @@ public class VulkanRenderModuleSwapChain
 			vkSwapchainCreateInfo.imageSharingMode(VK13.VK_SHARING_MODE_EXCLUSIVE);
 		}*/
 
-		this.vkSwapChain = arena.allocate(Vulkan.VkSwapchainKHR);
+		this.vkSwapChain = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkSwapchainKHR);
 		VulkanUtils.vkCheck(
 				Vulkan.vkCreateSwapchainKHR(vulkanModuleLogicalDevice.getVkDevice(), vkSwapchainCreateInfo,
 						null,
@@ -140,9 +143,9 @@ public class VulkanRenderModuleSwapChain
 	}
 
 	private MemorySegment calcSwapChainExtent(RenderModuleWindow renderModuleWindow,
-										   MemorySegment surfCapabilities)
+											  MemorySegment surfCapabilities)
 	{
-		MemorySegment result = VkExtent2D.allocate(arena);
+		MemorySegment result = VkExtent2D.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		if (VkExtent2D.width(VkSurfaceCapabilitiesKHR.currentExtent(surfCapabilities)) == 0xFFFFFFFF)
 		{
 			// Surface size undefined. Set to the window size if within bounds
@@ -162,7 +165,6 @@ public class VulkanRenderModuleSwapChain
 		}
 		return result;
 	}
-
 
 
 	public void cleanup()

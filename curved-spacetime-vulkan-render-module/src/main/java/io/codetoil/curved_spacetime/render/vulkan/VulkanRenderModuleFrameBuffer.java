@@ -18,14 +18,13 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkFramebufferCreateInfo;
 import vulkan.Vulkan;
 
 import java.lang.foreign.MemorySegment;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleFrameBuffer
 {
@@ -38,7 +37,8 @@ public class VulkanRenderModuleFrameBuffer
 	{
 		this.logicalDevice = logicalDevice;
 
-		MemorySegment framebufferCreateInfo = VkFramebufferCreateInfo.allocate(arena);
+		MemorySegment framebufferCreateInfo =
+				VkFramebufferCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkFramebufferCreateInfo.sType(framebufferCreateInfo, Vulkan.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO());
 		VkFramebufferCreateInfo.pAttachments(framebufferCreateInfo, pAttachments);
 		VkFramebufferCreateInfo.width(framebufferCreateInfo, width);
@@ -46,7 +46,7 @@ public class VulkanRenderModuleFrameBuffer
 		VkFramebufferCreateInfo.layers(framebufferCreateInfo, 1);
 		VkFramebufferCreateInfo.renderPass(framebufferCreateInfo, renderPass);
 
-		this.vkFrameBuffer = arena.allocate(Vulkan.VkFramebuffer);
+		this.vkFrameBuffer = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkFramebuffer);
 		VulkanUtils.vkCheck(Vulkan.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo,
 						null, this.vkFrameBuffer),
 				"Failed to create FrameBuffer");

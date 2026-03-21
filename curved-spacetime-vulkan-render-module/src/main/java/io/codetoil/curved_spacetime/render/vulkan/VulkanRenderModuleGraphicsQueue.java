@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleQueue;
@@ -28,8 +29,6 @@ import vulkan.Vulkan;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.util.logging.Logger;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 {
@@ -88,8 +87,9 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 			VulkanModulePhysicalDevice physicalDevice = logicalDevice.getPhysicalDevice();
 			MemorySegment queueProps2Array = physicalDevice.getVkQueueFamilyProps2();
 			int numQueuesFamilies = Math.toIntExact(queueProps2Array.byteSize() / VkQueueFamilyProperties2.sizeof());
-			MemorySegment supportsPresentationSegment = arena.allocateFrom(ValueLayout.ADDRESS,
-					arena.allocate(ValueLayout.JAVA_INT));
+			MemorySegment supportsPresentationSegment =
+					MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.ADDRESS,
+							MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT));
 			for (int i = 0; i < numQueuesFamilies; i++)
 			{
 				Vulkan.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.getVkPhysicalDevice(), i,

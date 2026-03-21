@@ -25,7 +25,6 @@ import glfw3.GLFWvidmode;
 import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 
-import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.util.logging.Logger;
@@ -33,7 +32,6 @@ import java.util.logging.Logger;
 public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 {
 	protected MemorySegment window;
-	protected static Arena arena = Arena.ofShared();
 	protected int width;
 	protected int height;
 
@@ -48,7 +46,7 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		{
 			String description = s_description.getString(0);
 			this.logger.severe("GLFW error code " + error_code + ": " + description);
-		}, arena));
+		}, MainModuleEngine.getInstance().nativeAllocator));
 
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
 		if (GLFW.glfwInit() != GLFW.GLFW_TRUE()) throw new IllegalStateException("Unable to initialize GLFW");
@@ -56,9 +54,9 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		this.logger.info("Using GLFW bindings generated via " +
 				"`jextract glfw3.h -t glfw3 --symbols-class-name GLFWsymbols --header-class-name GLFW` from v" +
 				GLFW.GLFW_VERSION_MAJOR() + "." + GLFW.GLFW_VERSION_MINOR() + "." + GLFW.GLFW_VERSION_REVISION());
-		MemorySegment major = arena.allocate(ValueLayout.JAVA_INT);
-		MemorySegment minor = arena.allocate(ValueLayout.JAVA_INT);
-		MemorySegment revision = arena.allocate(ValueLayout.JAVA_INT);
+		MemorySegment major = MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT);
+		MemorySegment minor = MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT);
+		MemorySegment revision = MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT);
 		GLFW.glfwGetVersion(major, minor, revision);
 		this.logger.info("Using GLFW Runtime v" + major.get(ValueLayout.JAVA_INT, 0) + "." +
 				minor.get(ValueLayout.JAVA_INT, 0) + ", " + revision.get(ValueLayout.JAVA_INT, 0));
@@ -78,7 +76,8 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 
 		// Create the window
 		this.window =
-				GLFW.glfwCreateWindow(this.width, this.height, arena.allocateFrom(this.title), null, null);
+				GLFW.glfwCreateWindow(this.width, this.height,
+						MainModuleEngine.getInstance().nativeAllocator.allocateFrom(this.title), null, null);
 		if (this.window == null) throw new RuntimeException("Failed to create the GLFW window");
 
 		this.renderModuleKeyboardInput = new GLFWRenderModuleKeyboardInput(this);
@@ -87,7 +86,7 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 				{
 					this.width = width;
 					this.height = height;
-				}, arena));
+				}, MainModuleEngine.getInstance().nativeAllocator));
 
 		this.renderModuleMouseInput = new GLFWRenderModuleMouseInput(this);
 	}

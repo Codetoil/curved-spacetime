@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkImageSubresourceRange;
@@ -26,8 +27,6 @@ import vulkan.Vulkan;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleImageView
 {
@@ -45,12 +44,13 @@ public class VulkanRenderModuleImageView
 		this.aspectMask = vulkanImageViewData.aspectMask;
 		this.mipLevels = vulkanImageViewData.mipLevels;
 		this.vkImage = vkImage;
-		MemorySegment viewCreateInfo = VkImageViewCreateInfo.allocate(arena);
+		MemorySegment viewCreateInfo = VkImageViewCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkImageViewCreateInfo.sType(viewCreateInfo, Vulkan.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO());
 		VkImageViewCreateInfo.image(viewCreateInfo, vkImage);
 		VkImageViewCreateInfo.viewType(viewCreateInfo, vulkanImageViewData.viewType);
 		VkImageViewCreateInfo.format(viewCreateInfo, vulkanImageViewData.format);
-		MemorySegment subresourceRange = VkImageSubresourceRange.allocate(arena);
+		MemorySegment subresourceRange =
+				VkImageSubresourceRange.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkImageSubresourceRange.aspectMask(subresourceRange, this.aspectMask);
 		VkImageSubresourceRange.baseMipLevel(subresourceRange, 0);
 		VkImageSubresourceRange.levelCount(subresourceRange, this.mipLevels);
@@ -58,25 +58,28 @@ public class VulkanRenderModuleImageView
 		VkImageSubresourceRange.layerCount(subresourceRange, vulkanImageViewData.layerCount);
 		VkImageViewCreateInfo.subresourceRange(viewCreateInfo, subresourceRange);
 
-		this.vkImageView = arena.allocate(Vulkan.VkImageView);
+		this.vkImageView = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkImageView);
 		VulkanUtils.vkCheck(
 				Vulkan.vkCreateImageView(vulkanModuleLogicalDevice.getVkDevice(), viewCreateInfo, null,
 						this.vkImageView), "Failed to create image view");
 	}
 
 	public static VulkanRenderModuleImageView[] createImageViews(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
-														   MemorySegment swapChain, int format)
+																 MemorySegment swapChain, int format)
 	{
 		VulkanRenderModuleImageView[] result;
 
-		MemorySegment numImagesSegment = arena.allocateFrom(ValueLayout.ADDRESS, arena.allocate(ValueLayout.JAVA_INT));
+		MemorySegment numImagesSegment =
+				MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.ADDRESS,
+						MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT));
 		VulkanUtils.vkCheck(Vulkan.vkGetSwapchainImagesKHR(vulkanModuleLogicalDevice.getVkDevice(), swapChain,
 				numImagesSegment, null), "Failed to get number of surface images");
 		int numImages = numImagesSegment.get(ValueLayout.ADDRESS, 0).get(ValueLayout.JAVA_INT, 0);
 
-		MemorySegment swapChainImages = arena.allocate(Vulkan.VkImage, numImages);
+		MemorySegment swapChainImages =
+				MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkImage, numImages);
 		VulkanUtils.vkCheck(Vulkan.vkGetSwapchainImagesKHR(vulkanModuleLogicalDevice.getVkDevice(), swapChain,
-						numImagesSegment, swapChainImages), "Failed to get surface images");
+				numImagesSegment, swapChainImages), "Failed to get surface images");
 
 		result = new VulkanRenderModuleImageView[numImages];
 		VulkanRenderModuleImageView.VulkanImageViewData imageViewData =

@@ -64,7 +64,8 @@ public class MainModuleConfig
 		Object logger_level = props.get("logger_level");
 		if (logger_level != null)
 		{
-			try {
+			try
+			{
 				this.loggerLevel = Level.parse(logger_level.toString());
 			} catch (IllegalArgumentException ex)
 			{
@@ -76,7 +77,8 @@ public class MainModuleConfig
 				this.loggerLevel = MainModuleConfig.DEFAULT_LOGGER_LEVEL;
 				this.dirty = true;
 			}
-		} else {
+		} else
+		{
 			logger.warning("Could not find required key logger_level, resetting to default value "
 					+ DEFAULT_LOGGER_LEVEL.getName());
 			logger.warning("Valid values: OFF, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, ALL");

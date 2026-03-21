@@ -18,12 +18,11 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.*;
 
 import java.lang.foreign.MemorySegment;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleSwapChainRenderPass
 {
@@ -35,7 +34,8 @@ public class VulkanRenderModuleSwapChainRenderPass
 		this.swapChain = swapChain;
 
 		// Color attachment
-		MemorySegment attachments = VkAttachmentDescription.allocateArray(1, arena);
+		MemorySegment attachments =
+				VkAttachmentDescription.allocateArray(1, MainModuleEngine.getInstance().nativeAllocator);
 		MemorySegment attachment = attachments.asSlice(0, VkAttachmentDescription.layout());
 		VkAttachmentDescription.format(attachment, swapChain.getVulkanSurfaceFormat().imageFormat());
 		VkAttachmentDescription.samples(attachment, Vulkan.VK_SAMPLE_COUNT_1_BIT());
@@ -44,19 +44,22 @@ public class VulkanRenderModuleSwapChainRenderPass
 		VkAttachmentDescription.initialLayout(attachment, Vulkan.VK_IMAGE_LAYOUT_UNDEFINED());
 		VkAttachmentDescription.finalLayout(attachment, Vulkan.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR());
 
-		MemorySegment colorReferences = VkAttachmentReference.allocateArray(1, arena);
+		MemorySegment colorReferences =
+				VkAttachmentReference.allocateArray(1, MainModuleEngine.getInstance().nativeAllocator);
 		MemorySegment colorReference = colorReferences.asSlice(0, VkAttachmentReference.layout());
 		VkAttachmentReference.attachment(colorReference, 0);
 		VkAttachmentReference.layout(colorReference, Vulkan.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL());
 
-		MemorySegment subPassDescriptions = VkSubpassDescription.allocateArray(1, arena);
+		MemorySegment subPassDescriptions =
+				VkSubpassDescription.allocateArray(1, MainModuleEngine.getInstance().nativeAllocator);
 		MemorySegment subPassDescription = subPassDescriptions.asSlice(0, VkSubpassDescription.layout());
 		VkSubpassDescription.pipelineBindPoint(subPassDescription, Vulkan.VK_PIPELINE_BIND_POINT_GRAPHICS());
 		VkSubpassDescription.colorAttachmentCount(subPassDescription,
 				(int) (colorReferences.byteSize() / VkAttachmentReference.sizeof()));
 		VkSubpassDescription.pColorAttachments(subPassDescription, colorReferences);
 
-		MemorySegment subpassDependencies = VkSubpassDependency.allocateArray(1, arena);
+		MemorySegment subpassDependencies =
+				VkSubpassDependency.allocateArray(1, MainModuleEngine.getInstance().nativeAllocator);
 		MemorySegment subpassDependency = subpassDependencies.asSlice(0, VkSubpassDependency.layout());
 		VkSubpassDependency.srcSubpass(subpassDependency, Vulkan.VK_SUBPASS_EXTERNAL());
 		VkSubpassDependency.dstSubpass(subpassDependency, 0);
@@ -65,15 +68,15 @@ public class VulkanRenderModuleSwapChainRenderPass
 		VkSubpassDependency.srcAccessMask(subpassDependency, 0);
 		VkSubpassDependency.dstAccessMask(subpassDependency, Vulkan.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT());
 
-		MemorySegment renderPassInfo = VkRenderPassCreateInfo.allocate(arena);
+		MemorySegment renderPassInfo = VkRenderPassCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkRenderPassCreateInfo.sType(renderPassInfo, Vulkan.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO());
 		VkRenderPassCreateInfo.pAttachments(renderPassInfo, attachments);
 		VkRenderPassCreateInfo.pSubpasses(renderPassInfo, subPassDescriptions);
 		VkRenderPassCreateInfo.pDependencies(renderPassInfo, subpassDependencies);
 
-		this.vkRenderPass = arena.allocate(Vulkan.VkRenderPass);
+		this.vkRenderPass = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkRenderPass);
 		VulkanUtils.vkCheck(Vulkan.vkCreateRenderPass(swapChain.getVulkanLogicalDevice().getVkDevice(),
-						renderPassInfo, null, this.vkRenderPass),"Failed to create render pass");
+				renderPassInfo, null, this.vkRenderPass), "Failed to create render pass");
 
 	}
 

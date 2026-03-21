@@ -2,6 +2,7 @@ package io.codetoil.curved_spacetime.render.glfw;
 
 import glfw3.GLFW;
 import glfw3.GLFWkeyfun;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.RenderModuleKeyboardInput;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 
@@ -10,8 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleWindow.arena;
 
 public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput
 {
@@ -34,7 +33,7 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput
 					{
 						callback.invoke(new KeyCtx(keyCode, scanCode, action, mods));
 					}
-				}, arena));
+				}, MainModuleEngine.getInstance().nativeAllocator));
 	}
 
 	@Override

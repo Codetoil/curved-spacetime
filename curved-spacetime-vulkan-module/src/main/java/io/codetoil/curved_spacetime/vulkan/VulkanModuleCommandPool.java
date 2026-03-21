@@ -18,15 +18,13 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkCommandPoolCreateInfo;
 import vulkan.Vulkan;
 
-
 import java.lang.foreign.MemorySegment;
 import java.util.logging.Logger;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleCommandPool
 {
@@ -41,12 +39,12 @@ public class VulkanModuleCommandPool
 		this.logger.fine("Creating Vulkan CommandPool for " + vulkanModuleLogicalDevice);
 
 		this.vulkanModuleLogicalDevice = vulkanModuleLogicalDevice;
-		MemorySegment cmdPoolInfo = VkCommandPoolCreateInfo.allocate(arena);
+		MemorySegment cmdPoolInfo = VkCommandPoolCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkCommandPoolCreateInfo.sType(cmdPoolInfo, Vulkan.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO());
 		VkCommandPoolCreateInfo.flags(cmdPoolInfo, Vulkan.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT());
 		VkCommandPoolCreateInfo.queueFamilyIndex(cmdPoolInfo, queueFamilyIndex);
 
-		this.vkCommandPool = arena.allocate(Vulkan.VkCommandPool);
+		this.vkCommandPool = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkCommandPool);
 		VulkanUtils.vkCheck(
 				Vulkan.vkCreateCommandPool(vulkanModuleLogicalDevice.getVkDevice(), cmdPoolInfo, null,
 						this.vkCommandPool), "failed to create command pool");

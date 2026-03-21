@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandBuffer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandPool;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleFence;
@@ -25,11 +26,8 @@ import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import vulkan.*;
 
 import java.lang.foreign.MemorySegment;
-import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.logging.Logger;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanRenderModuleForwardRenderActivity
 {
@@ -83,18 +81,19 @@ public class VulkanRenderModuleForwardRenderActivity
 										   VulkanRenderModuleFrameBuffer vulkanRenderModuleFrameBuffer,
 										   int width, int height)
 	{
-		MemorySegment clearValues = VkClearValue.allocateArray(1, arena);
+		MemorySegment clearValues = VkClearValue.allocateArray(1, MainModuleEngine.getInstance().nativeAllocator);
 		MemorySegment firstClearValue = clearValues.asSlice(0, VkClearValue.sizeof());
-		MemorySegment color = VkClearColorValue.allocate(arena);
+		MemorySegment color = VkClearColorValue.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkClearColorValue.float32(color, 0, 0.5f);
 		VkClearColorValue.float32(color, 1, 0.7f);
 		VkClearColorValue.float32(color, 2, 1.0f);
 		VkClearColorValue.float32(color, 3, 0.0f);
 		VkClearValue.color(firstClearValue, color);
-		MemorySegment renderPassBeginInfo = VkRenderPassBeginInfo.allocate(arena);
+		MemorySegment renderPassBeginInfo =
+				VkRenderPassBeginInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkRenderPassBeginInfo.sType(renderPassBeginInfo, Vulkan.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO());
 		VkRenderPassBeginInfo.pClearValues(renderPassBeginInfo, clearValues);
-		MemorySegment renderArea = VkExtent2D.allocate(arena);
+		MemorySegment renderArea = VkExtent2D.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkExtent2D.width(renderArea, width);
 		VkExtent2D.height(renderArea, height);
 		VkRenderPassBeginInfo.renderArea(renderPassBeginInfo, renderArea);

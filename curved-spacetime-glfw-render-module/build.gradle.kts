@@ -14,12 +14,17 @@ val sgffmBindingsVersion: String by project
 
 val nonJar by configurations.creating
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
-    api("io.codetoil:simple-graphics-ffm-bindings-glfw::$sgffmBindingsVersion")
+    api("io.codetoil:simple-graphics-ffm-bindings-glfw:$sgffmBindingsVersion")
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 }

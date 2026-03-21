@@ -18,13 +18,12 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import vulkan.VkFenceCreateInfo;
 import vulkan.Vulkan;
 
 import java.lang.foreign.MemorySegment;
-
-import static io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance.arena;
 
 public class VulkanModuleFence
 {
@@ -34,11 +33,11 @@ public class VulkanModuleFence
 	public VulkanModuleFence(VulkanModuleLogicalDevice logicalDevice, boolean signaled)
 	{
 		this.logicalDevice = logicalDevice;
-		MemorySegment fenceCreateInfo = VkFenceCreateInfo.allocate(arena);
+		MemorySegment fenceCreateInfo = VkFenceCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
 		VkFenceCreateInfo.sType(fenceCreateInfo, Vulkan.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO());
 		VkFenceCreateInfo.flags(fenceCreateInfo, signaled ? Vulkan.VK_FENCE_CREATE_SIGNALED_BIT() : 0);
 
-		this.vkFence = arena.allocate(Vulkan.VkFence);
+		this.vkFence = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkFence);
 		VulkanUtils.vkCheck(Vulkan.vkCreateFence(logicalDevice.getVkDevice(), fenceCreateInfo, null,
 						this.vkFence),
 				"Failed to create fence");

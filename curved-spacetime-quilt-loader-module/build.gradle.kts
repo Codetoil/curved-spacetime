@@ -13,6 +13,11 @@ val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
     implementation(project(":curved-spacetime-loader-module"))

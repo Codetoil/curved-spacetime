@@ -4,12 +4,11 @@ import glfw3.GLFW;
 import glfw3.GLFWcursorenterfun;
 import glfw3.GLFWcursorposfun;
 import glfw3.GLFWmousebuttonfun;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.RenderModuleMouseInput;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 
 import java.lang.foreign.MemorySegment;
-
-import static io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleWindow.arena;
 
 public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 {
@@ -32,10 +31,10 @@ public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 				GLFWcursorposfun.allocate((MemorySegment _, double xPos, double yPos) -> {
 					this.currentX = (float) xPos;
 					this.currentY = (float) yPos;
-				}, arena));
+				}, MainModuleEngine.getInstance().nativeAllocator));
 		GLFW.glfwSetCursorEnterCallback(this.window.window,
 				GLFWcursorenterfun.allocate((MemorySegment _, int entered) ->
-						this.inWindow = entered == GLFW.GLFW_TRUE(), arena));
+						this.inWindow = entered == GLFW.GLFW_TRUE(), MainModuleEngine.getInstance().nativeAllocator));
 		GLFW.glfwSetMouseButtonCallback(this.window.window,
 				GLFWmousebuttonfun.allocate((MemorySegment _, int button, int action, int _) ->
 				{
@@ -45,7 +44,7 @@ public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 							button == GLFW.GLFW_MOUSE_BUTTON_2() && action == GLFW.GLFW_PRESS();
 					this.middleButtonPressed =
 							button == GLFW.GLFW_MOUSE_BUTTON_3() && action == GLFW.GLFW_PRESS();
-				}, arena));
+				}, MainModuleEngine.getInstance().nativeAllocator));
 	}
 
 	@Override
