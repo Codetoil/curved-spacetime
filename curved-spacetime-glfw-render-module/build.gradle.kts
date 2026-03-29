@@ -9,23 +9,24 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
 val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
+val sgffmBindingsVersion: String by project
 
 val nonJar by configurations.creating
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
     api(project(":curved-spacetime-render-module"))
+    api("io.codetoil:simple-graphics-ffm-bindings-glfw:$sgffmBindingsVersion")
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
-
-    api("org.lwjgl:lwjgl-glfw:${lwjglVersion}")
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}:${it}") }
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 }
 
 tasks.named<Test>("test") {
@@ -37,7 +38,6 @@ tasks.shadowJar {
     mergeServiceFiles()
     dependencies {
         exclude(dependency("io.codetoil:.*"))
-        include(dependency("org.lwjgl:.*"))
     }
     destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)

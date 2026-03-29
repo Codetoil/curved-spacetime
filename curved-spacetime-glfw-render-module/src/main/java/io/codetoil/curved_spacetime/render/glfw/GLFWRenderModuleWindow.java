@@ -18,38 +18,53 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
+import glfw3.GLFW;
+import glfw3.GLFWerrorfun;
+import glfw3.GLFWframebuffersizefun;
+import glfw3.GLFWvidmode;
 import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
-import org.lwjgl.glfw.Callbacks;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.system.MemoryUtil;
+
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
+import java.util.logging.Logger;
 
 public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 {
-	protected long windowHandle;
+	protected MemorySegment window;
 	protected int width;
 	protected int height;
 
-	protected GLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title)
+	protected GLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
-		super(mainModuleEngine, title);
+		super(mainModuleEngine, title, logger);
 	}
 
 	public void init()
 	{
-		// Set up an error callback. The default implementation
-		// will print the error message in System.err.
-		GLFWErrorCallback.createPrint(System.err).set();
+		GLFW.glfwSetErrorCallback(GLFWerrorfun.allocate((int error_code, MemorySegment s_description) ->
+		{
+			String description = s_description.getString(0);
+			this.logger.severe("GLFW error code " + error_code + ": " + description);
+		}, MainModuleEngine.getInstance().nativeAllocator));
 
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
-		if (!GLFW.glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
+		if (GLFW.glfwInit() != GLFW.GLFW_TRUE()) throw new IllegalStateException("Unable to initialize GLFW");
 
-		GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		this.logger.info("Using GLFW bindings generated via " +
+				"`jextract glfw3.h -t glfw3 --symbols-class-name GLFWsymbols --header-class-name GLFW` from v" +
+				GLFW.GLFW_VERSION_MAJOR() + "." + GLFW.GLFW_VERSION_MINOR() + "." + GLFW.GLFW_VERSION_REVISION());
+		MemorySegment major = MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT);
+		MemorySegment minor = MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT);
+		MemorySegment revision = MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT);
+		GLFW.glfwGetVersion(major, minor, revision);
+		this.logger.info("Using GLFW Runtime v" + major.get(ValueLayout.JAVA_INT, 0) + "." +
+				minor.get(ValueLayout.JAVA_INT, 0) + ", " + revision.get(ValueLayout.JAVA_INT, 0));
+
+		MemorySegment vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
 		assert vidMode != null;
-		this.width = vidMode.width();
-		this.height = vidMode.height();
+		this.width = GLFWvidmode.width(vidMode);
+		this.height = GLFWvidmode.height(vidMode);
 
 		if (!this.doesDriverExist())
 		{
@@ -60,15 +75,18 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		setWindowHints();
 
 		// Create the window
-		this.windowHandle =
-				GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
-		if (this.windowHandle == MemoryUtil.NULL) throw new RuntimeException("Failed to create the GLFW window");
+		this.window =
+				GLFW.glfwCreateWindow(this.width, this.height,
+						MainModuleEngine.getInstance().nativeAllocator.allocateFrom(this.title), null, null);
+		if (this.window == null) throw new RuntimeException("Failed to create the GLFW window");
 
 		this.renderModuleKeyboardInput = new GLFWRenderModuleKeyboardInput(this);
-		GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (window, w, h) -> {
-			width = w;
-			height = h;
-		});
+		GLFW.glfwSetFramebufferSizeCallback(this.window,
+				GLFWframebuffersizefun.allocate((MemorySegment _, int width, int height) ->
+				{
+					this.width = width;
+					this.height = height;
+				}, MainModuleEngine.getInstance().nativeAllocator));
 
 		this.renderModuleMouseInput = new GLFWRenderModuleMouseInput(this);
 	}
@@ -78,7 +96,7 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		// Poll for window events. The key callback above will only be
 		// invoked during this call.
 		this.pollEvents();
-		if (this.shouldClose())
+		if (this.shouldClose() == GLFW.GLFW_TRUE())
 		{
 			this.mainModuleEngine.stop();
 		}
@@ -96,18 +114,17 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 
 	public void setShouldClose()
 	{
-		GLFW.glfwSetWindowShouldClose(this.windowHandle, true);
+		GLFW.glfwSetWindowShouldClose(this.window, GLFW.GLFW_TRUE());
 	}
 
-	public boolean shouldClose()
+	public int shouldClose()
 	{
-		return GLFW.glfwWindowShouldClose(this.windowHandle);
+		return GLFW.glfwWindowShouldClose(this.window);
 	}
 
 	public void clean()
 	{
-		Callbacks.glfwFreeCallbacks(this.windowHandle);
-		GLFW.glfwDestroyWindow(this.windowHandle);
+		GLFW.glfwDestroyWindow(this.window);
 		GLFW.glfwTerminate();
 	}
 
@@ -117,8 +134,8 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 
 	protected abstract void setWindowHints();
 
-	public long getWindowHandle()
+	public MemorySegment getWindow()
 	{
-		return this.windowHandle;
+		return this.window;
 	}
 }

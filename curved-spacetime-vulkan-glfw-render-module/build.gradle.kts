@@ -3,17 +3,21 @@ plugins {
     id("java-library")
     id("io.github.sgtsilvio.gradle.javadoc-links")
     id("maven-publish")
+    id("com.gradleup.shadow")
 }
 
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
 val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
+val sgffmBindingsVersion: String by project
 
 val nonJar by configurations.creating
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
@@ -23,16 +27,21 @@ dependencies {
     api(project(":curved-spacetime-vulkan-module"))
     api(project(":curved-spacetime-glfw-render-module"))
     api(project(":curved-spacetime-vulkan-render-module"))
+    api("io.codetoil:simple-graphics-ffm-bindings-glfw-vulkan:$sgffmBindingsVersion")
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.jar {
+tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    mergeServiceFiles()
+    dependencies {
+        exclude(dependency("io.codetoil:.*"))
+    }
     destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)
 }
@@ -86,7 +95,7 @@ publishing {
                     url = "https://github.com/Codetoil/curved-spacetime"
                 }
             }
-            from(components["java"])
+            from(components["shadow"])
         }
     }
 }

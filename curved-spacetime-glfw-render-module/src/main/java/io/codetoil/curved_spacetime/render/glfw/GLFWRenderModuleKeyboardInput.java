@@ -1,16 +1,18 @@
 package io.codetoil.curved_spacetime.render.glfw;
 
+import glfw3.GLFW;
+import glfw3.GLFWkeyfun;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.RenderModuleKeyboardInput;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
 
+import java.lang.foreign.MemorySegment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput, GLFWKeyCallbackI
+public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput
 {
 	protected final Map<Integer, Boolean> tappedKeyMap;
 	protected final GLFWRenderModuleWindow window;
@@ -20,8 +22,18 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput,
 	{
 		this.window = window;
 		tappedKeyMap = new HashMap<>();
-		GLFW.glfwSetKeyCallback(this.window.windowHandle, this);
 		callbacks = new ArrayList<>();
+		GLFW.glfwSetKeyCallback(this.window.window,
+				GLFWkeyfun.allocate((MemorySegment window1, int keyCode, int scanCode,
+									 int action, int mods) ->
+				{
+					if (window1 != this.window.window) return;
+					tappedKeyMap.put(keyCode, action == GLFW.GLFW_PRESS());
+					for (KeyCallback callback : callbacks)
+					{
+						callback.invoke(new KeyCtx(keyCode, scanCode, action, mods));
+					}
+				}, MainModuleEngine.getInstance().nativeAllocator));
 	}
 
 	@Override
@@ -50,7 +62,7 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput,
 	@Override
 	public boolean keyPressed(RenderModuleKeyboardInput.KeyCtx keyCtx)
 	{
-		return GLFW.glfwGetKey(this.window.windowHandle, ((KeyCtx) keyCtx).keycode()) == GLFW.GLFW_PRESS;
+		return GLFW.glfwGetKey(this.window.window, ((KeyCtx) keyCtx).keycode()) == GLFW.GLFW_PRESS();
 	}
 
 	@Override
@@ -58,17 +70,6 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput,
 	{
 		Boolean value = tappedKeyMap.get(((KeyCtx) keyCtx).keycode());
 		return value != null && value;
-	}
-
-	@Override
-	public void invoke(long handle, int keyCode, int scanCode, int action, int mods)
-	{
-		if (handle != this.window.windowHandle) return;
-		tappedKeyMap.put(keyCode, action == GLFW.GLFW_PRESS);
-		for (KeyCallback callback : callbacks)
-		{
-			callback.invoke(new KeyCtx(keyCode, scanCode, action, mods));
-		}
 	}
 
 	public record KeyCtx(int keycode, int scanCode, int action, int mods) implements RenderModuleKeyboardInput.KeyCtx

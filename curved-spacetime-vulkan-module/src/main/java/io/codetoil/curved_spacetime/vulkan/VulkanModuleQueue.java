@@ -18,22 +18,19 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkQueue;
-import org.lwjgl.vulkan.VkSubmitInfo;
+import vulkan.VkSubmitInfo;
+import vulkan.Vulkan;
 
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
+import java.lang.foreign.MemorySegment;
 import java.util.logging.Logger;
 
 public class VulkanModuleQueue
 {
 
 	protected final int queueFamilyIndex;
-	protected final VkQueue vkQueue;
+	protected final MemorySegment vkQueue;
 	protected final Logger logger;
 
 	public VulkanModuleQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex, int queueIndex,
@@ -46,45 +43,42 @@ public class VulkanModuleQueue
 						queueIndex);
 
 		this.queueFamilyIndex = queueFamilyIndex;
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			PointerBuffer pQueue = stack.mallocPointer(1);
-			VK13.vkGetDeviceQueue(vulkanModuleLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, pQueue);
-			long queue = pQueue.get(0);
-			this.vkQueue = new VkQueue(queue, vulkanModuleLogicalDevice.getVkDevice());
-		}
+		this.vkQueue = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkQueue);
+		Vulkan.vkGetDeviceQueue(vulkanModuleLogicalDevice.getVkDevice(), queueFamilyIndex, queueIndex, this.vkQueue);
 	}
 
-	public VkQueue getVkQueue()
+	public MemorySegment getVkQueue()
 	{
 		return this.vkQueue;
 	}
 
 	public void waitIdle()
 	{
-		VK13.vkQueueWaitIdle(this.vkQueue);
+		Vulkan.vkQueueWaitIdle(this.vkQueue);
 	}
 
-	public void submit(PointerBuffer vulkanCommandBuffers, LongBuffer waitVulkanSemaphores,
-					   IntBuffer waitVulkanDstStageMasks, LongBuffer signalVulkanSemaphores,
+	public void submit(MemorySegment vulkanCommandBuffers, MemorySegment waitVulkanSemaphores,
+					   MemorySegment waitVulkanDstStageMasks, MemorySegment signalVulkanSemaphores,
 					   VulkanModuleFence vulkanModuleFence)
 	{
-		try (MemoryStack stack = MemoryStack.stackPush())
+		MemorySegment vkSubmitInfo = VkSubmitInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
+		VkSubmitInfo.sType(vkSubmitInfo, Vulkan.VK_STRUCTURE_TYPE_SUBMIT_INFO());
+		VkSubmitInfo.pCommandBuffers(vkSubmitInfo, vulkanCommandBuffers);
+		VkSubmitInfo.pSignalSemaphores(vkSubmitInfo, signalVulkanSemaphores);
+		if (waitVulkanSemaphores != null)
 		{
-			VkSubmitInfo vkSubmitInfo = VkSubmitInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_SUBMIT_INFO)
-					.pCommandBuffers(vulkanCommandBuffers).pSignalSemaphores(signalVulkanSemaphores);
-			if (waitVulkanSemaphores != null)
-			{
-				vkSubmitInfo.waitSemaphoreCount(waitVulkanSemaphores.capacity()).pWaitSemaphores(waitVulkanSemaphores)
-						.pWaitDstStageMask(waitVulkanDstStageMasks);
-			} else
-			{
-				vkSubmitInfo.waitSemaphoreCount(0);
-			}
-			long vulkanFenceHandle = vulkanModuleFence != null ? vulkanModuleFence.getVkFence() : VK13.VK_NULL_HANDLE;
-			VulkanUtils.vkCheck(VK13.vkQueueSubmit(this.vkQueue, vkSubmitInfo, vulkanFenceHandle),
-					"Failed to submit command to queue");
+			VkSubmitInfo.waitSemaphoreCount(vkSubmitInfo,
+					(int) (waitVulkanSemaphores.byteSize() / Vulkan.VkSemaphore.byteSize()));
+			VkSubmitInfo.pWaitSemaphores(vkSubmitInfo, waitVulkanSemaphores);
+			VkSubmitInfo.pWaitDstStageMask(vkSubmitInfo, waitVulkanDstStageMasks);
+		} else
+		{
+			VkSubmitInfo.waitSemaphoreCount(vkSubmitInfo, 0);
 		}
+		MemorySegment vulkanFenceHandle = vulkanModuleFence != null ? vulkanModuleFence.getVkFence() :
+				Vulkan.VK_NULL_HANDLE();
+		VulkanUtils.vkCheck(Vulkan.vkQueueSubmit(this.vkQueue, 1, vkSubmitInfo, vulkanFenceHandle),
+				"Failed to submit command to queue");
 	}
 
 	public int getQueueFamilyIndex()

@@ -18,14 +18,12 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.*;
+import vulkan.*;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,8 +31,10 @@ import java.util.logging.Logger;
 
 public class VulkanModuleLogicalDevice
 {
+	private static final MemorySegment VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME =
+			MainModuleEngine.getInstance().nativeAllocator.allocateFrom("VK_KHR_portability_subset");
 	private final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
-	private final VkDevice vkDevice;
+	private final MemorySegment vkDevice;
 
 	private final Logger logger;
 
@@ -44,84 +44,86 @@ public class VulkanModuleLogicalDevice
 		this.logger.fine("Creating logical device");
 
 		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
-		try (MemoryStack stack = MemoryStack.stackPush())
+		MemorySegment reqExtensions = this.createReqExtensions();
+		// Enable all the queue families
+		MemorySegment queuePropsArray = vulkanModulePhysicalDevice.getVkQueueFamilyProps2();
+		long numQueueFamilies = queuePropsArray.byteSize() / VkQueueFamilyProperties.sizeof();
+		MemorySegment queueCreateInfoArray =
+				VkDeviceQueueCreateInfo.allocateArray(numQueueFamilies, MainModuleEngine.getInstance().nativeAllocator);
+		for (int index = 0; index < numQueueFamilies; index++)
 		{
-			PointerBuffer reqExtensions = this.createReqExtensions(stack);
-			// Enable all the queue families
-			VkQueueFamilyProperties.Buffer queuePropsBuff = vulkanModulePhysicalDevice.getVkQueueFamilyProps();
-			int numQueueFamilies = queuePropsBuff.capacity();
-			VkDeviceQueueCreateInfo.Buffer queueCreationInfoBuf =
-					VkDeviceQueueCreateInfo.calloc(numQueueFamilies, stack);
-			for (int index = 0; index < numQueueFamilies; index++)
-			{
-				FloatBuffer priorities = stack.callocFloat(queuePropsBuff.get(index).queueCount());
-				queueCreationInfoBuf.get(index)
-						.sType$Default()
-						.queueFamilyIndex(index)
-						.pQueuePriorities(priorities);
-			}
-
-			VkDeviceCreateInfo deviceCreateInfo =
-					VkDeviceCreateInfo.calloc(stack)
-							.sType$Default()
-							.ppEnabledExtensionNames(reqExtensions)
-							.pQueueCreateInfos(queueCreationInfoBuf);
-
-			PointerBuffer pp = stack.mallocPointer(1);
-			VulkanUtils.vkCheck(
-					VK13.vkCreateDevice(vulkanModulePhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo, null, pp),
-					"Failed to create device");
-			this.vkDevice = new VkDevice(pp.get(0), vulkanModulePhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo);
+			MemorySegment queueProps = queuePropsArray.asSlice(index * VkQueueFamilyProperties.sizeof(),
+					VkQueueFamilyProperties.sizeof());
+			MemorySegment priorities = MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_FLOAT,
+					VkDeviceQueueCreateInfo.queueCount(queueProps));
+			MemorySegment queueCreateInfo = queueCreateInfoArray.asSlice(index * VkDeviceQueueCreateInfo.sizeof(),
+					VkDeviceQueueCreateInfo.layout());
+			VkDeviceQueueCreateInfo.sType(queueCreateInfo, Vulkan.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO());
+			VkDeviceQueueCreateInfo.queueFamilyIndex(
+					MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.JAVA_INT, index));
+			VkDeviceQueueCreateInfo.pQueuePriorities(priorities);
 		}
+
+		MemorySegment deviceCreateInfo = VkDeviceCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
+		VkDeviceCreateInfo.sType(deviceCreateInfo, Vulkan.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO());
+		VkDeviceCreateInfo.ppEnabledExtensionNames(deviceCreateInfo, reqExtensions);
+		VkDeviceCreateInfo.pQueueCreateInfos(queueCreateInfoArray);
+
+		this.vkDevice = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkPhysicalDevice);
+		VulkanUtils.vkCheck(
+				Vulkan.vkCreateDevice(vulkanModulePhysicalDevice.getVkPhysicalDevice(), deviceCreateInfo, null,
+						this.vkDevice), "Failed to create device");
 	}
 
-	private PointerBuffer createReqExtensions(MemoryStack stack)
+	private MemorySegment createReqExtensions()
 	{
-		Set<String> deviceExtensions = getDeviceExtensions();
+		Set<MemorySegment> deviceExtensions = getDeviceExtensions();
 		boolean usePortability =
-				deviceExtensions.contains(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME)
+				deviceExtensions.contains(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME)
 						&& VulkanUtils.getOS() == VulkanUtils.OSType.MACOS;
 
-		var extensionList = new ArrayList<ByteBuffer>();
-		for (String extension : VulkanModulePhysicalDevice.REQUIRED_EXTENSIONS)
-		{
-			extensionList.add(stack.ASCII(extension));
-		}
+		var extensionList = new ArrayList<>(VulkanModulePhysicalDevice.REQUIRED_EXTENSIONS);
 		if (usePortability)
 		{
-			extensionList.add(stack.ASCII(KHRPortabilitySubset.VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME));
+			extensionList.add(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);
 		}
 
-		PointerBuffer requiredExtensions = stack.mallocPointer(extensionList.size());
-		extensionList.forEach(requiredExtensions::put);
-		requiredExtensions.flip();
+		MemorySegment requiredExtensions =
+				MainModuleEngine.getInstance().nativeAllocator.allocate(VkExtensionProperties.layout(),
+						extensionList.size());
+		for (int index = 0; index < extensionList.size(); index++)
+		{
+			requiredExtensions.asSlice(index * VkExtensionProperties.sizeof(), VkExtensionProperties.layout())
+					.copyFrom(extensionList.get(index));
+		}
+		VulkanUtils.reverseBytes(requiredExtensions);
 
 		return requiredExtensions;
 	}
 
-	private Set<String> getDeviceExtensions()
+	private Set<MemorySegment> getDeviceExtensions()
 	{
-		Set<String> deviceExtensions = new HashSet<>();
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			IntBuffer numExtensionsBuf = stack.callocInt(1);
-			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
-					(String) null,
-					numExtensionsBuf, null);
-			int numExtensions = numExtensionsBuf.get(0);
-			this.logger.fine("Device supports [" + numExtensions + "] extensions");
+		Set<MemorySegment> deviceExtensions = new HashSet<>();
+		MemorySegment numExtensionsPtr =
+				MainModuleEngine.getInstance().nativeAllocator.allocateFrom(ValueLayout.ADDRESS,
+						MainModuleEngine.getInstance().nativeAllocator.allocate(ValueLayout.JAVA_INT));
+		Vulkan.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+				null, numExtensionsPtr, null);
+		int numExtensions = numExtensionsPtr.get(ValueLayout.ADDRESS, 0).get(ValueLayout.JAVA_INT, 0);
+		this.logger.fine("Device supports [" + numExtensions + "] extensions");
 
-			VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions, stack);
-			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
-					(String) null,
-					numExtensionsBuf, propsBuff);
-			for (int index = 0; index < numExtensions; index++)
-			{
-				VkExtensionProperties props = propsBuff.get(index);
-				String extensionName = props.extensionNameString();
-				deviceExtensions.add(extensionName);
-				this.logger.fine("Supported device extension [" + extensionName + "]");
-			}
+		MemorySegment propsArray =
+				VkExtensionProperties.allocateArray(numExtensions, MainModuleEngine.getInstance().nativeAllocator);
+		Vulkan.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+				null,
+				numExtensionsPtr, propsArray);
+		for (int index = 0; index < numExtensions; index++)
+		{
+			MemorySegment props = propsArray.asSlice(index * VkExtensionProperties.sizeof(),
+					VkExtensionProperties.layout());
+			MemorySegment extensionName = VkExtensionProperties.extensionName(props);
+			deviceExtensions.add(extensionName);
+			this.logger.fine("Supported device extension [" + extensionName.getString(0) + "]");
 		}
 		return deviceExtensions;
 	}
@@ -129,7 +131,7 @@ public class VulkanModuleLogicalDevice
 	public void cleanup()
 	{
 		this.logger.fine("Destroying Vulkan device");
-		VK13.vkDestroyDevice(this.vkDevice, null);
+		Vulkan.vkDestroyDevice(this.vkDevice, null);
 	}
 
 	public VulkanModulePhysicalDevice getPhysicalDevice()
@@ -137,13 +139,13 @@ public class VulkanModuleLogicalDevice
 		return this.vulkanModulePhysicalDevice;
 	}
 
-	public VkDevice getVkDevice()
+	public MemorySegment getVkDevice()
 	{
 		return this.vkDevice;
 	}
 
 	public void waitIdle()
 	{
-		VK13.vkDeviceWaitIdle(this.vkDevice);
+		Vulkan.vkDeviceWaitIdle(this.vkDevice);
 	}
 }

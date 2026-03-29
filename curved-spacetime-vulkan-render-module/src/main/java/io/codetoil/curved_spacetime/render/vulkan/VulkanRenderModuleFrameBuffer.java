@@ -18,44 +18,46 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkFramebufferCreateInfo;
+import vulkan.VkFramebufferCreateInfo;
+import vulkan.Vulkan;
 
-import java.nio.LongBuffer;
+import java.lang.foreign.MemorySegment;
 
 public class VulkanRenderModuleFrameBuffer
 {
 	private final VulkanModuleLogicalDevice logicalDevice;
-	private final long vkFrameBuffer;
+	private final MemorySegment vkFrameBuffer;
 
 	public VulkanRenderModuleFrameBuffer(VulkanModuleLogicalDevice logicalDevice, int width, int height,
-										 LongBuffer pAttachments,
-										 long renderPass)
+										 MemorySegment pAttachments,
+										 MemorySegment renderPass)
 	{
 		this.logicalDevice = logicalDevice;
 
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			VkFramebufferCreateInfo framebufferCreateInfo =
-					VkFramebufferCreateInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
-							.pAttachments(pAttachments).width(width).height(height).layers(1).renderPass(renderPass);
+		MemorySegment framebufferCreateInfo =
+				VkFramebufferCreateInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
+		VkFramebufferCreateInfo.sType(framebufferCreateInfo, Vulkan.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO());
+		VkFramebufferCreateInfo.pAttachments(framebufferCreateInfo, pAttachments);
+		VkFramebufferCreateInfo.width(framebufferCreateInfo, width);
+		VkFramebufferCreateInfo.height(framebufferCreateInfo, height);
+		VkFramebufferCreateInfo.layers(framebufferCreateInfo, 1);
+		VkFramebufferCreateInfo.renderPass(framebufferCreateInfo, renderPass);
 
-			LongBuffer lp = stack.mallocLong(1);
-			VulkanUtils.vkCheck(VK13.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo, null, lp),
-					"Failed to create FrameBuffer");
-			this.vkFrameBuffer = lp.get(0);
-		}
+		this.vkFrameBuffer = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkFramebuffer);
+		VulkanUtils.vkCheck(Vulkan.vkCreateFramebuffer(logicalDevice.getVkDevice(), framebufferCreateInfo,
+						null, this.vkFrameBuffer),
+				"Failed to create FrameBuffer");
 	}
 
 	public void cleanup()
 	{
-		VK13.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
+		Vulkan.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
 	}
 
-	public long getVkFrameBuffer()
+	public MemorySegment getVkFrameBuffer()
 	{
 		return this.vkFrameBuffer;
 	}

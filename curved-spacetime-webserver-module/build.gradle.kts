@@ -8,19 +8,21 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
 val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 }
 
 tasks.named<Test>("test") {

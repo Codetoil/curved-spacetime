@@ -7,25 +7,29 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
 val junitVersion: String by project
 val fabricMixinVersion: String by project
 val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
     implementation(project(":curved-spacetime-loader-module"))
     implementation(project(":curved-spacetime-quilt-loader-patches"))
-    implementation("org.quiltmc:quilt-loader:${quiltLoaderVersion}") {
+    implementation("org.quiltmc:quilt-loader:$quiltLoaderVersion") {
         exclude("annotations")
     }
-    implementation("org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}")
+    implementation("org.quiltmc:quilt-loader-dependencies:$quiltLoaderVersion")
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 
-    implementation("net.fabricmc:sponge-mixin:${fabricMixinVersion}")
+    implementation("net.fabricmc:sponge-mixin:$fabricMixinVersion")
 }
 
 tasks.shadowJar {

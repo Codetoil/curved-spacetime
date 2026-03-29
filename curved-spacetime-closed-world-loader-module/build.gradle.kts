@@ -12,12 +12,14 @@ base {
     archivesName = "curved-spacetime"
 }
 
-val lwjglVersion: String by project
 val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
 
 val nonJar by configurations.creating
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
@@ -38,21 +40,12 @@ dependencies {
     implementation(project(":curved-spacetime-webserver-module"))
     implementation(project(":curved-spacetime-webserver-openapi-module"))
 
-    runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}")
-
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}:${it}") }
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}:${it}") }
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos-arm64")
-
 }
 
 graalvmNative {
     binaries {
         named("main") {
-            imageName.set("curved-spacetime-0.1.0-SNAPSHOT-${osNameAndArch}")
+            imageName.set("curved-spacetime-0.1.0-SNAPSHOT-$osNameAndArch")
             mainClass.set("io.codetoil.curved_spacetime.loader.closed_world.Main")
             debug.set(true)
             verbose.set(true)
@@ -90,7 +83,7 @@ tasks.nativeCompile {
 
 tasks.register("cleanClosedNative") {
     run {
-        val folder = file("$rootDir/archive-closed-world-native-${osNameAndArch}")
+        val folder = file("$rootDir/archive-closed-world-native-$osNameAndArch")
         if (folder.listFiles() != null && folder.listFiles()!!.size != 0) {
             folder.listFiles()!!.forEach { fileIt ->
                 run {
@@ -113,7 +106,7 @@ tasks.register("cleanClosedNative") {
 }
 
 tasks.register<Copy>("nativeFilesCopyClosedNative") {
-    into("$rootDir/archive-closed-world-native-${osNameAndArch}")
+    into("$rootDir/archive-closed-world-native-$osNameAndArch")
     exclude("sources", "reports", "embedded-resource.json")
     finalizedBy(tasks["nonJarCopyClosedNative"])
     mustRunAfter(tasks.nativeCompile)
@@ -121,7 +114,7 @@ tasks.register<Copy>("nativeFilesCopyClosedNative") {
 
 tasks.register<Copy>("nonJarCopyClosedNative") {
     from(nonJar)
-    into("$rootDir/archive-closed-world-native-${osNameAndArch}/")
+    into("$rootDir/archive-closed-world-native-$osNameAndArch/")
 }
 
 tasks.shadowJar {

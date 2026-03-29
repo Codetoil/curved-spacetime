@@ -18,68 +18,64 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
+import glfw_vulkan.GLFWVulkan;
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSurface;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleVulkanInstance;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
-import org.lwjgl.glfw.GLFWVulkan;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.KHRSurface;
-import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
+import vulkan.VkSurfaceCapabilitiesKHR;
+import vulkan.Vulkan;
 
-import java.nio.LongBuffer;
+import java.lang.foreign.MemorySegment;
 import java.util.logging.Logger;
 
 public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModuleSurface
 {
 
-	protected final VkSurfaceCapabilitiesKHR surfaceCaps;
-	protected final SurfaceFormat surfaceFormat;
-	protected final long vkSurface;
+	protected final MemorySegment surfaceCaps;
+	protected final VulkanRenderSurfaceFormat vulkanRenderSurfaceFormat;
+	protected final MemorySegment vkSurface;
 
 	public VulkanGLFWRenderModuleRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
 													 VulkanModulePhysicalDevice vulkanModulePhysicalDevice,
-													 long windowHandle, Logger logger)
+													 MemorySegment windowHandle, Logger logger)
 	{
 		super(vulkanModulePhysicalDevice, logger);
 		this.logger.fine("Creating vulkan glfw surface");
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			LongBuffer pSurface = stack.mallocLong(1);
-			GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(),
-					windowHandle, null, pSurface);
-			this.vkSurface = pSurface.get(0);
-			this.surfaceCaps = VkSurfaceCapabilitiesKHR.calloc();
 
-			VulkanUtils.vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this.vulkanModulePhysicalDevice
-							.getVkPhysicalDevice(), vkSurface, surfaceCaps),
-					"Failed to get surface capabilities");
+		this.vkSurface = MainModuleEngine.getInstance().nativeAllocator.allocate(Vulkan.VkSurfaceKHR);
+		GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(), windowHandle, null,
+				this.vkSurface);
+		this.surfaceCaps = VkSurfaceCapabilitiesKHR.allocate(MainModuleEngine.getInstance().nativeAllocator);
 
-			this.surfaceFormat = calcSurfaceFormat();
-		}
+		VulkanUtils.vkCheck(Vulkan.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this.vulkanModulePhysicalDevice
+						.getVkPhysicalDevice(), vkSurface, surfaceCaps),
+				"Failed to get surface capabilities");
+
+		this.vulkanRenderSurfaceFormat = calcSurfaceFormat();
 	}
 
 	public void cleanup()
 	{
 		this.logger.fine("Destroying Vulkan surface");
-		this.surfaceCaps.free();
-		KHRSurface.vkDestroySurfaceKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice().getInstance(), this.vkSurface,
-				null);
+		this.surfaceCaps.unload();
+		Vulkan.vkDestroySurfaceKHR(vulkanModulePhysicalDevice.getVkPhysicalDevice(), this.vkSurface, null);
 	}
 
 	@Override
-	public VkSurfaceCapabilitiesKHR getSurfaceCaps()
+	public MemorySegment getSurfaceCaps()
 	{
 		return this.surfaceCaps;
 	}
 
 	@Override
-	public SurfaceFormat getSurfaceFormat()
+	public VulkanRenderSurfaceFormat getSurfaceFormat()
 	{
-		return this.surfaceFormat;
+		return this.vulkanRenderSurfaceFormat;
 	}
 
-	public long getVkSurface()
+	public MemorySegment getVkSurface()
 	{
 		return this.vkSurface;
 	}

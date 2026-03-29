@@ -3,31 +3,13 @@
   ],
   "resources": [
     {
-      "glob": "freebsd/*/org/lwjgl/liblwjgl.so"
+      "glob": "glfw3-x64.dll"
     },
     {
-      "glob": "linux/*/org/lwjgl/liblwjgl.so"
+      "glob": "glfw3-x86.dll"
     },
     {
-      "glob": "macos/*/org/lwjgl/liblwjgl.dylib"
-    },
-    {
-      "glob": "windows/*/org/lwjgl/lwjgl.dll"
-    },
-    {
-      "glob": "freebsd/*/org/lwjgl/glfw/liblwjgl-glfw.so"
-    },
-    {
-      "glob": "linux/*/org/lwjgl/glfw/liblwjgl-glfw.so"
-    },
-    {
-      "glob": "macos/*/org/lwjgl/glfw/liblwjgl-glfw.dylib"
-    },
-    {
-      "glob": "windows/*/org/lwjgl/glfw/lwjgl-glfw.dll"
-    },
-    {
-      "glob": "macos/*/org/lwjgl/vulkan/liblwjgl-vulkan.dylib"
+      "glob": "libglfw.3.dylib"
     }
   ]
 }

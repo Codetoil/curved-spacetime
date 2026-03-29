@@ -18,17 +18,14 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
+import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandBuffer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandPool;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleFence;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK13;
-import org.lwjgl.vulkan.VkClearValue;
-import org.lwjgl.vulkan.VkExtent2D;
-import org.lwjgl.vulkan.VkRenderPassBeginInfo;
+import vulkan.*;
 
-import java.nio.LongBuffer;
+import java.lang.foreign.MemorySegment;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -47,39 +44,36 @@ public class VulkanRenderModuleForwardRenderActivity
 	{
 		this.logger = logger;
 		this.vulkanRenderModuleSwapChain = vulkanRenderModuleSwapChain;
-		try (MemoryStack stack = MemoryStack.stackPush())
+		VulkanModuleLogicalDevice vulkanModuleLogicalDevice =
+				this.vulkanRenderModuleSwapChain.getVulkanLogicalDevice();
+		MemorySegment vulkanSwapChainExtent = this.vulkanRenderModuleSwapChain.getVulkanSwapChainExtent();
+		VulkanRenderModuleImageView[] vulkanRenderModuleImageViews =
+				this.vulkanRenderModuleSwapChain.getVulkanImageViews();
+		int numImages = vulkanRenderModuleImageViews.length;
+
+		this.vulkanRenderModuleSwapChainRenderPass =
+				new VulkanRenderModuleSwapChainRenderPass(vulkanRenderModuleSwapChain);
+
+		MemorySegment pAttachments;
+		this.vulkanRenderModuleFrameBuffers = new VulkanRenderModuleFrameBuffer[numImages];
+		for (int i = 0; i < numImages; i++)
 		{
-			VulkanModuleLogicalDevice vulkanModuleLogicalDevice =
-					this.vulkanRenderModuleSwapChain.getVulkanLogicalDevice();
-			VkExtent2D vulkanSwapChainExtent = this.vulkanRenderModuleSwapChain.getVulkanSwapChainExtent();
-			VulkanRenderModuleImageView[] vulkanRenderModuleImageViews =
-					this.vulkanRenderModuleSwapChain.getVulkanImageViews();
-			int numImages = vulkanRenderModuleImageViews.length;
+			pAttachments = vulkanRenderModuleImageViews[i].getVkImageView();
+			this.vulkanRenderModuleFrameBuffers[i] =
+					new VulkanRenderModuleFrameBuffer(vulkanModuleLogicalDevice,
+							VkExtent2D.width(vulkanSwapChainExtent), VkExtent2D.height(vulkanSwapChainExtent),
+							pAttachments, this.vulkanRenderModuleSwapChainRenderPass.getVkRenderPass());
+		}
 
-			this.vulkanRenderModuleSwapChainRenderPass =
-					new VulkanRenderModuleSwapChainRenderPass(vulkanRenderModuleSwapChain);
-
-			LongBuffer pAttachments = stack.mallocLong(1);
-			this.vulkanRenderModuleFrameBuffers = new VulkanRenderModuleFrameBuffer[numImages];
-			for (int i = 0; i < numImages; i++)
-			{
-				pAttachments.put(0, vulkanRenderModuleImageViews[i].getVkImageView());
-				this.vulkanRenderModuleFrameBuffers[i] =
-						new VulkanRenderModuleFrameBuffer(vulkanModuleLogicalDevice, vulkanSwapChainExtent.width(),
-								vulkanSwapChainExtent.height(), pAttachments,
-								this.vulkanRenderModuleSwapChainRenderPass.getVkRenderPass());
-			}
-
-			this.vulkanModuleCommandBuffers = new VulkanModuleCommandBuffer[numImages];
-			this.vulkanModuleFences = new VulkanModuleFence[numImages];
-			for (int i = 0; i < numImages; i++)
-			{
-				this.vulkanModuleCommandBuffers[i] =
-						new VulkanModuleCommandBuffer(vulkanModuleCommandPool, true, false, this.logger);
-				this.vulkanModuleFences[i] = new VulkanModuleFence(vulkanModuleLogicalDevice, true);
-				recordVulkanCommandBuffer(this.vulkanModuleCommandBuffers[i], this.vulkanRenderModuleFrameBuffers[i],
-						vulkanSwapChainExtent.width(), vulkanSwapChainExtent.height());
-			}
+		this.vulkanModuleCommandBuffers = new VulkanModuleCommandBuffer[numImages];
+		this.vulkanModuleFences = new VulkanModuleFence[numImages];
+		for (int i = 0; i < numImages; i++)
+		{
+			this.vulkanModuleCommandBuffers[i] =
+					new VulkanModuleCommandBuffer(vulkanModuleCommandPool, true, false, this.logger);
+			this.vulkanModuleFences[i] = new VulkanModuleFence(vulkanModuleLogicalDevice, true);
+			recordVulkanCommandBuffer(this.vulkanModuleCommandBuffers[i], this.vulkanRenderModuleFrameBuffers[i],
+					VkExtent2D.width(vulkanSwapChainExtent), VkExtent2D.height(vulkanSwapChainExtent));
 		}
 	}
 
@@ -87,21 +81,29 @@ public class VulkanRenderModuleForwardRenderActivity
 										   VulkanRenderModuleFrameBuffer vulkanRenderModuleFrameBuffer,
 										   int width, int height)
 	{
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			VkClearValue.Buffer clearValues = VkClearValue.calloc(1, stack);
-			clearValues.apply(0, v -> v.color().float32(0, 0.5f).float32(1, 0.7f).float32(2, 1.0f));
-			VkRenderPassBeginInfo renderPassBeginInfo =
-					VkRenderPassBeginInfo.calloc(stack).sType(VK13.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
-							.pClearValues(clearValues).renderArea(a -> a.extent().set(width, height))
-							.framebuffer(vulkanRenderModuleFrameBuffer.getVkFrameBuffer());
+		MemorySegment clearValues = VkClearValue.allocateArray(1, MainModuleEngine.getInstance().nativeAllocator);
+		MemorySegment firstClearValue = clearValues.asSlice(0, VkClearValue.sizeof());
+		MemorySegment color = VkClearColorValue.allocate(MainModuleEngine.getInstance().nativeAllocator);
+		VkClearColorValue.float32(color, 0, 0.5f);
+		VkClearColorValue.float32(color, 1, 0.7f);
+		VkClearColorValue.float32(color, 2, 1.0f);
+		VkClearColorValue.float32(color, 3, 0.0f);
+		VkClearValue.color(firstClearValue, color);
+		MemorySegment renderPassBeginInfo =
+				VkRenderPassBeginInfo.allocate(MainModuleEngine.getInstance().nativeAllocator);
+		VkRenderPassBeginInfo.sType(renderPassBeginInfo, Vulkan.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO());
+		VkRenderPassBeginInfo.pClearValues(renderPassBeginInfo, clearValues);
+		MemorySegment renderArea = VkExtent2D.allocate(MainModuleEngine.getInstance().nativeAllocator);
+		VkExtent2D.width(renderArea, width);
+		VkExtent2D.height(renderArea, height);
+		VkRenderPassBeginInfo.renderArea(renderPassBeginInfo, renderArea);
+		VkRenderPassBeginInfo.framebuffer(renderPassBeginInfo, vulkanRenderModuleFrameBuffer.getVkFrameBuffer());
 
-			vulkanModuleCommandBuffer.beginRecording();
-			VK13.vkCmdBeginRenderPass(vulkanModuleCommandBuffer.getVkCommandBuffer(), renderPassBeginInfo,
-					VK13.VK_SUBPASS_CONTENTS_INLINE);
-			VK13.vkCmdEndRenderPass(vulkanModuleCommandBuffer.getVkCommandBuffer());
-			vulkanModuleCommandBuffer.endRecording();
-		}
+		vulkanModuleCommandBuffer.beginRecording();
+		Vulkan.vkCmdBeginRenderPass(vulkanModuleCommandBuffer.getVkCommandBuffer(), renderPassBeginInfo,
+				Vulkan.VK_SUBPASS_CONTENTS_INLINE());
+		Vulkan.vkCmdEndRenderPass(vulkanModuleCommandBuffer.getVkCommandBuffer());
+		vulkanModuleCommandBuffer.endRecording();
 	}
 
 	public void cleanup()
@@ -121,19 +123,16 @@ public class VulkanRenderModuleForwardRenderActivity
 
 	public void submit(VulkanRenderModuleGraphicsQueue vulkanGraphicsQueue)
 	{
-		try (MemoryStack stack = MemoryStack.stackPush())
-		{
-			int idx = this.vulkanRenderModuleSwapChain.getCurrentFrame();
-			VulkanModuleCommandBuffer vulkanModuleCommandBuffer = this.vulkanModuleCommandBuffers[idx];
-			VulkanModuleFence currentVulkanModuleFence = this.vulkanModuleFences[idx];
-			currentVulkanModuleFence.reset();
-			//VulkanSwapChain.SynchronizationVulkanSemaphores synchronizationVulkanSemaphores =
-			//		this.vulkanSwapChain.getSyncVulkanSemaphoreList()[idx];
-			//vulkanGraphicsQueue.submit(stack.pointers(vulkanCommandBuffer.getVkCommandBuffer()),
-			//		stack.longs(synchronizationVulkanSemaphores.imageAcquisitionVulkanSemaphore().getVkSemaphore()),
-			//		stack.ints(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
-			//		stack.longs(synchronizationVulkanSemaphores.renderCompleteVulkanSemaphore().getVkSemaphore()),
-			//		currentVulkanFence);
-		}
+		int idx = this.vulkanRenderModuleSwapChain.getCurrentFrame();
+		VulkanModuleCommandBuffer vulkanModuleCommandBuffer = this.vulkanModuleCommandBuffers[idx];
+		VulkanModuleFence currentVulkanModuleFence = this.vulkanModuleFences[idx];
+		currentVulkanModuleFence.reset();
+		//VulkanSwapChain.SynchronizationVulkanSemaphores synchronizationVulkanSemaphores =
+		//		this.vulkanSwapChain.getSyncVulkanSemaphoreList()[idx];
+		//vulkanGraphicsQueue.submit(stack.pointers(vulkanCommandBuffer.getVkCommandBuffer()),
+		//		stack.longs(synchronizationVulkanSemaphores.imageAcquisitionVulkanSemaphore().getVkSemaphore()),
+		//		stack.ints(VK13.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
+		//		stack.longs(synchronizationVulkanSemaphores.renderCompleteVulkanSemaphore().getVkSemaphore()),
+		//		currentVulkanFence);
 	}
 }

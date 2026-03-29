@@ -24,6 +24,7 @@ import io.codetoil.curved_spacetime.scene.Scene;
 import io.codetoil.curved_spacetime.scene.SceneCallback;
 
 import java.io.IOException;
+import java.lang.foreign.Arena;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ public class MainModuleEngine
 	protected static MainModuleEngine INSTANCE;
 	public final MainModuleConfig mainModuleConfig;
 	public final Logger logger = Logger.getLogger("Curved Spacetime Main Module Logger");
+	public final Arena nativeAllocator = Arena.ofShared();
 	protected final ScheduledExecutorService callbackExecutor;
 	protected final CurvedSpacetimeLoader loader;
 	private final List<MainCallback> mainCallbacks = new ArrayList<>();
@@ -60,6 +62,7 @@ public class MainModuleEngine
 		{
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
+		this.logger.setLevel(this.mainModuleConfig.getLoggerLevel());
 		registerScene(new Scene());
 		//registerScene(new Scene());
 		this.callbackExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -135,13 +138,6 @@ public class MainModuleEngine
 				}
 			}
 		}
-
-	}
-
-	public static void start(String[] args, CurvedSpacetimeLoader loader)
-	{
-		INSTANCE = new MainModuleEngine(loader);
-		// TODO implement argument handling
 	}
 
 	public static MainModuleEngine getInstance()

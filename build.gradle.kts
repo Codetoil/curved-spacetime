@@ -28,6 +28,7 @@ allprojects {
         maven {
             url = uri("https://maven.quiltmc.org/repository/release/")
         }
+        mavenLocal()
     }
 }
 

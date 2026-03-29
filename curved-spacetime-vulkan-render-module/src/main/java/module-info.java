@@ -24,9 +24,8 @@ module io.codetoil.curved_spacetime.render.vulkan {
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.render;
 	requires io.codetoil.curved_spacetime.vulkan;
-	requires org.lwjgl;
-	requires org.lwjgl.vulkan;
 	requires io.codetoil.curved_spacetime.loader;
+	requires vulkan;
 	requires java.logging;
 
 	exports io.codetoil.curved_spacetime.render.vulkan;

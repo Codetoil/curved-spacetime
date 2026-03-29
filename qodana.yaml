@@ -36,5 +36,5 @@ exclude:
       - gradlew.bat
   - name: Licenses
     paths:
-      - LICENSE
+      - LICENSE.md
       - Notices.md
