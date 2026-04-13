@@ -28,7 +28,7 @@ jobs:
       - run: zip -r ../curved-spacetime-closed-world-native-variant-linux-x64-${{ github.ref_name }}.zip .
         working-directory: archive-closed-world-native-linux-x64
       - name: Publish
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.ref_type == 'tag'
         with:
           files: ./curved-spacetime-closed-world-native-variant-linux-x64-${{ github.ref_name }}.zip
@@ -55,7 +55,7 @@ jobs:
       - run: zip -r ../curved-spacetime-closed-world-native-variant-linux-arm64-${{ github.ref_name }}.zip .
         working-directory: archive-closed-world-native-linux-arm64
       - name: Publish
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.ref_type == 'tag'
         with:
           files: ./curved-spacetime-closed-world-native-variant-linux-arm64-${{ github.ref_name }}.zip
@@ -82,7 +82,7 @@ jobs:
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-windows-x64/source.tar.gz HEAD
       - run: Compress-Archive -Path ./archive-closed-world-native-windows-x64/* -DestinationPath ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip
       - name: Publish
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.ref_type == 'tag'
         with:
           files: ./curved-spacetime-closed-world-native-variant-windows-x64-${{ github.ref_name }}.zip
@@ -112,7 +112,7 @@ jobs:
       - run: zip -r ../curved-spacetime-closed-world-native-variant-macos-arm64-${{ github.ref_name }}.zip .
         working-directory: archive-closed-world-native-macos-arm64
       - name: Publish
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.ref_type == 'tag'
         with:
           files: ./curved-spacetime-closed-world-native-variant-macos-arm64-${{ github.ref_name }}.zip

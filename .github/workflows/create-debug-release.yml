@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.VERSION }}-build.${{ github.run_number }}
           name: "Debug Release ${{ env.VERSION }}-build.${{ github.run_number }}"
