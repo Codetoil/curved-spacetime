@@ -1,5 +1,5 @@
 plugins {
-    id("io.freefair.aggregate-javadoc") version "9.4.0"
+    id("io.freefair.aggregate-javadoc") version "9.5.0"
     id("org.jetbrains.qodana") version "2025.3.2"
     id("io.github.sgtsilvio.gradle.javadoc-links") version "0.10.0" apply false
     id("com.gradleup.shadow") version "9.4.1" apply false
