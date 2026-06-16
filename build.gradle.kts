@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.qodana") version "2026.1.0"
     id("io.github.sgtsilvio.gradle.javadoc-links") version "0.10.0" apply false
     id("com.gradleup.shadow") version "9.4.2" apply false
-    id("org.graalvm.buildtools.native") version "1.1.1" apply false
+    id("org.graalvm.buildtools.native") version "1.1.2" apply false
 }
 
 val nonJar by configurations.creating
