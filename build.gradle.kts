@@ -1,9 +1,9 @@
 plugins {
-    id("io.freefair.aggregate-javadoc") version "9.2.0"
-    id("org.jetbrains.qodana") version "2025.3.2"
+    id("io.freefair.aggregate-javadoc") version "9.5.0"
+    id("org.jetbrains.qodana") version "2026.1.3"
     id("io.github.sgtsilvio.gradle.javadoc-links") version "0.10.0" apply false
-    id("com.gradleup.shadow") version "9.4.1" apply false
-    id("org.graalvm.buildtools.native") version "1.0.0" apply false
+    id("com.gradleup.shadow") version "9.4.3" apply false
+    id("org.graalvm.buildtools.native") version "1.1.2" apply false
 }
 
 val nonJar by configurations.creating
