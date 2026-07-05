@@ -6,7 +6,7 @@ plugins {
     id("org.graalvm.buildtools.native") version "1.1.3" apply false
 }
 
-val nonJar by configurations.creating
+val nonJar = configurations.create("nonJar")
 
 dependencies {
     nonJar(files("LICENSE.md", "Notices.md"))
@@ -32,6 +32,7 @@ allprojects {
 }
 
 tasks.register("cleanJar") {
+    description = "Clean the output directories for the Quilt and Closed World Versions of Stale Files"
     run {
         files(
             "$rootDir/archive-quilt/",
@@ -64,6 +65,7 @@ tasks.register("cleanJar") {
 }
 
 tasks.register<Copy>("nonJarCopyClosedJar") {
+    description = "Put the nonJar stuff into the output directory for the Closed World Jar"
     from(nonJar)
     into("$rootDir/archive-closed-world-jar/")
     mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
@@ -71,6 +73,7 @@ tasks.register<Copy>("nonJarCopyClosedJar") {
 }
 
 tasks.register<Copy>("nonJarCopyQuilt") {
+    description = "Put the nonJar stuff into the output directory for the Quilt Jar"
     from(nonJar)
     into("$rootDir/archive-quilt/")
     mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
