@@ -9,12 +9,12 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion: String by project
-val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
+val lwjglVersion = project.findProperty("lwjglVersion") as String
+val junitVersion = project.findProperty("junitVersion") as String
+val fabricMixinVersion = project.findProperty("fabricMixinVersion") as String
+val quiltLoaderVersion = project.findProperty("quiltLoaderVersion") as String
 
-val nonJar by configurations.creating
+val nonJar = configurations.create("nonJar")
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))

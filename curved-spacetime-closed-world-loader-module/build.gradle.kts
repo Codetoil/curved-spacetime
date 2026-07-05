@@ -12,12 +12,12 @@ base {
     archivesName = "curved-spacetime"
 }
 
-val lwjglVersion: String by project
-val junitVersion: String by project
-val fabricMixinVersion: String by project
-val quiltLoaderVersion: String by project
+val lwjglVersion = project.findProperty("lwjglVersion") as String
+val junitVersion = project.findProperty("junitVersion") as String
+val fabricMixinVersion = project.findProperty("fabricMixinVersion") as String
+val quiltLoaderVersion = project.findProperty("quiltLoaderVersion") as String
 
-val nonJar by configurations.creating
+val nonJar = configurations.create("nonJar")
 
 repositories {
     mavenCentral()
@@ -89,6 +89,7 @@ tasks.nativeCompile {
 }
 
 tasks.register("cleanClosedNative") {
+    description = "Clean the output directory for the Closed World Native Version of Stale Files"
     run {
         val folder = file("$rootDir/archive-closed-world-native-${osNameAndArch}")
         if (folder.listFiles() != null && folder.listFiles()!!.size != 0) {
@@ -113,6 +114,7 @@ tasks.register("cleanClosedNative") {
 }
 
 tasks.register<Copy>("nativeFilesCopyClosedNative") {
+    description = "I think it copies the build files into the output directory for the Closed World Native Version..."
     into("$rootDir/archive-closed-world-native-${osNameAndArch}")
     exclude("sources", "reports", "embedded-resource.json")
     finalizedBy(tasks["nonJarCopyClosedNative"])
@@ -120,6 +122,7 @@ tasks.register<Copy>("nativeFilesCopyClosedNative") {
 }
 
 tasks.register<Copy>("nonJarCopyClosedNative") {
+    description = "Put the nonJar stuff into the output directory for the Closed World Native Version"
     from(nonJar)
     into("$rootDir/archive-closed-world-native-${osNameAndArch}/")
 }

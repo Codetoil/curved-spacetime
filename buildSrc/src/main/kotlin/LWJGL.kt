@@ -1,3 +1,4 @@
+@Suppress("unused")
 var lwjglNativesNames = listOf(
     "natives-linux",
     "natives-linux-arm32",
