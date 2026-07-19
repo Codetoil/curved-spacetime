@@ -17,18 +17,17 @@
  */
 
 /**
- * Vulkan Render Loader Module of Curved Spacetime
+ * GLFW Render Module of Curved Spacetime
  *
  */
-module io.codetoil.curved_spacetime.render.vulkan {
+module io.codetoil.curved_spacetime.render.glfw {
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.render;
-	requires io.codetoil.curved_spacetime.vulkan;
 	requires io.codetoil.curved_spacetime.loader;
-	requires org.lwjgl;
-	requires org.lwjgl.vulkan;
 	requires java.logging;
 
-	exports io.codetoil.curved_spacetime.render.vulkan;
-	exports io.codetoil.curved_spacetime.render.vulkan.entrypoint;
+	requires org.lwjgl;
+	requires org.lwjgl.glfw;
+	exports io.codetoil.curved_spacetime.render.glfw;
+	exports io.codetoil.curved_spacetime.render.glfw.entrypoint;
 }

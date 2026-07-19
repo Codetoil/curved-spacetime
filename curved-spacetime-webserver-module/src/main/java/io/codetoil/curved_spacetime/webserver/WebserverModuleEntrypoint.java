@@ -40,6 +40,7 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 	@Override
 	public void onInitialize()
 	{
+		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
 		try
 		{
 			this.config = new WebserverModuleConfig(this.logger).load();
