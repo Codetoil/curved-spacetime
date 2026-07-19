@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "io.codetoil.curved_spacetime.webserver",
-    "id": "curved-spacetime-webserver-module",
+    "group": "io.codetoil.curved_spacetime.simulator",
+    "id": "curved-spacetime-simulator-module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {
-      "name": "Curved Spacetime Webserver Module",
-      "description": "Implements Webserver Support for Curved Spacetime",
+      "name": "Curved Spacetime Simulator Module",
+      "description": "Contains the Simulator API for Curved Spacetime",
       "contributors": {
         "Codetoil": "Owner"
       },
@@ -15,11 +15,11 @@
         "issues": "https://github.com/Codetoil/curved-spacetime/issues",
         "sources": "https://github.com/Codetoil/curved-spacetime.git"
       },
-      "icon": "assets/curved-spacetime-webserver-module/icon.png"
+      "icon": "assets/curved-spacetime-simulator-module/icon.png"
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.simulation.SimulatorModuleEntrypoint"
     },
     "depends": [
       {
@@ -36,5 +36,5 @@
       }
     ]
   },
-  "mixin": "curved-spacetime-webserver-module.mixins.json"
+  "mixin": "curved-spacetime-simulator-module.mixins.json"
 }
