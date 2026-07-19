@@ -17,18 +17,10 @@
  */
 
 /**
- * Vulkan Render Loader Module of Curved Spacetime
+ * Quilt Loader Module of Curved Spacetime
  *
  */
-module io.codetoil.curved_spacetime.render.vulkan {
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.render;
-	requires io.codetoil.curved_spacetime.vulkan;
+module io.codetoil.curved_spacetime.loader.quiltmc {
 	requires io.codetoil.curved_spacetime.loader;
-	requires org.lwjgl;
-	requires org.lwjgl.vulkan;
-	requires java.logging;
-
-	exports io.codetoil.curved_spacetime.render.vulkan;
-	exports io.codetoil.curved_spacetime.render.vulkan.entrypoint;
+	requires org.quiltmc.loader;
 }

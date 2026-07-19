@@ -20,17 +20,21 @@ package io.codetoil.curved_spacetime.render;
 
 import io.codetoil.curved_spacetime.MainModuleEngine;
 
+import java.util.logging.Logger;
+
 public abstract class RenderModuleWindow
 {
 	protected final MainModuleEngine mainModuleEngine;
 	protected final String title;
+	protected final Logger logger;
 	protected RenderModuleKeyboardInput renderModuleKeyboardInput;
 	protected RenderModuleMouseInput renderModuleMouseInput;
 
-	protected RenderModuleWindow(MainModuleEngine mainModuleEngine, String title)
+	protected RenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
 		this.mainModuleEngine = mainModuleEngine;
 		this.title = title;
+		this.logger = logger;
 	}
 
 	public abstract void init();

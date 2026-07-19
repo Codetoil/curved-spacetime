@@ -16,19 +16,22 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
+
 /**
- * Vulkan Render Loader Module of Curved Spacetime
+ * Closed-World Loader Module of Curved Spacetime
  *
  */
-module io.codetoil.curved_spacetime.render.vulkan {
+module io.codetoil.curved_spacetime.loader.closed_world {
 	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.render;
-	requires io.codetoil.curved_spacetime.vulkan;
 	requires io.codetoil.curved_spacetime.loader;
-	requires org.lwjgl;
-	requires org.lwjgl.vulkan;
+	requires io.codetoil.curved_spacetime.render;
+	requires io.codetoil.curved_spacetime.render.glfw;
+	requires io.codetoil.curved_spacetime.render.vulkan;
+	requires io.codetoil.curved_spacetime.vulkan;
+	requires io.codetoil.curved_spacetime.webserver;
+	requires io.codetoil.curved_spacetime.webserver.openapi;
+	requires io.codetoil.curved_spacetime.render.vulkan_glfw;
+	requires io.codetoil.curved_spacetime.cli;
+	requires io.codetoil.curved_spacetime.simulator;
 	requires java.logging;
-
-	exports io.codetoil.curved_spacetime.render.vulkan;
-	exports io.codetoil.curved_spacetime.render.vulkan.entrypoint;
 }

@@ -63,7 +63,7 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 		VulkanModuleLogicalDevice vulkanModuleLogicalDevice = entrypoint.getVulkanModuleEntrypoint().getVulkan()
 				.getVulkanModuleLogicalDevice();
 
-		this.vulkanGLFWRenderWindow = new VulkanGLFWRenderModuleWindow(mainModuleEngine, "curved-spacetime");
+		this.vulkanGLFWRenderWindow = new VulkanGLFWRenderModuleWindow(mainModuleEngine, "curved-spacetime", logger);
 
 		this.vulkanGLFWRenderWindow.init();
 

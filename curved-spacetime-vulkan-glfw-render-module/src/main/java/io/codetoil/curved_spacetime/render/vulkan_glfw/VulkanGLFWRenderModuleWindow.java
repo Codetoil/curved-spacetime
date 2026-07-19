@@ -22,12 +22,13 @@ import io.codetoil.curved_spacetime.MainModuleEngine;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleWindow;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
+import java.util.logging.Logger;
 
 public class VulkanGLFWRenderModuleWindow extends GLFWRenderModuleWindow
 {
-	public VulkanGLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title)
+	public VulkanGLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
-		super(mainModuleEngine, title);
+		super(mainModuleEngine, title, logger);
 	}
 
 	@Override

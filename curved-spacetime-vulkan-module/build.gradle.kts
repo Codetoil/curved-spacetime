@@ -11,36 +11,45 @@ version = "0.1.0-SNAPSHOT"
 
 val lwjglVersion = project.findProperty("lwjglVersion") as String
 val junitVersion = project.findProperty("junitVersion") as String
-val fabricMixinVersion = project.findProperty("fabricMixinVersion") as String
-val quiltLoaderVersion = project.findProperty("quiltLoaderVersion") as String
 
 val nonJar = configurations.create("nonJar")
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
     api(project(":curved-spacetime-main-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 
-    api("org.lwjgl:lwjgl-vulkan:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos-arm64")
+    api("org.lwjgl:lwjgl-vulkan:$lwjglVersion")
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos")
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos-arm64")
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
+sourceSets {
+    create("extra") {
+        java.srcDir("src/extra/java")
+    }
+}
+
 tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
     dependencies {
-        exclude(dependency("io.codetoil:.*"))
+        exclude(dependency("io.codetoil:curved-spacetime*"))
         include(dependency("org.lwjgl:.*"))
     }
     destinationDirectory = File("$rootDir/archive-quilt/modules")
-    from(nonJar)
+    from(nonJar, file("src/main/java/module-info.java"))
 }
 
 publishing {

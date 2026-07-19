@@ -14,10 +14,13 @@ base {
 
 val lwjglVersion = project.findProperty("lwjglVersion") as String
 val junitVersion = project.findProperty("junitVersion") as String
-val fabricMixinVersion = project.findProperty("fabricMixinVersion") as String
-val quiltLoaderVersion = project.findProperty("quiltLoaderVersion") as String
 
 val nonJar = configurations.create("nonJar")
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
@@ -38,21 +41,21 @@ dependencies {
     implementation(project(":curved-spacetime-webserver-module"))
     implementation(project(":curved-spacetime-webserver-openapi-module"))
 
-    runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}")
+    runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion")
+    runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion")
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion")
 
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl:${lwjglVersion}:${it}") }
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:${lwjglVersion}:${it}") }
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:${lwjglVersion}:natives-macos-arm64")
+    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:$it") }
+    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$it") }
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos")
+    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos-arm64")
 
 }
 
 graalvmNative {
     binaries {
         named("main") {
-            imageName.set("curved-spacetime-0.1.0-SNAPSHOT-${osNameAndArch}")
+            imageName.set("curved-spacetime-0.1.0-SNAPSHOT-$osNameAndArch")
             mainClass.set("io.codetoil.curved_spacetime.loader.closed_world.Main")
             debug.set(true)
             verbose.set(true)
@@ -91,7 +94,7 @@ tasks.nativeCompile {
 tasks.register("cleanClosedNative") {
     description = "Clean the output directory for the Closed World Native Version of Stale Files"
     run {
-        val folder = file("$rootDir/archive-closed-world-native-${osNameAndArch}")
+        val folder = file("$rootDir/archive-closed-world-native-$osNameAndArch")
         if (folder.listFiles() != null && folder.listFiles()!!.size != 0) {
             folder.listFiles()!!.forEach { fileIt ->
                 run {
@@ -115,7 +118,7 @@ tasks.register("cleanClosedNative") {
 
 tasks.register<Copy>("nativeFilesCopyClosedNative") {
     description = "I think it copies the build files into the output directory for the Closed World Native Version..."
-    into("$rootDir/archive-closed-world-native-${osNameAndArch}")
+    into("$rootDir/archive-closed-world-native-$osNameAndArch")
     exclude("sources", "reports", "embedded-resource.json")
     finalizedBy(tasks["nonJarCopyClosedNative"])
     mustRunAfter(tasks.nativeCompile)
@@ -124,7 +127,13 @@ tasks.register<Copy>("nativeFilesCopyClosedNative") {
 tasks.register<Copy>("nonJarCopyClosedNative") {
     description = "Put the nonJar stuff into the output directory for the Closed World Native Version"
     from(nonJar)
-    into("$rootDir/archive-closed-world-native-${osNameAndArch}/")
+    into("$rootDir/archive-closed-world-native-$osNameAndArch/")
+}
+
+sourceSets {
+    create("extra") {
+        java.srcDir("src/extra/java")
+    }
 }
 
 tasks.shadowJar {
@@ -134,7 +143,7 @@ tasks.shadowJar {
     manifest {
         attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.closed_world.Main"))
     }
-    from(nonJar)
+    from(nonJar, file("src/main/java/module-info.java"))
 }
 
 publishing {

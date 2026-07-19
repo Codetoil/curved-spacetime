@@ -7,25 +7,35 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion = project.findProperty("lwjglVersion") as String
 val junitVersion = project.findProperty("junitVersion") as String
 val fabricMixinVersion = project.findProperty("fabricMixinVersion") as String
 val quiltLoaderVersion = project.findProperty("quiltLoaderVersion") as String
 
 val nonJar = configurations.create("nonJar")
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
     implementation(project(":curved-spacetime-loader-module"))
     implementation(project(":curved-spacetime-quilt-loader-patches"))
-    implementation("org.quiltmc:quilt-loader:${quiltLoaderVersion}") {
+    implementation("org.quiltmc:quilt-loader:$quiltLoaderVersion") {
         exclude("annotations")
     }
-    implementation("org.quiltmc:quilt-loader-dependencies:${quiltLoaderVersion}")
+    implementation("org.quiltmc:quilt-loader-dependencies:$quiltLoaderVersion")
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 
-    implementation("net.fabricmc:sponge-mixin:${fabricMixinVersion}")
+    implementation("net.fabricmc:sponge-mixin:$fabricMixinVersion")
+}
+
+sourceSets {
+    create("extra") {
+        java.srcDir("src/extra/java")
+    }
 }
 
 tasks.shadowJar {
@@ -40,7 +50,7 @@ tasks.shadowJar {
     manifest {
         attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.quiltmc.KnotCurvedSpacetime"))
     }
-    from(nonJar)
+    from(nonJar, file("src/main/java/module-info.java"))
 }
 
 publishing {

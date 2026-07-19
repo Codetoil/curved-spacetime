@@ -25,10 +25,12 @@ import java.util.logging.Logger;
 
 public class MainModuleConfig
 {
+	private static final Level DEFAULT_LOGGER_LEVEL = Level.INFO;
 	private static final int DEFAULT_FPS = 60;
 	private static final String FILENAME = "config/main-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
+	private Level loggerLevel;
 	private int fps;
 
 	public MainModuleConfig(Logger logger)
@@ -41,6 +43,11 @@ public class MainModuleConfig
 		return this.fps;
 	}
 
+	public Level getLoggerLevel()
+	{
+		return loggerLevel;
+	}
+
 	public MainModuleConfig load() throws IOException
 	{
 		Properties props = new Properties();
@@ -51,6 +58,33 @@ public class MainModuleConfig
 		} catch (FileNotFoundException ex)
 		{
 			logger.log(Level.WARNING, ex, () -> "Could not find config file " + MainModuleConfig.FILENAME);
+			this.dirty = true;
+		}
+
+		Object logger_level = props.get("logger_level");
+		if (logger_level != null)
+		{
+			try
+			{
+				this.loggerLevel = Level.parse(logger_level.toString());
+			} catch (IllegalArgumentException ex)
+			{
+				logger.warning("Invalid value " + logger_level + " for key logger_level," +
+						" resetting to default value " + DEFAULT_LOGGER_LEVEL.getName());
+				logger.warning("Known Valid Values: OFF, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, ALL");
+				logger.warning("An integer value between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE
+						+ " is also allowed.");
+				this.loggerLevel = MainModuleConfig.DEFAULT_LOGGER_LEVEL;
+				this.dirty = true;
+			}
+		} else
+		{
+			logger.warning("Could not find required key logger_level, resetting to default value "
+					+ DEFAULT_LOGGER_LEVEL.getName());
+			logger.warning("Valid values: OFF, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, ALL");
+			logger.warning("An integer value between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE
+					+ " is also allowed.");
+			this.loggerLevel = MainModuleConfig.DEFAULT_LOGGER_LEVEL;
 			this.dirty = true;
 		}
 
@@ -88,6 +122,7 @@ public class MainModuleConfig
 	public void save() throws IOException
 	{
 		Properties props = new Properties();
+		props.put("logger_level", this.loggerLevel.getName());
 		props.put("fps", String.valueOf(this.fps));
 
 		File configFile = new File(MainModuleConfig.FILENAME);

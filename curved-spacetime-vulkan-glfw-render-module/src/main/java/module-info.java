@@ -26,11 +26,11 @@ module io.codetoil.curved_spacetime.render.vulkan_glfw {
 	requires io.codetoil.curved_spacetime.render;
 	requires io.codetoil.curved_spacetime.render.vulkan;
 	requires io.codetoil.curved_spacetime.render.glfw;
+	requires io.codetoil.curved_spacetime.loader;
+	requires java.logging;
 	requires org.lwjgl;
 	requires org.lwjgl.vulkan;
 	requires org.lwjgl.glfw;
-	requires io.codetoil.curved_spacetime.loader;
-	requires java.logging;
 
 	exports io.codetoil.curved_spacetime.render.vulkan_glfw;
 	exports io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint;
