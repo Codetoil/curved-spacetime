@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "io.codetoil.curved_spacetime.vulkan.ffm",
+    "id": "curved-spacetime-ffm-vulkan-module",
+    "version": "0.1.0-SNAPSHOT",
+    "metadata": {
+      "name": "Curved Spacetime FFM Vulkan Module",
+      "description": "Implements Vulkan Support using FFM into Curved Spacetime",
+      "contributors": {
+        "Codetoil": "Owner"
+      },
+      "contact": {
+        "homepage": "https://codetoil.io",
+        "issues": "https://github.com/Codetoil/curved-spacetime/issues",
+        "sources": "https://github.com/Codetoil/curved-spacetime"
+      },
+      "icon": "assets/curved-spacetime-ffm-vulkan-module/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "main": "io.codetoil.curved_spacetime.vulkan.ffm.VulkanModuleEntrypoint"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.30.1-beta.2"
+      },
+      {
+        "id": "curved-spacetime-main-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "java",
+        "versions": ">=25"
+      }
+    ]
+  },
+  "mixin": "curved-spacetime-vulkan-module.mixins.json"
+}
