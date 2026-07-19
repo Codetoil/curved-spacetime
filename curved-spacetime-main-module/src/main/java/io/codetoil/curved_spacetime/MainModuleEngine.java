@@ -60,6 +60,7 @@ public class MainModuleEngine
 		{
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
+		this.logger.setLevel(this.mainModuleConfig.getLoggerLevel());
 		registerScene(new Scene());
 		//registerScene(new Scene());
 		this.callbackExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -135,13 +136,6 @@ public class MainModuleEngine
 				}
 			}
 		}
-
-	}
-
-	public static void start(String[] args, CurvedSpacetimeLoader loader)
-	{
-		INSTANCE = new MainModuleEngine(loader);
-		// TODO implement argument handling
 	}
 
 	public static MainModuleEngine getInstance()

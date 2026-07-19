@@ -6,6 +6,7 @@ on:
     branches:
       - preview
       - dev
+      - feature/ffm
   schedule:
     - cron: '45 15 * * 3'
 

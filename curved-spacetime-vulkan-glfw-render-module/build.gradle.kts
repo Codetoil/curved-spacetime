@@ -8,12 +8,14 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion = project.findProperty("lwjglVersion") as String
 val junitVersion = project.findProperty("junitVersion") as String
-val fabricMixinVersion = project.findProperty("fabricMixinVersion") as String
-val quiltLoaderVersion = project.findProperty("quiltLoaderVersion") as String
 
 val nonJar = configurations.create("nonJar")
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
@@ -24,17 +26,23 @@ dependencies {
     api(project(":curved-spacetime-glfw-render-module"))
     api(project(":curved-spacetime-vulkan-render-module"))
 
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
 }
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
+sourceSets {
+    create("extra") {
+        java.srcDir("src/extra/java")
+    }
+}
+
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     destinationDirectory = File("$rootDir/archive-quilt/modules")
-    from(nonJar)
+    from(nonJar, file("src/main/java/module-info.java"))
 }
 
 publishing {

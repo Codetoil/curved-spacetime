@@ -25,6 +25,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
+import java.util.logging.Logger;
 
 public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 {
@@ -32,9 +33,9 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	protected int width;
 	protected int height;
 
-	protected GLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title)
+	protected GLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
-		super(mainModuleEngine, title);
+		super(mainModuleEngine, title, logger);
 	}
 
 	public void init()

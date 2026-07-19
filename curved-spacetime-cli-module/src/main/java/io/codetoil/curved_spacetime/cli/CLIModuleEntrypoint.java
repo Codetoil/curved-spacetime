@@ -37,6 +37,7 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 	@Override
 	public void onInitialize()
 	{
+		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
 		try
 		{
 			this.config = new CLIModuleConfig(this.logger).load();
