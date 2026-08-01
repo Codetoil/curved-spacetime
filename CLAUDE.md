@@ -67,12 +67,3 @@ Run code against the result with
 `java --module-path /tmp/mods --add-modules <module> -cp . <MainClass>`.
 
 Prefer this over reasoning about whether something compiles.
-
-## Known issues
-
-- `curved-spacetime-simulator-module/src/main/resources/quilt.mod.json` points its `main`
-  entrypoint at `io.codetoil.curved_spacetime.simulation.SimulatorModuleEntrypoint`, but the
-  class is in `...curved_spacetime.simulator`. Won't resolve at runtime.
-- Every module declares `testImplementation(platform("org.junit:junit-bom:$junitVersion"))`
-  but not `org.junit.jupiter:junit-jupiter`. `useJUnitPlatform()` therefore has no engine and
-  tests cannot run. Fix repo-wide before relying on tests.

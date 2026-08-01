@@ -20,7 +20,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.simulation.SimulatorModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.simulator.SimulatorModuleEntrypoint"
     },
     "depends": [
       {

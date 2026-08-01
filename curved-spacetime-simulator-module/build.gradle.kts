@@ -23,6 +23,8 @@ dependencies {
     api(project(":curved-spacetime-main-module"))
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named<Test>("test") {
@@ -31,7 +33,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/archive-quilt/simulator-modules")
+    destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar)
 }
 
