@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "io.codetoil.curved_spacetime.render.vulkan.mixin",
+  "package": "io.codetoil.curved_spacetime.cli.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
   ],

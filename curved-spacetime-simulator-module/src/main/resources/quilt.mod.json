@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "io.codetoil.curved_spacetime.render.glfw",
-    "id": "curved-spacetime-glfw-render-module",
+    "group": "io.codetoil.curved_spacetime.simulator",
+    "id": "curved-spacetime-simulator-module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {
-      "name": "Curved Spacetime GLFW Render Module",
-      "description": "Implements GLFW Support for Curved Spacetime",
+      "name": "Curved Spacetime Simulator Module",
+      "description": "Contains the Simulator API for Curved Spacetime",
       "contributors": {
         "Codetoil": "Owner",
         "Claude Opus 5": "Contributor"
@@ -16,12 +16,11 @@
         "issues": "https://github.com/Codetoil/curved-spacetime/issues",
         "sources": "https://github.com/Codetoil/curved-spacetime.git"
       },
-      "icon": "assets/curved-spacetime-glfw-render-module/icon.png"
+      "icon": "assets/curved-spacetime-simulator-module/icon.png"
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint",
-      "render_module_dependent": "io.codetoil.curved_spacetime.render.glfw.RenderModuleDependentGLFWRenderModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.simulator.SimulatorModuleEntrypoint"
     },
     "depends": [
       {
@@ -33,14 +32,10 @@
         "versions": ">=0.1.0-SNAPSHOT"
       },
       {
-        "id": "curved-spacetime-render-module",
-        "versions": ">=0.1.0-SNAPSHOT"
-      },
-      {
         "id": "java",
         "versions": ">=25"
       }
     ]
   },
-  "mixin": "curved-spacetime-glfw-render-module.mixins.json"
+  "mixin": "curved-spacetime-simulator-module.mixins.json"
 }
