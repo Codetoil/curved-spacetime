@@ -34,6 +34,8 @@ dependencies {
     api(project(":curved-spacetime-loader-module"))
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion")
     (lwjglNativesNames as List<*>)

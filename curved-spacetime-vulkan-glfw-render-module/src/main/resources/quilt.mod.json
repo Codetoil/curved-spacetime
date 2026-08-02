@@ -8,7 +8,8 @@
       "name": "Curved Spacetime Vulkan GLFW Render Module",
       "description": "Implements the code depending on both GLFW and Vulkan in Curved Spacetime.",
       "contributors": {
-        "Codetoil": "Owner"
+        "Codetoil": "Owner",
+        "Claude Opus 5": "Contributor"
       },
       "contact": {
         "homepage": "https://codetoil.io",

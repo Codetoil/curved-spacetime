@@ -8,7 +8,8 @@
       "name": "Curved Spacetime Vulkan Module",
       "description": "Implements Vulkan Support into Curved Spacetime",
       "contributors": {
-        "Codetoil": "Owner"
+        "Codetoil": "Owner",
+        "Claude Opus 5": "Contributor"
       },
       "contact": {
         "homepage": "https://codetoil.io",

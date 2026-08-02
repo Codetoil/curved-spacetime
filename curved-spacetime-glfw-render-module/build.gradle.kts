@@ -26,6 +26,8 @@ dependencies {
     api(project(":curved-spacetime-render-module"))
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     api("org.lwjgl:lwjgl-glfw:$lwjglVersion")
     (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$it") }
@@ -79,6 +81,11 @@ publishing {
                         email = "ianthisawesomee@gmail.com"
                         url = "https://codetoil.io"
                         roles = setOf("owner", "architect", "developer")
+                    }
+                    developer {
+                        id = "opus-5"
+                        name = "Claude Opus 5"
+                        roles = setOf("developer")
                     }
                 }
                 issueManagement {

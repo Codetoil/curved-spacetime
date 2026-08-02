@@ -8,7 +8,8 @@
       "name": "Curved Spacetime CLI Module",
       "description": "Implements CLI Support for Curved Spacetime",
       "contributors": {
-        "Codetoil": "Owner"
+        "Codetoil": "Owner",
+        "Claude Opus 5": "Contributor"
       },
       "contact": {
         "homepage": "https://github.com/Codetoil/curved-spacetime/",

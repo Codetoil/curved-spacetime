@@ -8,7 +8,8 @@
       "name": "Curved Spacetime Simulator Module",
       "description": "Contains the Simulator API for Curved Spacetime",
       "contributors": {
-        "Codetoil": "Owner"
+        "Codetoil": "Owner",
+        "Claude Opus 5": "Contributor"
       },
       "contact": {
         "homepage": "https://github.com/Codetoil/curved-spacetime/",
@@ -19,7 +20,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.simulation.SimulatorModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.simulator.SimulatorModuleEntrypoint"
     },
     "depends": [
       {
