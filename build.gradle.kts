@@ -2,7 +2,7 @@ plugins {
     id("io.freefair.aggregate-javadoc") version "9.5.0"
     id("org.jetbrains.qodana") version "2026.1.3"
     id("io.github.sgtsilvio.gradle.javadoc-links") version "0.10.0" apply false
-    id("com.gradleup.shadow") version "9.5.1" apply false
+    id("com.gradleup.shadow") version "9.6.1" apply false
     id("org.graalvm.buildtools.native") version "1.1.4" apply false
 }
 
