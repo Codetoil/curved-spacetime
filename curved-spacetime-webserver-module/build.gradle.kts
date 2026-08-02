@@ -74,7 +74,7 @@ publishing {
                     developer {
                         id = "opus-5"
                         name = "Claude Opus 5"
-                        roles = setOf("architect", "developer")
+                        roles = setOf("developer")
                     }
                 }
                 issueManagement {
