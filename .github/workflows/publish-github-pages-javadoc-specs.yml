@@ -1,4 +1,4 @@
-name: Publish GitHub Pages (Javadoc)
+name: Publish GitHub Pages (Javadoc + Specs)
 
 on:
   release:
@@ -59,6 +59,23 @@ jobs:
         run: |
           mkdir -p javadocs/${{ github.ref_name }}
           tar -xvf artifact.tar -C javadocs/${{ github.ref_name }}
+      - name: Check out the specifications from the release tag
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+          path: source-specs
+          sparse-checkout: specs
+      - name: Publish the specifications
+        # Guarded so that a tag predating the specs/ directory does not fail the release.
+        run: |
+          if [ -d source-specs/specs ]; then
+            sed -i -r 's/pre-0\.1\.0/${{ github.ref_name }}/g' source-specs/specs/module-system.html
+            mkdir -p specs/${{ github.ref_name }}
+            cp -R source-specs/specs/. specs/${{ github.ref_name }}/
+          else
+            echo "No specs/ directory on ${{ github.ref_name }}; skipping."
+          fi
+          rm -rf source-specs
       - name: Update index.html
         run: sed -i -r 's/[0-9]+\.[0-9]+\.[0-9]+-build\.[0-9]+/${{ github.ref_name }}/g' index.html
       - name: Push update to repo
@@ -66,5 +83,5 @@ jobs:
           git add .
           git config --global user.name 'Codetoil'
           git config --global user.email 'codetoil@users.noreply.github.com'
-          git commit -am "Automated update ${{ github.ref_name }} (Javadoc)"
+          git commit -am "Automated update ${{ github.ref_name }} (Javadoc and Specifications)"
           git push
