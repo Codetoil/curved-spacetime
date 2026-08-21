@@ -20,6 +20,12 @@ java {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+    // MainModuleConfig resolves config/main-module.config relative to the working directory,
+    // so give the tests a scratch directory rather than letting them write into the source tree.
+    workingDir = layout.buildDirectory.dir("test-working").get().asFile
+    doFirst {
+        workingDir.mkdirs()
+    }
 }
 
 tasks.jar {
