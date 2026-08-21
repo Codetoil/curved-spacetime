@@ -41,6 +41,10 @@ dependencies {
     implementation(project(":curved-spacetime-webserver-module"))
     implementation(project(":curved-spacetime-webserver-openapi-module"))
 
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
     runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion")
     runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion")
     runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion")
@@ -50,6 +54,10 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos")
     runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos-arm64")
 
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 graalvmNative {

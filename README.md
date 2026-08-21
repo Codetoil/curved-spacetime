@@ -38,6 +38,19 @@ The Native Variants (Closed-World Native Variants) support the following Operati
 - macOS on 64-Bit ARM (AArch64/ARM64)
 - Windows on 64-Bit x86 (x86_64/AMD64)
 
+## Documentation
+
+Published per release at <https://codetoil.io/curved-spacetime/>, which always links the latest
+version:
+
+- **Module System Specification** — the normative contract for modules and loaders: naming,
+  entrypoints, the dependency handshake, and the configuration format. Source lives in this
+  repository at [`specs/module-system.html`](specs/module-system.html).
+- **Javadocs** — aggregated Javadoc for every module.
+
+Contributors should start with [CONTRIBUTING.md](CONTRIBUTING.md), which covers module layout,
+adding a module, code style, and the Javadoc conventions.
+
 ## Building and Distribution
 
 To build the application, you need a copy of JDK 8 and JDK 25 for the Jar Variants, and GraalVM CE 25 for the Native
