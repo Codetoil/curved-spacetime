@@ -14,7 +14,7 @@ on:
     types: [ published ]
 
 jobs:
-  test-loader-module:
+  test:
 
     runs-on: ubuntu-24.04
     permissions:
