@@ -49,3 +49,5 @@ archive-quilt
 archive-closed-world-jar
 archive-closed-world-native**
 /test
+
+.mcp.json
