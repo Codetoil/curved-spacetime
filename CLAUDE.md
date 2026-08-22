@@ -13,6 +13,7 @@ files alone.
 | Module layout, adding a module, code style, Javadoc rules | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 | Normative module/loader contract — entrypoint naming, the dependency handshake, config format | [`specs/module-system.html`](specs/module-system.html) |
 | Toolchain requirements, build commands, supported platforms | [`README.md`](README.md) |
+| Intended direction for the simulation layer — **exploratory draft, not normative** | [`specs/simulation.md`](specs/simulation.md) |
 
 The specification is authoritative. Where `CONTRIBUTING.md` and the specification disagree, the
 specification wins, and the disagreement is a bug worth reporting.
