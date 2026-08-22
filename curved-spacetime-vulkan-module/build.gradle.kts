@@ -50,7 +50,6 @@ tasks.shadowJar {
         exclude(dependency("io.codetoil:curved-spacetime*"))
         include(dependency("org.lwjgl:.*"))
     }
-    destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar, file("src/main/java/module-info.java"))
 }
 
