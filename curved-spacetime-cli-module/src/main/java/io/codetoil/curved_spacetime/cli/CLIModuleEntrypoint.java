@@ -28,11 +28,26 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * The CLI module's {@code main} entrypoint.
+ * <p>
+ * Provides the command-line face of the simulator. Currently loads its configuration and hands
+ * itself to any dependents; the command handling itself is not implemented yet.
+ */
 public class CLIModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
 	private Logger logger = Logger.getLogger("Curved Spacetime CLI Module Logger");
+
+	/**
+	 * Creates the CLI module's entrypoint.
+	 * <p>
+	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 */
+	public CLIModuleEntrypoint()
+	{
+	}
 
 	@Override
 	public void onInitialize()

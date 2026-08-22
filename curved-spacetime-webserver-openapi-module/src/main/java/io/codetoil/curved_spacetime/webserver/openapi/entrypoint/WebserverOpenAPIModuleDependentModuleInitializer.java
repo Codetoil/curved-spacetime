@@ -21,6 +21,12 @@ package io.codetoil.curved_spacetime.webserver.openapi.entrypoint;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.openapi.WebserverOpenAPIModuleEntrypoint;
 
+/**
+ * The entrypoint a module registers to depend on the OpenAPI module.
+ * <p>
+ * Registered under the OpenAPI module's dependent entrypoint name. Implementations transfer the
+ * received entrypoint into their own module's dependency queue.
+ */
 public interface WebserverOpenAPIModuleDependentModuleInitializer
 		extends ModuleDependentModuleInitializer<WebserverOpenAPIModuleEntrypoint>
 {

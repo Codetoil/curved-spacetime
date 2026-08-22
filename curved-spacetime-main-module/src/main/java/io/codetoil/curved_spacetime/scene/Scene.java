@@ -18,8 +18,20 @@
 
 package io.codetoil.curved_spacetime.scene;
 
+/**
+ * One independent thing being simulated and drawn.
+ * <p>
+ * The engine holds a list of these and pairs each with a {@link SceneCallback} per registered
+ * generator, so modules act on scenes without tracking them. A scene currently carries no state
+ * of its own: what a scene <em>contains</em> — spacetimes, metrics, worldlines — belongs to the
+ * simulation model, which has not been settled yet and is deliberately outside the scope of the
+ * Module System Specification.
+ */
 public class Scene
 {
+	/**
+	 * Creates an empty scene.
+	 */
 	public Scene()
 	{
 	}

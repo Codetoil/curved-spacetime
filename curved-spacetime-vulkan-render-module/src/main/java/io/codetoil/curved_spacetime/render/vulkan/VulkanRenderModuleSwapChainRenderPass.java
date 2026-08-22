@@ -24,11 +24,25 @@ import org.lwjgl.vulkan.*;
 
 import java.nio.LongBuffer;
 
+/**
+ * A single-subpass render pass that draws straight into the swap chain.
+ * <p>
+ * Its one colour attachment is cleared on load, stored on completion, and left in the layout the
+ * presentation engine expects, so a rendered image is ready to present without a further
+ * transition. A subpass dependency on the external subpass keeps that transition from happening
+ * before the image has actually been acquired.
+ */
 public class VulkanRenderModuleSwapChainRenderPass
 {
 	private final VulkanRenderModuleSwapChain swapChain;
 	private final long vkRenderPass;
 
+	/**
+	 * Creates a render pass matching the given swap chain's format.
+	 *
+	 * @param swapChain the swap chain whose images this pass will draw into
+	 * @throws AssertionError if the render pass cannot be created
+	 */
 	public VulkanRenderModuleSwapChainRenderPass(VulkanRenderModuleSwapChain swapChain)
 	{
 		this.swapChain = swapChain;
@@ -68,11 +82,19 @@ public class VulkanRenderModuleSwapChainRenderPass
 		}
 	}
 
+	/**
+	 * Destroys the render pass.
+	 */
 	public void cleanup()
 	{
 		VK13.vkDestroyRenderPass(this.swapChain.getVulkanLogicalDevice().getVkDevice(), this.vkRenderPass, null);
 	}
 
+	/**
+	 * Returns the underlying Vulkan handle.
+	 *
+	 * @return the {@code VkRenderPass} handle
+	 */
 	public long getVkRenderPass()
 	{
 		return this.vkRenderPass;

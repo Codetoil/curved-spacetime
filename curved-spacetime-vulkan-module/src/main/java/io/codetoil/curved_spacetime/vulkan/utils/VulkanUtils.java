@@ -22,6 +22,9 @@ import org.lwjgl.vulkan.*;
 
 import java.util.Locale;
 
+/**
+ * Helpers shared across the Vulkan modules.
+ */
 public class VulkanUtils
 {
 	private VulkanUtils()
@@ -29,6 +32,14 @@ public class VulkanUtils
 		// Utility class
 	}
 
+	/**
+	 * Identifies the host operating system.
+	 * <p>
+	 * Used to decide whether the portability extensions apply, since Vulkan on macOS runs over
+	 * MoltenVK rather than a conformant driver.
+	 *
+	 * @return the host operating system, or {@link OSType#OTHER} if it is not recognised
+	 */
 	public static OSType getOS()
 	{
 		OSType result;
@@ -50,6 +61,17 @@ public class VulkanUtils
 		return result;
 	}
 
+	/**
+	 * Throws unless a Vulkan call succeeded.
+	 * <p>
+	 * Every Vulkan entry point returns a {@code VkResult}, and almost none of them are worth
+	 * handling individually, so calls are wrapped in this instead. Anything other than
+	 * {@code VK_SUCCESS} raises an {@link AssertionError} carrying the numeric result.
+	 *
+	 * @param err    the {@code VkResult} returned by the call
+	 * @param errMsg a description of what was being attempted
+	 * @throws AssertionError if {@code err} is anything other than {@code VK_SUCCESS}
+	 */
 	public static void vkCheck(int err, String errMsg)
 	{
 		String errCode = "Unmapped Error Code";
@@ -256,8 +278,26 @@ public class VulkanUtils
 		}
 	}
 
+	/**
+	 * The host operating systems distinguished by {@link #getOS()}.
+	 */
 	public enum OSType
 	{
-		WINDOWS, LINUX, OTHER, MACOS
+		/**
+		 * Microsoft Windows.
+		 */
+		WINDOWS,
+		/**
+		 * Linux.
+		 */
+		LINUX,
+		/**
+		 * An operating system that is none of the others, such as FreeBSD.
+		 */
+		OTHER,
+		/**
+		 * Apple macOS, where Vulkan runs over MoltenVK and the portability extensions apply.
+		 */
+		MACOS
 	}
 }

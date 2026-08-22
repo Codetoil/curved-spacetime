@@ -21,6 +21,12 @@ package io.codetoil.curved_spacetime.render.glfw.entrypoint;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint;
 
+/**
+ * The entrypoint a module registers to depend on the GLFW render module.
+ * <p>
+ * Registered under the GLFW render module's dependent entrypoint name. Implementations transfer
+ * the received entrypoint into their own module's dependency queue.
+ */
 public interface GLFWRenderModuleDependentModuleInitializer
 		extends ModuleDependentModuleInitializer<GLFWRenderModuleEntrypoint>
 {

@@ -29,13 +29,39 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.logging.Logger;
 
+/**
+ * A Vulkan queue, the channel through which recorded work reaches the device.
+ * <p>
+ * Queues are not created but retrieved: the logical device creates them all up front, and a queue
+ * is identified by its family and its index within that family. Subclasses narrow this to a
+ * particular capability, such as graphics or presentation.
+ */
 public class VulkanModuleQueue
 {
 
+	/**
+	 * The family this queue belongs to, which determines what work it accepts.
+	 */
 	protected final int queueFamilyIndex;
+
+	/**
+	 * The underlying Vulkan queue.
+	 */
 	protected final VkQueue vkQueue;
+
+	/**
+	 * The logger this queue writes its diagnostics to.
+	 */
 	protected final Logger logger;
 
+	/**
+	 * Retrieves a queue from the given device.
+	 *
+	 * @param vulkanModuleLogicalDevice the device that owns the queue
+	 * @param queueFamilyIndex          the family to take the queue from
+	 * @param queueIndex                the index within that family
+	 * @param logger                    the logger to write queue diagnostics to
+	 */
 	public VulkanModuleQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex, int queueIndex,
 							 Logger logger)
 	{
@@ -55,16 +81,36 @@ public class VulkanModuleQueue
 		}
 	}
 
+	/**
+	 * Returns the underlying Vulkan queue.
+	 *
+	 * @return the {@code VkQueue}
+	 */
 	public VkQueue getVkQueue()
 	{
 		return this.vkQueue;
 	}
 
+	/**
+	 * Blocks until every submission to this queue has completed.
+	 */
 	public void waitIdle()
 	{
 		VK13.vkQueueWaitIdle(this.vkQueue);
 	}
 
+	/**
+	 * Submits recorded command buffers to this queue.
+	 *
+	 * @param vulkanCommandBuffers    the command buffers to execute
+	 * @param waitVulkanSemaphores    semaphores to wait on before executing, or {@code null} to
+	 *                                begin immediately
+	 * @param waitVulkanDstStageMasks the pipeline stages at which each wait applies, positionally
+	 *                                matching {@code waitVulkanSemaphores}
+	 * @param signalVulkanSemaphores  semaphores to signal once execution completes
+	 * @param vulkanModuleFence       a fence to signal on completion, or {@code null} for none
+	 * @throws AssertionError if the submission is rejected
+	 */
 	public void submit(PointerBuffer vulkanCommandBuffers, LongBuffer waitVulkanSemaphores,
 					   IntBuffer waitVulkanDstStageMasks, LongBuffer signalVulkanSemaphores,
 					   VulkanModuleFence vulkanModuleFence)
@@ -87,6 +133,11 @@ public class VulkanModuleQueue
 		}
 	}
 
+	/**
+	 * Returns the family this queue belongs to.
+	 *
+	 * @return the queue family index
+	 */
 	public int getQueueFamilyIndex()
 	{
 		return this.queueFamilyIndex;

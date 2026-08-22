@@ -25,11 +25,43 @@ import org.quiltmc.loader.impl.util.log.ConsoleLogHandler;
 import org.quiltmc.loader.impl.util.log.Log;
 import org.quiltmc.loader.impl.util.log.LogHandler;
 
+/**
+ * The launcher for the Quilt variant.
+ * <p>
+ * Starts Quilt's own launcher, Knot, after setting the system properties that adapt it to this
+ * project: skipping the Minecraft game provider it would otherwise look for, and pointing it at
+ * {@code modules} rather than the default mods directory. Knot then finds
+ * {@link CurvedSpacetimeGameProvider}, which is what actually starts the engine.
+ */
 public class KnotCurvedSpacetime
 {
+	/**
+	 * The environment Quilt loads modules for.
+	 * <p>
+	 * Quilt's {@code EnvType} is normally a Minecraft client/server distinction; this project
+	 * patches in a value of its own, which is why the constant is resolved by name rather than
+	 * referenced directly.
+	 */
 	public static final EnvType CURVED_SPACETIME = EnvType.valueOf("CURVED_SPACETIME");
+
+	/**
+	 * Where Quilt's own log output is sent.
+	 */
 	public static final LogHandler LOG_HANDLER = new ConsoleLogHandler();
 
+	/**
+	 * Prevents instantiation; this class is only ever used statically.
+	 */
+	private KnotCurvedSpacetime()
+	{
+		// Utility class
+	}
+
+	/**
+	 * Starts the Quilt variant.
+	 *
+	 * @param args the command-line arguments the program was launched with
+	 */
 	static void main(String[] args)
 	{
 		Log.init(LOG_HANDLER, true);

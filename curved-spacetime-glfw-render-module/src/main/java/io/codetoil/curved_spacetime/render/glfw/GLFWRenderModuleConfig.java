@@ -28,6 +28,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The GLFW render module's settings, read from {@code config/glfw-render-module.config}.
+ * <p>
+ * One key, {@code vsync}, which decides whether presentation waits for the display's refresh.
+ * The Vulkan render module reads it when choosing a swap chain present mode.
+ */
 public class GLFWRenderModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VSYNC = true;
@@ -36,11 +42,21 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 	private boolean dirty = false;
 	private boolean vsync;
 
+	/**
+	 * Creates a configuration that reports load problems to the given logger.
+	 *
+	 * @param logger the logger to warn through when a key is missing or invalid
+	 */
 	public GLFWRenderModuleConfig(Logger logger)
 	{
 		this.logger = logger;
 	}
 
+	/**
+	 * Returns whether presentation should wait for the display's refresh.
+	 *
+	 * @return {@code true} if vertical sync is enabled
+	 */
 	public boolean hasVSync()
 	{
 		return this.vsync;

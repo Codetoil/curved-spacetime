@@ -28,11 +28,27 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * The simulator module's {@code main} entrypoint.
+ * <p>
+ * This is where the physics will live. At present it is scaffolding only: it loads its
+ * configuration and hands itself to any dependents, but nothing is simulated yet, and the
+ * simulation model — spacetimes, metrics, worldlines — has not been specified.
+ */
 public class SimulatorModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Simulator Module Logger");
 	private ModuleConfig config;
+
+	/**
+	 * Creates the simulator module's entrypoint.
+	 * <p>
+	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 */
+	public SimulatorModuleEntrypoint()
+	{
+	}
 
 	@Override
 	public void onInitialize()

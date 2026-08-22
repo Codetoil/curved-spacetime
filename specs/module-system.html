@@ -455,8 +455,11 @@ public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRe
         <code>load()</code> MUST: log a warning identifying the key, the offending value where one
         exists, and the accepted range; substitute the documented default; and set the dirty flag.</p>
 
-    <p id="R35" class="req"><strong>R35.</strong> <code>isDirty()</code> MUST report whether
-        <code>load()</code> substituted any default. The caller is expected to persist the completed file:</p>
+    <p id="R35" class="req"><strong>R35.</strong> <code>isDirty()</code> MUST report whether the
+        configuration differs from what is on disk. Loading having substituted a default is the
+        usual cause, but any later change to a value MUST be reflected too, and
+        <code>save()</code> MUST clear it. The caller is expected to persist a configuration that
+        does not match its file:</p>
 
     <pre><code>this.config = new XModuleConfig(this.logger).load();
 if (this.config.isDirty()) this.config.save();</code></pre>

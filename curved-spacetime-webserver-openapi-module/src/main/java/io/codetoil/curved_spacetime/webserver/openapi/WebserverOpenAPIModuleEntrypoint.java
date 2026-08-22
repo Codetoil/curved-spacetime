@@ -29,12 +29,28 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * The OpenAPI module's {@code main} entrypoint.
+ * <p>
+ * Extends the webserver module with an OpenAPI description of its routes. It depends on the
+ * webserver module, and receives that module's entrypoint through the handshake rather than
+ * looking it up.
+ */
 public class WebserverOpenAPIModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Webserver OpenAPI Module Logger");
 	private ModuleConfig config;
 	private WebserverModuleEntrypoint webserverModuleEntrypoint = null;
+
+	/**
+	 * Creates the OpenAPI module's entrypoint.
+	 * <p>
+	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 */
+	public WebserverOpenAPIModuleEntrypoint()
+	{
+	}
 
 	@Override
 	public void onInitialize()

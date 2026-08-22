@@ -31,18 +31,70 @@ import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+/**
+ * The swap chain: the queue of images the GPU renders into and the surface presents.
+ * <p>
+ * Its configuration is negotiated rather than chosen. The image count, extent, and pixel format
+ * are all clamped to what the surface reports it can do, so the requested values are treated as
+ * preferences. Present mode follows the vsync setting: FIFO waits for the display's refresh,
+ * immediate does not.
+ * <p>
+ * A swap chain is tied to the surface's dimensions, so resizing a window invalidates it and it
+ * must be rebuilt.
+ */
 public class VulkanRenderModuleSwapChain
 {
 
+	/**
+	 * The device this swap chain was created on.
+	 */
 	protected final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
+
+	/**
+	 * One view per swap chain image, through which the images are rendered into.
+	 */
 	protected final VulkanRenderModuleImageView[] vulkanRenderModuleImageViews;
+
+	/**
+	 * The pixel format and colour space agreed with the surface.
+	 */
 	protected final VulkanRenderModuleSwapChain.VulkanSurfaceFormat vulkanSurfaceFormat;
+
+	/**
+	 * The swap chain images' dimensions, allocated off-heap and freed by {@link #cleanup()}.
+	 */
 	protected final VkExtent2D vulkanSwapChainExtent;
+
+	/**
+	 * The underlying Vulkan swap chain handle.
+	 */
 	protected final long vkSwapChain;
+
+	/**
+	 * The logger this swap chain writes its diagnostics to.
+	 */
 	protected final Logger logger;
 	//protected final SynchronizationVulkanSemaphores[] synchronizationVulkanSemaphoresList;
+
+	/**
+	 * Which image in the chain is currently being drawn.
+	 */
 	protected int currentFrame;
 
+	/**
+	 * Creates a swap chain against the given surface.
+	 * <p>
+	 * The requested image count is clamped to the surface's supported range, and the extent to its
+	 * supported bounds, so the resulting swap chain may differ from what was asked for.
+	 *
+	 * @param vulkanModuleLogicalDevice the device to create the swap chain on
+	 * @param surface                   the surface to present to
+	 * @param renderModuleWindow        the window supplying the fallback extent
+	 * @param requestedImages           how many images are wanted, subject to surface limits
+	 * @param vsync                     whether to wait for the display's refresh when presenting
+	 * @param logger                    the logger to write swap chain diagnostics to
+	 * @throws AssertionError if the swap chain or its image views cannot be created
+	 */
 	public VulkanRenderModuleSwapChain(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
 									   VulkanRenderModuleSurface surface, RenderModuleWindow renderModuleWindow,
 									   int requestedImages, boolean vsync,
@@ -236,6 +288,9 @@ public class VulkanRenderModuleSwapChain
 
 	}
 
+	/**
+	 * Destroys the image views and the swap chain, and frees the extent.
+	 */
 	public void cleanup()
 	{
 		this.logger.fine("Destroying Vulkan SwapChain");
@@ -245,16 +300,31 @@ public class VulkanRenderModuleSwapChain
 		KHRSwapchain.vkDestroySwapchainKHR(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkSwapChain, null);
 	}
 
+	/**
+	 * Returns the pixel format and colour space this swap chain presents in.
+	 *
+	 * @return the negotiated surface format
+	 */
 	public VulkanSurfaceFormat getVulkanSurfaceFormat()
 	{
 		return this.vulkanSurfaceFormat;
 	}
 
+	/**
+	 * Returns the device this swap chain was created on.
+	 *
+	 * @return the owning logical device
+	 */
 	public VulkanModuleLogicalDevice getVulkanLogicalDevice()
 	{
 		return this.vulkanModuleLogicalDevice;
 	}
 
+	/**
+	 * Returns which image in the chain is currently being drawn.
+	 *
+	 * @return the current frame index
+	 */
 	public int getCurrentFrame()
 	{
 		return this.currentFrame;
@@ -265,11 +335,21 @@ public class VulkanRenderModuleSwapChain
 		return this.synchronizationVulkanSemaphoresList;
 	}*/
 
+	/**
+	 * Returns the swap chain images' dimensions.
+	 *
+	 * @return the extent, owned by this object and freed by {@link #cleanup()}
+	 */
 	public VkExtent2D getVulkanSwapChainExtent()
 	{
 		return this.vulkanSwapChainExtent;
 	}
 
+	/**
+	 * Returns the views through which the swap chain images are rendered into.
+	 *
+	 * @return one image view per swap chain image, owned by this object
+	 */
 	public VulkanRenderModuleImageView[] getVulkanImageViews()
 	{
 		return this.vulkanRenderModuleImageViews;
@@ -323,19 +403,43 @@ public class VulkanRenderModuleSwapChain
 		}
 	}*/
 
+	/**
+	 * A pixel format paired with the colour space it is interpreted in.
+	 *
+	 * @param imageFormat the Vulkan image format
+	 * @param colorSpace  the Vulkan colour space the format is presented in
+	 */
 	public record VulkanSurfaceFormat(int imageFormat, int colorSpace)
 	{
 	}
 
+	/**
+	 * The pair of semaphores that order one frame's work.
+	 * <p>
+	 * Rendering waits on the first, which the presentation engine signals once an image is
+	 * available to draw into; presentation waits on the second, which the graphics queue signals
+	 * once rendering has finished.
+	 *
+	 * @param imageAcquisitionVulkanModuleSemaphore signalled when a swap chain image is ready
+	 * @param renderCompleteVulkanModuleSemaphore   signalled when rendering into it has finished
+	 */
 	public record SynchronizationVulkanSemaphores(VulkanModuleSemaphore imageAcquisitionVulkanModuleSemaphore,
 												  VulkanModuleSemaphore renderCompleteVulkanModuleSemaphore)
 	{
+		/**
+		 * Creates both semaphores on the given device.
+		 *
+		 * @param vulkanModuleLogicalDevice the device to create the semaphores on
+		 */
 		public SynchronizationVulkanSemaphores(VulkanModuleLogicalDevice vulkanModuleLogicalDevice)
 		{
 			this(new VulkanModuleSemaphore(vulkanModuleLogicalDevice),
 					new VulkanModuleSemaphore(vulkanModuleLogicalDevice));
 		}
 
+		/**
+		 * Destroys both semaphores.
+		 */
 		public void cleanup()
 		{
 			this.imageAcquisitionVulkanModuleSemaphore.cleanup();

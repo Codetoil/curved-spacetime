@@ -28,18 +28,35 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The CLI module's settings, read from {@code config/cli-module.config}.
+ * <p>
+ * The module has no settings of its own yet, so the file is written empty. It exists so that the
+ * file and its handling are already in place when the first key is added.
+ */
 public class CLIModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "config/cli-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 
+	/**
+	 * Creates a configuration that reports load problems to the given logger.
+	 *
+	 * @param logger the logger to warn through when the file is missing
+	 */
 	public CLIModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
 	}
 
+	/**
+	 * Reads the configuration from disk, tolerating an absent file.
+	 *
+	 * @return this configuration, so that construction and loading compose
+	 * @throws IOException if the file exists but cannot be read
+	 */
 	public CLIModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
@@ -56,6 +73,11 @@ public class CLIModuleConfig implements ModuleConfig
 		return this;
 	}
 
+	/**
+	 * Writes the configuration to disk and clears the dirty flag.
+	 *
+	 * @throws IOException if the file cannot be written
+	 */
 	public void save() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
@@ -67,6 +89,14 @@ public class CLIModuleConfig implements ModuleConfig
 		this.dirty = false;
 	}
 
+	/**
+	 * Returns whether this configuration differs from what is on disk.
+	 * <p>
+	 * With no keys yet, the only cause is the file having been absent when it was loaded;
+	 * {@link #save()} clears it.
+	 *
+	 * @return {@code true} if the file does not match this configuration and should be rewritten
+	 */
 	public boolean isDirty()
 	{
 		return this.dirty;

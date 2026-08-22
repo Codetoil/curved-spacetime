@@ -26,6 +26,13 @@ import org.lwjgl.vulkan.VkImageViewCreateInfo;
 
 import java.nio.LongBuffer;
 
+/**
+ * A view onto a Vulkan image, describing how that image is to be interpreted.
+ * <p>
+ * Images cannot be used directly by a render pass; a view selects which part of an image is in
+ * play — its format, which aspect such as colour or depth, and which mip levels and array layers —
+ * and it is the view that gets attached to a framebuffer.
+ */
 public class VulkanRenderModuleImageView
 {
 	private final int aspectMask;
@@ -35,6 +42,14 @@ public class VulkanRenderModuleImageView
 	private final long vkImageView;
 	private final long vkImage;
 
+	/**
+	 * Creates a view onto the given image.
+	 *
+	 * @param vulkanModuleLogicalDevice the device that owns the image
+	 * @param vkImage                   the image to view
+	 * @param vulkanImageViewData       how the image should be interpreted
+	 * @throws AssertionError if the view cannot be created
+	 */
 	public VulkanRenderModuleImageView(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, long vkImage,
 									   VulkanImageViewData vulkanImageViewData)
 	{
@@ -67,31 +82,60 @@ public class VulkanRenderModuleImageView
 		}
 	}
 
+	/**
+	 * Destroys the view, leaving the image it referenced untouched.
+	 */
 	public void cleanup()
 	{
 		VK13.vkDestroyImageView(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkImageView, null);
 	}
 
+	/**
+	 * Returns which aspect of the image this view exposes.
+	 *
+	 * @return the Vulkan aspect mask, such as colour or depth
+	 */
 	public int getAspectMask()
 	{
 		return aspectMask;
 	}
 
+	/**
+	 * Returns how many mip levels this view covers.
+	 *
+	 * @return the mip level count
+	 */
 	public int getMipLevels()
 	{
 		return mipLevels;
 	}
 
+	/**
+	 * Returns the underlying Vulkan handle.
+	 *
+	 * @return the {@code VkImageView} handle
+	 */
 	public long getVkImageView()
 	{
 		return this.vkImageView;
 	}
 
+	/**
+	 * Returns the image this view was created onto.
+	 *
+	 * @return the {@code VkImage} handle
+	 */
 	public long getVkImage()
 	{
 		return vkImage;
 	}
 
+	/**
+	 * How an image should be interpreted by a view, built up fluently.
+	 * <p>
+	 * Defaults describe the common case: a single-layer, single-mip two-dimensional image. Only
+	 * {@code format} and {@code aspectMask} normally need setting.
+	 */
 	public static class VulkanImageViewData
 	{
 		private int baseArrayLayer;
@@ -101,6 +145,9 @@ public class VulkanRenderModuleImageView
 		private int layerCount;
 		private int viewType;
 
+		/**
+		 * Creates view data describing a single-layer, single-mip two-dimensional image.
+		 */
 		public VulkanImageViewData()
 		{
 			this.baseArrayLayer = 0;
@@ -109,36 +156,72 @@ public class VulkanRenderModuleImageView
 			this.viewType = VK13.VK_IMAGE_VIEW_TYPE_2D;
 		}
 
+		/**
+		 * Sets which aspect of the image the view exposes.
+		 *
+		 * @param aspectMask the Vulkan aspect mask, such as colour or depth
+		 * @return this object, so calls can be chained
+		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData aspectMask(int aspectMask)
 		{
 			this.aspectMask = aspectMask;
 			return this;
 		}
 
+		/**
+		 * Sets the first array layer the view starts at.
+		 *
+		 * @param baseArrayLayer the index of the first array layer
+		 * @return this object, so calls can be chained
+		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData baseArrayLayer(int baseArrayLayer)
 		{
 			this.baseArrayLayer = baseArrayLayer;
 			return this;
 		}
 
+		/**
+		 * Sets the pixel format the image is interpreted in.
+		 *
+		 * @param format the Vulkan image format
+		 * @return this object, so calls can be chained
+		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData format(int format)
 		{
 			this.format = format;
 			return this;
 		}
 
+		/**
+		 * Sets how many array layers the view covers.
+		 *
+		 * @param layerCount the number of array layers
+		 * @return this object, so calls can be chained
+		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData layerCount(int layerCount)
 		{
 			this.layerCount = layerCount;
 			return this;
 		}
 
+		/**
+		 * Sets how many mip levels the view covers.
+		 *
+		 * @param mipLevels the number of mip levels
+		 * @return this object, so calls can be chained
+		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData mipLevels(int mipLevels)
 		{
 			this.mipLevels = mipLevels;
 			return this;
 		}
 
+		/**
+		 * Sets the dimensionality of the view.
+		 *
+		 * @param viewType the Vulkan image view type, such as 2D or cube
+		 * @return this object, so calls can be chained
+		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData viewType(int viewType)
 		{
 			this.viewType = viewType;

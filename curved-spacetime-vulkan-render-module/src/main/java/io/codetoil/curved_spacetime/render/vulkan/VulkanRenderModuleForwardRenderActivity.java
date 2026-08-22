@@ -32,6 +32,15 @@ import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+/**
+ * Forward rendering into the swap chain: a render pass, and the per-image resources that feed it.
+ * <p>
+ * Builds one framebuffer, command buffer, and fence per swap chain image, so consecutive frames do
+ * not contend for the same resources. The command buffers are recorded once up front, since the
+ * work is currently just a clear; anything view-dependent would have to be re-recorded per frame.
+ * <p>
+ * The fences start signalled so the first frame does not wait for work that never happened.
+ */
 public class VulkanRenderModuleForwardRenderActivity
 {
 	private final VulkanRenderModuleSwapChain vulkanRenderModuleSwapChain;
@@ -41,6 +50,14 @@ public class VulkanRenderModuleForwardRenderActivity
 	private final VulkanModuleFence[] vulkanModuleFences;
 	private final Logger logger;
 
+	/**
+	 * Creates the render pass and per-image resources, and records the command buffers.
+	 *
+	 * @param vulkanRenderModuleSwapChain the swap chain whose images will be drawn into
+	 * @param vulkanModuleCommandPool     the pool to allocate command buffers from
+	 * @param logger                      the logger to write render diagnostics to
+	 * @throws AssertionError if any Vulkan object cannot be created or recorded
+	 */
 	public VulkanRenderModuleForwardRenderActivity(VulkanRenderModuleSwapChain vulkanRenderModuleSwapChain,
 												   VulkanModuleCommandPool vulkanModuleCommandPool,
 												   Logger logger)
@@ -104,6 +121,9 @@ public class VulkanRenderModuleForwardRenderActivity
 		}
 	}
 
+	/**
+	 * Destroys the framebuffers, render pass, command buffers, and fences.
+	 */
 	public void cleanup()
 	{
 		Arrays.asList(this.vulkanRenderModuleFrameBuffers).forEach(VulkanRenderModuleFrameBuffer::cleanup);
@@ -112,6 +132,12 @@ public class VulkanRenderModuleForwardRenderActivity
 		Arrays.asList(this.vulkanModuleFences).forEach(VulkanModuleFence::cleanup);
 	}
 
+	/**
+	 * Blocks until the current frame's previously submitted work has finished.
+	 * <p>
+	 * Called before reusing that frame's command buffer, so it is not re-recorded while still in
+	 * flight.
+	 */
 	public void waitForVulkanFence()
 	{
 		int idx = this.vulkanRenderModuleSwapChain.getCurrentFrame();
@@ -119,6 +145,11 @@ public class VulkanRenderModuleForwardRenderActivity
 		currentVulkanModuleFence.vulkanFenceWait();
 	}
 
+	/**
+	 * Submits the current frame's command buffer to the given queue.
+	 *
+	 * @param vulkanGraphicsQueue the queue to submit the frame's work to
+	 */
 	public void submit(VulkanRenderModuleGraphicsQueue vulkanGraphicsQueue)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())

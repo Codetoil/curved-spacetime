@@ -43,6 +43,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Describes Curved Spacetime to Quilt Loader as the "game" it is loading.
+ * <p>
+ * Quilt is built to load mods for a game, so running anything else under it means supplying a
+ * provider that answers what that game is: its id and version, the jars it lives in, the built-in
+ * module it contributes, and how to launch it. That last part is why
+ * {@code io.codetoil.curved_spacetime.Start.start} must keep its signature — this provider invokes
+ * it reflectively, so a change there fails at run time rather than compile time.
+ */
 public class CurvedSpacetimeGameProvider implements GameProvider
 {
 	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.Start";
@@ -53,6 +62,16 @@ public class CurvedSpacetimeGameProvider implements GameProvider
 	private final MappingConfiguration mappingConfiguration = new EmptyMappingConfiguration("curved-spacetime");
 	private Arguments arguments;
 	private Map<String, List<Path>> gameJarsByNamespace = new HashMap<>();
+
+	/**
+	 * Creates the game provider.
+	 * <p>
+	 * Instantiated by Quilt Loader through its service loader; the jars are not located until
+	 * {@link #locateGame} runs.
+	 */
+	public CurvedSpacetimeGameProvider()
+	{
+	}
 
 	@Override
 	public String getGameId()

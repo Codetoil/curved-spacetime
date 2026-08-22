@@ -11,12 +11,45 @@ val nonJar = configurations.create("nonJar")
 dependencies {
     nonJar(files("LICENSE.md", "Notices.md"))
 
+    // quilt-loader-patches holds patched copies of upstream FabricMC/QuiltMC classes, and as such is
+    // excluded from the main javadoc batch
     rootProject.subprojects.filter { project -> !project.name.contains("quilt-loader-patches") }
         .forEach { subproject ->
             subproject.plugins.withId("java") {
                 javadoc(subproject)
             }
         }
+}
+
+subprojects {
+    // quilt-loader-patches holds patched copies of upstream FabricMC/QuiltMC classes, so it is
+    // excluded here for the same reason it is excluded from the aggregate javadoc above.
+    if (!name.contains("quilt-loader-patches")) {
+        // Fail the build on any javadoc warning, so documentation coverage cannot regress.
+        tasks.withType<Javadoc>().configureEach {
+            (options as StandardJavadocDocletOptions).addBooleanOption("Xwerror", true)
+        }
+
+        // LWJGL publishes non-modular javadoc, so linking to it from our named modules emits
+        // "packages ... are in the unnamed module" warnings that no amount of documentation can
+        // fix — and -Xwerror would promote them to errors. The javadoc-links plugin offers no way
+        // to exclude a dependency, so drop those -linkoffline entries from the options file it
+        // generates. LWJGL types are referenced with {@code}, not {@link}, so nothing is lost.
+        plugins.withId("io.github.sgtsilvio.gradle.javadoc-links") {
+            tasks.named("javadocLinks") {
+                doLast {
+                    val optionsFile = temporaryDir.resolve("javadoc.options")
+                    if (optionsFile.exists()) {
+                        optionsFile.writeText(
+                            optionsFile.readLines()
+                                .filterNot { it.contains("org.lwjgl") }
+                                .joinToString("\n")
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 allprojects {

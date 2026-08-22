@@ -25,11 +25,24 @@ import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 
 import java.nio.LongBuffer;
 
+/**
+ * A Vulkan semaphore, used to order work between queue submissions on the device.
+ * <p>
+ * Semaphores synchronise GPU work against other GPU work; use a {@link VulkanModuleFence} when the
+ * host needs to wait instead. The handle is created on construction and lives until
+ * {@link #cleanup()}.
+ */
 public class VulkanModuleSemaphore
 {
 	private final VulkanModuleLogicalDevice logicalDevice;
 	private final long vkSemaphore;
 
+	/**
+	 * Creates a semaphore on the given device.
+	 *
+	 * @param logicalDevice the device to create the semaphore on
+	 * @throws AssertionError if the semaphore cannot be created
+	 */
 	public VulkanModuleSemaphore(VulkanModuleLogicalDevice logicalDevice)
 	{
 		this.logicalDevice = logicalDevice;
@@ -44,11 +57,19 @@ public class VulkanModuleSemaphore
 		}
 	}
 
+	/**
+	 * Destroys the semaphore.
+	 */
 	public void cleanup()
 	{
 		VK13.vkDestroySemaphore(this.logicalDevice.getVkDevice(), this.vkSemaphore, null);
 	}
 
+	/**
+	 * Returns the underlying Vulkan handle.
+	 *
+	 * @return the {@code VkSemaphore} handle
+	 */
 	public long getVkSemaphore()
 	{
 		return this.vkSemaphore;

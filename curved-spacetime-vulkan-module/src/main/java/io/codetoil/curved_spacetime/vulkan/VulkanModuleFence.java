@@ -25,11 +25,25 @@ import org.lwjgl.vulkan.VkFenceCreateInfo;
 
 import java.nio.LongBuffer;
 
+/**
+ * A Vulkan fence, used by the host to wait for work submitted to a queue to finish.
+ * <p>
+ * Fences synchronise the CPU against the GPU; use a {@link VulkanModuleSemaphore} to order GPU
+ * work against other GPU work. A fence created signalled lets the first frame proceed without a
+ * special case, since {@link #vulkanFenceWait()} then returns immediately.
+ */
 public class VulkanModuleFence
 {
 	private final VulkanModuleLogicalDevice logicalDevice;
 	private final long vkFence;
 
+	/**
+	 * Creates a fence on the given device.
+	 *
+	 * @param logicalDevice the device to create the fence on
+	 * @param signaled      whether the fence starts signalled, so the first wait returns at once
+	 * @throws AssertionError if the fence cannot be created
+	 */
 	public VulkanModuleFence(VulkanModuleLogicalDevice logicalDevice, boolean signaled)
 	{
 		this.logicalDevice = logicalDevice;
@@ -46,21 +60,37 @@ public class VulkanModuleFence
 		}
 	}
 
+	/**
+	 * Destroys the fence.
+	 */
 	public void cleanup()
 	{
 		VK13.vkDestroyFence(this.logicalDevice.getVkDevice(), this.vkFence, null);
 	}
 
+	/**
+	 * Blocks until the fence is signalled.
+	 * <p>
+	 * Waits indefinitely; the caller is expected to have submitted work that will signal it.
+	 */
 	public void vulkanFenceWait()
 	{
 		VK13.vkWaitForFences(this.logicalDevice.getVkDevice(), this.vkFence, true, Long.MAX_VALUE);
 	}
 
+	/**
+	 * Returns the underlying Vulkan handle.
+	 *
+	 * @return the {@code VkFence} handle
+	 */
 	public long getVkFence()
 	{
 		return this.vkFence;
 	}
 
+	/**
+	 * Returns the fence to the unsignalled state, ready to be waited on again.
+	 */
 	public void reset()
 	{
 		VK13.vkResetFences(this.logicalDevice.getVkDevice(), this.vkFence);

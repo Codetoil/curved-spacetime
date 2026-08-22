@@ -26,12 +26,28 @@ import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import java.nio.LongBuffer;
 import java.util.logging.Logger;
 
+/**
+ * A Vulkan command pool, from which command buffers for one queue family are allocated.
+ * <p>
+ * A pool is tied to the queue family it was created for, so buffers allocated from it can only be
+ * submitted to queues in that family. Created with
+ * {@code VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT}, so individual buffers can be reset and
+ * re-recorded rather than the whole pool having to be reset at once.
+ */
 public class VulkanModuleCommandPool
 {
 	private final VulkanModuleLogicalDevice vulkanModuleLogicalDevice;
 	private final long vkCommandPool;
 	private final Logger logger;
 
+	/**
+	 * Creates a command pool for one queue family.
+	 *
+	 * @param vulkanModuleLogicalDevice the device to create the pool on
+	 * @param queueFamilyIndex          the queue family buffers from this pool may be submitted to
+	 * @param logger                    the logger to write pool diagnostics to
+	 * @throws AssertionError if the pool cannot be created
+	 */
 	public VulkanModuleCommandPool(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex,
 								   Logger logger)
 	{
@@ -55,16 +71,29 @@ public class VulkanModuleCommandPool
 		}
 	}
 
+	/**
+	 * Destroys the pool, freeing every command buffer allocated from it.
+	 */
 	public void cleanup()
 	{
 		VK13.vkDestroyCommandPool(this.vulkanModuleLogicalDevice.getVkDevice(), this.vkCommandPool, null);
 	}
 
+	/**
+	 * Returns the device this pool was created on.
+	 *
+	 * @return the owning logical device
+	 */
 	public VulkanModuleLogicalDevice getVulkanLogicalDevice()
 	{
 		return this.vulkanModuleLogicalDevice;
 	}
 
+	/**
+	 * Returns the underlying Vulkan handle.
+	 *
+	 * @return the {@code VkCommandPool} handle
+	 */
 	public long getVkCommandPool()
 	{
 		return this.vkCommandPool;

@@ -29,12 +29,28 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * The GLFW render module's {@code main} entrypoint.
+ * <p>
+ * Implements the render module's window and input abstractions using GLFW. It depends on the
+ * render module, so it blocks during initialization until that module's entrypoint is handed to
+ * it, then hands itself to modules that build on GLFW — the Vulkan GLFW render module.
+ */
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime GLFW Render Module Logger");
 	private ModuleConfig config;
 	private RenderModuleEntrypoint renderModuleEntrypoint;
+
+	/**
+	 * Creates the GLFW render module's entrypoint.
+	 * <p>
+	 * Called by the loader; GLFW is not initialised until a window is opened.
+	 */
+	public GLFWRenderModuleEntrypoint()
+	{
+	}
 
 	@Override
 	public void onInitialize()
@@ -68,6 +84,13 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 		}
 	}
 
+	/**
+	 * Blocks until the render module's entrypoint has been handed to this module.
+	 * <p>
+	 * Takes exactly one element, this module declaring exactly one dependency.
+	 *
+	 * @throws InterruptedException if interrupted while waiting for the dependency
+	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{
 		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();

@@ -26,11 +26,27 @@ import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 
 import java.nio.LongBuffer;
 
+/**
+ * A framebuffer: the concrete set of image views a render pass draws into.
+ * <p>
+ * A render pass describes attachments abstractly; a framebuffer binds those slots to actual
+ * images. One is needed per swap chain image, since each frame targets a different image.
+ */
 public class VulkanRenderModuleFrameBuffer
 {
 	private final VulkanModuleLogicalDevice logicalDevice;
 	private final long vkFrameBuffer;
 
+	/**
+	 * Creates a framebuffer binding the given attachments for a render pass.
+	 *
+	 * @param logicalDevice the device to create the framebuffer on
+	 * @param width         the framebuffer's width in pixels
+	 * @param height        the framebuffer's height in pixels
+	 * @param pAttachments  the image views filling the render pass's attachment slots, in order
+	 * @param renderPass    the render pass this framebuffer is compatible with
+	 * @throws AssertionError if the framebuffer cannot be created
+	 */
 	public VulkanRenderModuleFrameBuffer(VulkanModuleLogicalDevice logicalDevice, int width, int height,
 										 LongBuffer pAttachments,
 										 long renderPass)
@@ -50,11 +66,19 @@ public class VulkanRenderModuleFrameBuffer
 		}
 	}
 
+	/**
+	 * Destroys the framebuffer, leaving its attachments untouched.
+	 */
 	public void cleanup()
 	{
 		VK13.vkDestroyFramebuffer(this.logicalDevice.getVkDevice(), this.vkFrameBuffer, null);
 	}
 
+	/**
+	 * Returns the underlying Vulkan handle.
+	 *
+	 * @return the {@code VkFramebuffer} handle
+	 */
 	public long getVkFrameBuffer()
 	{
 		return this.vkFrameBuffer;

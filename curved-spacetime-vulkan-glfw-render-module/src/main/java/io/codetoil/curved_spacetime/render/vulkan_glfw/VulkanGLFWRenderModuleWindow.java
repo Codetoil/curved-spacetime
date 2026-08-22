@@ -24,8 +24,24 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
 import java.util.logging.Logger;
 
+/**
+ * A GLFW window configured for Vulkan rather than OpenGL.
+ * <p>
+ * Supplies the two API-specific pieces {@link GLFWRenderModuleWindow} leaves open: checking that a
+ * Vulkan driver is present, and setting {@code GLFW_CLIENT_API} to {@code GLFW_NO_API} so GLFW does
+ * not create an OpenGL context for a window Vulkan will render into.
+ */
 public class VulkanGLFWRenderModuleWindow extends GLFWRenderModuleWindow
 {
+	/**
+	 * Creates a Vulkan-capable GLFW window.
+	 * <p>
+	 * Nothing is opened until {@link #init()} is called.
+	 *
+	 * @param mainModuleEngine the engine this window belongs to
+	 * @param title            the window's title bar text
+	 * @param logger           the logger to write window diagnostics to
+	 */
 	public VulkanGLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
 		super(mainModuleEngine, title, logger);
