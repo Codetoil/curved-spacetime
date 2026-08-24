@@ -21,7 +21,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-linux-x64/source.tar.gz HEAD
@@ -48,7 +48,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-linux-arm64/source.tar.gz HEAD
@@ -76,7 +76,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-windows-x64/source.tar.gz HEAD
@@ -105,7 +105,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Compile
         run: ./gradlew :curved-spacetime-closed-world-loader-module:nativeCompile
       - run: git archive --format=tar.gz -o ./archive-closed-world-native-macos-arm64/source.tar.gz HEAD

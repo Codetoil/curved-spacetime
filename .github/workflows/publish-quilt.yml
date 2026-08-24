@@ -26,7 +26,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-cli-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -56,7 +56,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-glfw-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -87,7 +87,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-loader-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -118,7 +118,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-main-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -149,7 +149,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-quilt-loader-module:shadowJar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -180,7 +180,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -210,7 +210,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-simulator-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -240,7 +240,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-vulkan-glfw-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -271,7 +271,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-vulkan-module:shadowJar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -303,7 +303,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-vulkan-render-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -334,7 +334,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-webserver-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
@@ -365,7 +365,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.2.0
+        uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
         run: ./gradlew :curved-spacetime-webserver-openapi-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
