@@ -30,13 +30,40 @@ import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import java.nio.LongBuffer;
 import java.util.logging.Logger;
 
+/**
+ * A Vulkan surface created from a GLFW window.
+ * <p>
+ * GLFW handles the platform-specific part of surface creation, so this class does not need to know
+ * whether it is running on X11, Wayland, Win32, or Cocoa. Capabilities and format are queried once
+ * at construction, which means the surface must be recreated if the window is resized.
+ */
 public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModuleSurface
 {
 
+	/**
+	 * What this surface supports, queried at construction.
+	 */
 	protected final VkSurfaceCapabilitiesKHR surfaceCaps;
+
+	/**
+	 * The pixel format and colour space negotiated for this surface.
+	 */
 	protected final SurfaceFormat surfaceFormat;
+
+	/**
+	 * The underlying Vulkan surface handle.
+	 */
 	protected final long vkSurface;
 
+	/**
+	 * Creates a Vulkan surface onto the given GLFW window.
+	 *
+	 * @param vulkanModuleVulkanInstance the instance to create the surface against
+	 * @param vulkanModulePhysicalDevice the device to query surface support on
+	 * @param windowHandle               the GLFW window to present into
+	 * @param logger                     the logger to write surface diagnostics to
+	 * @throws AssertionError if the surface capabilities or formats cannot be queried
+	 */
 	public VulkanGLFWRenderModuleRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
 													 VulkanModulePhysicalDevice vulkanModulePhysicalDevice,
 													 long windowHandle, Logger logger)

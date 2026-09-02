@@ -29,23 +29,67 @@ import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import java.nio.IntBuffer;
 import java.util.logging.Logger;
 
+/**
+ * A Vulkan surface: the bridge between a platform window and Vulkan's presentation machinery.
+ * <p>
+ * Creating one is inherently platform-specific, so this class holds only what is common — querying
+ * capabilities and negotiating a format — and leaves the actual creation to a subclass that knows
+ * the windowing library.
+ */
 public abstract class VulkanRenderModuleSurface
 {
+	/**
+	 * The physical device the surface's capabilities are queried against.
+	 */
 	protected final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
+
+	/**
+	 * The logger this surface writes its diagnostics to.
+	 */
 	protected final Logger logger;
 
+	/**
+	 * Creates a surface bound to the given physical device.
+	 *
+	 * @param vulkanModulePhysicalDevice the device to query surface support against
+	 * @param logger                     the logger to write surface diagnostics to
+	 */
 	public VulkanRenderModuleSurface(VulkanModulePhysicalDevice vulkanModulePhysicalDevice, Logger logger)
 	{
 		this.vulkanModulePhysicalDevice = vulkanModulePhysicalDevice;
 		this.logger = logger;
 	}
 
+	/**
+	 * Destroys the surface and releases the platform resources behind it.
+	 */
 	public abstract void cleanup();
 
+	/**
+	 * Returns what this surface supports: image count bounds, extent bounds, and transforms.
+	 * <p>
+	 * A swap chain must be built within these limits.
+	 *
+	 * @return the surface capabilities
+	 */
 	public abstract VkSurfaceCapabilitiesKHR getSurfaceCaps();
 
+	/**
+	 * Returns the pixel format and colour space chosen for this surface.
+	 *
+	 * @return the negotiated surface format
+	 */
 	public abstract SurfaceFormat getSurfaceFormat();
 
+	/**
+	 * Picks a format from those the surface advertises.
+	 * <p>
+	 * Prefers 32-bit BGRA in the sRGB non-linear colour space, which is what a display expects,
+	 * and otherwise falls back to whatever the surface offers first.
+	 *
+	 * @return the chosen format and colour space
+	 * @throws RuntimeException if the surface advertises no formats at all
+	 */
 	protected SurfaceFormat calcSurfaceFormat()
 	{
 		int imageFormat;
@@ -85,8 +129,19 @@ public abstract class VulkanRenderModuleSurface
 		return new SurfaceFormat(imageFormat, colorSpace);
 	}
 
+	/**
+	 * Returns the underlying Vulkan handle.
+	 *
+	 * @return the {@code VkSurfaceKHR} handle
+	 */
 	public abstract long getVkSurface();
 
+	/**
+	 * A pixel format paired with the colour space it is interpreted in.
+	 *
+	 * @param imageFormat the Vulkan image format
+	 * @param colorSpace  the Vulkan colour space the format is presented in
+	 */
 	public record SurfaceFormat(int imageFormat, int colorSpace)
 	{
 	}

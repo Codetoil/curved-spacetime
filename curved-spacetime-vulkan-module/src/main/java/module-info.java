@@ -18,7 +18,17 @@
 
 /**
  * Vulkan Module of Curved Spacetime
- *
+ * <p>
+ * Wraps the Vulkan objects that outlive any one window — the instance, physical device, logical
+ * device, queues, command pools, and synchronisation primitives — leaving swap chains and render
+ * passes to the render modules built on top.
+ * <p>
+ * Much of this follows Antonio Hernández Bejarano's
+ * <a href="https://github.com/lwjglgamedev/vulkanbook">Vulkan book</a>, which is MIT licensed.
+ * Several revisions of it contributed, and the class names here mirror the earlier ones, so the
+ * book's current {@code PhysDevice} and {@code VkUtils} appear as
+ * {@code VulkanModulePhysicalDevice} and {@code VulkanUtils}. {@code Notices.md} records exactly
+ * which revisions were used.
  */
 module io.codetoil.curved_spacetime.vulkan {
 	requires io.codetoil.curved_spacetime;

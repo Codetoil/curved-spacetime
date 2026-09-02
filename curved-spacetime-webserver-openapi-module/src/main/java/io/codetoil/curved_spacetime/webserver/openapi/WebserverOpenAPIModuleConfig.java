@@ -28,12 +28,22 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The OpenAPI module's settings, read from {@code config/webserver-openapi-module.config}.
+ * <p>
+ * The module has no settings of its own yet, so the file is written empty.
+ */
 public class WebserverOpenAPIModuleConfig implements ModuleConfig
 {
 	private static final String FILENAME = "config/webserver-openapi-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 
+	/**
+	 * Creates a configuration that reports load problems to the given logger.
+	 *
+	 * @param logger the logger to warn through when the file is missing
+	 */
 	public WebserverOpenAPIModuleConfig(Logger logger)
 	{
 

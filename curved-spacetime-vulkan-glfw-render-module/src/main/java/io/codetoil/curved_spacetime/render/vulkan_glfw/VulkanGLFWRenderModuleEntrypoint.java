@@ -32,6 +32,14 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * The Vulkan GLFW render module's {@code main} entrypoint.
+ * <p>
+ * The most dependent module in the tree: it needs the render, GLFW render, Vulkan, and Vulkan
+ * render modules all present before it can do anything, and it blocks during initialization until
+ * every one of them has been handed to it. Once they have, it registers a scene callback
+ * generator, so each scene gets a renderer.
+ */
 public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
@@ -41,6 +49,15 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint = null;
+
+	/**
+	 * Creates the Vulkan GLFW render module's entrypoint.
+	 * <p>
+	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 */
+	public VulkanGLFWRenderModuleEntrypoint()
+	{
+	}
 
 	@Override
 	public void onInitialize()
@@ -77,6 +94,16 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 
 	}
 
+	/**
+	 * Blocks until all four dependencies have been handed to this module.
+	 * <p>
+	 * Takes exactly four elements and sorts them by type, since the modules initialise
+	 * concurrently and may arrive in any order. The count must match the number of dependencies
+	 * declared in {@code quilt.mod.json}: taking too few strands a producer, and taking too many
+	 * blocks here forever.
+	 *
+	 * @throws InterruptedException if interrupted while waiting for a dependency
+	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{
 		ModuleInitializer moduleInitializer;
@@ -121,21 +148,41 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 		return this.dependencyModuleTransferQueue;
 	}
 
+	/**
+	 * Returns the GLFW render module's entrypoint.
+	 *
+	 * @return the GLFW render entrypoint, or {@code null} before the handshake completes
+	 */
 	public GLFWRenderModuleEntrypoint getGlfwRenderModuleEntrypoint()
 	{
 		return glfwRenderModuleEntrypoint;
 	}
 
+	/**
+	 * Returns the render module's entrypoint.
+	 *
+	 * @return the render entrypoint, or {@code null} before the handshake completes
+	 */
 	public RenderModuleEntrypoint getRenderModuleEntrypoint()
 	{
 		return renderModuleEntrypoint;
 	}
 
+	/**
+	 * Returns the Vulkan module's entrypoint.
+	 *
+	 * @return the Vulkan entrypoint, or {@code null} before the handshake completes
+	 */
 	public VulkanModuleEntrypoint getVulkanModuleEntrypoint()
 	{
 		return vulkanModuleEntrypoint;
 	}
 
+	/**
+	 * Returns the Vulkan render module's entrypoint.
+	 *
+	 * @return the Vulkan render entrypoint, or {@code null} before the handshake completes
+	 */
 	public VulkanRenderModuleEntrypoint getVulkanRenderModuleEntrypoint()
 	{
 		return vulkanRenderModuleEntrypoint;

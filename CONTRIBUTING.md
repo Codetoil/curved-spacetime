@@ -42,7 +42,12 @@ API `curved-spacetime-render-module`. A proper SDK will be made later.
 
 1. **`build.gradle.kts`** — plugins: java, java-library, javadoc-links, maven-publish.
    `api(project(":curved-spacetime-main-module"))`, plus the API module.
-   The jar's `destinationDirectory` goes to `$rootDir/archive-quilt/<kind>-modules`.
+   **Leave the jar's `destinationDirectory` alone.** Jar output stays at the Gradle default,
+   `build/libs`. To place the module in a distribution, add a row to `quiltDistribution` (or the
+   `closedWorldDistribution`) in the root `build.gradle.kts` — naming the module, its subdirectory
+   within the archive, and the task producing the artifact. The root build file explains why
+   redirecting a jar task instead makes the archive a task *output*, which Gradle then empties
+   from under the IDE.
 2. **`src/main/java/module-info.java`** — requires `io.codetoil.curved_spacetime`,
    `io.codetoil.curved_spacetime.loader`, `java.logging`, plus the API module. Export the
    module's package and its `.entrypoint` subpackage.

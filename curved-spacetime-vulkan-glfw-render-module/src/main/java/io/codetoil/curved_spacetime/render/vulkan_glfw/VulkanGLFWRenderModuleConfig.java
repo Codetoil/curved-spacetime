@@ -28,6 +28,14 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The Vulkan GLFW render module's settings, read from
+ * {@code config/vulkan-glfw-render-module.config}.
+ * <p>
+ * One key, {@code requestedImages}, which decides how many swap chain images to ask for. More
+ * images allow more frames in flight at the cost of latency and memory; the surface's supported
+ * range is the final say.
+ */
 public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 {
 	private static final int DEFAULT_REQUESTED_IMAGES = 2;
@@ -36,11 +44,23 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 	private int requestedImages;
 	private boolean dirty = false;
 
+	/**
+	 * Creates a configuration that reports load problems to the given logger.
+	 *
+	 * @param logger the logger to warn through when a key is missing or invalid
+	 */
 	public VulkanGLFWRenderModuleConfig(Logger logger)
 	{
 		this.logger = logger;
 	}
 
+	/**
+	 * Returns how many swap chain images to ask for.
+	 * <p>
+	 * A request, not a guarantee: the surface's supported range wins.
+	 *
+	 * @return the requested swap chain image count
+	 */
 	public int getRequestedImages()
 	{
 		return this.requestedImages;

@@ -28,6 +28,17 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The Vulkan module's settings, read from {@code config/vulkan-module.config}.
+ * <p>
+ * Two keys: {@code validation} turns the Vulkan validation layers on, which is expensive but
+ * reports API misuse the driver would otherwise ignore; {@code preferredDeviceName} names a GPU to
+ * use in preference to the automatic choice, which matters on machines with more than one.
+ * {@code preferredDeviceName} is genuinely optional and absent by default, so unlike other keys
+ * its absence does not mark the configuration dirty.
+ * In a future version {@code preferredDeviceName} will be added as a comment if no such comment is
+ * there and the option is absent.
+ */
 public class VulkanModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VALIDATE = false;
@@ -38,12 +49,23 @@ public class VulkanModuleConfig implements ModuleConfig
 	private String preferredDeviceName;
 	private boolean dirty = false;
 
+	/**
+	 * Creates a configuration that reports load problems to the given logger.
+	 *
+	 * @param logger the logger to warn through when a key is missing or invalid
+	 */
 	public VulkanModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
 	}
 
+	/**
+	 * Reads the configuration from disk, substituting defaults for anything missing.
+	 *
+	 * @return this configuration, so that construction and loading compose
+	 * @throws IOException if the file exists but cannot be read
+	 */
 	public VulkanModuleConfig load() throws IOException
 	{
 		Properties props = new Properties();
@@ -82,6 +104,13 @@ public class VulkanModuleConfig implements ModuleConfig
 		return this;
 	}
 
+	/**
+	 * Writes the configuration to disk and clears the dirty flag.
+	 * <p>
+	 * {@code preferredDeviceName} is omitted when unset, rather than written empty.
+	 *
+	 * @throws IOException if the file cannot be written
+	 */
 	public void save() throws IOException
 	{
 		Properties props = new Properties();
@@ -95,16 +124,35 @@ public class VulkanModuleConfig implements ModuleConfig
 		this.dirty = false;
 	}
 
+	/**
+	 * Returns whether this configuration differs from what is on disk.
+	 * <p>
+	 * Loading having substituted a default for {@code validation} is the usual cause;
+	 * {@link #save()} clears it. Note that an absent {@code preferredDeviceName} does not count,
+	 * since that key is genuinely optional.
+	 *
+	 * @return {@code true} if the file does not match this configuration and should be rewritten
+	 */
 	public boolean isDirty()
 	{
 		return this.dirty;
 	}
 
+	/**
+	 * Returns whether the Vulkan validation layers should be enabled.
+	 *
+	 * @return {@code true} if validation was requested
+	 */
 	public boolean validation()
 	{
 		return this._validation;
 	}
 
+	/**
+	 * Returns the GPU to prefer over the automatic choice.
+	 *
+	 * @return the preferred device name, or {@code null} to select automatically
+	 */
 	public String getPreferredDeviceName()
 	{
 		return this.preferredDeviceName;

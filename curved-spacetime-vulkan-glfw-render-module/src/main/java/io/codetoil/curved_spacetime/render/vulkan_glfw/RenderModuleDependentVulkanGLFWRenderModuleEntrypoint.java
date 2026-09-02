@@ -23,8 +23,25 @@ import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
 
+/**
+ * Delivers the render module's entrypoint to the Vulkan GLFW render module.
+ * <p>
+ * Registered by the Vulkan GLFW render module under {@code render_module_dependent}. The render module invokes this during its
+ * own initialization; it locates the Vulkan GLFW render module's main entrypoint through the loader and
+ * transfers the render entrypoint into that module's dependency queue, where the Vulkan GLFW render module is
+ * blocked waiting for it.
+ */
 public class RenderModuleDependentVulkanGLFWRenderModuleEntrypoint implements RenderModuleDependentModuleInitializer
 {
+	/**
+	 * Creates the dependent entrypoint.
+	 * <p>
+	 * Called by the loader; it holds no state of its own.
+	 */
+	public RenderModuleDependentVulkanGLFWRenderModuleEntrypoint()
+	{
+	}
+
 
 	@Override
 	public void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint)

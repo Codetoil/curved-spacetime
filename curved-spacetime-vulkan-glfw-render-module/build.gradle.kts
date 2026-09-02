@@ -43,7 +43,6 @@ sourceSets {
 
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = File("$rootDir/archive-quilt/modules")
     from(nonJar, file("src/main/java/module-info.java"))
 }
 

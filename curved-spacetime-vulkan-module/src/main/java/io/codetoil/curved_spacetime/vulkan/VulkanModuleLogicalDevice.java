@@ -31,6 +31,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * A Vulkan logical device: the application's connection to a selected physical device.
+ * <p>
+ * Almost every other Vulkan object is created against a logical device, so this is the handle the
+ * rest of the renderer is built on. Every queue family the physical device reports is enabled, so
+ * that callers can retrieve whichever queue they need without the device having to be recreated.
+ * <p>
+ * On macOS the portability subset extension is enabled when present, which is what allows Vulkan
+ * to run there over MoltenVK.
+ */
 public class VulkanModuleLogicalDevice
 {
 	private final VulkanModulePhysicalDevice vulkanModulePhysicalDevice;
@@ -38,6 +48,13 @@ public class VulkanModuleLogicalDevice
 
 	private final Logger logger;
 
+	/**
+	 * Creates a logical device against the selected physical device.
+	 *
+	 * @param vulkanModulePhysicalDevice the physical device to open
+	 * @param logger                     the logger to write device diagnostics to
+	 * @throws AssertionError if the device cannot be created
+	 */
 	public VulkanModuleLogicalDevice(VulkanModulePhysicalDevice vulkanModulePhysicalDevice, Logger logger)
 	{
 		this.logger = logger;
@@ -126,22 +143,41 @@ public class VulkanModuleLogicalDevice
 		return deviceExtensions;
 	}
 
+	/**
+	 * Destroys the device.
+	 * <p>
+	 * Everything created against this device must already have been destroyed, and the device
+	 * should be idle — see {@link #waitIdle()}.
+	 */
 	public void cleanup()
 	{
 		this.logger.fine("Destroying Vulkan device");
 		VK13.vkDestroyDevice(this.vkDevice, null);
 	}
 
+	/**
+	 * Returns the physical device this logical device was created against.
+	 *
+	 * @return the underlying physical device
+	 */
 	public VulkanModulePhysicalDevice getPhysicalDevice()
 	{
 		return this.vulkanModulePhysicalDevice;
 	}
 
+	/**
+	 * Returns the underlying Vulkan device.
+	 *
+	 * @return the {@code VkDevice}
+	 */
 	public VkDevice getVkDevice()
 	{
 		return this.vkDevice;
 	}
 
+	/**
+	 * Blocks until every queue on this device has finished its outstanding work.
+	 */
 	public void waitIdle()
 	{
 		VK13.vkDeviceWaitIdle(this.vkDevice);

@@ -30,6 +30,14 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * The Vulkan render module's {@code main} entrypoint.
+ * <p>
+ * Joins the two halves of Vulkan rendering: the render module's window and input abstractions, and
+ * the Vulkan module's devices and queues. It depends on both, so it blocks during initialization
+ * until each has been handed to it, then hands itself to the windowing-specific module that
+ * actually draws.
+ */
 public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
@@ -37,6 +45,15 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 	private ModuleConfig config;
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
+
+	/**
+	 * Creates the Vulkan render module's entrypoint.
+	 * <p>
+	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 */
+	public VulkanRenderModuleEntrypoint()
+	{
+	}
 
 	@Override
 	public void onInitialize()
@@ -69,6 +86,14 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		}
 	}
 
+	/**
+	 * Blocks until both dependencies have been handed to this module.
+	 * <p>
+	 * Takes exactly two elements and sorts them by type, since the Vulkan and render modules
+	 * initialise concurrently and either may arrive first.
+	 *
+	 * @throws InterruptedException if interrupted while waiting for a dependency
+	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{
 		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();

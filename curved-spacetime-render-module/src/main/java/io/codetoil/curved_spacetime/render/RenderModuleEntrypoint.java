@@ -28,11 +28,28 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * The render module's {@code main} entrypoint.
+ * <p>
+ * The render module is an API: it defines what a window and its input look like, and owns no
+ * windowing library itself. This entrypoint therefore does little beyond loading configuration
+ * and then handing itself to whichever implementations depend on it — GLFW today — through the
+ * {@code render_module_dependent} entrypoint.
+ */
 public class RenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render Module Logger");
 	private ModuleConfig config;
+
+	/**
+	 * Creates the render module's entrypoint.
+	 * <p>
+	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 */
+	public RenderModuleEntrypoint()
+	{
+	}
 
 	@Override
 	public void onInitialize()

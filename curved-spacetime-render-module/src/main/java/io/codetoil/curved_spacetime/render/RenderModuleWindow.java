@@ -22,14 +22,49 @@ import io.codetoil.curved_spacetime.MainModuleEngine;
 
 import java.util.logging.Logger;
 
+/**
+ * A window, and the keyboard and mouse attached to it, independent of the windowing library.
+ * <p>
+ * Implementations supply the platform behaviour; this class holds only what every window has and
+ * the input plumbing that goes with it. An implementation is expected to create its input objects
+ * during {@link #init()}, since {@link #pollEvents()} dereferences them.
+ */
 public abstract class RenderModuleWindow
 {
+	/**
+	 * The engine this window belongs to.
+	 */
 	protected final MainModuleEngine mainModuleEngine;
+
+	/**
+	 * The window's title bar text.
+	 */
 	protected final String title;
+
+	/**
+	 * The logger this window writes its diagnostics to.
+	 */
 	protected final Logger logger;
+
+	/**
+	 * Keyboard state for this window, created during {@link #init()}.
+	 */
 	protected RenderModuleKeyboardInput renderModuleKeyboardInput;
+
+	/**
+	 * Mouse state for this window, created during {@link #init()}.
+	 */
 	protected RenderModuleMouseInput renderModuleMouseInput;
 
+	/**
+	 * Creates a window bound to the given engine.
+	 * <p>
+	 * Nothing is opened until {@link #init()} is called.
+	 *
+	 * @param mainModuleEngine the engine this window belongs to
+	 * @param title            the window's title bar text
+	 * @param logger           the logger to write window diagnostics to
+	 */
 	protected RenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
 		this.mainModuleEngine = mainModuleEngine;
@@ -37,36 +72,79 @@ public abstract class RenderModuleWindow
 		this.logger = logger;
 	}
 
+	/**
+	 * Opens the window and creates its input objects.
+	 */
 	public abstract void init();
 
+	/**
+	 * Advances the window by one frame, sampling input and handling a close request.
+	 */
 	public abstract void loop();
 
+	/**
+	 * Returns the window's height.
+	 *
+	 * @return the current height in pixels
+	 */
 	public abstract int getHeight();
 
+	/**
+	 * Returns the window's width.
+	 *
+	 * @return the current width in pixels
+	 */
 	public abstract int getWidth();
 
+	/**
+	 * Asks the window to close at the next opportunity.
+	 */
 	public abstract void setShouldClose();
 
+	/**
+	 * Returns whether the window has been asked to close.
+	 *
+	 * @return {@code true} once a close has been requested, by this class or by the user
+	 */
 	public abstract boolean shouldClose();
 
+	/**
+	 * Destroys the window and releases its platform resources.
+	 */
 	public abstract void clean();
 
+	/**
+	 * Returns keyboard state for this window.
+	 *
+	 * @return the keyboard input, or {@code null} before {@link #init()}
+	 */
 	public RenderModuleKeyboardInput getKeyboardInput()
 	{
 		return renderModuleKeyboardInput;
 	}
 
+	/**
+	 * Returns mouse state for this window.
+	 *
+	 * @return the mouse input, or {@code null} before {@link #init()}
+	 */
 	public RenderModuleMouseInput getMouseInput()
 	{
 		return renderModuleMouseInput;
 	}
 
+	/**
+	 * Samples the keyboard and mouse for this frame.
+	 */
 	public void pollEvents()
 	{
 		renderModuleKeyboardInput.poll();
 		renderModuleMouseInput.poll();
 	}
 
+	/**
+	 * Clears per-frame keyboard state, so tapped keys are not reported twice.
+	 */
 	public void resetInput()
 	{
 		renderModuleKeyboardInput.clean();

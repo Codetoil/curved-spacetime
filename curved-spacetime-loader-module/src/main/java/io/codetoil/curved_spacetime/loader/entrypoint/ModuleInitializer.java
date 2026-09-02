@@ -21,25 +21,53 @@ package io.codetoil.curved_spacetime.loader.entrypoint;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
+/**
+ * A module's {@code main} entrypoint, the object the engine drives during initialization.
+ * <p>
+ * Every module registers exactly one of these. The engine invokes {@link #onInitialize()} on all
+ * of them concurrently, so a module must not assume anything about the order in which its peers
+ * come up; the only ordering guarantee available is the one the dependency handshake provides.
+ * <p>
+ * Implementations must satisfy requirements R12 through R16 of the Module System Specification.
+ */
 public interface ModuleInitializer
 {
 	/**
-	 * Runs the mod initializer.
+	 * Brings this module up.
+	 * <p>
+	 * An implementation sets its logger's level from the engine's configuration, loads its own
+	 * configuration and saves it if loading substituted defaults, receives any dependencies it
+	 * declares through {@link #getDependencyModuleTransferQueue()}, performs any operations it
+	 * must perform during initialization, and finally invokes its own dependent entrypoints,
+	 * passing itself.
 	 */
 	void onInitialize();
 
 	/**
-	 * Gets the config for this module.
+	 * Returns this module's configuration.
+	 *
+	 * @return the configuration, or {@code null} before {@link #onInitialize()} has loaded it
 	 */
 	ModuleConfig getConfig();
 
 	/**
-	 * Gets the logger for this module.
+	 * Returns the logger this module writes its diagnostics to.
+	 * <p>
+	 * The same instance is returned for the lifetime of this entrypoint.
+	 *
+	 * @return this module's logger
 	 */
 	Logger getLogger();
 
 	/**
-	 * Used to transfer information between modules.
+	 * Returns the queue by which this module receives the entrypoints it depends on.
+	 * <p>
+	 * A module does not look its dependencies up. Each module it depends on invokes a dependent
+	 * entrypoint, which transfers that module's own entrypoint into this queue. The same instance
+	 * is returned for the lifetime of this entrypoint; a fresh or defensively copied queue breaks
+	 * the handshake, because the producer transfers into whichever queue this method returned.
+	 *
+	 * @return this module's dependency transfer queue
 	 */
 	TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue();
 }

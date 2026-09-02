@@ -147,7 +147,6 @@ sourceSets {
 tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
-    destinationDirectory = File("$rootDir/archive-closed-world-jar/")
     manifest {
         attributes(mapOf("Main-Class" to "io.codetoil.curved_spacetime.loader.closed_world.Main"))
     }

@@ -33,29 +33,90 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * The Vulkan instance: the application's connection to the Vulkan loader, and the object every
+ * physical device is enumerated from.
+ * <p>
+ * When validation is enabled in configuration, this also installs a debug messenger that routes
+ * the validation layers' output into the module's logger, so driver complaints appear alongside
+ * the program's own diagnostics. Validation degrades gracefully: the preferred Khronos layer is
+ * used if present, then a LunarG fallback, then a set of individual Google and LunarG layers, and
+ * if none are available validation is switched off with a warning rather than failing.
+ */
 public class VulkanModuleVulkanInstance
 {
+	/**
+	 * Which severities the debug messenger reports: errors and warnings only.
+	 */
 	public static final int MESSAGE_SEVERITY_BITMASK = EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+
+	/**
+	 * Which message kinds the debug messenger reports: general, validation, and performance.
+	 */
 	public static final int MESSAGE_TYPE_BITMASK = EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
 			EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
+	/**
+	 * The preferred validation layer.
+	 */
 	public static final String VALIDATION_DEFAULT = "VK_LAYER_KHRONOS_validation";
+
+	/**
+	 * The validation layer to try when {@link #VALIDATION_DEFAULT} is unavailable.
+	 */
 	public static final String VALIDATION_FALLBACK1 = "VK_LAYER_LUNARG_standard_validation";
+
+	/**
+	 * The individual layers to fall back on when neither combined validation layer is available.
+	 */
 	public static final Set<String> VALIDATION_FALLBACK2 = Set.of(
 			"VK_LAYER_GOOGLE_threading",
 			"VK_LAYER_LUNARG_parameter_validation",
 			"VK_LAYER_LUNARG_object_tracker",
 			"VK_LAYER_LUNARG_core_validation",
 			"VK_LAYER_GOOGLE_unique_objects");
+	/**
+	 * The extension that lets non-conformant implementations, such as MoltenVK, be enumerated.
+	 */
 	public static final String PORTABILITY_EXTENSION =
 			KHRPortabilityEnumeration.VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
+
+	/**
+	 * The prefix every message forwarded from the validation layers carries.
+	 */
 	public static final String DBG_CALLBACK_PREF = "VkDebugUtilsCallback, ";
+
+	/**
+	 * The logger this instance, and the validation layers, write to.
+	 */
 	protected final Logger logger;
+
+	/**
+	 * The underlying Vulkan instance.
+	 */
 	protected VkInstance vkInstance;
+
+	/**
+	 * The debug messenger's creation info, retained so it can be freed, or {@code null} when
+	 * validation is disabled.
+	 */
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
+
+	/**
+	 * The debug messenger handle, or {@code VK_NULL_HANDLE} when validation is disabled.
+	 */
 	protected long vkDebugHandle;
 
+	/**
+	 * Creates the Vulkan instance, enabling validation if configuration asks for it and the layers
+	 * are available.
+	 *
+	 * @param vulkanModuleEntrypoint the entrypoint supplying the Vulkan module's configuration
+	 * @param logger                 the logger to write instance and validation output to
+	 * @throws AssertionError if the instance or the debug messenger cannot be created
+	 */
 	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint, Logger logger)
 	{
 		this.logger = logger;
@@ -255,6 +316,9 @@ public class VulkanModuleVulkanInstance
 				});
 	}
 
+	/**
+	 * Destroys the debug messenger, if any, and then the instance.
+	 */
 	public void cleanup()
 	{
 		this.logger.fine("Destroying Vulkan Instance");
@@ -270,6 +334,11 @@ public class VulkanModuleVulkanInstance
 		VK13.vkDestroyInstance(this.vkInstance, null);
 	}
 
+	/**
+	 * Returns the underlying Vulkan instance.
+	 *
+	 * @return the {@code VkInstance}
+	 */
 	public VkInstance getVkInstance()
 	{
 		return this.vkInstance;

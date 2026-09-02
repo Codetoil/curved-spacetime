@@ -23,8 +23,25 @@ import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
 
+/**
+ * Delivers the render module's entrypoint to the GLFW render module.
+ * <p>
+ * Registered by the GLFW render module under {@code render_module_dependent}. The render module
+ * invokes this during its own initialization; it locates the GLFW module's main entrypoint through
+ * the loader and transfers the render entrypoint into that module's dependency queue, where the
+ * GLFW module is blocked waiting for it.
+ */
 public class RenderModuleDependentGLFWRenderModuleEntrypoint implements RenderModuleDependentModuleInitializer
 {
+	/**
+	 * Creates the dependent entrypoint.
+	 * <p>
+	 * Called by the loader; it holds no state of its own.
+	 */
+	public RenderModuleDependentGLFWRenderModuleEntrypoint()
+	{
+	}
+
 
 	@Override
 	public void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint)

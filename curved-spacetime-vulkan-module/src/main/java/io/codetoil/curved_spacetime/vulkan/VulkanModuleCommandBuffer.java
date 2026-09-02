@@ -25,6 +25,14 @@ import org.lwjgl.vulkan.*;
 
 import java.util.logging.Logger;
 
+/**
+ * A Vulkan command buffer allocated from a {@link VulkanModuleCommandPool}.
+ * <p>
+ * Commands are recorded between {@link #beginRecording()} and {@link #endRecording()}, then
+ * submitted through a {@link VulkanModuleQueue}. A primary buffer can be submitted directly; a
+ * secondary one can only be executed from within a primary buffer, and must declare what it
+ * inherits when recording begins.
+ */
 public class VulkanModuleCommandBuffer
 {
 	private final VulkanModuleCommandPool commandPool;
@@ -33,6 +41,15 @@ public class VulkanModuleCommandBuffer
 	private final boolean primary;
 	private final Logger logger;
 
+	/**
+	 * Allocates a command buffer from the given pool.
+	 *
+	 * @param commandPool   the pool to allocate from, which fixes the queue family
+	 * @param primary       {@code true} for a primary buffer, {@code false} for a secondary one
+	 * @param oneTimeSubmit whether the buffer is recorded fresh before each submission
+	 * @param logger        the logger to write buffer diagnostics to
+	 * @throws AssertionError if the buffer cannot be allocated
+	 */
 	public VulkanModuleCommandBuffer(VulkanModuleCommandPool commandPool, boolean primary, boolean oneTimeSubmit,
 									 Logger logger)
 	{
@@ -58,11 +75,24 @@ public class VulkanModuleCommandBuffer
 		}
 	}
 
+	/**
+	 * Begins recording into a primary buffer.
+	 *
+	 * @throws RuntimeException if this is a secondary buffer, which needs inheritance information
+	 */
 	public void beginRecording()
 	{
 		this.beginRecording(null);
 	}
 
+	/**
+	 * Begins recording, supplying what a secondary buffer inherits from its caller.
+	 *
+	 * @param inheritanceInfo the render pass, subpass, and framebuffer a secondary buffer
+	 *                        inherits, or {@code null} for a primary buffer
+	 * @throws RuntimeException if this is a secondary buffer and {@code inheritanceInfo} is
+	 *                          {@code null}
+	 */
 	public void beginRecording(VkCommandBufferInheritanceInfo inheritanceInfo)
 	{
 		try (MemoryStack stack = MemoryStack.stackPush())
@@ -92,6 +122,9 @@ public class VulkanModuleCommandBuffer
 		}
 	}
 
+	/**
+	 * Returns this buffer to its pool.
+	 */
 	public void cleanup()
 	{
 		this.logger.finer("Destroying command buffer");
@@ -99,16 +132,29 @@ public class VulkanModuleCommandBuffer
 				this.commandPool.getVkCommandPool(), this.vkCommandBuffer);
 	}
 
+	/**
+	 * Finishes recording, leaving the buffer ready to submit.
+	 *
+	 * @throws AssertionError if the recorded commands are invalid
+	 */
 	public void endRecording()
 	{
 		VulkanUtils.vkCheck(VK13.vkEndCommandBuffer(this.vkCommandBuffer), "Failed to end command buffer");
 	}
 
+	/**
+	 * Returns the underlying Vulkan command buffer.
+	 *
+	 * @return the {@code VkCommandBuffer}
+	 */
 	public VkCommandBuffer getVkCommandBuffer()
 	{
 		return this.vkCommandBuffer;
 	}
 
+	/**
+	 * Discards anything recorded, releasing the buffer's resources back to the pool.
+	 */
 	public void reset()
 	{
 		VK13.vkResetCommandBuffer(this.vkCommandBuffer, VK13.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);

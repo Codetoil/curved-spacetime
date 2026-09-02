@@ -2,8 +2,14 @@
 
 ## Vulkan Book
 
-https://github.com/lwjglgamedev/vulkanbook/tree/ee8d2d583f8c5f30768081646cffcde8bda9a9d4<br>
-./vulkanbook.epub
+### Versions Used:
+| URL                                                                                      |
+|------------------------------------------------------------------------------------------|
+| https://github.com/lwjglgamedev/vulkanbook/tree/ee8d2d583f8c5f30768081646cffcde8bda9a9d4 |
+| https://github.com/lwjglgamedev/vulkanbook/tree/38455088386f058f96576c3e0ce925f935525d96 |
+| https://github.com/lwjglgamedev/vulkanbook/tree/2127b05afb8314834ac85ec1397534a5d7ab26d0 |
+
+### Current license:
 
 ```
 MIT License
@@ -31,8 +37,26 @@ SOFTWARE.
 
 ## Quilt Loader
 
-https://github.com/QuiltMC/quilt-loader/tree/d132345267127467502a1218ce9985b998702cec<br>
-Quilt Loader 0.30.0-beta.0
+### Versions Used:
+| Version       | URL                                                        |
+|---------------|------------------------------------------------------------|
+| 0.31.0-beta.2 | https://github.com/QuiltMC/quilt-loader/tree/0.31.0-beta.2 |
+| 0.30.0-beta.8 | https://github.com/QuiltMC/quilt-loader/tree/0.30.0-beta.8 |
+| 0.30.0-beta.7 | https://github.com/QuiltMC/quilt-loader/tree/0.30.0-beta.7 |
+| 0.30.0-beta.3 | https://github.com/QuiltMC/quilt-loader/tree/0.30.0-beta.3 |
+| 0.30.0-beta.0 | https://github.com/QuiltMC/quilt-loader/tree/0.30.0-beta.0 |
+| 0.29.3-beta.1 | https://github.com/QuiltMC/quilt-loader/tree/0.29.3-beta.1 |
+| 0.29.2-beta.5 | https://github.com/QuiltMC/quilt-loader/tree/0.29.2-beta.5 |
+| 0.29.2-beta.1 | https://github.com/QuiltMC/quilt-loader/tree/0.29.2-beta.1 |
+| 0.29.0        | https://github.com/QuiltMC/quilt-loader/tree/0.29.0        |
+| 0.29.0-beta.8 | https://github.com/QuiltMC/quilt-loader/tree/0.29.0-beta.8 |
+| 0.29.0-beta.5 | https://github.com/QuiltMC/quilt-loader/tree/0.29.0-beta.5 |
+| 0.24.0-beta.8 | https://github.com/QuiltMC/quilt-loader/tree/0.24.0-beta.8 |
+| 0.23.0-beta.1 | https://github.com/QuiltMC/quilt-loader/tree/0.23.0-beta.1 |
+| 0.22.0        | https://github.com/QuiltMC/quilt-loader/tree/0.22.0        |
+| 0.22.0-beta.1 | https://github.com/QuiltMC/quilt-loader/tree/0.22.0-beta.1 |
+
+### Current license:
 
 ```
                                  Apache License
