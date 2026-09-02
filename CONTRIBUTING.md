@@ -127,6 +127,22 @@ to per minor version from that point.
 Changes to the module system — entrypoint naming, the handshake, the config contract — should
 update `specs/module-system.html` in the same change that alters the behaviour.
 
+### Format states status
+
+A specification's file format records whether it is binding, so changing the format changes the
+document's standing:
+
+| Format | Status |
+| --- | --- |
+| HTML, styled with `spec.css` | **Normative.** Implementations must conform; where the code disagrees, the code is wrong. |
+| Markdown | **Draft.** A design exploration, binding on nothing. |
+
+`specs/simulation.md` is a draft deliberately. It is published as-is, so a browser shows Markdown
+source — headings, table rules and unrendered LaTeX — rather than a finished page. **That
+provisional appearance is intended and is not a defect to fix.** Converting a draft to HTML is
+the act of promoting it to normative, so do that as a considered decision about the document's
+status, never as a presentation improvement.
+
 ## Licence
 
 By contributing you agree that your contributions are licensed under GPL-3.0-or-later, matching
