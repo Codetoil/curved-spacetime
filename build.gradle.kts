@@ -158,19 +158,27 @@ tasks.register<Copy>("nonJarCopyClosedJar") {
     description = "Put the nonJar stuff into the output directory for the Closed World Jar"
     from(nonJar)
     into("$rootDir/archive-closed-world-jar/")
-    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
-        .map { it.tasks.build })
+    // Ordered against assemble, not build: mustRunAfter is a soft constraint that simply does not
+    // apply when the named task is absent from the graph, so pointing it at build would silently
+    // drop the ordering whenever the distribution is assembled without the test suite.
+    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "assemble" } }
+        .map { it.tasks.assemble })
 }
 
 tasks.register<Copy>("nonJarCopyQuilt") {
     description = "Put the nonJar stuff into the output directory for the Quilt Jar"
     from(nonJar)
     into("$rootDir/archive-quilt/")
-    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "build" } }
-        .map { it.tasks.build })
+    // See nonJarCopyClosedJar for why this is ordered against assemble rather than build.
+    mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "assemble" } }
+        .map { it.tasks.assemble })
 }
 
-tasks.build {
+// Hung off assemble rather than build: assembling the distribution is artifact production, not
+// verification. `build` is `assemble` + `check`, so this still fires on a plain ./gradlew build,
+// but it also lets a release path skip the test suite — ./gradlew assemble —
+// without silently producing empty archive directories.
+tasks.assemble {
     dependsOn(tasks["cleanJar"], rootProject.tasks.clean)
     finalizedBy(
         tasks["nonJarCopyClosedJar"], tasks["nonJarCopyQuilt"],

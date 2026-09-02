@@ -26,7 +26,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6.3.0
       - name: Build
-        run: ./gradlew build
+        # A release must not be blocked by verification — the artifacts are what is being
+        # published, and checking them is the Check workflow's job. assemble is exactly artifact
+        # production: `build` is `assemble` + `check`, and the distribution copies (jarCopyQuilt,
+        # jarCopyClosedJar, nonJarCopy*) are attached to assemble, so the archives are fully
+        # populated here. Excluding only `test` would leave the release exposed to any future
+        # check task.
+        run: ./gradlew assemble
       - run: git archive --format=tar.gz -o ./archive-quilt/source.tar.gz HEAD
       - run: git archive --format=tar.gz -o ./archive-closed-world-jar/source.tar.gz HEAD
       - run: zip -r ../curved-spacetime-quilt-variant-${{ github.ref_name }}.zip .
