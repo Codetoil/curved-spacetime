@@ -60,7 +60,7 @@ adding a module, code style, and the Javadoc conventions.
 
 To build the application, you need a copy of JDK 8 and JDK 25 for the Jar Variants, and GraalVM CE 25 for the Native
 Variant of your Host's Operating System (Cross compilation is unfortunately not support by GraalVM as of the time
-of writing), along with the Vulkan SDK Installed. Then run `./gradlew build` for the Jar Variants and
+of writing), along with the Vulkan SDK Installed. Then run `./gradlew assemble` for the Jar Variants and
 `./gradle nativeCompile` for the Native Variants.
 
 If you plan to distribute binaries, you will need to distribute the

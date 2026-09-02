@@ -107,7 +107,7 @@ The GPL header is the sole exception — it stays `<br>`-formatted and verbatim.
 ## Building
 
 See [README.md](README.md) for toolchain requirements and the build commands. In short:
-`./gradlew build` for the jar variants, `./gradlew nativeCompile` for the native variant.
+`./gradlew assemble` for the jar variants, `./gradlew nativeCompile` for the native variant.
 
 ## The specification
 
