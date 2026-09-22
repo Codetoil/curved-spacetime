@@ -152,11 +152,17 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 	public void clean()
 	{
 		//this.vulkanGraphicsPresentQueue.waitIdle();
-		this.vulkanGraphicsQueue.waitIdle();
+		if (this.vulkanGraphicsQueue != null)
+			this.vulkanGraphicsQueue.waitIdle();
 		//this.vulkanForwardRenderActivity.cleanup();
-		this.vulkanRenderModuleSwapChain.cleanup();
-		this.vulkanRenderModuleSurface.cleanup();
-		this.vulkanGLFWRenderWindow.setShouldClose();
-		this.vulkanGLFWRenderWindow.clean();
+		if (this.vulkanRenderModuleSwapChain != null)
+			this.vulkanRenderModuleSwapChain.cleanup();
+		if (this.vulkanRenderModuleSurface != null)
+			this.vulkanRenderModuleSurface.cleanup();
+		if (this.vulkanGLFWRenderWindow != null)
+		{
+			this.vulkanGLFWRenderWindow.setShouldClose();
+			this.vulkanGLFWRenderWindow.clean();
+		}
 	}
 }

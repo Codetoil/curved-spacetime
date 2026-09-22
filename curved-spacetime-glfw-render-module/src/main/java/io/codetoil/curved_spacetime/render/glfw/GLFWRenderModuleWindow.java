@@ -56,6 +56,11 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	protected int height;
 
 	/**
+	 * Whether the window has been initialized.
+	 */
+	protected boolean initialized = false;
+
+	/**
 	 * Creates a GLFW window.
 	 * <p>
 	 * Nothing is opened until {@link #init()} is called.
@@ -97,23 +102,22 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		if (this.windowHandle == MemoryUtil.NULL) throw new RuntimeException("Failed to create the GLFW window");
 
 		this.renderModuleKeyboardInput = new GLFWRenderModuleKeyboardInput(this);
-		GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (window, w, h) -> {
+		GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (_, w, h) -> {
 			width = w;
 			height = h;
 		});
 
 		this.renderModuleMouseInput = new GLFWRenderModuleMouseInput(this);
+		this.initialized = true;
 	}
 
 	public void loop()
 	{
-		// Poll for window events. The key callback above will only be
-		// invoked during this call.
-		this.pollEvents();
-		if (this.shouldClose())
+		if (!this.isInitialized() || this.shouldClose())
 		{
-			this.mainModuleEngine.stop();
+			this.mainModuleEngine.clean();
 		}
+		this.pollEvents();
 	}
 
 	public int getHeight()
@@ -126,14 +130,21 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		return this.width;
 	}
 
+	public boolean isInitialized() {
+		return this.initialized;
+	}
+
+	@Override
 	public void setShouldClose()
 	{
+		super.setShouldClose();
 		GLFW.glfwSetWindowShouldClose(this.windowHandle, true);
 	}
 
+	@Override
 	public boolean shouldClose()
 	{
-		return GLFW.glfwWindowShouldClose(this.windowHandle);
+		return super.shouldClose() || GLFW.glfwWindowShouldClose(this.windowHandle);
 	}
 
 	public void clean()

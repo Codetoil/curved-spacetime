@@ -56,6 +56,8 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	public void onInitialize()
 	{
 		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
+		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.logger.setUseParentHandlers(false);
 		try
 		{
 			this.config = new GLFWRenderModuleConfig(this.logger).load();

@@ -92,10 +92,15 @@ public class VulkanModuleVulkan extends MainCallback
 	@Override
 	public void clean()
 	{
-		this.vulkanModuleLogicalDevice.waitIdle();
-		this.vulkanModuleLogicalDevice.cleanup();
-		this.vulkanModulePhysicalDevice.cleanup();
-		this.vulkanModuleVulkanInstance.cleanup();
+		if (this.vulkanModuleLogicalDevice != null)
+		{
+			this.vulkanModuleLogicalDevice.waitIdle();
+			this.vulkanModuleLogicalDevice.cleanup();
+		}
+		if (this.vulkanModulePhysicalDevice != null)
+			this.vulkanModulePhysicalDevice.cleanup();
+		if (this.vulkanModuleVulkanInstance != null)
+			this.vulkanModuleVulkanInstance.cleanup();
 	}
 
 	/**
