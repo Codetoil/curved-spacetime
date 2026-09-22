@@ -93,7 +93,6 @@ val quiltDistribution = listOf(
     Triple("curved-spacetime-glfw-render-module", "modules", "shadowJar"),
     Triple("curved-spacetime-vulkan-module", "modules", "shadowJar"),
     Triple("curved-spacetime-webserver-module", "webserver-modules", "jar"),
-    Triple("curved-spacetime-webserver-openapi-module", "webserver-modules", "jar"),
 )
 
 val closedWorldDistribution = listOf(

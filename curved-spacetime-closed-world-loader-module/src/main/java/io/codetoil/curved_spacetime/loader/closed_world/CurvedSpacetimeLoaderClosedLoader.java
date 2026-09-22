@@ -36,8 +36,6 @@ import io.codetoil.curved_spacetime.simulator.entrypoint.SimulatorModuleDependen
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.entrypoint.WebserverModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.webserver.openapi.WebserverModuleDependentWebserverOpenAPIModuleEntrypoint;
-import io.codetoil.curved_spacetime.webserver.openapi.entrypoint.WebserverOpenAPIModuleDependentModuleInitializer;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -111,11 +109,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
 	private static final String WEBSERVER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "webserver_module_dependent";
 	private static final List<WebserverModuleDependentModuleInitializer> WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS
-			= List.of(new WebserverModuleDependentWebserverOpenAPIModuleEntrypoint());
-	private static final String WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINT_NAME
-			= "webserver_openapi_module_dependent";
-	private static final List<WebserverOpenAPIModuleDependentModuleInitializer>
-			WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
+			= List.of();
 	private Object engine;
 
 	/**
@@ -182,11 +176,6 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 				moduleInitializerClass.isAssignableFrom(WebserverModuleDependentModuleInitializer.class))
 		{
 			return (List<E>) WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS;
-		}
-		if (WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(WebserverOpenAPIModuleDependentModuleInitializer.class))
-		{
-			return (List<E>) WEBSERVER_OPENAPI_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 
 		throw new IllegalArgumentException("Cannot get Entrypoints: Invalid entrypoint type: " + name + " with class "

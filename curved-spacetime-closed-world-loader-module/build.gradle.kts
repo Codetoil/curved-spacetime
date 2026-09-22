@@ -39,7 +39,6 @@ dependencies {
     implementation(project(":curved-spacetime-vulkan-glfw-render-module"))
     implementation(project(":curved-spacetime-loader-module"))
     implementation(project(":curved-spacetime-webserver-module"))
-    implementation(project(":curved-spacetime-webserver-openapi-module"))
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
