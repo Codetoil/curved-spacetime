@@ -611,8 +611,11 @@ public void clean();</code></pre>
         registered callback, including one whose <code>init</code> threw, and deregister it, so that no
         callback is cleaned twice; and MUST then shut down the callback executor. It MUST clean every
         scene callback before any main callback, and main callbacks in the reverse of the order in
-        which their <code>init</code> was called. A second call MUST be a no-op. Only the callback
-        thread calls it; see <a href="#R50">R50</a>.</p>
+        which their <code>init</code> was called. A second call MUST be a no-op. Called from a
+        callback's <code>loop</code>, it ends the current tick: the engine MUST NOT call
+        <code>loop</code> on any callback once <code>clean</code> has been called, and MUST NOT report
+        the call as a failure under <a href="#R46">R46</a>. Only the callback thread calls it; see
+        <a href="#R50">R50</a>.</p>
 
     <p class="note">The order is reverse dependency order. A scene callback is built from what main
         callbacks provide — a renderer's swap chain and surface come from the Vulkan module's device
@@ -694,7 +697,8 @@ public void clean();</code></pre>
         <li>A throw is logged at <code>SEVERE</code> before any teardown, then the engine stops
             (<a href="#R46">R46</a>)</li>
         <li><code>clean</code> stops without interrupting, cleans each callback once — scene callbacks
-            first, main callbacks in reverse order — shuts the executor down, and is idempotent
+            first, main callbacks in reverse order — shuts the executor down, and is idempotent; no
+            <code>loop</code> after it, and calling it from <code>loop</code> is not a failure
             (<a href="#R47">R47</a>)</li>
         <li>Registrations whose <code>init</code> has not started when <code>clean</code> is called
             are ignored, queued ones included (<a href="#R48">R48</a>)</li>
