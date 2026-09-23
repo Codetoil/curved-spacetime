@@ -25,14 +25,14 @@ import io.codetoil.curved_spacetime.scene.SceneCallback;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -64,6 +64,7 @@ public class MainModuleEngine
 	 * The logger the engine writes its own diagnostics to.
 	 */
 	public final Logger logger = Logger.getLogger("Curved Spacetime Main Module Logger");
+	private final ConsoleHandler consoleHandler = new ConsoleHandler();
 
 	/**
 	 * The single thread every callback runs on.
@@ -77,15 +78,18 @@ public class MainModuleEngine
 	private final List<MainCallback> mainCallbacks = new ArrayList<>();
 	private final Map<Function<Scene, SceneCallback>, List<SceneCallback>> sceneCallbacks = new HashMap<>();
 	private final List<Scene> scenes = new ArrayList<>();
-	/**
-	 * Tracks the one-off task that initialises every registered callback.
-	 */
-	protected Future<?> callbackInitializeHandler;
 
 	/**
-	 * Tracks the repeating task that drives every registered callback, cancelled by {@link #stop()}.
+	 * Tracks the repeating task that drives every registered callback, cancelled by {@link #clean()}.
 	 */
 	protected ScheduledFuture<?> callbackLoopHandler;
+
+	/**
+	 * Is {@code true} if the Engine is initialized.
+	 * Note that this doesn't mean all callbacks are registered,
+	 * As a callback can be registered at any time and is registered asynchronously.
+	 */
+	protected boolean initialized = false;
 
 	/**
 	 * Creates the engine and brings the whole module graph up.
@@ -110,24 +114,27 @@ public class MainModuleEngine
 			throw new RuntimeException("Failed to load API Config", ex);
 		}
 		this.logger.setLevel(this.mainModuleConfig.getLoggerLevel());
+		this.consoleHandler.setLevel(this.mainModuleConfig.getLoggerLevel());
+		this.logger.addHandler(this.consoleHandler);
+		this.logger.setUseParentHandlers(false);
+		logger.info("Engine initializing");
 		registerScene(new Scene());
 		//registerScene(new Scene());
 		this.callbackExecutor = Executors.newSingleThreadScheduledExecutor();
-		logger.info("Running Entrypoints in parallel");
+		logger.finer("Running Entrypoints in parallel");
 		this.runEntrypoints();
-		logger.info("Initializing Scene Callbacks");
-		this.callbackInitializeHandler = this.callbackExecutor.submit(() -> {
-			this.mainCallbacks.forEach(MainCallback::init);
-			this.sceneCallbacks.forEach((_,
-										 sceneCallbacksForGenerator) ->
-					sceneCallbacksForGenerator.forEach(SceneCallback::init));
-		});
-		logger.info("Looping Scene Callbacks");
+		logger.info("Engine initialized");
+		logger.finer("Looping Scene Callbacks");
 		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() -> {
-					this.mainCallbacks.forEach(MainCallback::loop);
-					this.sceneCallbacks.forEach((_,
-												 sceneCallbacksForGenerator) ->
-							sceneCallbacksForGenerator.forEach(SceneCallback::loop));
+					try
+					{
+						this.mainCallbacks.forEach(MainCallback::loop);
+						this.sceneCallbacks.forEach((_,
+													 sceneCallbacksForGenerator) ->
+								sceneCallbacksForGenerator.forEach(SceneCallback::loop));
+					} catch (Throwable t) {
+						this.throwError(t, "Exception called during Main Loop");
+					}
 				},
 				1_000 / this.mainModuleConfig.getFPS(),
 				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
@@ -159,6 +166,7 @@ public class MainModuleEngine
 		{
 			MainModuleEngine.callDependents("main", ModuleInitializer.class,
 					ModuleInitializer::onInitialize, this.logger);
+			this.initialized = true;
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -240,13 +248,27 @@ public class MainModuleEngine
 	 * Registers scene-independent work and initialises it on the callback thread.
 	 *
 	 * @param mainCallback the callback to register
+	 * @return the completable future generated for this task
 	 */
-	public void registerMainCallback(MainCallback mainCallback)
+	public CompletableFuture<Void> registerMainCallback(MainCallback mainCallback)
 	{
-		callbackExecutor.submit(() -> {
-			this.mainCallbacks.add(mainCallback);
-			mainCallback.init();
-		});
+		if (!this.callbackExecutor.isShutdown())
+		{
+			return CompletableFuture.runAsync(() -> {
+						this.mainCallbacks.add(mainCallback);
+						mainCallback.init();
+					}, this.callbackExecutor)
+					.whenCompleteAsync((Void _, Throwable t) -> {
+						if (t != null)
+						{
+							this.throwError(t, "Exception called during Main Callback Initialization");
+						}
+					}, this.callbackExecutor);
+		}
+		else {
+			this.logger.info("Attempted to register Main Callback after shutdown, ignoring.");
+			return CompletableFuture.completedFuture(null);
+		}
 	}
 
 	/**
@@ -256,31 +278,90 @@ public class MainModuleEngine
 	 * so a module never has to track scenes itself.
 	 *
 	 * @param sceneCallbackGenerator the factory producing a callback for a given scene
+	 * @return the completable future generated for this task
 	 */
-	public void registerSceneCallbackGenerator(Function<Scene, SceneCallback> sceneCallbackGenerator)
+	public CompletableFuture<Void> registerSceneCallbackGenerator(Function<Scene, SceneCallback> sceneCallbackGenerator)
 	{
-		callbackExecutor.submit(() -> {
-			this.sceneCallbacks.put(sceneCallbackGenerator, this.scenes.stream().map(sceneCallbackGenerator).toList());
-			this.sceneCallbacks.get(sceneCallbackGenerator).forEach(SceneCallback::init);
-		});
+		if (!this.callbackExecutor.isShutdown())
+		{
+			return CompletableFuture.runAsync(() -> {
+						this.sceneCallbacks.put(sceneCallbackGenerator,
+								this.scenes.stream().map(sceneCallbackGenerator).toList());
+						this.sceneCallbacks.get(sceneCallbackGenerator).forEach(SceneCallback::init);
+					}, this.callbackExecutor)
+					.whenCompleteAsync((Void _, Throwable t) -> {
+						if (t != null)
+						{
+							this.throwError(t, "Exception called during Scene Callback Generation");
+						}
+					}, this.callbackExecutor);
+		} else {
+			this.logger.info("Attempted to register Scene Callback Generator after shutdown, ignoring.");
+			return CompletableFuture.completedFuture(null);
+		}
 	}
 
 	/**
-	 * Stops the callback loop and shuts the engine down.
-	 */
-	public void stop()
-	{
-		this.callbackLoopHandler.cancel(true);
-		this.clean();
-	}
-
-	/**
-	 * Shuts the callback executor down and releases every scene callback.
+	 * Stops the callback loop, releases every callback, and then shuts the callback executor down.
 	 */
 	public void clean()
 	{
-		this.callbackExecutor.shutdown();
-		this.sceneCallbacks.forEach((_, sceneCallbacks) ->
-				sceneCallbacks.forEach(SceneCallback::clean));
+		if (this.callbackLoopHandler != null)
+			this.callbackLoopHandler.cancel(false);
+		for (Iterator<MainCallback> it = this.mainCallbacks.iterator(); it.hasNext(); )
+		{
+			MainCallback mainCallback = it.next();
+			mainCallback.clean();
+			it.remove();
+		}
+		for (Iterator<Entry<Function<Scene, SceneCallback>, List<SceneCallback>>> it =
+			 this.sceneCallbacks.entrySet().iterator(); it.hasNext(); )
+		{
+			Entry<Function<Scene, SceneCallback>, List<SceneCallback>> entry = it.next();
+			for (Iterator<SceneCallback> it2 = entry.getValue().iterator(); it2.hasNext(); ) {
+				SceneCallback sceneCallback = it2.next();
+				sceneCallback.clean();
+				it2.remove();
+			}
+			it.remove();
+		}
+		if (!this.callbackExecutor.isShutdown())
+		{
+			this.callbackExecutor.shutdown();
+		}
+	}
+
+	/**
+	 * Throws an error and stops the engine.
+	 *
+	 * @param t the error to throw
+	 * @param message the error message
+	 */
+	public void throwError(Throwable t, String message)
+	{
+		this.logger.log(Level.SEVERE, message, t);
+		this.clean(); // TODO: Implement Error GUI
+	}
+
+	/**
+	 * Returns the console handler used for the Curved Spacetime Loggers.
+	 *
+	 * @return the console handler
+	 */
+	public ConsoleHandler getConsoleHandler()
+	{
+		return consoleHandler;
+	}
+
+	/**
+	 * Returns whether the Engine is initialized.
+	 * Note that this doesn't mean all callbacks are registered,
+	 * As a callback can be registered at any time and is registered asynchronously.
+	 *
+	 * @return {@code true} if the engine is initialized
+	 */
+	public boolean isInitialized()
+	{
+		return initialized;
 	}
 }

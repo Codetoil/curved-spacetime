@@ -1,9 +1,9 @@
 plugins {
     id("io.freefair.aggregate-javadoc") version "9.5.0"
-    id("org.jetbrains.qodana") version "2026.2.0"
+    id("org.jetbrains.qodana") version "2026.2.1"
     id("io.github.sgtsilvio.gradle.javadoc-links") version "0.10.0" apply false
     id("com.gradleup.shadow") version "9.6.1" apply false
-    id("org.graalvm.buildtools.native") version "1.1.10" apply false
+    id("org.graalvm.buildtools.native") version "1.1.13" apply false
 }
 
 val nonJar = configurations.create("nonJar")
@@ -93,7 +93,6 @@ val quiltDistribution = listOf(
     Triple("curved-spacetime-glfw-render-module", "modules", "shadowJar"),
     Triple("curved-spacetime-vulkan-module", "modules", "shadowJar"),
     Triple("curved-spacetime-webserver-module", "webserver-modules", "jar"),
-    Triple("curved-spacetime-webserver-openapi-module", "webserver-modules", "jar"),
 )
 
 val closedWorldDistribution = listOf(

@@ -63,6 +63,8 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	public void onInitialize()
 	{
 		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
+		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.logger.setUseParentHandlers(false);
 		try
 		{
 			this.config = new VulkanGLFWRenderModuleConfig(this.logger).load();

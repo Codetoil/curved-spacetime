@@ -53,9 +53,11 @@ API `curved-spacetime-render-module`. A proper SDK will be made later.
    module's package and its `.entrypoint` subpackage.
 3. **`<X>ModuleEntrypoint implements ModuleInitializer`** — the `main` entrypoint, where `<X>` is
    the module key in `PascalCase` with `-module` dropped. Sets its logger level from
-   `CurvedSpacetimeMainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel()`, loads its
-   config, then calls `CurvedSpacetimeMainModuleEngine.callDependents("<key_>_dependent", …)`,
-   where `<key_>` is the module key with every `-` replaced by `_`.
+   `CurvedSpacetimeMainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel()`, adds the
+   engine's `getConsoleHandler()` to that logger and calls `setUseParentHandlers(false)` on it
+   (R23 in the specification explains why both are needed), loads its config, then calls
+   `CurvedSpacetimeMainModuleEngine.callDependents("<key_>_dependent", …)`, where `<key_>` is the
+   module key with every `-` replaced by `_`.
 4. **`<Module 1>ModuleDependent<Module 2>ModuleEntrypoint implements <Module 1>ModuleDependentModuleInitializer`**
    — one per module you depend on, where module 1 is the depended-on module and module 2 is this
    one. Looks itself up via `getEntrypoints("main", ModuleInitializer.class)` and hands the
@@ -107,7 +109,7 @@ The GPL header is the sole exception — it stays `<br>`-formatted and verbatim.
 ## Building
 
 See [README.md](README.md) for toolchain requirements and the build commands. In short:
-`./gradlew build` for the jar variants, `./gradlew nativeCompile` for the native variant.
+`./gradlew assemble` for the jar variants, `./gradlew nativeCompile` for the native variant.
 
 ## The specification
 
@@ -126,6 +128,22 @@ to per minor version from that point.
 
 Changes to the module system — entrypoint naming, the handshake, the config contract — should
 update `specs/module-system.html` in the same change that alters the behaviour.
+
+### Format states status
+
+A specification's file format records whether it is binding, so changing the format changes the
+document's standing:
+
+| Format | Status |
+| --- | --- |
+| HTML, styled with `spec.css` | **Normative.** Implementations must conform; where the code disagrees, the code is wrong. |
+| Markdown | **Draft.** A design exploration, binding on nothing. |
+
+`specs/simulation.md` is a draft deliberately. It is published as-is, so a browser shows Markdown
+source — headings, table rules and unrendered LaTeX — rather than a finished page. **That
+provisional appearance is intended and is not a defect to fix.** Converting a draft to HTML is
+the act of promoting it to normative, so do that as a considered decision about the document's
+status, never as a presentation improvement.
 
 ## Licence
 

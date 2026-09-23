@@ -57,6 +57,11 @@ public abstract class RenderModuleWindow
 	protected RenderModuleMouseInput renderModuleMouseInput;
 
 	/**
+	 * Whether the window at the next opportunity. Can be overridden by an implementation.
+	 */
+	protected boolean shouldClose = false;
+
+	/**
 	 * Creates a window bound to the given engine.
 	 * <p>
 	 * Nothing is opened until {@link #init()} is called.
@@ -97,16 +102,28 @@ public abstract class RenderModuleWindow
 	public abstract int getWidth();
 
 	/**
+	 * Returns whether the window has been initialized
+	 *
+	 * @return {@code true} if the window is initialized.
+	 */
+	public abstract boolean isInitialized();
+
+	/**
 	 * Asks the window to close at the next opportunity.
 	 */
-	public abstract void setShouldClose();
+	public void setShouldClose()
+	{
+		this.shouldClose = true;
+	}
 
 	/**
 	 * Returns whether the window has been asked to close.
 	 *
 	 * @return {@code true} once a close has been requested, by this class or by the user
 	 */
-	public abstract boolean shouldClose();
+	public boolean shouldClose() {
+		return this.shouldClose;
+	}
 
 	/**
 	 * Destroys the window and releases its platform resources.
