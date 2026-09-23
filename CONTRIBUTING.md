@@ -53,9 +53,11 @@ API `curved-spacetime-render-module`. A proper SDK will be made later.
    module's package and its `.entrypoint` subpackage.
 3. **`<X>ModuleEntrypoint implements ModuleInitializer`** — the `main` entrypoint, where `<X>` is
    the module key in `PascalCase` with `-module` dropped. Sets its logger level from
-   `CurvedSpacetimeMainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel()`, loads its
-   config, then calls `CurvedSpacetimeMainModuleEngine.callDependents("<key_>_dependent", …)`,
-   where `<key_>` is the module key with every `-` replaced by `_`.
+   `CurvedSpacetimeMainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel()`, adds the
+   engine's `getConsoleHandler()` to that logger and calls `setUseParentHandlers(false)` on it
+   (R23 in the specification explains why both are needed), loads its config, then calls
+   `CurvedSpacetimeMainModuleEngine.callDependents("<key_>_dependent", …)`, where `<key_>` is the
+   module key with every `-` replaced by `_`.
 4. **`<Module 1>ModuleDependent<Module 2>ModuleEntrypoint implements <Module 1>ModuleDependentModuleInitializer`**
    — one per module you depend on, where module 1 is the depended-on module and module 2 is this
    one. Looks itself up via `getEntrypoints("main", ModuleInitializer.class)` and hands the

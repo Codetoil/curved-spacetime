@@ -31,7 +31,8 @@
         <dt>Version</dt>
         <dd>pre-0.1.0</dd>
         <dt>Status</dt>
-        <dd>Violated. Describes how the module system should work.</dd>
+        <dd>Normative, and violated: describes how the module system should work. Where the code
+            disagrees, the code is wrong.</dd>
         <dt>Licence</dt>
         <dd>GPL-3.0-or-later</dd>
     </dl>
@@ -49,6 +50,7 @@
         <li><a href="#init">Initialization protocol</a></li>
         <li><a href="#config">Configuration</a></li>
         <li><a href="#manifest">Quilt manifest</a></li>
+        <li><a href="#callbacks">Callbacks</a></li>
         <li><a href="#checklist">Conformance checklist</a></li>
     </ol>
 </nav>
@@ -60,8 +62,9 @@
         <a href="#loader">loader</a> discovers those modules, hands their <a href="#entrypoints">entrypoints</a>
         to the engine, and the engine drives them through a fixed initialization protocol. This document
         specifies that arrangement: the names a module must adopt, the interfaces it must implement, the
-        order in which the engine calls it, and the handshake by which one module obtains a reference to
-        another.</p>
+        order in which the engine calls it, the handshake by which one module obtains a reference to
+        another, and, once initialization is complete, the lifecycle of the callbacks a module
+        registers.</p>
 
     <p>It is written so that a third party can implement a conforming module, or an alternative
         conforming loader, without reading the engine's source. Two loaders exist today and are cited
@@ -107,11 +110,16 @@
 
     <p>A <dfn>conforming module</dfn> is a JPMS module that satisfies every requirement in
         <a href="#naming">§4</a>, <a href="#entrypoints">§6</a>, <a href="#config">§8</a>, and, when
-        loaded by a Quilt-based loader, <a href="#manifest">§9</a>.</p>
+        loaded by a Quilt-based loader, <a href="#manifest">§9</a>. A module that registers callbacks
+        must also satisfy <a href="#R49">R49</a>.</p>
 
     <p>A <dfn>conforming loader</dfn> is an implementation of
         <code>io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader</code> that satisfies every
         requirement in <a href="#loader">§5</a> and <a href="#init">§7</a>.</p>
+
+    <p>The remaining requirements of <a href="#callbacks">§10</a>, <a href="#R42">R42</a>–<a
+            href="#R48">R48</a>, bind the engine. <code>CurvedSpacetimeMainModuleEngine</code> is the
+        reference engine.</p>
 
     <p class="note">A conforming loader is not required to use Quilt or to discover modules dynamically.
         Static resolution is explicitly permitted; see <a href="#R7">R7</a>.</p>
@@ -123,7 +131,7 @@
     <dl class="terms">
         <dt><dfn>engine</dfn></dt>
         <dd>The singleton <code>CurvedSpacetimeMainModuleEngine</code>. It owns the configuration, the scene list, and
-            the callback executor, and it drives initialization.</dd>
+            the callback executor; it drives initialization, then runs callbacks.</dd>
 
         <dt><dfn>loader</dfn></dt>
         <dd>An implementation of <code>CurvedSpacetimeLoader</code>. It maps an entrypoint name and type
@@ -153,6 +161,11 @@
         <dt><dfn>dependent entrypoint</dfn></dt>
         <dd>A class registered by module <var>B</var> under module <var>A</var>'s dependent entrypoint
             name, by which <var>B</var> learns of <var>A</var>'s main entrypoint.</dd>
+
+        <dt><dfn>callback</dfn></dt>
+        <dd>A <code>MainCallback</code>, or a <code>SceneCallback</code> bound to one scene: module code
+            the engine runs on its callback thread once initialization is complete. See
+            <a href="#callbacks">§10</a>.</dd>
     </dl>
 </section>
 
@@ -342,12 +355,20 @@
     <p id="R23" class="req"><strong>R23.</strong> A module's <code>onInitialize</code> MUST, in order:</p>
 
     <ol>
-        <li>set its logger's level from the engine's configuration;</li>
+        <li>set its logger's level from the engine's configuration, add the engine's console handler —
+            <code>getConsoleHandler()</code> — to that logger, and stop the logger forwarding to its
+            parent handlers;</li>
         <li>load its own configuration, and save it if <code>isDirty()</code> reports the load
             substituted defaults;</li>
         <li>if it declares dependencies, receive them per <a href="#handshake">§7.3</a>;</li>
         <li>invoke its own dependent entrypoints, passing itself.</li>
     </ol>
+
+    <p class="note">The engine's console handler is set to the configured level. Under the JDK's
+        default logging configuration the root logger's handler is at <code>INFO</code>, so a logger
+        whose level alone is set loses every record below <code>INFO</code>, and one that keeps its
+        parent handlers beside the engine's emits every record at <code>INFO</code> and above
+        twice.</p>
 
     <p id="R24" class="req"><strong>R24.</strong> A module MUST NOT touch another module's state before
         completing step 3. Until the handshake returns, no ordering guarantee exists.</p>
@@ -413,10 +434,11 @@ public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRe
         pool deadlocks as soon as its threads are occupied by consumers whose producers are still
         queued.</p>
 
-    <p class="note">In the reference engine this requirement is satisfied implicitly, by
-        <code>Executors.newCachedThreadPool()</code>. It is stated explicitly here because nothing in the
-        code records <em>why</em> that pool must be unbounded, and substituting a fixed pool is an easy
-        and catastrophic change.</p>
+    <p class="note">In the reference engine this requirement is satisfied by
+        <code>Executors.newCachedThreadPool()</code>, and the documentation of
+        <code>callDependents</code> records <em>why</em> that pool must stay unbounded. It is stated
+        here as a requirement because substituting a fixed pool is an easy and catastrophic
+        change.</p>
 
     <p id="R29" class="req"><strong>R29.</strong> An implementation SHOULD bound the handshake in time
         and fail with a diagnostic naming the unsatisfied dependency, rather than blocking indefinitely.
@@ -520,10 +542,97 @@ logger_level=INFO</code></pre>
 }</code></pre>
 </section>
 
-<section id="checklist">
-    <h2>10. Conformance checklist</h2>
+<section id="callbacks">
+    <h2>10. Callbacks</h2>
 
-    <h3>10.1 A conforming module</h3>
+    <p>Once initialization is complete, the engine runs module code through callbacks. A module
+        registers a <code>MainCallback</code> for work independent of any scene, or a generator from
+        which the engine makes one <code>SceneCallback</code> per scene. The engine calls each
+        callback's <code>init</code> once, then its <code>loop</code> repeatedly, at the rate the main
+        configuration's <code>fps</code> key sets, and its <code>clean</code> when the engine stops.
+        What a callback computes is out of scope (<a href="#introduction">§1</a>); this section fixes
+        when it is called, on which thread, and what a failure does.</p>
+
+    <pre><code>// CurvedSpacetimeMainModuleEngine
+public CompletableFuture&lt;Void&gt; registerMainCallback(MainCallback mainCallback);
+
+public CompletableFuture&lt;Void&gt; registerSceneCallbackGenerator(
+        Function&lt;Scene, SceneCallback&gt; sceneCallbackGenerator);
+
+public void clean();</code></pre>
+
+    <pre><code>public abstract class MainCallback
+{
+    public abstract void init();
+
+    public abstract void loop();
+
+    public abstract void clean();
+}</code></pre>
+
+    <p><code>SceneCallback</code> declares the same three methods, and is bound to one
+        <code>Scene</code> when the generator constructs it.</p>
+
+    <h3>10.1 Lifecycle</h3>
+
+    <p id="R42" class="req"><strong>R42.</strong> The engine MUST call every callback's
+        <code>init</code>, <code>loop</code>, and <code>clean</code> from a single thread, the
+        <dfn>callback thread</dfn>. A callback MAY therefore hold mutable state without synchronising it
+        against other callbacks.</p>
+
+    <p id="R43" class="req"><strong>R43.</strong> The engine MUST call a callback's <code>init</code>
+        exactly once, and before the first call to its <code>loop</code>.</p>
+
+    <p id="R44" class="req"><strong>R44.</strong> The engine MUST apply a registered generator exactly
+        once to every scene: each scene that exists when the generator is registered, and each scene
+        registered afterwards. Every callback so produced is subject to <a href="#R42">R42</a> and
+        <a href="#R43">R43</a>.</p>
+
+    <p id="R45" class="req"><strong>R45.</strong> <code>registerMainCallback</code> and
+        <code>registerSceneCallbackGenerator</code> MUST return a future that completes once the
+        <code>init</code> calls the registration causes have finished: normally if every one returned,
+        exceptionally if one threw.</p>
+
+    <h3>10.2 Failure and shutdown</h3>
+
+    <p id="R46" class="req"><strong>R46.</strong> If a callback's <code>init</code> or
+        <code>loop</code>, or a generator applied under <a href="#R44">R44</a>, throws, the engine MUST
+        log the throwable, with its stack trace, at <code>SEVERE</code>, before it releases anything. It
+        MUST then stop as by <code>clean</code> (<a href="#R47">R47</a>). It MUST NOT discard the
+        throwable, and MUST NOT go on calling the remaining callbacks as though nothing had failed.</p>
+
+    <p class="note">Logging comes first so that the failure is on record even if the teardown it
+        triggers fails as well. A throwable that is caught and dropped, captured in a
+        <code>Future</code> nobody reads, or thrown out of a periodic task — whose executor then
+        suppresses every later run without a word — presents as a hang rather than an error.</p>
+
+    <p id="R47" class="req"><strong>R47.</strong> The engine's <code>clean</code> MUST stop the
+        callback loop without interrupting the callback thread; MUST call <code>clean</code> on every
+        registered callback, including one whose <code>init</code> threw, and deregister it, so that no
+        callback is cleaned twice; and MUST then shut down the callback executor. It MUST clean every
+        scene callback before any main callback, and main callbacks in the reverse of the order in
+        which their <code>init</code> was called. A second call MUST be a no-op. A module MAY call
+        <code>clean</code> to stop the engine, as a render module does when its window closes.</p>
+
+    <p class="note">The order is reverse dependency order. A scene callback is built from what main
+        callbacks provide — a renderer's swap chain and surface come from the Vulkan module's device
+        and instance — and native APIs require an object's children to be destroyed before the
+        object itself.</p>
+
+    <p id="R48" class="req"><strong>R48.</strong> Once the callback executor has shut down, the engine
+        MUST ignore a registration: it MUST NOT call the callback's <code>init</code>, and MUST return
+        an already-completed future. It SHOULD log that the registration was ignored.</p>
+
+    <p id="R49" class="req"><strong>R49.</strong> A callback's <code>clean</code> MUST tolerate being
+        called after its own <code>init</code> threw part-way, releasing only what <code>init</code>
+        actually acquired. Under <a href="#R46">R46</a> and <a href="#R47">R47</a>, a failed
+        <code>init</code> is followed by <code>clean</code>.</p>
+</section>
+
+<section id="checklist">
+    <h2>11. Conformance checklist</h2>
+
+    <h3>11.1 A conforming module</h3>
 
     <ul class="checklist">
         <li>Directory <code>&lt;key&gt;</code>; JPMS name nested under its API's
@@ -538,15 +647,19 @@ logger_level=INFO</code></pre>
         <li>A dependent entrypoint per dependency, correctly named
             (<a href="#R18">R18</a>, <a href="#R19">R19</a>)</li>
         <li><code>onInitialize</code> follows the four-step order (<a href="#R23">R23</a>)</li>
+        <li>Logger publishes through the engine's console handler, not its parents
+            (<a href="#R23">R23</a>)</li>
         <li>Consumes exactly its dependency count, classifying by type
             (<a href="#R26">R26</a>, <a href="#R27">R27</a>)</li>
         <li>Config at <code>config/&lt;key&gt;.config</code>, defaults on absence, dirty-then-save
             (<a href="#R31">R31</a>–<a href="#R37">R37</a>)</li>
         <li><code>quilt.mod.json</code> whose entrypoints and depends agree
             (<a href="#R38">R38</a>–<a href="#R41">R41</a>)</li>
+        <li>Each callback's <code>clean</code> survives a failed <code>init</code>
+            (<a href="#R49">R49</a>)</li>
     </ul>
 
-    <h3>10.2 A conforming loader</h3>
+    <h3>11.2 A conforming loader</h3>
 
     <ul class="checklist">
         <li>Retains the engine from <code>prepareModInit</code> (<a href="#R6">R6</a>)</li>
@@ -557,6 +670,23 @@ logger_level=INFO</code></pre>
         <li>Invokes <code>main</code> entrypoints concurrently, on an effectively unbounded executor
             (<a href="#R21">R21</a>, <a href="#R28">R28</a>)</li>
         <li>Propagates entrypoint failures (<a href="#R22">R22</a>)</li>
+    </ul>
+
+    <h3>11.3 The engine's callbacks</h3>
+
+    <ul class="checklist">
+        <li><code>init</code>, <code>loop</code>, and <code>clean</code> on one callback thread
+            (<a href="#R42">R42</a>)</li>
+        <li><code>init</code> exactly once, before the first <code>loop</code>; every generator applied
+            to every scene (<a href="#R43">R43</a>, <a href="#R44">R44</a>)</li>
+        <li>Registration returns a future that settles with <code>init</code>
+            (<a href="#R45">R45</a>)</li>
+        <li>A throw is logged at <code>SEVERE</code> before any teardown, then the engine stops
+            (<a href="#R46">R46</a>)</li>
+        <li><code>clean</code> stops without interrupting, cleans each callback once — scene callbacks
+            first, main callbacks in reverse order — shuts the executor down, and is idempotent
+            (<a href="#R47">R47</a>)</li>
+        <li>Registrations after shutdown are ignored (<a href="#R48">R48</a>)</li>
     </ul>
 </section>
 
