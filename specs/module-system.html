@@ -110,8 +110,8 @@
 
     <p>A <dfn>conforming module</dfn> is a JPMS module that satisfies every requirement in
         <a href="#naming">§4</a>, <a href="#entrypoints">§6</a>, <a href="#config">§8</a>, and, when
-        loaded by a Quilt-based loader, <a href="#manifest">§9</a>. A module that registers callbacks
-        must also satisfy <a href="#R49">R49</a>.</p>
+        loaded by a Quilt-based loader, <a href="#manifest">§9</a>, along with the module requirements
+        of <a href="#callbacks">§10</a>, <a href="#R49">R49</a> and <a href="#R50">R50</a>.</p>
 
     <p>A <dfn>conforming loader</dfn> is an implementation of
         <code>io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader</code> that satisfies every
@@ -611,22 +611,31 @@ public void clean();</code></pre>
         registered callback, including one whose <code>init</code> threw, and deregister it, so that no
         callback is cleaned twice; and MUST then shut down the callback executor. It MUST clean every
         scene callback before any main callback, and main callbacks in the reverse of the order in
-        which their <code>init</code> was called. A second call MUST be a no-op. A module MAY call
-        <code>clean</code> to stop the engine, as a render module does when its window closes.</p>
+        which their <code>init</code> was called. A second call MUST be a no-op. Only the callback
+        thread calls it; see <a href="#R50">R50</a>.</p>
 
     <p class="note">The order is reverse dependency order. A scene callback is built from what main
         callbacks provide — a renderer's swap chain and surface come from the Vulkan module's device
         and instance — and native APIs require an object's children to be destroyed before the
         object itself.</p>
 
-    <p id="R48" class="req"><strong>R48.</strong> Once the callback executor has shut down, the engine
-        MUST ignore a registration: it MUST NOT call the callback's <code>init</code>, and MUST return
-        an already-completed future. It SHOULD log that the registration was ignored.</p>
+    <p id="R48" class="req"><strong>R48.</strong> Once <code>clean</code> has been called, the engine
+        MUST ignore every registration whose <code>init</code> has not started, including one made
+        before the call: it MUST NOT call the callback's <code>init</code>, and the registration's
+        future MUST complete normally, immediately for a registration made after the call. It SHOULD
+        log that the registration was ignored.</p>
 
     <p id="R49" class="req"><strong>R49.</strong> A callback's <code>clean</code> MUST tolerate being
         called after its own <code>init</code> threw part-way, releasing only what <code>init</code>
         actually acquired. Under <a href="#R46">R46</a> and <a href="#R47">R47</a>, a failed
         <code>init</code> is followed by <code>clean</code>.</p>
+
+    <p id="R50" class="req"><strong>R50.</strong> A module MAY call the engine's <code>clean</code> to
+        stop it, and MUST do so from the callback thread, as a render module's window does from its
+        <code>loop</code> when it closes. A module that needs to stop the engine from another thread
+        registers a main callback that calls <code>clean</code> from its <code>loop</code>.
+        Otherwise a callback's <code>clean</code> would run on that thread, against
+        <a href="#R42">R42</a>, while the callback's <code>loop</code> may still be running.</p>
 </section>
 
 <section id="checklist">
@@ -657,6 +666,7 @@ public void clean();</code></pre>
             (<a href="#R38">R38</a>–<a href="#R41">R41</a>)</li>
         <li>Each callback's <code>clean</code> survives a failed <code>init</code>
             (<a href="#R49">R49</a>)</li>
+        <li>Stops the engine only from the callback thread (<a href="#R50">R50</a>)</li>
     </ul>
 
     <h3>11.2 A conforming loader</h3>
@@ -686,7 +696,8 @@ public void clean();</code></pre>
         <li><code>clean</code> stops without interrupting, cleans each callback once — scene callbacks
             first, main callbacks in reverse order — shuts the executor down, and is idempotent
             (<a href="#R47">R47</a>)</li>
-        <li>Registrations after shutdown are ignored (<a href="#R48">R48</a>)</li>
+        <li>Registrations whose <code>init</code> has not started when <code>clean</code> is called
+            are ignored, queued ones included (<a href="#R48">R48</a>)</li>
     </ul>
 </section>
 
