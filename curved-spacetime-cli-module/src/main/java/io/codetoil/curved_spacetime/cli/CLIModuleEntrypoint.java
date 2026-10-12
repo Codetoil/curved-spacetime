@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.cli;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
@@ -39,21 +39,23 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
 	private Logger logger = Logger.getLogger("Curved Spacetime CLI Module Logger");
+	private Engine engine;
 
 	/**
 	 * Creates the CLI module's entrypoint.
 	 * <p>
-	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
 	public CLIModuleEntrypoint()
 	{
 	}
 
 	@Override
-	public void onInitialize()
+	public void onInitialize(Engine engine)
 	{
-		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
-		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.engine = engine;
+		this.logger.setLevel(this.engine.getLoggerLevel());
+		this.logger.addHandler(this.engine.getConsoleHandler());
 		this.logger.setUseParentHandlers(false);
 		try
 		{
@@ -65,9 +67,10 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			MainModuleEngine.callDependents("cli_module_dependent", CLIModuleDependentModuleInitializer.class,
+			this.engine.callDependents("cli_module_dependent", CLIModuleDependentModuleInitializer.class,
 					(CLIModuleDependentModuleInitializer cliModuleDependentModuleInitializer) ->
-							cliModuleDependentModuleInitializer.onInitialize(this), this.logger);
+							cliModuleDependentModuleInitializer.onInitialize(this, this.engine),
+					this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);

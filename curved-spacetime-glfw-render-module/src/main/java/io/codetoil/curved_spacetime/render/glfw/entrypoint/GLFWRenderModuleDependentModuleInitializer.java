@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.glfw.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleEntrypoint;
 
@@ -33,5 +34,5 @@ public interface GLFWRenderModuleDependentModuleInitializer
 	/**
 	 * Runs the mod initializer.
 	 */
-	void onInitialize(GLFWRenderModuleEntrypoint glfwRenderModuleEntrypoint);
+	void onInitialize(GLFWRenderModuleEntrypoint glfwRenderModuleEntrypoint, Engine engine);
 }

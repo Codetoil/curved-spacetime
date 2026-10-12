@@ -16,7 +16,7 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.scene;
+package io.codetoil.curved_spacetime.api.scene;
 
 /**
  * One independent thing being simulated and drawn.

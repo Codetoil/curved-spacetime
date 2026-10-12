@@ -18,8 +18,11 @@
 
 package io.codetoil.curved_spacetime.loader;
 
+import io.codetoil.curved_spacetime.api.Engine;
+
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -44,7 +47,7 @@ public interface CurvedSpacetimeLoader
 	 * @param engine
 	 * 		the engine driving initialization
 	 */
-	void prepareModInit(Path path, Object engine);
+	void prepareModInit(Path path, Engine engine);
 
 	/**
 	 * Returns every entrypoint registered under the given name whose runtime type is assignable to
@@ -93,5 +96,5 @@ public interface CurvedSpacetimeLoader
 	 *
 	 * @return the engine passed to {@link #prepareModInit}, or {@code null} before that call
 	 */
-	Object getEngine();
+	Engine getEngine();
 }

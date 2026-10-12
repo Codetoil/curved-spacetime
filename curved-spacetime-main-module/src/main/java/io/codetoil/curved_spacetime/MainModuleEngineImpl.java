@@ -18,10 +18,12 @@
 
 package io.codetoil.curved_spacetime;
 
+import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.api.MainCallback;
+import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.scene.SceneCallback;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.scene.Scene;
-import io.codetoil.curved_spacetime.scene.SceneCallback;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -29,6 +31,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.Future.State;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
@@ -36,27 +39,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The engine: it owns the configuration, the scenes, and the callback loop, and it drives module initialization.
- * <p>
- * Constructing an engine is what starts the program. The constructor loads the main configuration, registers the
- * initial scene, runs every module's {@code main} entrypoint, and then begins the callback loop — so by the time it
- * returns, the whole module graph is up.
- * <p>
- * Callbacks all run on a single scheduled thread, so implementations need no synchronisation against one another.
- * Module initialization is the opposite: entrypoints run concurrently on an unbounded pool, which the dependency
- * handshake requires — see {@link #callDependents(String, Class, Consumer, Logger)}.
+ * Engine Implementation
  */
-public class MainModuleEngine
+public class MainModuleEngineImpl extends Engine
 {
-	/**
-	 * The running engine, set as soon as construction begins so that entrypoints can reach it.
-	 */
-	protected static MainModuleEngine INSTANCE;
 
 	/**
 	 * The engine's settings, loaded before any module runs.
 	 */
-	public final MainModuleConfig mainModuleConfig;
+	private final MainModuleConfig mainModuleConfig;
 
 	/**
 	 * The logger the engine writes its own diagnostics to.
@@ -69,10 +60,6 @@ public class MainModuleEngine
 	 */
 	protected final ScheduledExecutorService callbackExecutor;
 
-	/**
-	 * The loader module entrypoints are resolved through.
-	 */
-	protected final CurvedSpacetimeLoader loader;
 	private final List<MainCallback> mainCallbacks = new ArrayList<>();
 	private final Map<Function<Scene, SceneCallback>, List<SceneCallback>> sceneCallbacks = new HashMap<>();
 	private final List<Scene> scenes = new ArrayList<>();
@@ -100,10 +87,9 @@ public class MainModuleEngine
 	 * @throws RuntimeException
 	 * 		if the main configuration cannot be loaded, or if any module's entrypoint fails
 	 */
-	public MainModuleEngine(CurvedSpacetimeLoader loader)
+	public MainModuleEngineImpl(CurvedSpacetimeLoader loader)
 	{
-		INSTANCE = this;
-		this.loader = loader;
+		super(loader);
 		try
 		{
 			this.mainModuleConfig = new MainModuleConfig(this.logger).load();
@@ -140,12 +126,7 @@ public class MainModuleEngine
 				1_000 / this.mainModuleConfig.getFPS(), TimeUnit.MILLISECONDS);
 	}
 
-	/**
-	 * Adds a scene and gives every registered generator a callback for it.
-	 *
-	 * @param scene
-	 * 		the scene to add
-	 */
+	@Override
 	public void registerScene(Scene scene)
 	{
 		this.scenes.add(scene);
@@ -155,19 +136,14 @@ public class MainModuleEngine
 		});
 	}
 
-	/**
-	 * Prepares the loader and runs every module's {@code main} entrypoint.
-	 *
-	 * @throws RuntimeException
-	 * 		wrapping whatever a module's entrypoint threw
-	 */
+	@Override
 	public void runEntrypoints()
 	{
 		this.loader.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
 		try
 		{
-			MainModuleEngine.callDependents("main", ModuleInitializer.class,
-					ModuleInitializer::onInitialize, this.logger);
+			this.callDependents("main", ModuleInitializer.class,
+					(e) -> e.onInitialize(this), this.logger);
 			this.initialized = true;
 		} catch (Throwable e)
 		{
@@ -175,34 +151,11 @@ public class MainModuleEngine
 		}
 	}
 
-	/**
-	 * Invokes every entrypoint registered under the given name, concurrently, and waits for all of them.
-	 * <p>
-	 * The pool this uses is unbounded, and must remain so. The dependency handshake blocks a consumer in
-	 * {@code TransferQueue.take} while its producer is still to run, so a producer and its consumer have to be runnable
-	 * at the same time; a bounded pool deadlocks as soon as its threads fill with consumers whose producers are still
-	 * queued.
-	 * <p>
-	 * The first entrypoint to fail aborts the whole call rather than leaving a half-initialized module graph running.
-	 *
-	 * @param <E>
-	 * 		the entrypoint type
-	 * @param name
-	 * 		the entrypoint name to invoke, such as {@code main}
-	 * @param moduleInitializerClass
-	 * 		the type registered entrypoints must be assignable to
-	 * @param onInitialize
-	 * 		the action to apply to each entrypoint
-	 * @param logger
-	 * 		the logger to trace dispatch through
-	 *
-	 * @throws Throwable
-	 * 		whatever the first failing entrypoint threw
-	 */
-	public static <E> void callDependents(String name,
-										  Class<E> moduleInitializerClass,
-										  Consumer<E> onInitialize,
-										  Logger logger)
+	@Override
+	public <E> void callDependents(String name,
+								   Class<E> moduleInitializerClass,
+								   Consumer<E> onInitialize,
+								   Logger logger)
 			throws Throwable
 	{
 		logger.finer("Dependents of " + name + ": " + moduleInitializerClass + "\n");
@@ -210,11 +163,12 @@ public class MainModuleEngine
 		{
 			CompletionService<?> completionService = new ExecutorCompletionService<>(moduleInitializerThreadPool);
 			List<Future<?>> futures = new ArrayList<>();
-			INSTANCE.loader.invokeEntrypoints(name, moduleInitializerClass, moduleInitializer ->
-					futures.add(completionService.submit(() -> {
-						logger.finer(name + ": Calling " + moduleInitializer + ".");
-						onInitialize.accept(moduleInitializer);
-					}, null)));
+			this.getCurvedSpacetimeLoader().invokeEntrypoints(name, moduleInitializerClass,
+					(moduleInitializer) ->
+							futures.add(completionService.submit(() -> {
+								logger.finer(name + ": Calling " + moduleInitializer + ".");
+								onInitialize.accept(moduleInitializer);
+							}, null)));
 			moduleInitializerThreadPool.shutdown();
 			while (!futures.isEmpty())
 			{
@@ -231,34 +185,13 @@ public class MainModuleEngine
 		}
 	}
 
-	/**
-	 * Returns the running engine.
-	 *
-	 * @return the engine, or {@code null} before one has been constructed
-	 */
-	public static MainModuleEngine getInstance()
-	{
-		return INSTANCE;
-	}
-
-	/**
-	 * Returns the loader this engine resolves entrypoints through.
-	 *
-	 * @return the loader
-	 */
+	@Override
 	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
 	{
 		return loader;
 	}
 
-	/**
-	 * Registers scene-independent work and initialises it on the callback thread.
-	 *
-	 * @param mainCallback
-	 * 		the callback to register
-	 *
-	 * @return the completable future generated for this task
-	 */
+	@Override
 	public CompletableFuture<Void> registerMainCallback(MainCallback mainCallback)
 	{
 		if (!this.callbackExecutor.isShutdown())
@@ -280,17 +213,7 @@ public class MainModuleEngine
 		}
 	}
 
-	/**
-	 * Registers a factory that produces one callback per scene.
-	 * <p>
-	 * The generator is applied to every scene that exists now, and to each one registered later, so a module never has
-	 * to track scenes itself.
-	 *
-	 * @param sceneCallbackGenerator
-	 * 		the factory producing a callback for a given scene
-	 *
-	 * @return the completable future generated for this task
-	 */
+	@Override
 	public CompletableFuture<Void> registerSceneCallbackGenerator(Function<Scene, SceneCallback> sceneCallbackGenerator)
 	{
 		if (!this.callbackExecutor.isShutdown())
@@ -313,9 +236,7 @@ public class MainModuleEngine
 		}
 	}
 
-	/**
-	 * Stops the callback loop, releases every callback, and then shuts the callback executor down.
-	 */
+	@Override
 	public void clean()
 	{
 		if (this.callbackLoopHandler != null)
@@ -344,38 +265,34 @@ public class MainModuleEngine
 		}
 	}
 
-	/**
-	 * Throws an error and stops the engine.
-	 *
-	 * @param t
-	 * 		the error to throw
-	 * @param message
-	 * 		the error message
-	 */
+	@Override
 	public void throwError(Throwable t, String message)
 	{
 		this.logger.log(Level.SEVERE, message, t);
 		this.clean(); // TODO: Implement Error GUI
 	}
 
-	/**
-	 * Returns the console handler used for the Curved Spacetime Loggers.
-	 *
-	 * @return the console handler
-	 */
+	@Override
 	public ConsoleHandler getConsoleHandler()
 	{
 		return consoleHandler;
 	}
 
-	/**
-	 * Returns whether the Engine is initialized. Note that this doesn't mean all callbacks are registered, As a
-	 * callback can be registered at any time and is registered asynchronously.
-	 *
-	 * @return {@code true} if the engine is initialized
-	 */
+	@Override
 	public boolean isInitialized()
 	{
 		return initialized;
+	}
+
+	@Override
+	public Level getLoggerLevel()
+	{
+		return this.mainModuleConfig.getLoggerLevel();
+	}
+
+	@Override
+	public int getFPS()
+	{
+		return this.mainModuleConfig.getFPS();
 	}
 }

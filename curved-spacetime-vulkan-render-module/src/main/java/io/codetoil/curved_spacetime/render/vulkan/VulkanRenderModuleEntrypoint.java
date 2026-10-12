@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
@@ -44,21 +44,23 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 	private ModuleConfig config;
 	private VulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private RenderModuleEntrypoint renderModuleEntrypoint = null;
+	private Engine engine;
 
 	/**
 	 * Creates the Vulkan render module's entrypoint.
 	 * <p>
-	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
 	public VulkanRenderModuleEntrypoint()
 	{
 	}
 
 	@Override
-	public void onInitialize()
+	public void onInitialize(Engine engine)
 	{
-		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
-		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.engine = engine;
+		this.logger.setLevel(this.engine.getLoggerLevel());
+		this.logger.addHandler(this.engine.getConsoleHandler());
 		this.logger.setUseParentHandlers(false);
 		try
 		{
@@ -77,10 +79,11 @@ public class VulkanRenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			MainModuleEngine.callDependents("vulkan_render_module_dependent",
+			this.engine.callDependents("vulkan_render_module_dependent",
 					VulkanRenderModuleDependentModuleInitializer.class,
 					(VulkanRenderModuleDependentModuleInitializer vulkanRenderModuleDependentModuleInitializer) ->
-							vulkanRenderModuleDependentModuleInitializer.onInitialize(this), this.logger);
+							vulkanRenderModuleDependentModuleInitializer.onInitialize(this, this.engine),
+					this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);

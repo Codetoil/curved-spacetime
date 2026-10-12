@@ -18,7 +18,8 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleConfig;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleRenderer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleForwardRenderActivity;
@@ -26,7 +27,6 @@ import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsQueu
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleGraphicsQueue.VulkanRenderPresentModuleGraphicsQueue;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSurface;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleSwapChain;
-import io.codetoil.curved_spacetime.scene.Scene;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleCommandPool;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleLogicalDevice;
 import io.codetoil.curved_spacetime.vulkan.VulkanModulePhysicalDevice;
@@ -88,17 +88,17 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 	 * <p>
 	 * No window or Vulkan object is created until {@link #init()} runs on the engine's callback thread.
 	 *
-	 * @param mainModuleEngine
+	 * @param engine
 	 * 		the engine this renderer belongs to
 	 * @param scene
 	 * 		the scene to draw
 	 * @param entrypoint
 	 * 		the module entrypoint supplying configuration and dependencies
 	 */
-	public VulkanGLFWRenderModuleRenderer(MainModuleEngine mainModuleEngine, Scene scene,
+	public VulkanGLFWRenderModuleRenderer(Engine engine, Scene scene,
 										  VulkanGLFWRenderModuleEntrypoint entrypoint)
 	{
-		super(mainModuleEngine, scene);
+		super(engine, scene);
 		this.entrypoint = entrypoint;
 	}
 
@@ -113,7 +113,7 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 		VulkanModuleLogicalDevice vulkanModuleLogicalDevice = entrypoint.getVulkanModuleEntrypoint().getVulkan()
 				.getVulkanModuleLogicalDevice();
 
-		this.vulkanGLFWRenderWindow = new VulkanGLFWRenderModuleWindow(mainModuleEngine, "curved-spacetime", logger);
+		this.vulkanGLFWRenderWindow = new VulkanGLFWRenderModuleWindow(this.engine, "curved-spacetime", logger);
 
 		this.vulkanGLFWRenderWindow.init();
 

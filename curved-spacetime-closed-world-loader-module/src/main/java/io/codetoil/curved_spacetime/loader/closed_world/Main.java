@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.loader.closed_world;
 
-import io.codetoil.curved_spacetime.Start;
+import io.codetoil.curved_spacetime.start.Start;
 
 import java.util.logging.Logger;
 

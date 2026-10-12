@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
@@ -41,21 +41,23 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 	private final Logger logger = Logger.getLogger("Curved Spacetime Vulkan Module Logger");
 	private ModuleConfig config;
 	private VulkanModuleVulkan vulkan;
+	private Engine engine;
 
 	/**
 	 * Creates the Vulkan module's entrypoint.
 	 * <p>
-	 * Called by the loader; no Vulkan object exists until {@link #onInitialize()} runs.
+	 * Called by the loader; no Vulkan object exists until {@link #onInitialize(Engine)} runs.
 	 */
 	public VulkanModuleEntrypoint()
 	{
 	}
 
 	@Override
-	public void onInitialize()
+	public void onInitialize(Engine engine)
 	{
-		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
-		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.engine = engine;
+		this.logger.setLevel(this.engine.getLoggerLevel());
+		this.logger.addHandler(this.engine.getConsoleHandler());
 		this.logger.setUseParentHandlers(false);
 		try
 		{
@@ -65,13 +67,13 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 		{
 			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
 		}
-		MainModuleEngine.getInstance().registerMainCallback(this.vulkan
-				= new VulkanModuleVulkan(MainModuleEngine.getInstance(), this));
+		this.engine.registerMainCallback(this.vulkan = new VulkanModuleVulkan(this.engine, this));
 		try
 		{
-			MainModuleEngine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
+			this.engine.callDependents("vulkan_module_dependent", VulkanModuleDependentModuleInitializer.class,
 					(VulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
-							vulkanModuleDependentModuleInitializer.onInitialize(this), this.logger);
+							vulkanModuleDependentModuleInitializer.onInitialize(this, this.engine),
+					this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);
@@ -99,7 +101,7 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 	/**
 	 * Returns the object owning the Vulkan instance and devices.
 	 *
-	 * @return the Vulkan callback, or {@code null} before {@link #onInitialize()}
+	 * @return the Vulkan callback, or {@code null} before {@link #onInitialize(Engine)}
 	 */
 	public VulkanModuleVulkan getVulkan()
 	{

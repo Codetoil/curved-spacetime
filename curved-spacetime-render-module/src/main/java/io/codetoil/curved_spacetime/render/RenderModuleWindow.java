@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 
 import java.util.logging.Logger;
 
@@ -34,7 +34,7 @@ public abstract class RenderModuleWindow
 	/**
 	 * The engine this window belongs to.
 	 */
-	protected final MainModuleEngine mainModuleEngine;
+	protected final Engine engine;
 
 	/**
 	 * The window's title bar text.
@@ -66,16 +66,16 @@ public abstract class RenderModuleWindow
 	 * <p>
 	 * Nothing is opened until {@link #init()} is called.
 	 *
-	 * @param mainModuleEngine
+	 * @param engine
 	 * 		the engine this window belongs to
 	 * @param title
 	 * 		the window's title bar text
 	 * @param logger
 	 * 		the logger to write window diagnostics to
 	 */
-	protected RenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
+	protected RenderModuleWindow(Engine engine, String title, Logger logger)
 	{
-		this.mainModuleEngine = mainModuleEngine;
+		this.engine = engine;
 		this.title = title;
 		this.logger = logger;
 	}
