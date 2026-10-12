@@ -20,9 +20,10 @@ The specifications are authoritative. Where `CONTRIBUTING.md` and a specificatio
 specification wins, and the disagreement is a bug worth reporting.
 
 Names are the exception, for now. The specifications and `CONTRIBUTING.md` use the target
-naming — `CurvedSpacetime`-prefixed classes such as `CurvedSpacetimeMainModuleEngine`,
-API-first directories such as `curved-spacetime-render-glfw-module`, and config and entrypoint
-names derived from the full module key. The tree still uses the old names (`MainModuleEngine`,
+naming — `CurvedSpacetime`-prefixed entrypoint classes such as
+`CurvedSpacetimeRenderGLFWModuleEntrypoint`, API-first directories such as
+`curved-spacetime-render-glfw-module`, and config and entrypoint names derived from the full
+module key. The tree still uses the old names (`GLFWRenderModuleEntrypoint`,
 `curved-spacetime-glfw-render-module`, `render_module_dependent`). The rename is tracked in
 [#112](https://github.com/Codetoil/curved-spacetime/issues/112) and deferred until the engine
 runs end to end. Until it lands, write code against the names in the tree, and do not rename
