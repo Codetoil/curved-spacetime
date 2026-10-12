@@ -28,4 +28,5 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: true
+          target_commitish: ${{ github.sha }}
           token: ${{ secrets.CURVED_SPACETIME_DEBUG_RELEASE_PAT }}
