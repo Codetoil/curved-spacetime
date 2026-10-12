@@ -17,22 +17,24 @@
  */
 package io.codetoil.curved_spacetime.loader.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
+
 /**
  * The callback by which one module learns of another module it depends on.
  * <p>
  * Each module extends this with a named interface of its own, and any module depending on that module registers an
- * implementation of it. When the depended-on module finishes loading its configuration, it invokes every such
- * implementation, passing itself. The implementation's job is to hand that entrypoint to its own module, by
- * transferring it into that module's {@link ModuleInitializer#getDependencyModuleTransferQueue() dependency queue}:
+ * implementation of it. When the depended-on module reaches the last step of its initialization, it invokes every such
+ * implementation, passing itself and the engine. The implementation's job is to hand that entrypoint to its own module,
+ * by transferring it into that module's {@link ModuleInitializer#getDependencyModuleTransferQueue() dependency queue}:
  * <pre>{@code
- * MainModuleEngine.getInstance().getCurvedSpacetimeLoader()
+ * engine.getCurvedSpacetimeLoader()
  *         .getEntrypoints("main", ModuleInitializer.class).stream()
  *         .filter(MyModuleEntrypoint.class::isInstance)
  *         .findFirst().orElseThrow()
  *         .getDependencyModuleTransferQueue().transfer(moduleEntrypoint);
  * }</pre>
  * <p>
- * Implementations must satisfy requirements R17 through R19 and R25 of the Module System Specification.
+ * Implementations must satisfy requirements R17 through R19 and R25.
  *
  * @param <E>
  * 		the entrypoint type of the module being depended on
@@ -46,6 +48,8 @@ public interface ModuleDependentModuleInitializer<E extends ModuleInitializer>
 	 *
 	 * @param moduleEntrypoint
 	 * 		the entrypoint of the module being depended on
+	 * @param engine
+	 * 		the engine driving initialization
 	 */
-	void onInitialize(E moduleEntrypoint);
+	void onInitialize(E moduleEntrypoint, Engine engine);
 }

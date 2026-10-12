@@ -23,7 +23,7 @@
 module io.codetoil.curved_spacetime.render.glfw {
 	requires io.codetoil.curved_spacetime;
 	requires io.codetoil.curved_spacetime.render;
-	requires io.codetoil.curved_spacetime.loader;
+	requires io.codetoil.curved_spacetime.api;
 	requires java.logging;
 
 	requires org.lwjgl;

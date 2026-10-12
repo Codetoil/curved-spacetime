@@ -8,17 +8,18 @@ Project conventions are **not** duplicated here — they live where human contri
 them. Read the relevant one before writing code; do not infer conventions from surrounding
 files alone.
 
-| What you need                                                                                 | Where it lives                                         |
-|-----------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| Module layout, adding a module, code style, Javadoc rules                                     | [`CONTRIBUTING.md`](CONTRIBUTING.md)                   |
-| Normative module/loader contract — entrypoint naming, the dependency handshake, config format | [`specs/module-system.html`](specs/module-system.html) |
-| Toolchain requirements, build commands, supported platforms                                   | [`README.md`](README.md)                               |
-| Intended direction for the simulation layer — **exploratory draft, not normative**            | [`specs/simulation.md`](specs/simulation.md)           |
+| What you need                                                                                 | Where it lives                                           |
+|-----------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| Module layout, adding a module, code style, Javadoc rules                                     | [`CONTRIBUTING.md`](CONTRIBUTING.md)                     |
+| Normative module/loader contract — entrypoint naming, the dependency handshake, config format | [`specs/module-system.html`](specs/module-system.html)   |
+| Normative engine contract — how an engine drives initialization, the callback lifecycle       | [`specs/engine.html`](specs/engine.html)                 |
+| Toolchain requirements, build commands, supported platforms                                   | [`README.md`](README.md)                                 |
+| Intended direction for the simulation layer — **exploratory draft, not normative**            | [`specs/curved-spacetime.md`](specs/curved-spacetime.md) |
 
-The specification is authoritative. Where `CONTRIBUTING.md` and the specification disagree, the
+The specifications are authoritative. Where `CONTRIBUTING.md` and a specification disagree, the
 specification wins, and the disagreement is a bug worth reporting.
 
-Names are the exception, for now. The specification and `CONTRIBUTING.md` use the target
+Names are the exception, for now. The specifications and `CONTRIBUTING.md` use the target
 naming — `CurvedSpacetime`-prefixed classes such as `CurvedSpacetimeMainModuleEngine`,
 API-first directories such as `curved-spacetime-render-glfw-module`, and config and entrypoint
 names derived from the full module key. The tree still uses the old names (`MainModuleEngine`,
@@ -28,7 +29,15 @@ runs end to end. Until it lands, write code against the names in the tree, and d
 anything toward the specification as part of an unrelated change.
 
 When you change module-system behaviour — entrypoint naming, the handshake, the config
-contract — update `specs/module-system.html` in the same change.
+contract — update `specs/module-system.html` in the same change. When you change how an engine
+initializes modules or runs callbacks, update `specs/engine.html` the same way. When you change a
+file in `curved-spacetime-loader-module`, update Appendix A of both specifications to match.
+
+The two specifications serve separate audiences, and each must be readable without the other:
+`module-system.html` is for module and loader authors, `engine.html` for engine authors. Both
+reproduce every API file in Appendix A, and neither cites the other. A requirement that binds both
+audiences appears in both, with the same number and wording. `curved-spacetime.md` (the game)
+builds on both.
 
 ## Verifying changes
 
@@ -36,7 +45,7 @@ Gradle needs network access for plugin resolution. When that isn't available, th
 JPMS stack compiles with plain `javac` in dependency order — the only external requirement
 is `java.logging`:
 
-    javac -d /tmp/mods/io.codetoil.curved_spacetime.loader \
+    javac -d /tmp/mods/io.codetoil.curved_spacetime.api \
         $(find curved-spacetime-loader-module/src/main/java -name '*.java')
     javac -d /tmp/mods/io.codetoil.curved_spacetime --module-path /tmp/mods \
         $(find curved-spacetime-main-module/src/main/java -name '*.java')

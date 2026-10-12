@@ -18,8 +18,8 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
-import io.codetoil.curved_spacetime.MainCallback;
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.api.MainCallback;
 
 /**
  * Owns the Vulkan objects that outlive any one window: the instance, the physical device, and the logical device.
@@ -56,14 +56,14 @@ public class VulkanModuleVulkan extends MainCallback
 	 * <p>
 	 * No Vulkan object is created until {@link #init()} runs on the engine's callback thread.
 	 *
-	 * @param mainModuleEngine
+	 * @param engine
 	 * 		the engine this callback belongs to
 	 * @param entrypoint
 	 * 		the Vulkan module's entrypoint, supplying configuration and logger
 	 */
-	public VulkanModuleVulkan(MainModuleEngine mainModuleEngine, VulkanModuleEntrypoint entrypoint)
+	public VulkanModuleVulkan(Engine engine, VulkanModuleEntrypoint entrypoint)
 	{
-		super(mainModuleEngine);
+		super(engine);
 		this.entrypoint = entrypoint;
 	}
 

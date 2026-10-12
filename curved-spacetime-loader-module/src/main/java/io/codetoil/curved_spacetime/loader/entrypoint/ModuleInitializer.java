@@ -18,17 +18,19 @@
 
 package io.codetoil.curved_spacetime.loader.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
+
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
 /**
  * A module's {@code main} entrypoint, the object the engine drives during initialization.
  * <p>
- * Every module registers exactly one of these. The engine invokes {@link #onInitialize()} on all of them concurrently,
- * so a module must not assume anything about the order in which its peers come up; the only ordering guarantee
- * available is the one the dependency handshake provides.
+ * Every module registers exactly one of these. The engine invokes {@link #onInitialize(Engine)} on all of them
+ * concurrently, so a module must not assume anything about the order in which its peers come up; the only ordering
+ * guarantee available is the one the dependency handshake provides.
  * <p>
- * Implementations must satisfy requirements R12 through R16 of the Module System Specification.
+ * Implementations must satisfy requirements R12 through R16.
  */
 public interface ModuleInitializer
 {
@@ -38,14 +40,17 @@ public interface ModuleInitializer
 	 * An implementation sets its logger's level from the engine's configuration, loads its own configuration and saves
 	 * it if loading substituted defaults, receives any dependencies it declares through
 	 * {@link #getDependencyModuleTransferQueue()}, performs any operations it must perform during initialization, and
-	 * finally invokes its own dependent entrypoints, passing itself.
+	 * finally invokes its own dependent entrypoints, passing itself and the engine.
+	 *
+	 * @param engine
+	 * 		the engine driving initialization
 	 */
-	void onInitialize();
+	void onInitialize(Engine engine);
 
 	/**
 	 * Returns this module's configuration.
 	 *
-	 * @return the configuration, or {@code null} before {@link #onInitialize()} has loaded it
+	 * @return the configuration, or {@code null} before {@link #onInitialize(Engine)} has loaded it
 	 */
 	ModuleConfig getConfig();
 

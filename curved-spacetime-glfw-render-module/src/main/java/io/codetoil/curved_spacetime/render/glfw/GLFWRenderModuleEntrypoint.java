@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
@@ -41,6 +41,7 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime GLFW Render Module Logger");
 	private ModuleConfig config;
+	private Engine engine;
 	private RenderModuleEntrypoint renderModuleEntrypoint;
 
 	/**
@@ -53,10 +54,11 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public void onInitialize()
+	public void onInitialize(Engine engine)
 	{
-		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
-		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.engine = engine;
+		this.logger.setLevel(this.engine.getLoggerLevel());
+		this.logger.addHandler(this.engine.getConsoleHandler());
 		this.logger.setUseParentHandlers(false);
 		try
 		{
@@ -75,10 +77,11 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			MainModuleEngine.callDependents("glfw_render_module_dependent",
+			this.engine.callDependents("glfw_render_module_dependent",
 					GLFWRenderModuleDependentModuleInitializer.class,
 					(GLFWRenderModuleDependentModuleInitializer glfwRenderModuleDependentModuleInitializer) ->
-							glfwRenderModuleDependentModuleInitializer.onInitialize(this),
+							glfwRenderModuleDependentModuleInitializer
+									.onInitialize(this, this.engine),
 					this.logger);
 		} catch (Throwable e)
 		{

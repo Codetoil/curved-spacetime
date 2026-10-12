@@ -16,22 +16,22 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
+package io.codetoil.curved_spacetime.api.scene;
 
 /**
- * Closed-World Loader Module of Curved Spacetime
- *
+ * One independent thing being simulated and drawn.
+ * <p>
+ * The engine holds a list of these and pairs each with a {@link SceneCallback} per registered generator, so modules act
+ * on scenes without tracking them. A scene currently carries no state of its own: what a scene <em>contains</em> —
+ * spacetimes, metrics, worldlines — belongs to the simulation model, which has not been settled yet and is deliberately
+ * outside the scope of this API.
  */
-module io.codetoil.curved_spacetime.loader.closed_world {
-	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.loader;
-	requires io.codetoil.curved_spacetime.render;
-	requires io.codetoil.curved_spacetime.render.glfw;
-	requires io.codetoil.curved_spacetime.render.vulkan;
-	requires io.codetoil.curved_spacetime.vulkan;
-	requires io.codetoil.curved_spacetime.webserver;
-	requires io.codetoil.curved_spacetime.webserver.openapi;
-	requires io.codetoil.curved_spacetime.render.vulkan_glfw;
-	requires io.codetoil.curved_spacetime.cli;
-	requires io.codetoil.curved_spacetime.simulator;
-	requires java.logging;
+public class Scene
+{
+	/**
+	 * Creates an empty scene.
+	 */
+	public Scene()
+	{
+	}
 }

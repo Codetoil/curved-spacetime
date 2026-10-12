@@ -31,7 +31,7 @@ import java.io.IOException;
  * if (this.config.isDirty()) this.config.save();
  * }</pre>
  * <p>
- * Implementations must satisfy requirements R31 through R37 of the Module System Specification.
+ * Implementations must satisfy requirements R31 through R37.
  */
 public interface ModuleConfig
 {

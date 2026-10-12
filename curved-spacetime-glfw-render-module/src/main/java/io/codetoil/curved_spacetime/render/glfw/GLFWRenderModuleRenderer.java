@@ -18,9 +18,9 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
-import io.codetoil.curved_spacetime.scene.Scene;
-import io.codetoil.curved_spacetime.scene.SceneCallback;
+import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.scene.SceneCallback;
 
 /**
  * Base for renderers that draw a scene into a GLFW window.
@@ -33,13 +33,13 @@ public abstract class GLFWRenderModuleRenderer extends SceneCallback
 	/**
 	 * Creates a renderer for one scene.
 	 *
-	 * @param mainModuleEngine
+	 * @param engine
 	 * 		the engine this renderer belongs to
 	 * @param scene
 	 * 		the scene to draw
 	 */
-	protected GLFWRenderModuleRenderer(MainModuleEngine mainModuleEngine, Scene scene)
+	protected GLFWRenderModuleRenderer(Engine engine, Scene scene)
 	{
-		super(mainModuleEngine, scene);
+		super(engine, scene);
 	}
 }

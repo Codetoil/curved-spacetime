@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 
@@ -33,5 +34,5 @@ public interface VulkanRenderModuleDependentModuleInitializer
 	/**
 	 * Runs the mod initializer.
 	 */
-	void onInitialize(VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint);
+	void onInitialize(VulkanRenderModuleEntrypoint vulkanRenderModuleEntrypoint, Engine engine);
 }

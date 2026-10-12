@@ -41,23 +41,21 @@ scratch — `curved-spacetime-render-glfw-module` is a reference for an implemen
 API `curved-spacetime-render-module`. A proper SDK will be made later.
 
 1. **`build.gradle.kts`** — plugins: java, java-library, javadoc-links, maven-publish.
-   `api(project(":curved-spacetime-main-module"))`, plus the API module. **Leave the jar's `destinationDirectory`
+   `api(project(":curved-spacetime-loader-module"))`, plus the API module. **Leave the jar's `destinationDirectory`
    alone.** Jar output stays at the Gradle default,
    `build/libs`. To place the module in a distribution, add a row to `quiltDistribution` (or the
    `closedWorldDistribution`) in the root `build.gradle.kts` — naming the module, its subdirectory
    within the archive, and the task producing the artifact. The root build file explains why
    redirecting a jar task instead makes the archive a task *output*, which Gradle then empties
    from under the IDE.
-2. **`src/main/java/module-info.java`** — requires `io.codetoil.curved_spacetime`,
-   `io.codetoil.curved_spacetime.loader`, `java.logging`, plus the API module. Export the
-   module's package and its `.entrypoint` subpackage.
+2. **`src/main/java/module-info.java`** — requires `io.codetoil.curved_spacetime.api`,
+ `java.logging`, plus the API module. Export the module's package and its `.entrypoint` subpackage.
 3. **`<X>ModuleEntrypoint implements ModuleInitializer`** — the `main` entrypoint, where `<X>` is
-   the module key in `PascalCase` with `-module` dropped. Sets its logger level from
-   `CurvedSpacetimeMainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel()`, adds the
-   engine's `getConsoleHandler()` to that logger and calls `setUseParentHandlers(false)` on it (R23 in the specification
-   explains why both are needed), loads its config, then calls
-   `CurvedSpacetimeMainModuleEngine.callDependents("<key_>_dependent", …)`, where `<key_>` is the
-   module key with every `-` replaced by `_`.
+   the module key in `PascalCase` with `-module` dropped. Its `onInitialize(Engine engine)` sets its
+   logger level from `engine.getLoggerLevel()`, adds `engine.getConsoleHandler()` to that logger and
+   calls `setUseParentHandlers(false)` on it (R23 in the specification explains why both are
+   needed), loads its config, then calls `engine.callDependents("<key_>_dependent", …)`, where
+   `<key_>` is the module key with every `-` replaced by `_`.
 4. **`<Module 1>ModuleDependent<Module 2>ModuleEntrypoint implements <Module 1>ModuleDependentModuleInitializer`**
    — one per module you depend on, where module 1 is the depended-on module and module 2 is this
    one. Looks itself up via `getEntrypoints("main", ModuleInitializer.class)` and hands the
@@ -113,7 +111,8 @@ See [README.md](README.md) for toolchain requirements and the build commands. In
 
 ## The specification
 
-The Module System Specification lives at `specs/module-system.html` in this repository and is
+The Module System Specification lives at `specs/module-system.html` in this repository, and the
+Engine Specification, which covers what an engine must do, at `specs/engine.html`. Both are
 published per version alongside the API documentation, at `specs/<version>/`. The publishing
 cadence tracks the project's [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html) maturity:
 
@@ -127,7 +126,9 @@ cadence tracks the project's [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html)
 to per minor version from that point.
 
 Changes to the module system — entrypoint naming, the handshake, the config contract — should
-update `specs/module-system.html` in the same change that alters the behaviour.
+update `specs/module-system.html` in the same change that alters the behaviour. Changes to how an
+engine initializes modules or runs callbacks should update `specs/engine.html` the same way, and a
+change to any file in `curved-spacetime-loader-module` should update Appendix A of both.
 
 ### Format states status
 
@@ -139,7 +140,7 @@ document's standing:
 | HTML, styled with `spec.css` | **Normative.** Implementations must conform; where the code disagrees, the code is wrong. |
 | Markdown                     | **Draft.** A design exploration, binding on nothing.                                      |
 
-`specs/simulation.md` is a draft deliberately. It is published as-is, so a browser shows Markdown
+`specs/curved-spacetime.md` is a draft deliberately. It is published as-is, so a browser shows Markdown
 source — headings, table rules and unrendered LaTeX — rather than a finished page. **That
 provisional appearance is intended and is not a defect to fix.** Converting a draft to HTML is
 the act of promoting it to normative, so do that as a considered decision about the document's

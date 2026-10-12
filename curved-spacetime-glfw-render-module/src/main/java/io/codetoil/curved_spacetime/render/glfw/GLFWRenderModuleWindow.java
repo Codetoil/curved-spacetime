@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.glfw;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.render.RenderModuleWindow;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
@@ -65,16 +65,16 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	 * <p>
 	 * Nothing is opened until {@link #init()} is called.
 	 *
-	 * @param mainModuleEngine
+	 * @param engine
 	 * 		the engine this window belongs to
 	 * @param title
 	 * 		the window's title bar text
 	 * @param logger
 	 * 		the logger to write window diagnostics to
 	 */
-	protected GLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
+	protected GLFWRenderModuleWindow(Engine engine, String title, Logger logger)
 	{
-		super(mainModuleEngine, title, logger);
+		super(engine, title, logger);
 	}
 
 	public void init()
@@ -118,7 +118,7 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	{
 		if (!this.isInitialized() || this.shouldClose())
 		{
-			this.mainModuleEngine.clean();
+			this.engine.clean();
 		}
 		this.pollEvents();
 	}

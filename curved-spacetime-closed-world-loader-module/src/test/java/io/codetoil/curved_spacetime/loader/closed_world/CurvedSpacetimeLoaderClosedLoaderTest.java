@@ -18,6 +18,10 @@
 
 package io.codetoil.curved_spacetime.loader.closed_world;
 
+import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.api.MainCallback;
+import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.scene.SceneCallback;
 import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +30,12 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,11 +79,75 @@ class CurvedSpacetimeLoaderClosedLoaderTest
 	@Test
 	void prepareModInitRetainsTheEngine()
 	{
-		Object engine = new Object();
+		Engine dummy = new Engine(this.loader)
+		{
+			@Override
+			public void registerScene(Scene scene)
+			{
+			}
 
-		this.loader.prepareModInit(Path.of("."), engine);
+			@Override
+			public <E> void callDependents(String name, Class<E> moduleInitializerClass,
+										   Consumer<E> onInitialize, Logger logger) throws Throwable
+			{
+			}
 
-		assertSame(engine, this.loader.getEngine(),
+			@Override
+			public void runEntrypoints()
+			{
+			}
+
+			@Override
+			public CompletableFuture<Void> registerMainCallback(MainCallback mainCallback)
+			{
+				return null;
+			}
+
+			@Override
+			public CompletableFuture<Void> registerSceneCallbackGenerator(
+					Function<Scene, SceneCallback> sceneCallbackGenerator)
+			{
+				return null;
+			}
+
+			@Override
+			public void clean()
+			{
+			}
+
+			@Override
+			public void throwError(Throwable t, String message)
+			{
+			}
+
+			@Override
+			public ConsoleHandler getConsoleHandler()
+			{
+				return null;
+			}
+
+			@Override
+			public boolean isInitialized()
+			{
+				return false;
+			}
+
+			@Override
+			public Level getLoggerLevel()
+			{
+				return null;
+			}
+
+			@Override
+			public int getFPS()
+			{
+				return 0;
+			}
+		};
+
+		this.loader.prepareModInit(Path.of("."), dummy);
+
+		assertSame(dummy, this.loader.getEngine(),
 				"getEngine() must return the engine given to prepareModInit");
 	}
 

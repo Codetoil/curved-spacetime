@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleEntrypoint;
 
@@ -30,8 +31,5 @@ import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleEnt
 public interface VulkanGLFWRenderModuleDependentModuleInitializer
 		extends ModuleDependentModuleInitializer<VulkanGLFWRenderModuleEntrypoint>
 {
-	/**
-	 * Runs the mod initializer.
-	 */
-	void onInitialize(VulkanGLFWRenderModuleEntrypoint vulkanGLFWRenderModuleEntrypoint);
+	void onInitialize(VulkanGLFWRenderModuleEntrypoint vulkanGLFWRenderModuleEntrypoint, Engine engine);
 }

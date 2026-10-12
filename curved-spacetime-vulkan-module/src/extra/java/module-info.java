@@ -22,7 +22,7 @@
  */
 module io.codetoil.curved_spacetime.vulkan {
 	requires io.codetoil.curved_spacetime;
-	requires io.codetoil.curved_spacetime.loader;
+	requires io.codetoil.curved_spacetime.api;
 	requires java.logging;
 	requires org.lwjgl;
 	requires org.lwjgl.vulkan;

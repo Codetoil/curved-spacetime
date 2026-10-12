@@ -19,7 +19,7 @@
 package io.codetoil.curved_spacetime.webserver;
 
 import com.sun.net.httpserver.HttpServer;
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.entrypoint.WebserverModuleDependentModuleInitializer;
@@ -45,21 +45,23 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Webserver Module Logger");
 	private ModuleConfig config;
+	private Engine engine;
 
 	/**
 	 * Creates the webserver module's entrypoint.
 	 * <p>
-	 * Called by the loader; no socket is opened until {@link #onInitialize()} runs.
+	 * Called by the loader; no socket is opened until {@link #onInitialize(Engine)} runs.
 	 */
 	public WebserverModuleEntrypoint()
 	{
 	}
 
 	@Override
-	public void onInitialize()
+	public void onInitialize(Engine engine)
 	{
-		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
-		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.engine = engine;
+		this.logger.setLevel(this.engine.getLoggerLevel());
+		this.logger.addHandler(this.engine.getConsoleHandler());
 		this.logger.setUseParentHandlers(false);
 		try
 		{
@@ -89,10 +91,11 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 		System.out.println("Started test server");
 		try
 		{
-			MainModuleEngine.callDependents("webserver_module_dependent",
+			this.engine.callDependents("webserver_module_dependent",
 					WebserverModuleDependentModuleInitializer.class,
 					(WebserverModuleDependentModuleInitializer webserverModuleDependentModuleInitializer) ->
-							webserverModuleDependentModuleInitializer.onInitialize(this), this.logger);
+							webserverModuleDependentModuleInitializer.onInitialize(this, this.engine),
+					this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);

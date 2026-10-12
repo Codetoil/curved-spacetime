@@ -18,6 +18,8 @@
 
 package io.codetoil.curved_spacetime.loader;
 
+import io.codetoil.curved_spacetime.api.Engine;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
@@ -29,7 +31,7 @@ import java.util.function.Consumer;
  * tables so that GraalVM native-image can reach them by ordinary static analysis; the Quilt loader delegates to Quilt
  * Loader, which discovers them dynamically. Neither strategy is privileged by this interface.
  * <p>
- * Implementations must satisfy requirements R6 through R11 of the Module System Specification.
+ * Implementations must satisfy requirements R6 through R11.
  */
 public interface CurvedSpacetimeLoader
 {
@@ -44,7 +46,7 @@ public interface CurvedSpacetimeLoader
 	 * @param engine
 	 * 		the engine driving initialization
 	 */
-	void prepareModInit(Path path, Object engine);
+	void prepareModInit(Path path, Engine engine);
 
 	/**
 	 * Returns every entrypoint registered under the given name whose runtime type is assignable to
@@ -93,5 +95,5 @@ public interface CurvedSpacetimeLoader
 	 *
 	 * @return the engine passed to {@link #prepareModInit}, or {@code null} before that call
 	 */
-	Object getEngine();
+	Engine getEngine();
 }

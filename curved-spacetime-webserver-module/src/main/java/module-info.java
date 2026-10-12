@@ -21,9 +21,8 @@
  *
  */
 module io.codetoil.curved_spacetime.webserver {
-	requires io.codetoil.curved_spacetime;
 	requires jdk.httpserver;
-	requires io.codetoil.curved_spacetime.loader;
+	requires io.codetoil.curved_spacetime.api;
 	requires java.logging;
 
 	exports io.codetoil.curved_spacetime.webserver;
