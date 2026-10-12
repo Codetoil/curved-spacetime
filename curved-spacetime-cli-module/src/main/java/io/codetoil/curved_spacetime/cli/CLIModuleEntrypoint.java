@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 /**
  * The CLI module's {@code main} entrypoint.
  * <p>
- * Provides the command-line face of the simulator. Currently loads its configuration and hands
- * itself to any dependents; the command handling itself is not implemented yet.
+ * Provides the command-line face of the simulator. Currently loads its configuration and hands itself to any
+ * dependents; the command handling itself is not implemented yet.
  */
 public class CLIModuleEntrypoint implements ModuleInitializer
 {

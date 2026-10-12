@@ -25,10 +25,9 @@ import java.util.logging.Logger;
 /**
  * The launcher for both closed-world variants.
  * <p>
- * Named as the {@code Main-Class} of the shadow jar and as the native image's entry point, so this
- * is where both the closed-world jar and the native binary begin. It does nothing but hand a
- * {@link CurvedSpacetimeLoaderClosedLoader} to {@link Start}; the Quilt variant reaches the same
- * place by a different route.
+ * Named as the {@code Main-Class} of the shadow jar and as the native image's entry point, so this is where both the
+ * closed-world jar and the native binary begin. It does nothing but hand a {@link CurvedSpacetimeLoaderClosedLoader} to
+ * {@link Start}; the Quilt variant reaches the same place by a different route.
  */
 public class Main
 {
@@ -43,7 +42,8 @@ public class Main
 	/**
 	 * Starts the closed-world variant.
 	 *
-	 * @param args the command-line arguments the program was launched with
+	 * @param args
+	 * 		the command-line arguments the program was launched with
 	 */
 	static void main(String[] args)
 	{

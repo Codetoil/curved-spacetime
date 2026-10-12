@@ -21,9 +21,9 @@ Multi-module Gradle build. Every module lives in `<name>-module/`.
 
 API and implementation modules pair up like this:
 
-| Role | Directory | JPMS module |
-| --- | --- | --- |
-| API | `curved-spacetime-render-module` | `io.codetoil.curved_spacetime.render` |
+| Role           | Directory                             | JPMS module                                |
+|----------------|---------------------------------------|--------------------------------------------|
+| API            | `curved-spacetime-render-module`      | `io.codetoil.curved_spacetime.render`      |
 | Implementation | `curved-spacetime-render-glfw-module` | `io.codetoil.curved_spacetime.render.glfw` |
 
 The implementation's package is **nested under** the API's package, and the directory name
@@ -31,8 +31,8 @@ mirrors that order segment for segment — API first, implementation last, `-mod
 `curved-spacetime-render-vulkan-glfw-module` therefore maps to
 `io.codetoil.curved_spacetime.render.vulkan_glfw`.
 
-The directories in the tree today are still ordered the other way round
-(`curved-spacetime-glfw-render-module`) and do not yet match.
+The directories in the tree today are still ordered the other way round (`curved-spacetime-glfw-render-module`) and do
+not yet match.
 
 ## Adding a module
 
@@ -41,8 +41,8 @@ scratch — `curved-spacetime-render-glfw-module` is a reference for an implemen
 API `curved-spacetime-render-module`. A proper SDK will be made later.
 
 1. **`build.gradle.kts`** — plugins: java, java-library, javadoc-links, maven-publish.
-   `api(project(":curved-spacetime-main-module"))`, plus the API module.
-   **Leave the jar's `destinationDirectory` alone.** Jar output stays at the Gradle default,
+   `api(project(":curved-spacetime-main-module"))`, plus the API module. **Leave the jar's `destinationDirectory`
+   alone.** Jar output stays at the Gradle default,
    `build/libs`. To place the module in a distribution, add a row to `quiltDistribution` (or the
    `closedWorldDistribution`) in the root `build.gradle.kts` — naming the module, its subdirectory
    within the archive, and the task producing the artifact. The root build file explains why
@@ -54,8 +54,8 @@ API `curved-spacetime-render-module`. A proper SDK will be made later.
 3. **`<X>ModuleEntrypoint implements ModuleInitializer`** — the `main` entrypoint, where `<X>` is
    the module key in `PascalCase` with `-module` dropped. Sets its logger level from
    `CurvedSpacetimeMainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel()`, adds the
-   engine's `getConsoleHandler()` to that logger and calls `setUseParentHandlers(false)` on it
-   (R23 in the specification explains why both are needed), loads its config, then calls
+   engine's `getConsoleHandler()` to that logger and calls `setUseParentHandlers(false)` on it (R23 in the specification
+   explains why both are needed), loads its config, then calls
    `CurvedSpacetimeMainModuleEngine.callDependents("<key_>_dependent", …)`, where `<key_>` is the
    module key with every `-` replaced by `_`.
 4. **`<Module 1>ModuleDependent<Module 2>ModuleEntrypoint implements <Module 1>ModuleDependentModuleInitializer`**
@@ -117,11 +117,11 @@ The Module System Specification lives at `specs/module-system.html` in this repo
 published per version alongside the API documentation, at `specs/<version>/`. The publishing
 cadence tracks the project's [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html) maturity:
 
-| Project stage | A new specification version is cut |
-| --- | --- |
-| Before `0.1.0` (current) | per build |
-| `0.x.y` | per minor version |
-| `1.0.0` and later | per major version |
+| Project stage            | A new specification version is cut |
+|--------------------------|------------------------------------|
+| Before `0.1.0` (current) | per build                          |
+| `0.x.y`                  | per minor version                  |
+| `1.0.0` and later        | per major version                  |
 
 `0.1.0` will be released once the project is functional, even if incomplete; the cadence drops
 to per minor version from that point.
@@ -134,10 +134,10 @@ update `specs/module-system.html` in the same change that alters the behaviour.
 A specification's file format records whether it is binding, so changing the format changes the
 document's standing:
 
-| Format | Status |
-| --- | --- |
+| Format                       | Status                                                                                    |
+|------------------------------|-------------------------------------------------------------------------------------------|
 | HTML, styled with `spec.css` | **Normative.** Implementations must conform; where the code disagrees, the code is wrong. |
-| Markdown | **Draft.** A design exploration, binding on nothing. |
+| Markdown                     | **Draft.** A design exploration, binding on nothing.                                      |
 
 `specs/simulation.md` is a draft deliberately. It is published as-is, so a browser shows Markdown
 source — headings, table rules and unrendered LaTeX — rather than a finished page. **That

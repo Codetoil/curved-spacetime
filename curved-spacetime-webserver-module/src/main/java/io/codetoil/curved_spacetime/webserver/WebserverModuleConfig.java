@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 /**
  * The webserver module's settings, read from {@code config/webserver-module.config}.
  * <p>
- * The module has no settings of its own yet, so the file is written empty — note that the port
- * the server listens on is currently hard-coded rather than read from here.
+ * The module has no settings of its own yet, so the file is written empty — note that the port the server listens on is
+ * currently hard-coded rather than read from here.
  */
 public class WebserverModuleConfig implements ModuleConfig
 {
@@ -43,7 +43,8 @@ public class WebserverModuleConfig implements ModuleConfig
 	/**
 	 * Creates a configuration that reports load problems to the given logger.
 	 *
-	 * @param logger the logger to warn through when the file is missing
+	 * @param logger
+	 * 		the logger to warn through when the file is missing
 	 */
 	public WebserverModuleConfig(Logger logger)
 	{

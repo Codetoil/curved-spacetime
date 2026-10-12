@@ -31,10 +31,9 @@ import java.util.Map;
 /**
  * Keyboard input backed by GLFW.
  * <p>
- * Held state and tapped state come from different places: {@link #keyPressed} asks GLFW directly,
- * while {@link #keyTapped} reads a map this class maintains from GLFW's key callback, since a tap
- * is an edge that polling would miss. That map is cleared each frame by {@link #clean()}, so a tap
- * is reported for exactly one frame.
+ * Held state and tapped state come from different places: {@link #keyPressed} asks GLFW directly, while
+ * {@link #keyTapped} reads a map this class maintains from GLFW's key callback, since a tap is an edge that polling
+ * would miss. That map is cleared each frame by {@link #clean()}, so a tap is reported for exactly one frame.
  */
 public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput, GLFWKeyCallbackI
 {
@@ -58,7 +57,8 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput,
 	 * <p>
 	 * Installs a GLFW key callback, replacing any previously set on that window.
 	 *
-	 * @param window the window to read keyboard input from
+	 * @param window
+	 * 		the window to read keyboard input from
 	 */
 	public GLFWRenderModuleKeyboardInput(GLFWRenderModuleWindow window)
 	{
@@ -110,11 +110,16 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput,
 	 * <p>
 	 * Events for other windows are ignored, since a GLFW callback is shared across the process.
 	 *
-	 * @param handle   the GLFW window the event came from
-	 * @param keyCode  the GLFW key code
-	 * @param scanCode the platform-specific scancode
-	 * @param action   the GLFW action, such as {@code GLFW_PRESS} or {@code GLFW_RELEASE}
-	 * @param mods     the modifier key bitmask in effect
+	 * @param handle
+	 * 		the GLFW window the event came from
+	 * @param keyCode
+	 * 		the GLFW key code
+	 * @param scanCode
+	 * 		the platform-specific scancode
+	 * @param action
+	 * 		the GLFW action, such as {@code GLFW_PRESS} or {@code GLFW_RELEASE}
+	 * @param mods
+	 * 		the modifier key bitmask in effect
 	 */
 	@Override
 	public void invoke(long handle, int keyCode, int scanCode, int action, int mods)
@@ -130,10 +135,14 @@ public class GLFWRenderModuleKeyboardInput implements RenderModuleKeyboardInput,
 	/**
 	 * A key identified the way GLFW reports it.
 	 *
-	 * @param keycode  the GLFW key code, which is layout-independent
-	 * @param scanCode the platform-specific scancode
-	 * @param action   the GLFW action that produced this event
-	 * @param mods     the modifier key bitmask in effect
+	 * @param keycode
+	 * 		the GLFW key code, which is layout-independent
+	 * @param scanCode
+	 * 		the platform-specific scancode
+	 * @param action
+	 * 		the GLFW action that produced this event
+	 * @param mods
+	 * 		the modifier key bitmask in effect
 	 */
 	public record KeyCtx(int keycode, int scanCode, int action, int mods) implements RenderModuleKeyboardInput.KeyCtx
 	{

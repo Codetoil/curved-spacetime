@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 /**
  * A window, and the keyboard and mouse attached to it, independent of the windowing library.
  * <p>
- * Implementations supply the platform behaviour; this class holds only what every window has and
- * the input plumbing that goes with it. An implementation is expected to create its input objects
- * during {@link #init()}, since {@link #pollEvents()} dereferences them.
+ * Implementations supply the platform behaviour; this class holds only what every window has and the input plumbing
+ * that goes with it. An implementation is expected to create its input objects during {@link #init()}, since
+ * {@link #pollEvents()} dereferences them.
  */
 public abstract class RenderModuleWindow
 {
@@ -66,9 +66,12 @@ public abstract class RenderModuleWindow
 	 * <p>
 	 * Nothing is opened until {@link #init()} is called.
 	 *
-	 * @param mainModuleEngine the engine this window belongs to
-	 * @param title            the window's title bar text
-	 * @param logger           the logger to write window diagnostics to
+	 * @param mainModuleEngine
+	 * 		the engine this window belongs to
+	 * @param title
+	 * 		the window's title bar text
+	 * @param logger
+	 * 		the logger to write window diagnostics to
 	 */
 	protected RenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
@@ -121,7 +124,8 @@ public abstract class RenderModuleWindow
 	 *
 	 * @return {@code true} once a close has been requested, by this class or by the user
 	 */
-	public boolean shouldClose() {
+	public boolean shouldClose()
+	{
 		return this.shouldClose;
 	}
 

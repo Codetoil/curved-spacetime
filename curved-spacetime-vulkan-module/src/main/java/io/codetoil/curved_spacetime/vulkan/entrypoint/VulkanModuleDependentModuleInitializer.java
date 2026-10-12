@@ -24,9 +24,8 @@ import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 /**
  * The entrypoint a module registers to depend on the Vulkan module.
  * <p>
- * Registered under the Vulkan module's dependent entrypoint name. Implementations transfer the
- * received entrypoint into their own module's dependency queue, as described on
- * {@link ModuleDependentModuleInitializer}.
+ * Registered under the Vulkan module's dependent entrypoint name. Implementations transfer the received entrypoint into
+ * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
 public interface VulkanModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<VulkanModuleEntrypoint>
 {
@@ -35,7 +34,8 @@ public interface VulkanModuleDependentModuleInitializer extends ModuleDependentM
 	 * <p>
 	 * Called on the Vulkan module's initialization thread, not the receiving module's.
 	 *
-	 * @param vulkanModuleEntrypoint the Vulkan module's main entrypoint
+	 * @param vulkanModuleEntrypoint
+	 * 		the Vulkan module's main entrypoint
 	 */
 	void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint);
 }

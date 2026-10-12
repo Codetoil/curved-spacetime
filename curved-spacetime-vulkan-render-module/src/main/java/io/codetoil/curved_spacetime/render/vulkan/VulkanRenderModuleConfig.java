@@ -42,7 +42,8 @@ public class VulkanRenderModuleConfig implements ModuleConfig
 	/**
 	 * Creates a configuration that reports load problems to the given logger.
 	 *
-	 * @param logger the logger to warn through when the file is missing
+	 * @param logger
+	 * 		the logger to warn through when the file is missing
 	 */
 	public VulkanRenderModuleConfig(Logger logger)
 	{

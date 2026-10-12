@@ -28,9 +28,9 @@ import java.nio.LongBuffer;
 /**
  * A Vulkan fence, used by the host to wait for work submitted to a queue to finish.
  * <p>
- * Fences synchronise the CPU against the GPU; use a {@link VulkanModuleSemaphore} to order GPU
- * work against other GPU work. A fence created signalled lets the first frame proceed without a
- * special case, since {@link #vulkanFenceWait()} then returns immediately.
+ * Fences synchronise the CPU against the GPU; use a {@link VulkanModuleSemaphore} to order GPU work against other GPU
+ * work. A fence created signalled lets the first frame proceed without a special case, since {@link #vulkanFenceWait()}
+ * then returns immediately.
  */
 public class VulkanModuleFence
 {
@@ -40,9 +40,13 @@ public class VulkanModuleFence
 	/**
 	 * Creates a fence on the given device.
 	 *
-	 * @param logicalDevice the device to create the fence on
-	 * @param signaled      whether the fence starts signalled, so the first wait returns at once
-	 * @throws AssertionError if the fence cannot be created
+	 * @param logicalDevice
+	 * 		the device to create the fence on
+	 * @param signaled
+	 * 		whether the fence starts signalled, so the first wait returns at once
+	 *
+	 * @throws AssertionError
+	 * 		if the fence cannot be created
 	 */
 	public VulkanModuleFence(VulkanModuleLogicalDevice logicalDevice, boolean signaled)
 	{

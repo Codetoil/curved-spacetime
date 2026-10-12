@@ -32,9 +32,8 @@ import java.util.logging.Logger;
 /**
  * A Vulkan surface: the bridge between a platform window and Vulkan's presentation machinery.
  * <p>
- * Creating one is inherently platform-specific, so this class holds only what is common — querying
- * capabilities and negotiating a format — and leaves the actual creation to a subclass that knows
- * the windowing library.
+ * Creating one is inherently platform-specific, so this class holds only what is common — querying capabilities and
+ * negotiating a format — and leaves the actual creation to a subclass that knows the windowing library.
  */
 public abstract class VulkanRenderModuleSurface
 {
@@ -51,8 +50,10 @@ public abstract class VulkanRenderModuleSurface
 	/**
 	 * Creates a surface bound to the given physical device.
 	 *
-	 * @param vulkanModulePhysicalDevice the device to query surface support against
-	 * @param logger                     the logger to write surface diagnostics to
+	 * @param vulkanModulePhysicalDevice
+	 * 		the device to query surface support against
+	 * @param logger
+	 * 		the logger to write surface diagnostics to
 	 */
 	public VulkanRenderModuleSurface(VulkanModulePhysicalDevice vulkanModulePhysicalDevice, Logger logger)
 	{
@@ -84,11 +85,13 @@ public abstract class VulkanRenderModuleSurface
 	/**
 	 * Picks a format from those the surface advertises.
 	 * <p>
-	 * Prefers 32-bit BGRA in the sRGB non-linear colour space, which is what a display expects,
-	 * and otherwise falls back to whatever the surface offers first.
+	 * Prefers 32-bit BGRA in the sRGB non-linear colour space, which is what a display expects, and otherwise falls
+	 * back to whatever the surface offers first.
 	 *
 	 * @return the chosen format and colour space
-	 * @throws RuntimeException if the surface advertises no formats at all
+	 *
+	 * @throws RuntimeException
+	 * 		if the surface advertises no formats at all
 	 */
 	protected SurfaceFormat calcSurfaceFormat()
 	{
@@ -139,8 +142,10 @@ public abstract class VulkanRenderModuleSurface
 	/**
 	 * A pixel format paired with the colour space it is interpreted in.
 	 *
-	 * @param imageFormat the Vulkan image format
-	 * @param colorSpace  the Vulkan colour space the format is presented in
+	 * @param imageFormat
+	 * 		the Vulkan image format
+	 * @param colorSpace
+	 * 		the Vulkan colour space the format is presented in
 	 */
 	public record SurfaceFormat(int imageFormat, int colorSpace)
 	{

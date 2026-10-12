@@ -24,9 +24,8 @@ import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 /**
  * The entrypoint a module registers to depend on the render module.
  * <p>
- * Registered under the render module's dependent entrypoint name. Implementations transfer the
- * received entrypoint into their own module's dependency queue, as described on
- * {@link ModuleDependentModuleInitializer}.
+ * Registered under the render module's dependent entrypoint name. Implementations transfer the received entrypoint into
+ * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
 public interface RenderModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<RenderModuleEntrypoint>
 {
@@ -35,7 +34,8 @@ public interface RenderModuleDependentModuleInitializer extends ModuleDependentM
 	 * <p>
 	 * Called on the render module's initialization thread, not the receiving module's.
 	 *
-	 * @param renderModuleEntrypoint the render module's main entrypoint
+	 * @param renderModuleEntrypoint
+	 * 		the render module's main entrypoint
 	 */
 	void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint);
 }

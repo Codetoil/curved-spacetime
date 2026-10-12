@@ -28,9 +28,8 @@ import java.nio.LongBuffer;
 /**
  * A Vulkan semaphore, used to order work between queue submissions on the device.
  * <p>
- * Semaphores synchronise GPU work against other GPU work; use a {@link VulkanModuleFence} when the
- * host needs to wait instead. The handle is created on construction and lives until
- * {@link #cleanup()}.
+ * Semaphores synchronise GPU work against other GPU work; use a {@link VulkanModuleFence} when the host needs to wait
+ * instead. The handle is created on construction and lives until {@link #cleanup()}.
  */
 public class VulkanModuleSemaphore
 {
@@ -40,8 +39,11 @@ public class VulkanModuleSemaphore
 	/**
 	 * Creates a semaphore on the given device.
 	 *
-	 * @param logicalDevice the device to create the semaphore on
-	 * @throws AssertionError if the semaphore cannot be created
+	 * @param logicalDevice
+	 * 		the device to create the semaphore on
+	 *
+	 * @throws AssertionError
+	 * 		if the semaphore cannot be created
 	 */
 	public VulkanModuleSemaphore(VulkanModuleLogicalDevice logicalDevice)
 	{

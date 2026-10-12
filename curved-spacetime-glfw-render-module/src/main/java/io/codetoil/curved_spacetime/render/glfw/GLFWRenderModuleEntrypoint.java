@@ -32,9 +32,9 @@ import java.util.logging.Logger;
 /**
  * The GLFW render module's {@code main} entrypoint.
  * <p>
- * Implements the render module's window and input abstractions using GLFW. It depends on the
- * render module, so it blocks during initialization until that module's entrypoint is handed to
- * it, then hands itself to modules that build on GLFW — the Vulkan GLFW render module.
+ * Implements the render module's window and input abstractions using GLFW. It depends on the render module, so it
+ * blocks during initialization until that module's entrypoint is handed to it, then hands itself to modules that build
+ * on GLFW — the Vulkan GLFW render module.
  */
 public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 {
@@ -91,7 +91,8 @@ public class GLFWRenderModuleEntrypoint implements ModuleInitializer
 	 * <p>
 	 * Takes exactly one element, this module declaring exactly one dependency.
 	 *
-	 * @throws InterruptedException if interrupted while waiting for the dependency
+	 * @throws InterruptedException
+	 * 		if interrupted while waiting for the dependency
 	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{

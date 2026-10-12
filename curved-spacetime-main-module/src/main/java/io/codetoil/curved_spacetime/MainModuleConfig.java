@@ -26,10 +26,9 @@ import java.util.logging.Logger;
 /**
  * The engine's own settings, read from {@code config/main-module.config}.
  * <p>
- * Holds the frame rate the callback loop runs at and the level every module's logger is set to.
- * Neither key is required to be present: loading substitutes a documented default for anything
- * missing or unparseable and reports that through {@link #isDirty()}, so that a user who deletes
- * the file gets a complete one back on the next run.
+ * Holds the frame rate the callback loop runs at and the level every module's logger is set to. Neither key is required
+ * to be present: loading substitutes a documented default for anything missing or unparseable and reports that through
+ * {@link #isDirty()}, so that a user who deletes the file gets a complete one back on the next run.
  */
 public class MainModuleConfig
 {
@@ -46,7 +45,8 @@ public class MainModuleConfig
 	 * <p>
 	 * Nothing is read from disk until {@link #load()} is called.
 	 *
-	 * @param logger the logger to warn through when a key is missing or invalid
+	 * @param logger
+	 * 		the logger to warn through when a key is missing or invalid
 	 */
 	public MainModuleConfig(Logger logger)
 	{
@@ -76,11 +76,13 @@ public class MainModuleConfig
 	/**
 	 * Reads the configuration from disk, substituting defaults for anything missing or invalid.
 	 * <p>
-	 * A missing file is not an error. Each key that is absent or fails to parse is reported
-	 * through the logger, replaced with its default, and marks the configuration dirty.
+	 * A missing file is not an error. Each key that is absent or fails to parse is reported through the logger,
+	 * replaced with its default, and marks the configuration dirty.
 	 *
 	 * @return this configuration, so that construction and loading compose
-	 * @throws IOException if the file exists but cannot be read
+	 *
+	 * @throws IOException
+	 * 		if the file exists but cannot be read
 	 */
 	public MainModuleConfig load() throws IOException
 	{
@@ -158,7 +160,8 @@ public class MainModuleConfig
 	 * <p>
 	 * Every key is written, not only those that changed, and the dirty flag is cleared on success.
 	 *
-	 * @throws IOException if the config directory cannot be created or the file cannot be written
+	 * @throws IOException
+	 * 		if the config directory cannot be created or the file cannot be written
 	 */
 	public void save() throws IOException
 	{
@@ -180,8 +183,8 @@ public class MainModuleConfig
 	/**
 	 * Returns whether this configuration differs from what is on disk.
 	 * <p>
-	 * Loading having substituted a default for {@code fps} or {@code logger_level} is the usual
-	 * cause; {@link #save()} clears it.
+	 * Loading having substituted a default for {@code fps} or {@code logger_level} is the usual cause; {@link #save()}
+	 * clears it.
 	 *
 	 * @return {@code true} if the file does not match this configuration and should be rewritten
 	 */

@@ -31,10 +31,9 @@ import java.util.logging.Logger;
 /**
  * The Vulkan module's {@code main} entrypoint.
  * <p>
- * Loads the Vulkan configuration and registers {@link VulkanModuleVulkan} as a main callback, so
- * the instance and devices come up on the engine's callback thread. It then hands itself to the
- * modules that depend on it — the Vulkan render modules — through the
- * {@code vulkan_module_dependent} entrypoint.
+ * Loads the Vulkan configuration and registers {@link VulkanModuleVulkan} as a main callback, so the instance and
+ * devices come up on the engine's callback thread. It then hands itself to the modules that depend on it — the Vulkan
+ * render modules — through the {@code vulkan_module_dependent} entrypoint.
  */
 public class VulkanModuleEntrypoint implements ModuleInitializer
 {

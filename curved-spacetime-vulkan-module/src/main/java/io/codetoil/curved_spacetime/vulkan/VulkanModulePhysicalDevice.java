@@ -31,16 +31,14 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * A Vulkan physical device — a GPU the driver has reported — together with everything queried
- * about it.
+ * A Vulkan physical device — a GPU the driver has reported — together with everything queried about it.
  * <p>
- * Instances are created by {@link #createPhysicalDevice}, which enumerates every device, discards
- * those that cannot present graphics or lack a required extension, and picks one. Discrete GPUs
- * are preferred over integrated ones, and a device named in configuration wins outright.
+ * Instances are created by {@link #createPhysicalDevice}, which enumerates every device, discards those that cannot
+ * present graphics or lack a required extension, and picks one. Discrete GPUs are preferred over integrated ones, and a
+ * device named in configuration wins outright.
  * <p>
- * The queried structures are allocated off-heap and are owned by this object, so every device
- * that is enumerated must eventually be passed to {@link #cleanup()} — including the ones that
- * lose the selection.
+ * The queried structures are allocated off-heap and are owned by this object, so every device that is enumerated must
+ * eventually be passed to {@link #cleanup()} — including the ones that lose the selection.
  */
 public class VulkanModulePhysicalDevice
 {
@@ -102,15 +100,21 @@ public class VulkanModulePhysicalDevice
 	/**
 	 * Enumerates the available devices and selects one to render with.
 	 * <p>
-	 * A device named by {@code preferredDeviceName} in configuration is taken if it is present and
-	 * otherwise suitable; failing that, a discrete GPU is preferred over an integrated one. Every
-	 * device not selected is cleaned up before returning.
+	 * A device named by {@code preferredDeviceName} in configuration is taken if it is present and otherwise suitable;
+	 * failing that, a discrete GPU is preferred over an integrated one. Every device not selected is cleaned up before
+	 * returning.
 	 *
-	 * @param instance               the instance to enumerate devices from
-	 * @param vulkanModuleEntrypoint the entrypoint supplying the preferred device name
-	 * @param logger                 the logger to write selection diagnostics to
+	 * @param instance
+	 * 		the instance to enumerate devices from
+	 * @param vulkanModuleEntrypoint
+	 * 		the entrypoint supplying the preferred device name
+	 * @param logger
+	 * 		the logger to write selection diagnostics to
+	 *
 	 * @return the selected physical device, owned by the caller
-	 * @throws RuntimeException if no device is present, or none meets the requirements
+	 *
+	 * @throws RuntimeException
+	 * 		if no device is present, or none meets the requirements
 	 */
 	public static VulkanModulePhysicalDevice createPhysicalDevice(VulkanModuleVulkanInstance instance,
 																  VulkanModuleEntrypoint vulkanModuleEntrypoint,
@@ -188,11 +192,17 @@ public class VulkanModulePhysicalDevice
 	/**
 	 * Enumerates the handles of every physical device the instance can see.
 	 *
-	 * @param instance the instance to enumerate from
-	 * @param stack    the stack to allocate the result buffer on
-	 * @param logger   the logger to write the device count to
+	 * @param instance
+	 * 		the instance to enumerate from
+	 * @param stack
+	 * 		the stack to allocate the result buffer on
+	 * @param logger
+	 * 		the logger to write the device count to
+	 *
 	 * @return a buffer of {@code VkPhysicalDevice} handles, valid for the stack frame
-	 * @throws AssertionError if enumeration fails
+	 *
+	 * @throws AssertionError
+	 * 		if enumeration fails
 	 */
 	protected static PointerBuffer getPhysicalDevices(VulkanModuleVulkanInstance instance, MemoryStack stack,
 													  Logger logger)
@@ -257,7 +267,9 @@ public class VulkanModulePhysicalDevice
 	/**
 	 * Returns whether this device supports every one of the given extensions.
 	 *
-	 * @param extensions the extension names required
+	 * @param extensions
+	 * 		the extension names required
+	 *
 	 * @return {@code true} if all of them are supported
 	 */
 	public boolean supportsExtensions(Set<String> extensions)
@@ -322,8 +334,7 @@ public class VulkanModulePhysicalDevice
 	/**
 	 * Returns the queue families this device offers.
 	 * <p>
-	 * Callers scan this to find a family with the capability they need, such as graphics or
-	 * presentation.
+	 * Callers scan this to find a family with the capability they need, such as graphics or presentation.
 	 *
 	 * @return the queue family properties, owned by this object
 	 */

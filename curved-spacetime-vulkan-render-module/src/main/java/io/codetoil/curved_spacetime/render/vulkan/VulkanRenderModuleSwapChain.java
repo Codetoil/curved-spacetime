@@ -34,13 +34,11 @@ import java.util.logging.Logger;
 /**
  * The swap chain: the queue of images the GPU renders into and the surface presents.
  * <p>
- * Its configuration is negotiated rather than chosen. The image count, extent, and pixel format
- * are all clamped to what the surface reports it can do, so the requested values are treated as
- * preferences. Present mode follows the vsync setting: FIFO waits for the display's refresh,
- * immediate does not.
+ * Its configuration is negotiated rather than chosen. The image count, extent, and pixel format are all clamped to what
+ * the surface reports it can do, so the requested values are treated as preferences. Present mode follows the vsync
+ * setting: FIFO waits for the display's refresh, immediate does not.
  * <p>
- * A swap chain is tied to the surface's dimensions, so resizing a window invalidates it and it
- * must be rebuilt.
+ * A swap chain is tied to the surface's dimensions, so resizing a window invalidates it and it must be rebuilt.
  */
 public class VulkanRenderModuleSwapChain
 {
@@ -84,16 +82,24 @@ public class VulkanRenderModuleSwapChain
 	/**
 	 * Creates a swap chain against the given surface.
 	 * <p>
-	 * The requested image count is clamped to the surface's supported range, and the extent to its
-	 * supported bounds, so the resulting swap chain may differ from what was asked for.
+	 * The requested image count is clamped to the surface's supported range, and the extent to its supported bounds, so
+	 * the resulting swap chain may differ from what was asked for.
 	 *
-	 * @param vulkanModuleLogicalDevice the device to create the swap chain on
-	 * @param surface                   the surface to present to
-	 * @param renderModuleWindow        the window supplying the fallback extent
-	 * @param requestedImages           how many images are wanted, subject to surface limits
-	 * @param vsync                     whether to wait for the display's refresh when presenting
-	 * @param logger                    the logger to write swap chain diagnostics to
-	 * @throws AssertionError if the swap chain or its image views cannot be created
+	 * @param vulkanModuleLogicalDevice
+	 * 		the device to create the swap chain on
+	 * @param surface
+	 * 		the surface to present to
+	 * @param renderModuleWindow
+	 * 		the window supplying the fallback extent
+	 * @param requestedImages
+	 * 		how many images are wanted, subject to surface limits
+	 * @param vsync
+	 * 		whether to wait for the display's refresh when presenting
+	 * @param logger
+	 * 		the logger to write swap chain diagnostics to
+	 *
+	 * @throws AssertionError
+	 * 		if the swap chain or its image views cannot be created
 	 */
 	public VulkanRenderModuleSwapChain(VulkanModuleLogicalDevice vulkanModuleLogicalDevice,
 									   VulkanRenderModuleSurface surface, RenderModuleWindow renderModuleWindow,
@@ -406,8 +412,10 @@ public class VulkanRenderModuleSwapChain
 	/**
 	 * A pixel format paired with the colour space it is interpreted in.
 	 *
-	 * @param imageFormat the Vulkan image format
-	 * @param colorSpace  the Vulkan colour space the format is presented in
+	 * @param imageFormat
+	 * 		the Vulkan image format
+	 * @param colorSpace
+	 * 		the Vulkan colour space the format is presented in
 	 */
 	public record VulkanSurfaceFormat(int imageFormat, int colorSpace)
 	{
@@ -416,12 +424,13 @@ public class VulkanRenderModuleSwapChain
 	/**
 	 * The pair of semaphores that order one frame's work.
 	 * <p>
-	 * Rendering waits on the first, which the presentation engine signals once an image is
-	 * available to draw into; presentation waits on the second, which the graphics queue signals
-	 * once rendering has finished.
+	 * Rendering waits on the first, which the presentation engine signals once an image is available to draw into;
+	 * presentation waits on the second, which the graphics queue signals once rendering has finished.
 	 *
-	 * @param imageAcquisitionVulkanModuleSemaphore signalled when a swap chain image is ready
-	 * @param renderCompleteVulkanModuleSemaphore   signalled when rendering into it has finished
+	 * @param imageAcquisitionVulkanModuleSemaphore
+	 * 		signalled when a swap chain image is ready
+	 * @param renderCompleteVulkanModuleSemaphore
+	 * 		signalled when rendering into it has finished
 	 */
 	public record SynchronizationVulkanSemaphores(VulkanModuleSemaphore imageAcquisitionVulkanModuleSemaphore,
 												  VulkanModuleSemaphore renderCompleteVulkanModuleSemaphore)
@@ -429,7 +438,8 @@ public class VulkanRenderModuleSwapChain
 		/**
 		 * Creates both semaphores on the given device.
 		 *
-		 * @param vulkanModuleLogicalDevice the device to create the semaphores on
+		 * @param vulkanModuleLogicalDevice
+		 * 		the device to create the semaphores on
 		 */
 		public SynchronizationVulkanSemaphores(VulkanModuleLogicalDevice vulkanModuleLogicalDevice)
 		{

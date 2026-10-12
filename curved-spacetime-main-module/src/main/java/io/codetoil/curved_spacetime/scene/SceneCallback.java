@@ -24,12 +24,11 @@ import io.codetoil.curved_spacetime.MainModuleEngine;
  * Work the engine runs once at start-up and then repeatedly, against one particular scene.
  * <p>
  * A module does not register these directly. It registers a generator with
- * {@link MainModuleEngine#registerSceneCallbackGenerator}, and the engine applies that generator
- * to every scene, so a module that wants to act on scenes gets one callback per scene without
- * having to track scenes itself.
+ * {@link MainModuleEngine#registerSceneCallbackGenerator}, and the engine applies that generator to every scene, so a
+ * module that wants to act on scenes gets one callback per scene without having to track scenes itself.
  * <p>
- * The engine calls {@link #init()} once, then {@link #loop()} at the configured frame rate, and
- * {@link #clean()} on shutdown, all on its single callback thread.
+ * The engine calls {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on
+ * shutdown, all on its single callback thread.
  */
 public abstract class SceneCallback
 {
@@ -46,17 +45,19 @@ public abstract class SceneCallback
 	/**
 	 * Whether this callback has finished setting itself up.
 	 * <p>
-	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from
-	 * its own {@link #init()}, at the point where its setup is genuinely complete — only the
-	 * implementation knows when that is.
+	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from its own
+	 * {@link #init()}, at the point where its setup is genuinely complete — only the implementation knows when that
+	 * is.
 	 */
 	protected boolean initialized = false;
 
 	/**
 	 * Creates a callback bound to the given engine and scene.
 	 *
-	 * @param mainModuleEngine the engine this callback belongs to
-	 * @param scene            the scene this callback acts on
+	 * @param mainModuleEngine
+	 * 		the engine this callback belongs to
+	 * @param scene
+	 * 		the scene this callback acts on
 	 */
 	protected SceneCallback(MainModuleEngine mainModuleEngine, Scene scene)
 	{
@@ -77,8 +78,8 @@ public abstract class SceneCallback
 	/**
 	 * Sets this callback up against its scene.
 	 * <p>
-	 * Called once, before the first {@link #loop()}. An implementation should set
-	 * {@link #initialized} when it finishes.
+	 * Called once, before the first {@link #loop()}. An implementation should set {@link #initialized} when it
+	 * finishes.
 	 */
 	public abstract void init();
 

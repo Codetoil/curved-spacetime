@@ -30,21 +30,17 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Exercises the configuration contract of the Module System Specification against
- * {@link MainModuleConfig}.
+ * Exercises the configuration contract of the Module System Specification against {@link MainModuleConfig}.
  * <p>
- * Covers requirements R32 through R37: {@code load()} returns the receiver, tolerates an absent
- * file, substitutes documented defaults for missing or unparseable keys while setting the dirty
- * flag, and {@code save()} writes a complete file and clears that flag.
+ * Covers requirements R32 through R37: {@code load()} returns the receiver, tolerates an absent file, substitutes
+ * documented defaults for missing or unparseable keys while setting the dirty flag, and {@code save()} writes a
+ * complete file and clears that flag.
  * <p>
- * {@link MainModuleConfig} resolves its file as a path relative to the working directory, so the
- * {@code test} task sets {@code workingDir} to a scratch directory under {@code build/}.
+ * {@link MainModuleConfig} resolves its file as a path relative to the working directory, so the {@code test} task sets
+ * {@code workingDir} to a scratch directory under {@code build/}.
  */
 class MainModuleConfigTest
 {
@@ -68,7 +64,8 @@ class MainModuleConfigTest
 	/**
 	 * Silences the logger and removes any configuration left by a previous test.
 	 *
-	 * @throws IOException if the existing configuration file cannot be deleted
+	 * @throws IOException
+	 * 		if the existing configuration file cannot be deleted
 	 */
 	@BeforeEach
 	void setUp() throws IOException
@@ -81,7 +78,8 @@ class MainModuleConfigTest
 	/**
 	 * Removes the configuration file so that tests do not leak state into one another.
 	 *
-	 * @throws IOException if the configuration file cannot be deleted
+	 * @throws IOException
+	 * 		if the configuration file cannot be deleted
 	 */
 	@AfterEach
 	void tearDown() throws IOException
@@ -92,7 +90,8 @@ class MainModuleConfigTest
 	/**
 	 * Deletes the configuration file if it is present.
 	 *
-	 * @throws IOException if the file exists but cannot be deleted
+	 * @throws IOException
+	 * 		if the file exists but cannot be deleted
 	 */
 	private static void deleteConfig() throws IOException
 	{
@@ -102,8 +101,11 @@ class MainModuleConfigTest
 	/**
 	 * Writes a configuration file with the given raw contents.
 	 *
-	 * @param contents the property lines to write
-	 * @throws IOException if the file or its parent directory cannot be created
+	 * @param contents
+	 * 		the property lines to write
+	 *
+	 * @throws IOException
+	 * 		if the file or its parent directory cannot be created
 	 */
 	private static void writeConfig(String contents) throws IOException
 	{
@@ -122,7 +124,9 @@ class MainModuleConfigTest
 	 * Reads the configuration file back as properties.
 	 *
 	 * @return the properties the configuration file currently holds
-	 * @throws IOException if the file cannot be read
+	 *
+	 * @throws IOException
+	 * 		if the file cannot be read
 	 */
 	private static Properties readConfig() throws IOException
 	{
@@ -137,7 +141,8 @@ class MainModuleConfigTest
 	/**
 	 * R32 — {@code load()} returns the receiver, so construction and loading compose.
 	 *
-	 * @throws IOException if loading fails
+	 * @throws IOException
+	 * 		if loading fails
 	 */
 	@Test
 	void loadReturnsTheReceiver() throws IOException
@@ -149,7 +154,8 @@ class MainModuleConfigTest
 	/**
 	 * R33 — an absent file yields defaults for every key and sets the dirty flag.
 	 *
-	 * @throws IOException if loading fails
+	 * @throws IOException
+	 * 		if loading fails
 	 */
 	@Test
 	void absentFileYieldsDefaultsAndIsDirty() throws IOException
@@ -166,7 +172,8 @@ class MainModuleConfigTest
 	/**
 	 * R34 — a valid file is read verbatim and leaves the config clean.
 	 *
-	 * @throws IOException if writing or loading fails
+	 * @throws IOException
+	 * 		if writing or loading fails
 	 */
 	@Test
 	void validFileIsReadAndLeavesConfigClean() throws IOException
@@ -183,7 +190,8 @@ class MainModuleConfigTest
 	/**
 	 * R34 — an unparseable {@code fps} falls back to the default and sets the dirty flag.
 	 *
-	 * @throws IOException if writing or loading fails
+	 * @throws IOException
+	 * 		if writing or loading fails
 	 */
 	@Test
 	void unparseableFpsFallsBackToDefault() throws IOException
@@ -200,7 +208,8 @@ class MainModuleConfigTest
 	/**
 	 * R34 — an {@code fps} outside the documented bounds falls back to the default.
 	 *
-	 * @throws IOException if writing or loading fails
+	 * @throws IOException
+	 * 		if writing or loading fails
 	 */
 	@Test
 	void outOfRangeFpsFallsBackToDefault() throws IOException
@@ -217,7 +226,8 @@ class MainModuleConfigTest
 	/**
 	 * R34 — an unparseable {@code logger_level} falls back to the default.
 	 *
-	 * @throws IOException if writing or loading fails
+	 * @throws IOException
+	 * 		if writing or loading fails
 	 */
 	@Test
 	void unparseableLoggerLevelFallsBackToDefault() throws IOException
@@ -234,7 +244,8 @@ class MainModuleConfigTest
 	/**
 	 * R36 — {@code save()} creates the directory, writes every key, and clears the dirty flag.
 	 *
-	 * @throws IOException if saving or reading back fails
+	 * @throws IOException
+	 * 		if saving or reading back fails
 	 */
 	@Test
 	void saveWritesEveryKeyAndClearsDirty() throws IOException
@@ -256,7 +267,8 @@ class MainModuleConfigTest
 	/**
 	 * R37 — a saved file is complete, so reloading it produces the same values and stays clean.
 	 *
-	 * @throws IOException if saving or reloading fails
+	 * @throws IOException
+	 * 		if saving or reloading fails
 	 */
 	@Test
 	void savedFileReloadsCleanly() throws IOException

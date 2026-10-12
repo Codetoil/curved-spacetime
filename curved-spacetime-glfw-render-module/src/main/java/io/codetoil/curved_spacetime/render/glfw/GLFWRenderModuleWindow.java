@@ -25,18 +25,18 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
+
 import java.util.logging.Logger;
 
 /**
  * A window backed by GLFW, sized to the primary monitor.
  * <p>
- * Handles the parts of window management that are the same whichever graphics API is being driven:
- * initialising GLFW, opening the window, wiring up input, and tearing it all down. Subclasses
- * supply the API-specific pieces — which window hints to set, and how to check that a usable
- * driver is present.
+ * Handles the parts of window management that are the same whichever graphics API is being driven: initialising GLFW,
+ * opening the window, wiring up input, and tearing it all down. Subclasses supply the API-specific pieces — which
+ * window hints to set, and how to check that a usable driver is present.
  * <p>
- * Closing the window stops the engine, so the window's lifetime is effectively the program's.<p>
- * This will be changed in a future build, as to allow no-window and multi-window setups.
+ * Closing the window stops the engine, so the window's lifetime is effectively the program's.<p> This will be changed
+ * in a future build, as to allow no-window and multi-window setups.
  */
 public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 {
@@ -65,9 +65,12 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	 * <p>
 	 * Nothing is opened until {@link #init()} is called.
 	 *
-	 * @param mainModuleEngine the engine this window belongs to
-	 * @param title            the window's title bar text
-	 * @param logger           the logger to write window diagnostics to
+	 * @param mainModuleEngine
+	 * 		the engine this window belongs to
+	 * @param title
+	 * 		the window's title bar text
+	 * @param logger
+	 * 		the logger to write window diagnostics to
 	 */
 	protected GLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
 	{
@@ -130,7 +133,8 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 		return this.width;
 	}
 
-	public boolean isInitialized() {
+	public boolean isInitialized()
+	{
 		return this.initialized;
 	}
 
@@ -157,8 +161,8 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	/**
 	 * Returns whether a driver for the subclass's graphics API is present.
 	 * <p>
-	 * Checked during {@link #init()}, before the window is created, so that an unusable
-	 * environment is reported before any resource is acquired.
+	 * Checked during {@link #init()}, before the window is created, so that an unusable environment is reported before
+	 * any resource is acquired.
 	 *
 	 * @return {@code true} if the graphics API can be used on this machine
 	 */
@@ -167,16 +171,16 @@ public abstract class GLFWRenderModuleWindow extends RenderModuleWindow
 	/**
 	 * Fails with a message naming the graphics API that could not be found.
 	 * <p>
-	 * Called when {@link #doesDriverExist()} returns {@code false}; implementations are expected
-	 * to throw rather than return.
+	 * Called when {@link #doesDriverExist()} returns {@code false}; implementations are expected to throw rather than
+	 * return.
 	 */
 	protected abstract void throwDriverNotFoundException();
 
 	/**
 	 * Applies the GLFW window hints the subclass's graphics API requires.
 	 * <p>
-	 * Called before the window is created. A Vulkan implementation, for example, sets
-	 * {@code GLFW_CLIENT_API} to {@code GLFW_NO_API} so GLFW does not create an OpenGL context.
+	 * Called before the window is created. A Vulkan implementation, for example, sets {@code GLFW_CLIENT_API} to
+	 * {@code GLFW_NO_API} so GLFW does not create an OpenGL context.
 	 */
 	protected abstract void setWindowHints();
 

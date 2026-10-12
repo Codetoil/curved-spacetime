@@ -23,11 +23,10 @@ import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 /**
  * The common entry point every variant of Curved Spacetime starts through.
  * <p>
- * Each variant reaches this class differently but arrives at the same place. The closed-world
- * variants call {@link #start} directly from their {@code Main}; the Quilt variant loads this
- * class reflectively and invokes {@code start} as a static method, which is why the signature
- * below is part of the game provider's contract and must not change without updating
- * {@code CurvedSpacetimeGameProvider}.
+ * Each variant reaches this class differently but arrives at the same place. The closed-world variants call
+ * {@link #start} directly from their {@code Main}; the Quilt variant loads this class reflectively and invokes
+ * {@code start} as a static method, which is why the signature below is part of the game provider's contract and must
+ * not change without updating {@code CurvedSpacetimeGameProvider}.
  */
 public class Start
 {
@@ -42,11 +41,13 @@ public class Start
 	/**
 	 * Starts the engine against the given loader.
 	 * <p>
-	 * Construction of the engine is what drives module initialization, so this returns only once
-	 * every module's {@code main} entrypoint has run.
+	 * Construction of the engine is what drives module initialization, so this returns only once every module's
+	 * {@code main} entrypoint has run.
 	 *
-	 * @param args   the command-line arguments the variant was launched with
-	 * @param loader the loader that will resolve module entrypoints
+	 * @param args
+	 * 		the command-line arguments the variant was launched with
+	 * @param loader
+	 * 		the loader that will resolve module entrypoints
 	 */
 	public static void start(String[] args, CurvedSpacetimeLoader loader)
 	{
