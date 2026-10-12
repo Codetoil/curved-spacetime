@@ -1,3 +1,21 @@
+/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.<br> Copyright (C)
+ * 2023-2025 Anthony Michalek (Codetoil)<br>
+ * <br>
+ * This file is part of Curved Spacetime<br>
+ * <br>
+ * This program is free software: you can redistribute it and/or modify <br> it under the terms of the GNU General
+ * Public License as published by <br> the Free Software Foundation, either version 3 of the License, or <br> (at your
+ * option) any later version.<br>
+ * <br>
+ * This program is distributed in the hope that it will be useful,<br> but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of<br> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br> GNU General Public License
+ * for more details.<br>
+ * <br>
+ * You should have received a copy of the GNU General Public License<br> along with this program.  If not, see <a
+ * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
+ */
+
 package io.codetoil.curved_spacetime.api;
 
 import io.codetoil.curved_spacetime.api.scene.Scene;
@@ -5,7 +23,6 @@ import io.codetoil.curved_spacetime.api.scene.SceneCallback;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
@@ -15,9 +32,9 @@ import java.util.logging.Logger;
 /**
  * The engine: it owns the configuration, the scenes, and the callback loop, and it drives module initialization.
  * <p>
- * Constructing an engine is what starts the program. The constructor loads the main configuration, registers the
- * initial scene, runs every module's {@code main} entrypoint, and then begins the callback loop — so by the time it
- * returns, the whole module graph is up.
+ * Constructing an engine is what starts the program: an implementation's constructor loads the main configuration,
+ * registers the initial scene, runs every module's {@code main} entrypoint, and then begins the callback loop — so by
+ * the time it returns, the whole module graph is up.
  * <p>
  * Callbacks all run on a single scheduled thread, so implementations need no synchronisation against one another.
  * Module initialization is the opposite: entrypoints run concurrently on an unbounded pool, which the dependency
@@ -26,15 +43,15 @@ import java.util.logging.Logger;
 public abstract class Engine
 {
 	/**
-	 * The loader module entrypoints are resolved through
+	 * The loader module entrypoints are resolved through.
 	 */
 	protected final CurvedSpacetimeLoader loader;
 
 	/**
-	 * Constructor
+	 * Creates an engine that resolves module entrypoints through the given loader.
 	 *
 	 * @param loader
-	 * 		loader
+	 * 		the loader module entrypoints are resolved through
 	 */
 	public Engine(CurvedSpacetimeLoader loader)
 	{
@@ -126,12 +143,12 @@ public abstract class Engine
 	public abstract void clean();
 
 	/**
-	 * Throws an error and stops the engine.
+	 * Logs a failure at {@code SEVERE} and stops the engine.
 	 *
 	 * @param t
-	 * 		the error to throw
+	 * 		the failure to log
 	 * @param message
-	 * 		the error message
+	 * 		the message to log it with
 	 */
 	public abstract void throwError(Throwable t, String message);
 
@@ -143,24 +160,26 @@ public abstract class Engine
 	public abstract ConsoleHandler getConsoleHandler();
 
 	/**
-	 * Returns whether the Engine is initialized. Note that this doesn't mean all callbacks are registered, As a
-	 * callback can be registered at any time and is registered asynchronously.
+	 * Returns whether this engine has finished initializing.
+	 * <p>
+	 * That does not mean every callback is registered: a callback can be registered at any time, and registration is
+	 * asynchronous.
 	 *
 	 * @return {@code true} if the engine is initialized
 	 */
 	public abstract boolean isInitialized();
 
 	/**
-	 * Log Level
+	 * Returns the level every module logger is set to.
 	 *
-	 * @return level
+	 * @return the logger level from this engine's configuration
 	 */
 	public abstract Level getLoggerLevel();
 
 	/**
-	 * FPS
+	 * Returns how many times per second the callback loop runs.
 	 *
-	 * @return FPS
+	 * @return the configured frame rate, in frames per second
 	 */
 	public abstract int getFPS();
 }

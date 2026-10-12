@@ -22,7 +22,6 @@ import io.codetoil.curved_spacetime.api.Engine;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -32,7 +31,7 @@ import java.util.function.Consumer;
  * tables so that GraalVM native-image can reach them by ordinary static analysis; the Quilt loader delegates to Quilt
  * Loader, which discovers them dynamically. Neither strategy is privileged by this interface.
  * <p>
- * Implementations must satisfy requirements R6 through R11 of the Module System Specification.
+ * Implementations must satisfy requirements R6 through R11.
  */
 public interface CurvedSpacetimeLoader
 {

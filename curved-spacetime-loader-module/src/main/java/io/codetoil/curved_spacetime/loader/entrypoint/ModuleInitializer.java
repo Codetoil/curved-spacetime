@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * concurrently, so a module must not assume anything about the order in which its peers come up; the only ordering
  * guarantee available is the one the dependency handshake provides.
  * <p>
- * Implementations must satisfy requirements R12 through R16 of the Module System Specification.
+ * Implementations must satisfy requirements R12 through R16.
  */
 public interface ModuleInitializer
 {
@@ -40,10 +40,10 @@ public interface ModuleInitializer
 	 * An implementation sets its logger's level from the engine's configuration, loads its own configuration and saves
 	 * it if loading substituted defaults, receives any dependencies it declares through
 	 * {@link #getDependencyModuleTransferQueue()}, performs any operations it must perform during initialization, and
-	 * finally invokes its own dependent entrypoints, passing itself.
+	 * finally invokes its own dependent entrypoints, passing itself and the engine.
 	 *
 	 * @param engine
-	 * 		Engine
+	 * 		the engine driving initialization
 	 */
 	void onInitialize(Engine engine);
 
