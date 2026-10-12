@@ -32,18 +32,22 @@ import java.util.logging.Logger;
 /**
  * A queue selected for graphics work.
  * <p>
- * Adds queue-family discovery to {@link VulkanModuleQueue}: rather than being told which family to
- * use, this finds one advertising the graphics capability.
+ * Adds queue-family discovery to {@link VulkanModuleQueue}: rather than being told which family to use, this finds one
+ * advertising the graphics capability.
  */
 public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 {
 	/**
 	 * Retrieves a queue from an explicitly chosen family.
 	 *
-	 * @param vulkanModuleLogicalDevice the device that owns the queue
-	 * @param queueFamilyIndex          the family to take the queue from
-	 * @param queueIndex                the index within that family
-	 * @param logger                    the logger to write queue diagnostics to
+	 * @param vulkanModuleLogicalDevice
+	 * 		the device that owns the queue
+	 * @param queueFamilyIndex
+	 * 		the family to take the queue from
+	 * @param queueIndex
+	 * 		the index within that family
+	 * @param logger
+	 * 		the logger to write queue diagnostics to
 	 */
 	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex,
 										   int queueIndex, Logger logger)
@@ -54,10 +58,15 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 	/**
 	 * Retrieves a queue from the first family that supports graphics.
 	 *
-	 * @param vulkanModuleLogicalDevice the device that owns the queue
-	 * @param queueIndex                the index within the discovered family
-	 * @param logger                    the logger to write queue diagnostics to
-	 * @throws RuntimeException if the device advertises no graphics-capable queue family
+	 * @param vulkanModuleLogicalDevice
+	 * 		the device that owns the queue
+	 * @param queueIndex
+	 * 		the index within the discovered family
+	 * @param logger
+	 * 		the logger to write queue diagnostics to
+	 *
+	 * @throws RuntimeException
+	 * 		if the device advertises no graphics-capable queue family
 	 */
 	public VulkanRenderModuleGraphicsQueue(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueIndex,
 										   Logger logger)
@@ -92,9 +101,8 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 	/**
 	 * A queue selected for presenting to a particular surface.
 	 * <p>
-	 * Presentation support is a property of a queue family <em>and</em> a surface, not of the
-	 * device alone, so the family is discovered by asking about the surface. It may or may not be
-	 * the same family as the graphics queue.
+	 * Presentation support is a property of a queue family <em>and</em> a surface, not of the device alone, so the
+	 * family is discovered by asking about the surface. It may or may not be the same family as the graphics queue.
 	 */
 	public static class VulkanRenderPresentModuleGraphicsQueue extends VulkanRenderModuleGraphicsQueue
 	{
@@ -102,11 +110,17 @@ public class VulkanRenderModuleGraphicsQueue extends VulkanModuleQueue
 		/**
 		 * Retrieves a queue from the first family that can present to the given surface.
 		 *
-		 * @param logicalDevice the device that owns the queue
-		 * @param surface       the surface presentation support is tested against
-		 * @param queueIndex    the index within the discovered family
-		 * @param logger        the logger to write queue diagnostics to
-		 * @throws RuntimeException if no queue family can present to the surface
+		 * @param logicalDevice
+		 * 		the device that owns the queue
+		 * @param surface
+		 * 		the surface presentation support is tested against
+		 * @param queueIndex
+		 * 		the index within the discovered family
+		 * @param logger
+		 * 		the logger to write queue diagnostics to
+		 *
+		 * @throws RuntimeException
+		 * 		if no queue family can present to the surface
 		 */
 		public VulkanRenderPresentModuleGraphicsQueue(VulkanModuleLogicalDevice logicalDevice,
 													  VulkanRenderModuleSurface surface, int queueIndex, Logger logger)

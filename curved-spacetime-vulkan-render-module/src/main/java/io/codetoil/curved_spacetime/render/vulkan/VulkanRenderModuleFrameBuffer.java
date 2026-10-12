@@ -29,8 +29,8 @@ import java.nio.LongBuffer;
 /**
  * A framebuffer: the concrete set of image views a render pass draws into.
  * <p>
- * A render pass describes attachments abstractly; a framebuffer binds those slots to actual
- * images. One is needed per swap chain image, since each frame targets a different image.
+ * A render pass describes attachments abstractly; a framebuffer binds those slots to actual images. One is needed per
+ * swap chain image, since each frame targets a different image.
  */
 public class VulkanRenderModuleFrameBuffer
 {
@@ -40,12 +40,19 @@ public class VulkanRenderModuleFrameBuffer
 	/**
 	 * Creates a framebuffer binding the given attachments for a render pass.
 	 *
-	 * @param logicalDevice the device to create the framebuffer on
-	 * @param width         the framebuffer's width in pixels
-	 * @param height        the framebuffer's height in pixels
-	 * @param pAttachments  the image views filling the render pass's attachment slots, in order
-	 * @param renderPass    the render pass this framebuffer is compatible with
-	 * @throws AssertionError if the framebuffer cannot be created
+	 * @param logicalDevice
+	 * 		the device to create the framebuffer on
+	 * @param width
+	 * 		the framebuffer's width in pixels
+	 * @param height
+	 * 		the framebuffer's height in pixels
+	 * @param pAttachments
+	 * 		the image views filling the render pass's attachment slots, in order
+	 * @param renderPass
+	 * 		the render pass this framebuffer is compatible with
+	 *
+	 * @throws AssertionError
+	 * 		if the framebuffer cannot be created
 	 */
 	public VulkanRenderModuleFrameBuffer(VulkanModuleLogicalDevice logicalDevice, int width, int height,
 										 LongBuffer pAttachments,

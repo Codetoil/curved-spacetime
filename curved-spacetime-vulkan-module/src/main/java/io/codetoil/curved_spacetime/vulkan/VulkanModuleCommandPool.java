@@ -29,10 +29,9 @@ import java.util.logging.Logger;
 /**
  * A Vulkan command pool, from which command buffers for one queue family are allocated.
  * <p>
- * A pool is tied to the queue family it was created for, so buffers allocated from it can only be
- * submitted to queues in that family. Created with
- * {@code VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT}, so individual buffers can be reset and
- * re-recorded rather than the whole pool having to be reset at once.
+ * A pool is tied to the queue family it was created for, so buffers allocated from it can only be submitted to queues
+ * in that family. Created with {@code VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT}, so individual buffers can be
+ * reset and re-recorded rather than the whole pool having to be reset at once.
  */
 public class VulkanModuleCommandPool
 {
@@ -43,10 +42,15 @@ public class VulkanModuleCommandPool
 	/**
 	 * Creates a command pool for one queue family.
 	 *
-	 * @param vulkanModuleLogicalDevice the device to create the pool on
-	 * @param queueFamilyIndex          the queue family buffers from this pool may be submitted to
-	 * @param logger                    the logger to write pool diagnostics to
-	 * @throws AssertionError if the pool cannot be created
+	 * @param vulkanModuleLogicalDevice
+	 * 		the device to create the pool on
+	 * @param queueFamilyIndex
+	 * 		the queue family buffers from this pool may be submitted to
+	 * @param logger
+	 * 		the logger to write pool diagnostics to
+	 *
+	 * @throws AssertionError
+	 * 		if the pool cannot be created
 	 */
 	public VulkanModuleCommandPool(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, int queueFamilyIndex,
 								   Logger logger)

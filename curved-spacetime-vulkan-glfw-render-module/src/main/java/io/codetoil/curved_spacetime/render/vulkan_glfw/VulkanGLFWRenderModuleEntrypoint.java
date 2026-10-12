@@ -35,10 +35,9 @@ import java.util.logging.Logger;
 /**
  * The Vulkan GLFW render module's {@code main} entrypoint.
  * <p>
- * The most dependent module in the tree: it needs the render, GLFW render, Vulkan, and Vulkan
- * render modules all present before it can do anything, and it blocks during initialization until
- * every one of them has been handed to it. Once they have, it registers a scene callback
- * generator, so each scene gets a renderer.
+ * The most dependent module in the tree: it needs the render, GLFW render, Vulkan, and Vulkan render modules all
+ * present before it can do anything, and it blocks during initialization until every one of them has been handed to it.
+ * Once they have, it registers a scene callback generator, so each scene gets a renderer.
  */
 public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 {
@@ -99,12 +98,12 @@ public class VulkanGLFWRenderModuleEntrypoint implements ModuleInitializer
 	/**
 	 * Blocks until all four dependencies have been handed to this module.
 	 * <p>
-	 * Takes exactly four elements and sorts them by type, since the modules initialise
-	 * concurrently and may arrive in any order. The count must match the number of dependencies
-	 * declared in {@code quilt.mod.json}: taking too few strands a producer, and taking too many
-	 * blocks here forever.
+	 * Takes exactly four elements and sorts them by type, since the modules initialise concurrently and may arrive in
+	 * any order. The count must match the number of dependencies declared in {@code quilt.mod.json}: taking too few
+	 * strands a producer, and taking too many blocks here forever.
 	 *
-	 * @throws InterruptedException if interrupted while waiting for a dependency
+	 * @throws InterruptedException
+	 * 		if interrupted while waiting for a dependency
 	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{

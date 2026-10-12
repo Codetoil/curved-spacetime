@@ -33,9 +33,9 @@ import java.util.logging.Logger;
 /**
  * A Vulkan surface created from a GLFW window.
  * <p>
- * GLFW handles the platform-specific part of surface creation, so this class does not need to know
- * whether it is running on X11, Wayland, Win32, or Cocoa. Capabilities and format are queried once
- * at construction, which means the surface must be recreated if the window is resized.
+ * GLFW handles the platform-specific part of surface creation, so this class does not need to know whether it is
+ * running on X11, Wayland, Win32, or Cocoa. Capabilities and format are queried once at construction, which means the
+ * surface must be recreated if the window is resized.
  */
 public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModuleSurface
 {
@@ -58,11 +58,17 @@ public class VulkanGLFWRenderModuleRenderModuleSurface extends VulkanRenderModul
 	/**
 	 * Creates a Vulkan surface onto the given GLFW window.
 	 *
-	 * @param vulkanModuleVulkanInstance the instance to create the surface against
-	 * @param vulkanModulePhysicalDevice the device to query surface support on
-	 * @param windowHandle               the GLFW window to present into
-	 * @param logger                     the logger to write surface diagnostics to
-	 * @throws AssertionError if the surface capabilities or formats cannot be queried
+	 * @param vulkanModuleVulkanInstance
+	 * 		the instance to create the surface against
+	 * @param vulkanModulePhysicalDevice
+	 * 		the device to query surface support on
+	 * @param windowHandle
+	 * 		the GLFW window to present into
+	 * @param logger
+	 * 		the logger to write surface diagnostics to
+	 *
+	 * @throws AssertionError
+	 * 		if the surface capabilities or formats cannot be queried
 	 */
 	public VulkanGLFWRenderModuleRenderModuleSurface(VulkanModuleVulkanInstance vulkanModuleVulkanInstance,
 													 VulkanModulePhysicalDevice vulkanModulePhysicalDevice,

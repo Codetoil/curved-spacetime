@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 /**
  * The GLFW render module's settings, read from {@code config/glfw-render-module.config}.
  * <p>
- * One key, {@code vsync}, which decides whether presentation waits for the display's refresh.
- * The Vulkan render module reads it when choosing a swap chain present mode.
+ * One key, {@code vsync}, which decides whether presentation waits for the display's refresh. The Vulkan render module
+ * reads it when choosing a swap chain present mode.
  */
 public class GLFWRenderModuleConfig implements ModuleConfig
 {
@@ -45,7 +45,8 @@ public class GLFWRenderModuleConfig implements ModuleConfig
 	/**
 	 * Creates a configuration that reports load problems to the given logger.
 	 *
-	 * @param logger the logger to warn through when a key is missing or invalid
+	 * @param logger
+	 * 		the logger to warn through when a key is missing or invalid
 	 */
 	public GLFWRenderModuleConfig(Logger logger)
 	{

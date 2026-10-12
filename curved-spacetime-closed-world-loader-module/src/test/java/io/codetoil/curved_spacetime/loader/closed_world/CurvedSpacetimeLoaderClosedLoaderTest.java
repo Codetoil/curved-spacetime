@@ -30,17 +30,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Exercises the loader contract of the Module System Specification against
- * {@link CurvedSpacetimeLoaderClosedLoader}.
+ * Exercises the loader contract of the Module System Specification against {@link CurvedSpacetimeLoaderClosedLoader}.
  * <p>
- * Covers requirements R6 through R11: the engine reference is retained, registered entrypoints are
- * returned and type-filtered, a recognised name with no registrations yields an empty list rather
- * than {@code null}, an unrecognised name is rejected loudly, and instances are stable across
- * repeated calls.
+ * Covers requirements R6 through R11: the engine reference is retained, registered entrypoints are returned and
+ * type-filtered, a recognised name with no registrations yields an empty list rather than {@code null}, an unrecognised
+ * name is rejected loudly, and instances are stable across repeated calls.
  * <p>
- * This loader resolves entrypoints from static tables so that GraalVM native-image can reach them
- * by ordinary static analysis, which R7 explicitly permits. Nothing here touches Vulkan, GLFW, or
- * Quilt — entrypoint construction only initialises loggers and transfer queues.
+ * This loader resolves entrypoints from static tables so that GraalVM native-image can reach them by ordinary static
+ * analysis, which R7 explicitly permits. Nothing here touches Vulkan, GLFW, or Quilt — entrypoint construction only
+ * initialises loggers and transfer queues.
  */
 class CurvedSpacetimeLoaderClosedLoaderTest
 {
@@ -95,7 +93,8 @@ class CurvedSpacetimeLoaderClosedLoaderTest
 	/**
 	 * Asserts that the given entrypoint implements {@link ModuleInitializer}.
 	 *
-	 * @param entrypoint the entrypoint to check
+	 * @param entrypoint
+	 * 		the entrypoint to check
 	 */
 	private static void assertInstanceOfModuleInitializer(Object entrypoint)
 	{
@@ -136,8 +135,7 @@ class CurvedSpacetimeLoaderClosedLoaderTest
 	}
 
 	/**
-	 * R10 — {@code invokeEntrypoints} applies the consumer to every entrypoint
-	 * {@code getEntrypoints} would return.
+	 * R10 — {@code invokeEntrypoints} applies the consumer to every entrypoint {@code getEntrypoints} would return.
 	 */
 	@Test
 	void invokeEntrypointsVisitsEveryEntrypoint()

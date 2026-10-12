@@ -31,9 +31,9 @@ import java.util.logging.Logger;
 /**
  * The simulator module's {@code main} entrypoint.
  * <p>
- * This is where the physics will live. At present it is scaffolding only: it loads its
- * configuration and hands itself to any dependents, but nothing is simulated yet, and the
- * simulation model — spacetimes, metrics, worldlines — has not been specified.
+ * This is where the physics will live. At present it is scaffolding only: it loads its configuration and hands itself
+ * to any dependents, but nothing is simulated yet, and the simulation model — spacetimes, metrics, worldlines — has not
+ * been specified.
  */
 public class SimulatorModuleEntrypoint implements ModuleInitializer
 {

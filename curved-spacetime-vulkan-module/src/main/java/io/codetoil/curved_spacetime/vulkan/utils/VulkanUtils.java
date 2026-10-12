@@ -35,8 +35,8 @@ public class VulkanUtils
 	/**
 	 * Identifies the host operating system.
 	 * <p>
-	 * Used to decide whether the portability extensions apply, since Vulkan on macOS runs over
-	 * MoltenVK rather than a conformant driver.
+	 * Used to decide whether the portability extensions apply, since Vulkan on macOS runs over MoltenVK rather than a
+	 * conformant driver.
 	 *
 	 * @return the host operating system, or {@link OSType#OTHER} if it is not recognised
 	 */
@@ -64,13 +64,17 @@ public class VulkanUtils
 	/**
 	 * Throws unless a Vulkan call succeeded.
 	 * <p>
-	 * Every Vulkan entry point returns a {@code VkResult}, and almost none of them are worth
-	 * handling individually, so calls are wrapped in this instead. Anything other than
-	 * {@code VK_SUCCESS} raises an {@link AssertionError} carrying the numeric result.
+	 * Every Vulkan entry point returns a {@code VkResult}, and almost none of them are worth handling individually, so
+	 * calls are wrapped in this instead. Anything other than {@code VK_SUCCESS} raises an {@link AssertionError}
+	 * carrying the numeric result.
 	 *
-	 * @param err    the {@code VkResult} returned by the call
-	 * @param errMsg a description of what was being attempted
-	 * @throws AssertionError if {@code err} is anything other than {@code VK_SUCCESS}
+	 * @param err
+	 * 		the {@code VkResult} returned by the call
+	 * @param errMsg
+	 * 		a description of what was being attempted
+	 *
+	 * @throws AssertionError
+	 * 		if {@code err} is anything other than {@code VK_SUCCESS}
 	 */
 	public static void vkCheck(int err, String errMsg)
 	{
@@ -221,10 +225,11 @@ public class VulkanUtils
 				break;
 			case KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR:
 				errCode = "VK_ERROR_OUT_OF_DATE_KHR";
-				errDesc = "A surface has changed in such a way that it is no longer compatible with the swapchain, and" +
-						" further presentation requests using the swapchain will fail. Applications must query" +
-						" the new surface properties and recreate their swapchain if they wish to continue" +
-						" presenting to the surface.";
+				errDesc =
+						"A surface has changed in such a way that it is no longer compatible with the swapchain, and" +
+								" further presentation requests using the swapchain will fail. Applications must query" +
+								" the new surface properties and recreate their swapchain if they wish to continue" +
+								" presenting to the surface.";
 				break;
 			case KHRDisplaySwapchain.VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
 				errCode = "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR";
@@ -283,8 +288,9 @@ public class VulkanUtils
 				break;
 			case KHRDeferredHostOperations.VK_THREAD_DONE_KHR:
 				errCode = "VK_THREAD_DONE_KHR";
-				errDesc = "A deferred operation is not complete but there is no work remaining to assign to additional" +
-						" threads.";
+				errDesc =
+						"A deferred operation is not complete but there is no work remaining to assign to additional" +
+								" threads.";
 				break;
 			case KHRDeferredHostOperations.VK_OPERATION_DEFERRED_KHR:
 				errCode = "VK_OPERATION_DEFERRED_KHR";
@@ -304,8 +310,9 @@ public class VulkanUtils
 				break;
 			case EXTImageCompressionControl.VK_ERROR_COMPRESSION_EXHAUSTED_EXT:
 				errCode = "VK_ERROR_COMPRESSION_EXHAUSTED_EXT";
-				errDesc = "An image creation failed because internal resources required for compression are exhausted." +
-						" This must only be returned when fixed-rate compression is requested.";
+				errDesc =
+						"An image creation failed because internal resources required for compression are exhausted." +
+								" This must only be returned when fixed-rate compression is requested.";
 				break;
 			case EXTShaderObject.VK_INCOMPATIBLE_SHADER_BINARY_EXT:
 				errCode = "VK_INCOMPATIBLE_SHADER_BINARY_EXT";

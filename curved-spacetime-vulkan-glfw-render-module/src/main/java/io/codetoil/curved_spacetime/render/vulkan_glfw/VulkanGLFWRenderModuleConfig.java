@@ -29,12 +29,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The Vulkan GLFW render module's settings, read from
- * {@code config/vulkan-glfw-render-module.config}.
+ * The Vulkan GLFW render module's settings, read from {@code config/vulkan-glfw-render-module.config}.
  * <p>
- * One key, {@code requestedImages}, which decides how many swap chain images to ask for. More
- * images allow more frames in flight at the cost of latency and memory; the surface's supported
- * range is the final say.
+ * One key, {@code requestedImages}, which decides how many swap chain images to ask for. More images allow more frames
+ * in flight at the cost of latency and memory; the surface's supported range is the final say.
  */
 public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 {
@@ -47,7 +45,8 @@ public class VulkanGLFWRenderModuleConfig implements ModuleConfig
 	/**
 	 * Creates a configuration that reports load problems to the given logger.
 	 *
-	 * @param logger the logger to warn through when a key is missing or invalid
+	 * @param logger
+	 * 		the logger to warn through when a key is missing or invalid
 	 */
 	public VulkanGLFWRenderModuleConfig(Logger logger)
 	{

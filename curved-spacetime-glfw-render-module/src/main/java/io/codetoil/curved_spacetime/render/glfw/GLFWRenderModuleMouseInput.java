@@ -25,10 +25,9 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Mouse input backed by GLFW.
  * <p>
- * Position and button state arrive through GLFW callbacks; the deltas are computed in
- * {@link #poll()} by differencing against the previous frame's position. Movement is only
- * accumulated while the cursor is inside the window, so re-entering does not produce a large
- * spurious delta from wherever the cursor left.
+ * Position and button state arrive through GLFW callbacks; the deltas are computed in {@link #poll()} by differencing
+ * against the previous frame's position. Movement is only accumulated while the cursor is inside the window, so
+ * re-entering does not produce a large spurious delta from wherever the cursor left.
  */
 public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 {
@@ -90,10 +89,11 @@ public class GLFWRenderModuleMouseInput implements RenderModuleMouseInput
 	/**
 	 * Attaches mouse handling to the given window.
 	 * <p>
-	 * Installs GLFW cursor position, cursor enter, and mouse button callbacks, replacing any
-	 * previously set on that window.
+	 * Installs GLFW cursor position, cursor enter, and mouse button callbacks, replacing any previously set on that
+	 * window.
 	 *
-	 * @param window the window to read mouse input from
+	 * @param window
+	 * 		the window to read mouse input from
 	 */
 	public GLFWRenderModuleMouseInput(GLFWRenderModuleWindow window)
 	{

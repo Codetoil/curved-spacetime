@@ -24,8 +24,8 @@ import io.codetoil.curved_spacetime.render.vulkan.VulkanRenderModuleEntrypoint;
 /**
  * The entrypoint a module registers to depend on the Vulkan render module.
  * <p>
- * Registered under the Vulkan render module's dependent entrypoint name. Implementations transfer
- * the received entrypoint into their own module's dependency queue.
+ * Registered under the Vulkan render module's dependent entrypoint name. Implementations transfer the received
+ * entrypoint into their own module's dependency queue.
  */
 public interface VulkanRenderModuleDependentModuleInitializer
 		extends ModuleDependentModuleInitializer<VulkanRenderModuleEntrypoint>

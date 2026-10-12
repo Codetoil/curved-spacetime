@@ -24,8 +24,8 @@ import io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanGLFWRenderModuleEnt
 /**
  * The entrypoint a module registers to depend on the Vulkan GLFW render module.
  * <p>
- * Registered under the Vulkan GLFW render module's dependent entrypoint name. Implementations
- * transfer the received entrypoint into their own module's dependency queue.
+ * Registered under the Vulkan GLFW render module's dependent entrypoint name. Implementations transfer the received
+ * entrypoint into their own module's dependency queue.
  */
 public interface VulkanGLFWRenderModuleDependentModuleInitializer
 		extends ModuleDependentModuleInitializer<VulkanGLFWRenderModuleEntrypoint>

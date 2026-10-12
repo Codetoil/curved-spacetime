@@ -21,9 +21,9 @@ package io.codetoil.curved_spacetime.render;
 /**
  * Mouse state for one window, independent of the windowing library providing it.
  * <p>
- * As with the keyboard, state is sampled rather than delivered: {@link #poll()} captures the
- * mouse once per frame and the query methods answer against that snapshot. The deltas are the
- * movement since the previous sample, which is what a camera wants, rather than absolute motion.
+ * As with the keyboard, state is sampled rather than delivered: {@link #poll()} captures the mouse once per frame and
+ * the query methods answer against that snapshot. The deltas are the movement since the previous sample, which is what
+ * a camera wants, rather than absolute motion.
  */
 public interface RenderModuleMouseInput
 {

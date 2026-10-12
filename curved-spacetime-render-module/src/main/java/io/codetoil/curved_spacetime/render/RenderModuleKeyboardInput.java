@@ -21,9 +21,8 @@ package io.codetoil.curved_spacetime.render;
 /**
  * Keyboard state for one window, independent of the windowing library providing it.
  * <p>
- * State is sampled rather than delivered: {@link #poll()} captures the keyboard once per frame,
- * and the query methods answer against that snapshot, so every caller within a frame sees the
- * same input regardless of when it asks.
+ * State is sampled rather than delivered: {@link #poll()} captures the keyboard once per frame, and the query methods
+ * answer against that snapshot, so every caller within a frame sees the same input regardless of when it asks.
  */
 public interface RenderModuleKeyboardInput
 {
@@ -37,7 +36,8 @@ public interface RenderModuleKeyboardInput
 	/**
 	 * Registers a callback invoked when a key changes state.
 	 *
-	 * @param callback the callback to invoke
+	 * @param callback
+	 * 		the callback to invoke
 	 */
 	void addKeyCallBack(KeyCallback callback);
 
@@ -56,7 +56,9 @@ public interface RenderModuleKeyboardInput
 	/**
 	 * Returns whether a key is currently held down.
 	 *
-	 * @param keyCtx the key to test
+	 * @param keyCtx
+	 * 		the key to test
+	 *
 	 * @return {@code true} while the key is held
 	 */
 	boolean keyPressed(KeyCtx keyCtx);
@@ -66,7 +68,9 @@ public interface RenderModuleKeyboardInput
 	 * <p>
 	 * Unlike {@link #keyPressed}, this is true for a single frame per press.
 	 *
-	 * @param keyCtx the key to test
+	 * @param keyCtx
+	 * 		the key to test
+	 *
 	 * @return {@code true} if the key was newly pressed this frame
 	 */
 	boolean keyTapped(KeyCtx keyCtx);
@@ -79,7 +83,8 @@ public interface RenderModuleKeyboardInput
 		/**
 		 * Handles a key changing state.
 		 *
-		 * @param keyCtx the key that changed
+		 * @param keyCtx
+		 * 		the key that changed
 		 */
 		void invoke(KeyCtx keyCtx);
 	}
@@ -87,8 +92,8 @@ public interface RenderModuleKeyboardInput
 	/**
 	 * Identifies a key.
 	 * <p>
-	 * Deliberately opaque: key codes are defined by the windowing library, so an implementation
-	 * supplies its own representation rather than this module imposing one.
+	 * Deliberately opaque: key codes are defined by the windowing library, so an implementation supplies its own
+	 * representation rather than this module imposing one.
 	 */
 	interface KeyCtx
 	{

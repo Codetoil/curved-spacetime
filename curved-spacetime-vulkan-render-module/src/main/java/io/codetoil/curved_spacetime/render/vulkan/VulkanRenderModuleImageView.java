@@ -29,9 +29,9 @@ import java.nio.LongBuffer;
 /**
  * A view onto a Vulkan image, describing how that image is to be interpreted.
  * <p>
- * Images cannot be used directly by a render pass; a view selects which part of an image is in
- * play — its format, which aspect such as colour or depth, and which mip levels and array layers —
- * and it is the view that gets attached to a framebuffer.
+ * Images cannot be used directly by a render pass; a view selects which part of an image is in play — its format, which
+ * aspect such as colour or depth, and which mip levels and array layers — and it is the view that gets attached to a
+ * framebuffer.
  */
 public class VulkanRenderModuleImageView
 {
@@ -45,10 +45,15 @@ public class VulkanRenderModuleImageView
 	/**
 	 * Creates a view onto the given image.
 	 *
-	 * @param vulkanModuleLogicalDevice the device that owns the image
-	 * @param vkImage                   the image to view
-	 * @param vulkanImageViewData       how the image should be interpreted
-	 * @throws AssertionError if the view cannot be created
+	 * @param vulkanModuleLogicalDevice
+	 * 		the device that owns the image
+	 * @param vkImage
+	 * 		the image to view
+	 * @param vulkanImageViewData
+	 * 		how the image should be interpreted
+	 *
+	 * @throws AssertionError
+	 * 		if the view cannot be created
 	 */
 	public VulkanRenderModuleImageView(VulkanModuleLogicalDevice vulkanModuleLogicalDevice, long vkImage,
 									   VulkanImageViewData vulkanImageViewData)
@@ -133,8 +138,8 @@ public class VulkanRenderModuleImageView
 	/**
 	 * How an image should be interpreted by a view, built up fluently.
 	 * <p>
-	 * Defaults describe the common case: a single-layer, single-mip two-dimensional image. Only
-	 * {@code format} and {@code aspectMask} normally need setting.
+	 * Defaults describe the common case: a single-layer, single-mip two-dimensional image. Only {@code format} and
+	 * {@code aspectMask} normally need setting.
 	 */
 	public static class VulkanImageViewData
 	{
@@ -159,7 +164,9 @@ public class VulkanRenderModuleImageView
 		/**
 		 * Sets which aspect of the image the view exposes.
 		 *
-		 * @param aspectMask the Vulkan aspect mask, such as colour or depth
+		 * @param aspectMask
+		 * 		the Vulkan aspect mask, such as colour or depth
+		 *
 		 * @return this object, so calls can be chained
 		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData aspectMask(int aspectMask)
@@ -171,7 +178,9 @@ public class VulkanRenderModuleImageView
 		/**
 		 * Sets the first array layer the view starts at.
 		 *
-		 * @param baseArrayLayer the index of the first array layer
+		 * @param baseArrayLayer
+		 * 		the index of the first array layer
+		 *
 		 * @return this object, so calls can be chained
 		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData baseArrayLayer(int baseArrayLayer)
@@ -183,7 +192,9 @@ public class VulkanRenderModuleImageView
 		/**
 		 * Sets the pixel format the image is interpreted in.
 		 *
-		 * @param format the Vulkan image format
+		 * @param format
+		 * 		the Vulkan image format
+		 *
 		 * @return this object, so calls can be chained
 		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData format(int format)
@@ -195,7 +206,9 @@ public class VulkanRenderModuleImageView
 		/**
 		 * Sets how many array layers the view covers.
 		 *
-		 * @param layerCount the number of array layers
+		 * @param layerCount
+		 * 		the number of array layers
+		 *
 		 * @return this object, so calls can be chained
 		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData layerCount(int layerCount)
@@ -207,7 +220,9 @@ public class VulkanRenderModuleImageView
 		/**
 		 * Sets how many mip levels the view covers.
 		 *
-		 * @param mipLevels the number of mip levels
+		 * @param mipLevels
+		 * 		the number of mip levels
+		 *
 		 * @return this object, so calls can be chained
 		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData mipLevels(int mipLevels)
@@ -219,7 +234,9 @@ public class VulkanRenderModuleImageView
 		/**
 		 * Sets the dimensionality of the view.
 		 *
-		 * @param viewType the Vulkan image view type, such as 2D or cube
+		 * @param viewType
+		 * 		the Vulkan image view type, such as 2D or cube
+		 *
 		 * @return this object, so calls can be chained
 		 */
 		public VulkanRenderModuleImageView.VulkanImageViewData viewType(int viewType)

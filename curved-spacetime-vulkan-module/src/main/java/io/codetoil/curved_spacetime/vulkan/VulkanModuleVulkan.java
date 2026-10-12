@@ -22,16 +22,15 @@ import io.codetoil.curved_spacetime.MainCallback;
 import io.codetoil.curved_spacetime.MainModuleEngine;
 
 /**
- * Owns the Vulkan objects that outlive any one window: the instance, the physical device, and the
- * logical device.
+ * Owns the Vulkan objects that outlive any one window: the instance, the physical device, and the logical device.
  * <p>
- * Registered as a {@link MainCallback} so that its lifetime is tied to the engine rather than to a
- * scene. Everything scene- or surface-specific — swap chains, render passes, framebuffers — is
- * built on top of these by the render modules, which reach them through the getters here.
+ * Registered as a {@link MainCallback} so that its lifetime is tied to the engine rather than to a scene. Everything
+ * scene- or surface-specific — swap chains, render passes, framebuffers — is built on top of these by the render
+ * modules, which reach them through the getters here.
  * <p>
- * Creation order matters and is not negotiable: the instance must exist before a physical device
- * can be selected, and a physical device before a logical one can be created. {@link #clean()}
- * unwinds in the reverse order, after waiting for the device to go idle.
+ * Creation order matters and is not negotiable: the instance must exist before a physical device can be selected, and a
+ * physical device before a logical one can be created. {@link #clean()} unwinds in the reverse order, after waiting for
+ * the device to go idle.
  */
 public class VulkanModuleVulkan extends MainCallback
 {
@@ -57,8 +56,10 @@ public class VulkanModuleVulkan extends MainCallback
 	 * <p>
 	 * No Vulkan object is created until {@link #init()} runs on the engine's callback thread.
 	 *
-	 * @param mainModuleEngine the engine this callback belongs to
-	 * @param entrypoint       the Vulkan module's entrypoint, supplying configuration and logger
+	 * @param mainModuleEngine
+	 * 		the engine this callback belongs to
+	 * @param entrypoint
+	 * 		the Vulkan module's entrypoint, supplying configuration and logger
 	 */
 	public VulkanModuleVulkan(MainModuleEngine mainModuleEngine, VulkanModuleEntrypoint entrypoint)
 	{
@@ -69,8 +70,8 @@ public class VulkanModuleVulkan extends MainCallback
 	/**
 	 * Creates the instance, selects a physical device, and creates the logical device.
 	 *
-	 * @throws RuntimeException if no suitable physical device is available, or if any Vulkan call
-	 *                          fails
+	 * @throws RuntimeException
+	 * 		if no suitable physical device is available, or if any Vulkan call fails
 	 */
 	public void init()
 	{

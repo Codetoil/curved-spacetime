@@ -36,17 +36,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The engine: it owns the configuration, the scenes, and the callback loop, and it drives module
- * initialization.
+ * The engine: it owns the configuration, the scenes, and the callback loop, and it drives module initialization.
  * <p>
- * Constructing an engine is what starts the program. The constructor loads the main
- * configuration, registers the initial scene, runs every module's {@code main} entrypoint, and
- * then begins the callback loop — so by the time it returns, the whole module graph is up.
+ * Constructing an engine is what starts the program. The constructor loads the main configuration, registers the
+ * initial scene, runs every module's {@code main} entrypoint, and then begins the callback loop — so by the time it
+ * returns, the whole module graph is up.
  * <p>
- * Callbacks all run on a single scheduled thread, so implementations need no synchronisation
- * against one another. Module initialization is the opposite: entrypoints run concurrently on an
- * unbounded pool, which the dependency handshake requires — see
- * {@link #callDependents(String, Class, Consumer, Logger)}.
+ * Callbacks all run on a single scheduled thread, so implementations need no synchronisation against one another.
+ * Module initialization is the opposite: entrypoints run concurrently on an unbounded pool, which the dependency
+ * handshake requires — see {@link #callDependents(String, Class, Consumer, Logger)}.
  */
 public class MainModuleEngine
 {
@@ -85,21 +83,22 @@ public class MainModuleEngine
 	protected ScheduledFuture<?> callbackLoopHandler;
 
 	/**
-	 * Is {@code true} if the Engine is initialized.
-	 * Note that this doesn't mean all callbacks are registered,
-	 * As a callback can be registered at any time and is registered asynchronously.
+	 * Is {@code true} if the Engine is initialized. Note that this doesn't mean all callbacks are registered, As a
+	 * callback can be registered at any time and is registered asynchronously.
 	 */
 	protected boolean initialized = false;
 
 	/**
 	 * Creates the engine and brings the whole module graph up.
 	 * <p>
-	 * Loads the main configuration, registers the initial scene, runs every {@code main}
-	 * entrypoint, and starts the callback loop at the configured frame rate.
+	 * Loads the main configuration, registers the initial scene, runs every {@code main} entrypoint, and starts the
+	 * callback loop at the configured frame rate.
 	 *
-	 * @param loader the loader that resolves module entrypoints
-	 * @throws RuntimeException if the main configuration cannot be loaded, or if any module's
-	 *                          entrypoint fails
+	 * @param loader
+	 * 		the loader that resolves module entrypoints
+	 *
+	 * @throws RuntimeException
+	 * 		if the main configuration cannot be loaded, or if any module's entrypoint fails
 	 */
 	public MainModuleEngine(CurvedSpacetimeLoader loader)
 	{
@@ -132,7 +131,8 @@ public class MainModuleEngine
 						this.sceneCallbacks.forEach((_,
 													 sceneCallbacksForGenerator) ->
 								sceneCallbacksForGenerator.forEach(SceneCallback::loop));
-					} catch (Throwable t) {
+					} catch (Throwable t)
+					{
 						this.throwError(t, "Exception called during Main Loop");
 					}
 				},
@@ -143,7 +143,8 @@ public class MainModuleEngine
 	/**
 	 * Adds a scene and gives every registered generator a callback for it.
 	 *
-	 * @param scene the scene to add
+	 * @param scene
+	 * 		the scene to add
 	 */
 	public void registerScene(Scene scene)
 	{
@@ -157,7 +158,8 @@ public class MainModuleEngine
 	/**
 	 * Prepares the loader and runs every module's {@code main} entrypoint.
 	 *
-	 * @throws RuntimeException wrapping whatever a module's entrypoint threw
+	 * @throws RuntimeException
+	 * 		wrapping whatever a module's entrypoint threw
 	 */
 	public void runEntrypoints()
 	{
@@ -174,23 +176,28 @@ public class MainModuleEngine
 	}
 
 	/**
-	 * Invokes every entrypoint registered under the given name, concurrently, and waits for all of
-	 * them.
+	 * Invokes every entrypoint registered under the given name, concurrently, and waits for all of them.
 	 * <p>
-	 * The pool this uses is unbounded, and must remain so. The dependency handshake blocks a
-	 * consumer in {@code TransferQueue.take} while its producer is still to run, so a producer and
-	 * its consumer have to be runnable at the same time; a bounded pool deadlocks as soon as its
-	 * threads fill with consumers whose producers are still queued.
+	 * The pool this uses is unbounded, and must remain so. The dependency handshake blocks a consumer in
+	 * {@code TransferQueue.take} while its producer is still to run, so a producer and its consumer have to be runnable
+	 * at the same time; a bounded pool deadlocks as soon as its threads fill with consumers whose producers are still
+	 * queued.
 	 * <p>
-	 * The first entrypoint to fail aborts the whole call rather than leaving a half-initialized
-	 * module graph running.
+	 * The first entrypoint to fail aborts the whole call rather than leaving a half-initialized module graph running.
 	 *
-	 * @param <E>                    the entrypoint type
-	 * @param name                   the entrypoint name to invoke, such as {@code main}
-	 * @param moduleInitializerClass the type registered entrypoints must be assignable to
-	 * @param onInitialize           the action to apply to each entrypoint
-	 * @param logger                 the logger to trace dispatch through
-	 * @throws Throwable whatever the first failing entrypoint threw
+	 * @param <E>
+	 * 		the entrypoint type
+	 * @param name
+	 * 		the entrypoint name to invoke, such as {@code main}
+	 * @param moduleInitializerClass
+	 * 		the type registered entrypoints must be assignable to
+	 * @param onInitialize
+	 * 		the action to apply to each entrypoint
+	 * @param logger
+	 * 		the logger to trace dispatch through
+	 *
+	 * @throws Throwable
+	 * 		whatever the first failing entrypoint threw
 	 */
 	public static <E> void callDependents(String name,
 										  Class<E> moduleInitializerClass,
@@ -247,7 +254,9 @@ public class MainModuleEngine
 	/**
 	 * Registers scene-independent work and initialises it on the callback thread.
 	 *
-	 * @param mainCallback the callback to register
+	 * @param mainCallback
+	 * 		the callback to register
+	 *
 	 * @return the completable future generated for this task
 	 */
 	public CompletableFuture<Void> registerMainCallback(MainCallback mainCallback)
@@ -264,8 +273,8 @@ public class MainModuleEngine
 							this.throwError(t, "Exception called during Main Callback Initialization");
 						}
 					}, this.callbackExecutor);
-		}
-		else {
+		} else
+		{
 			this.logger.info("Attempted to register Main Callback after shutdown, ignoring.");
 			return CompletableFuture.completedFuture(null);
 		}
@@ -274,10 +283,12 @@ public class MainModuleEngine
 	/**
 	 * Registers a factory that produces one callback per scene.
 	 * <p>
-	 * The generator is applied to every scene that exists now, and to each one registered later,
-	 * so a module never has to track scenes itself.
+	 * The generator is applied to every scene that exists now, and to each one registered later, so a module never has
+	 * to track scenes itself.
 	 *
-	 * @param sceneCallbackGenerator the factory producing a callback for a given scene
+	 * @param sceneCallbackGenerator
+	 * 		the factory producing a callback for a given scene
+	 *
 	 * @return the completable future generated for this task
 	 */
 	public CompletableFuture<Void> registerSceneCallbackGenerator(Function<Scene, SceneCallback> sceneCallbackGenerator)
@@ -295,7 +306,8 @@ public class MainModuleEngine
 							this.throwError(t, "Exception called during Scene Callback Generation");
 						}
 					}, this.callbackExecutor);
-		} else {
+		} else
+		{
 			this.logger.info("Attempted to register Scene Callback Generator after shutdown, ignoring.");
 			return CompletableFuture.completedFuture(null);
 		}
@@ -318,7 +330,8 @@ public class MainModuleEngine
 			 this.sceneCallbacks.entrySet().iterator(); it.hasNext(); )
 		{
 			Entry<Function<Scene, SceneCallback>, List<SceneCallback>> entry = it.next();
-			for (Iterator<SceneCallback> it2 = entry.getValue().iterator(); it2.hasNext(); ) {
+			for (Iterator<SceneCallback> it2 = entry.getValue().iterator(); it2.hasNext(); )
+			{
 				SceneCallback sceneCallback = it2.next();
 				sceneCallback.clean();
 				it2.remove();
@@ -334,8 +347,10 @@ public class MainModuleEngine
 	/**
 	 * Throws an error and stops the engine.
 	 *
-	 * @param t the error to throw
-	 * @param message the error message
+	 * @param t
+	 * 		the error to throw
+	 * @param message
+	 * 		the error message
 	 */
 	public void throwError(Throwable t, String message)
 	{
@@ -354,9 +369,8 @@ public class MainModuleEngine
 	}
 
 	/**
-	 * Returns whether the Engine is initialized.
-	 * Note that this doesn't mean all callbacks are registered,
-	 * As a callback can be registered at any time and is registered asynchronously.
+	 * Returns whether the Engine is initialized. Note that this doesn't mean all callbacks are registered, As a
+	 * callback can be registered at any time and is registered asynchronously.
 	 *
 	 * @return {@code true} if the engine is initialized
 	 */

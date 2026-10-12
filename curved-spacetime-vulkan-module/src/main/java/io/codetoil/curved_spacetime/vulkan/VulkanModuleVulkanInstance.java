@@ -34,14 +34,13 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * The Vulkan instance: the application's connection to the Vulkan loader, and the object every
- * physical device is enumerated from.
+ * The Vulkan instance: the application's connection to the Vulkan loader, and the object every physical device is
+ * enumerated from.
  * <p>
- * When validation is enabled in configuration, this also installs a debug messenger that routes
- * the validation layers' output into the module's logger, so driver complaints appear alongside
- * the program's own diagnostics. Validation degrades gracefully: the preferred Khronos layer is
- * used if present, then a LunarG fallback, then a set of individual Google and LunarG layers, and
- * if none are available validation is switched off with a warning rather than failing.
+ * When validation is enabled in configuration, this also installs a debug messenger that routes the validation layers'
+ * output into the module's logger, so driver complaints appear alongside the program's own diagnostics. Validation
+ * degrades gracefully: the preferred Khronos layer is used if present, then a LunarG fallback, then a set of individual
+ * Google and LunarG layers, and if none are available validation is switched off with a warning rather than failing.
  */
 public class VulkanModuleVulkanInstance
 {
@@ -99,8 +98,7 @@ public class VulkanModuleVulkanInstance
 	protected VkInstance vkInstance;
 
 	/**
-	 * The debug messenger's creation info, retained so it can be freed, or {@code null} when
-	 * validation is disabled.
+	 * The debug messenger's creation info, retained so it can be freed, or {@code null} when validation is disabled.
 	 */
 	protected VkDebugUtilsMessengerCreateInfoEXT debugUtils;
 
@@ -110,12 +108,15 @@ public class VulkanModuleVulkanInstance
 	protected long vkDebugHandle;
 
 	/**
-	 * Creates the Vulkan instance, enabling validation if configuration asks for it and the layers
-	 * are available.
+	 * Creates the Vulkan instance, enabling validation if configuration asks for it and the layers are available.
 	 *
-	 * @param vulkanModuleEntrypoint the entrypoint supplying the Vulkan module's configuration
-	 * @param logger                 the logger to write instance and validation output to
-	 * @throws AssertionError if the instance or the debug messenger cannot be created
+	 * @param vulkanModuleEntrypoint
+	 * 		the entrypoint supplying the Vulkan module's configuration
+	 * @param logger
+	 * 		the logger to write instance and validation output to
+	 *
+	 * @throws AssertionError
+	 * 		if the instance or the debug messenger cannot be created
 	 */
 	public VulkanModuleVulkanInstance(VulkanModuleEntrypoint vulkanModuleEntrypoint, Logger logger)
 	{

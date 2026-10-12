@@ -34,12 +34,11 @@ import java.util.logging.Logger;
 /**
  * The webserver module's {@code main} entrypoint.
  * <p>
- * Starts an HTTP server so the simulator can be driven or observed over the network, and hands
- * itself to modules that extend it — the OpenAPI module — through the
- * {@code webserver_module_dependent} entrypoint.
+ * Starts an HTTP server so the simulator can be driven or observed over the network, and hands itself to modules that
+ * extend it — the OpenAPI module — through the {@code webserver_module_dependent} entrypoint.
  * <p>
- * The server is currently a placeholder: it binds a fixed port, serves one test route, and is not
- * stopped when the engine shuts down.
+ * The server is currently a placeholder: it binds a fixed port, serves one test route, and is not stopped when the
+ * engine shuts down.
  */
 public class WebserverModuleEntrypoint implements ModuleInitializer
 {

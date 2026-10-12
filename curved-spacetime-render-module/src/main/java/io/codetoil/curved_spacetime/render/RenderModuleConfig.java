@@ -31,9 +31,9 @@ import java.util.logging.Logger;
 /**
  * The render module's settings, read from {@code config/render-module.config}.
  * <p>
- * The render module is an API with no settings of its own yet, so the file is currently written
- * empty. It exists so that the file and its handling are already in place when the first key is
- * added, and so that implementations have a configuration to inherit the pattern from.
+ * The render module is an API with no settings of its own yet, so the file is currently written empty. It exists so
+ * that the file and its handling are already in place when the first key is added, and so that implementations have a
+ * configuration to inherit the pattern from.
  */
 public class RenderModuleConfig implements ModuleConfig
 {
@@ -44,7 +44,8 @@ public class RenderModuleConfig implements ModuleConfig
 	/**
 	 * Creates a configuration that reports load problems to the given logger.
 	 *
-	 * @param logger the logger to warn through when the file is missing
+	 * @param logger
+	 * 		the logger to warn through when the file is missing
 	 */
 	public RenderModuleConfig(Logger logger)
 	{
@@ -56,7 +57,9 @@ public class RenderModuleConfig implements ModuleConfig
 	 * Reads the configuration from disk, tolerating an absent file.
 	 *
 	 * @return this configuration, so that construction and loading compose
-	 * @throws IOException if the file exists but cannot be read
+	 *
+	 * @throws IOException
+	 * 		if the file exists but cannot be read
 	 */
 	public RenderModuleConfig load() throws IOException
 	{
@@ -77,7 +80,8 @@ public class RenderModuleConfig implements ModuleConfig
 	/**
 	 * Writes the configuration to disk and clears the dirty flag.
 	 *
-	 * @throws IOException if the file cannot be written
+	 * @throws IOException
+	 * 		if the file cannot be written
 	 */
 	public void save() throws IOException
 	{
@@ -93,8 +97,7 @@ public class RenderModuleConfig implements ModuleConfig
 	/**
 	 * Returns whether this configuration differs from what is on disk.
 	 * <p>
-	 * With no keys yet, the only cause is the file having been absent when it was loaded;
-	 * {@link #save()} clears it.
+	 * With no keys yet, the only cause is the file having been absent when it was loaded; {@link #save()} clears it.
 	 *
 	 * @return {@code true} if the file does not match this configuration and should be rewritten
 	 */

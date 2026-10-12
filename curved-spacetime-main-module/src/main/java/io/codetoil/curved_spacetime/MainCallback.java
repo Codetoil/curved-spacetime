@@ -21,11 +21,10 @@ package io.codetoil.curved_spacetime;
 /**
  * Work the engine runs once at start-up and then repeatedly, independent of any scene.
  * <p>
- * A module registers one of these with
- * {@link MainModuleEngine#registerMainCallback(MainCallback)}. The engine calls {@link #init()}
- * once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on shutdown. All
- * three run on the engine's single callback thread, so an implementation may hold mutable state
- * without synchronising it against the other callbacks.
+ * A module registers one of these with {@link MainModuleEngine#registerMainCallback(MainCallback)}. The engine calls
+ * {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on shutdown. All three
+ * run on the engine's single callback thread, so an implementation may hold mutable state without synchronising it
+ * against the other callbacks.
  */
 public abstract class MainCallback
 {
@@ -37,16 +36,17 @@ public abstract class MainCallback
 	/**
 	 * Whether this callback has finished setting itself up.
 	 * <p>
-	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from
-	 * its own {@link #init()}, at the point where its setup is genuinely complete — only the
-	 * implementation knows when that is.
+	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from its own
+	 * {@link #init()}, at the point where its setup is genuinely complete — only the implementation knows when that
+	 * is.
 	 */
 	protected boolean initialized = false;
 
 	/**
 	 * Creates a callback bound to the given engine.
 	 *
-	 * @param mainModuleEngine the engine this callback belongs to
+	 * @param mainModuleEngine
+	 * 		the engine this callback belongs to
 	 */
 	protected MainCallback(MainModuleEngine mainModuleEngine)
 	{
@@ -66,8 +66,8 @@ public abstract class MainCallback
 	/**
 	 * Sets this callback up.
 	 * <p>
-	 * Called once, before the first {@link #loop()}. An implementation should set
-	 * {@link #initialized} when it finishes.
+	 * Called once, before the first {@link #loop()}. An implementation should set {@link #initialized} when it
+	 * finishes.
 	 */
 	public abstract void init();
 

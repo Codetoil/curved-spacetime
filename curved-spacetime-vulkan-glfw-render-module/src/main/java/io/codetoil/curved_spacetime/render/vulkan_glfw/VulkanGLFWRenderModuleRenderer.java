@@ -37,13 +37,12 @@ import java.util.logging.Logger;
 /**
  * Draws a scene into a GLFW window using Vulkan.
  * <p>
- * This is where the two stacks finally meet: it opens a GLFW window, creates a Vulkan surface onto
- * it, and builds the swap chain and per-frame resources against that surface. Everything is
- * created in {@link #init()} and torn down in reverse in {@link #clean()}, with the queue drained
- * first so nothing is destroyed while still in use.
+ * This is where the two stacks finally meet: it opens a GLFW window, creates a Vulkan surface onto it, and builds the
+ * swap chain and per-frame resources against that surface. Everything is created in {@link #init()} and torn down in
+ * reverse in {@link #clean()}, with the queue drained first so nothing is destroyed while still in use.
  * <p>
- * The draw loop itself is not implemented yet — {@link #loop()} currently only services the
- * window — so several of the fields below are created but not yet driven.
+ * The draw loop itself is not implemented yet — {@link #loop()} currently only services the window — so several of the
+ * fields below are created but not yet driven.
  */
 public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 {
@@ -87,12 +86,14 @@ public class VulkanGLFWRenderModuleRenderer extends GLFWRenderModuleRenderer
 	/**
 	 * Creates a renderer for one scene.
 	 * <p>
-	 * No window or Vulkan object is created until {@link #init()} runs on the engine's callback
-	 * thread.
+	 * No window or Vulkan object is created until {@link #init()} runs on the engine's callback thread.
 	 *
-	 * @param mainModuleEngine the engine this renderer belongs to
-	 * @param scene            the scene to draw
-	 * @param entrypoint       the module entrypoint supplying configuration and dependencies
+	 * @param mainModuleEngine
+	 * 		the engine this renderer belongs to
+	 * @param scene
+	 * 		the scene to draw
+	 * @param entrypoint
+	 * 		the module entrypoint supplying configuration and dependencies
 	 */
 	public VulkanGLFWRenderModuleRenderer(MainModuleEngine mainModuleEngine, Scene scene,
 										  VulkanGLFWRenderModuleEntrypoint entrypoint)
