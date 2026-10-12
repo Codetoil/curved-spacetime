@@ -46,10 +46,13 @@ version:
 - **Module System Specification** — the normative contract for modules and loaders: naming,
   entrypoints, the dependency handshake, and the configuration format. Source lives in this
   repository at [`specs/module-system.html`](specs/module-system.html).
+- **Engine Specification** — the normative contract for engines: how an engine drives module
+  initialization, and when callbacks' `init`, `loop` and `clean` run, on which thread, and what a
+  failure does. Source lives in this repository at [`specs/engine.html`](specs/engine.html).
 - **Javadocs** — aggregated Javadoc for every module.
 
 The intended direction for the simulation layer is sketched in
-[`specs/simulation.md`](specs/simulation.md). That one is an **exploratory draft, not a
+[`specs/curved-spacetime.md`](specs/curved-spacetime.md). That one is an **exploratory draft, not a
 specification** — nothing in it is implemented yet, and parts of it are still disputed. It is
 included so that the architecture built around it reads as deliberate rather than accidental.
 

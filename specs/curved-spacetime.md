@@ -16,10 +16,10 @@
 >   well-posed at all. §15 marks its own steps 11–13 as research-grade.
 > - **It straddles two Cartan nodes** (§11.4) and the dispatch differs between them.
 >
-> It is snapshotted per release alongside the normative specification, so
-> `specs/<release>/simulation.md` records what the draft looked like at that build. It is not
-> version-stamped internally, though: the revision number below is the document's own, and
-> advances independently of the project's release tags.
+> It is snapshotted per release alongside the normative specifications, so
+> `specs/<release>/curved-spacetime.md` (`simulation.md` in earlier releases) records what the
+> draft looked like at that build. It is not version-stamped internally, though: the revision
+> number below is the document's own, and advances independently of the project's release tags.
 
 # Structure-Preserving Adaptive Spacetime Simulation
 
@@ -149,11 +149,12 @@ They compose but are different operations with different justifications. Axisymm
 ### 2.5 Realisation in the module system
 
 This document describes a physical scheme; it is realised as modules loaded by a
-`CurvedSpacetimeLoader`. The normative contract for that — naming, entrypoints, the dependency
-handshake, the configuration format, the callback lifecycle — is
-[the Module System Specification](module-system.html), and its requirement identifiers are cited
-below as **R*n***. Where the two documents disagree, the module specification governs the
-mechanism and this one governs the physics.
+`CurvedSpacetimeLoader`. The normative contract for that is in two documents:
+[the Module System Specification](module-system.html) — naming, entrypoints, the dependency
+handshake, the configuration format — and [the Engine Specification](engine.html), for how an
+engine initializes modules and runs their callbacks. The two share one numbering, and their
+requirement identifiers are cited below as **R*n***. Where this document disagrees with either,
+the specification governs the mechanism and this one governs the physics.
 
 | This document | Module system realisation | Governed by |
 |---|---|---|
