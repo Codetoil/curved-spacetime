@@ -1,0 +1,329 @@
+/*
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.
+ * Copyright (C) 2025-2026 Anthony Michalek (Codetoil)
+ *
+ * This file is part of Curved Spacetime
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+:root
+{
+	--bg: #fdfdfc;
+	--fg: #1b1b18;
+	--muted: #5d5d55;
+	--rule: #dcdcd4;
+	--accent: #2d5b8a;
+	--code-bg: #f4f4f0;
+	--note-bg: #f0f4f8;
+	--note-edge: #2d5b8a;
+	--warn-bg: #fbf3e8;
+	--warn-edge: #a86a1f;
+	--req-edge: #c8c8be;
+}
+
+@media (prefers-color-scheme: dark)
+{
+	:root
+	{
+		--bg: #16161a;
+		--fg: #e6e6e1;
+		--muted: #a0a099;
+		--rule: #33333a;
+		--accent: #7fb0e0;
+		--code-bg: #1e1e24;
+		--note-bg: #1a2430;
+		--note-edge: #7fb0e0;
+		--warn-bg: #2a2117;
+		--warn-edge: #d29a4a;
+		--req-edge: #3c3c44;
+	}
+}
+
+*
+{
+	box-sizing: border-box;
+}
+
+body
+{
+	margin: 0 auto;
+	padding: 2.5rem 1.25rem 4rem;
+	max-width: 46rem;
+	background: var(--bg);
+	color: var(--fg);
+	font-family: Charter, Georgia, "Times New Roman", serif;
+	font-size: 1.02rem;
+	line-height: 1.65;
+	text-rendering: optimizeLegibility;
+}
+
+/* ---- headings ---------------------------------------------------------- */
+
+h1, h2, h3
+{
+	font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+	line-height: 1.25;
+	font-weight: 600;
+}
+
+h1
+{
+	margin: 0 0 1.25rem;
+	font-size: 1.95rem;
+	letter-spacing: -0.015em;
+}
+
+h2
+{
+	margin: 3rem 0 1rem;
+	padding-bottom: 0.35rem;
+	border-bottom: 1px solid var(--rule);
+	font-size: 1.4rem;
+}
+
+h3
+{
+	margin: 2rem 0 0.75rem;
+	font-size: 1.12rem;
+}
+
+/* ---- document header --------------------------------------------------- */
+
+header
+{
+	padding-bottom: 1.5rem;
+	border-bottom: 2px solid var(--rule);
+}
+
+.docinfo
+{
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 0.3rem 1rem;
+	margin: 0;
+	font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+	font-size: 0.85rem;
+}
+
+.docinfo dt
+{
+	color: var(--muted);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	font-size: 0.74rem;
+	padding-top: 0.15rem;
+}
+
+.docinfo dd
+{
+	margin: 0;
+}
+
+/* ---- table of contents ------------------------------------------------- */
+
+nav
+{
+	margin: 2rem 0;
+	padding: 1.1rem 1.4rem;
+	background: var(--code-bg);
+	border-radius: 4px;
+}
+
+nav h2
+{
+	margin: 0 0 0.5rem;
+	padding: 0;
+	border: 0;
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	letter-spacing: 0.09em;
+	color: var(--muted);
+}
+
+nav ol
+{
+	margin: 0;
+	padding-left: 1.4rem;
+	font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+	font-size: 0.94rem;
+	line-height: 1.85;
+}
+
+/* ---- links ------------------------------------------------------------- */
+
+a
+{
+	color: var(--accent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+a:hover
+{
+	text-decoration-thickness: 2px;
+}
+
+/* ---- code -------------------------------------------------------------- */
+
+code, pre, var
+{
+	font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+	font-style: normal;
+}
+
+code
+{
+	background: var(--code-bg);
+	padding: 0.1em 0.35em;
+	border-radius: 3px;
+	font-size: 0.87em;
+	word-break: break-word;
+}
+
+pre
+{
+	background: var(--code-bg);
+	padding: 1rem 1.15rem;
+	border-radius: 4px;
+	border-left: 3px solid var(--rule);
+	overflow-x: auto;
+	font-size: 0.84rem;
+	line-height: 1.55;
+}
+
+pre code
+{
+	background: none;
+	padding: 0;
+	font-size: inherit;
+	word-break: normal;
+}
+
+/* ---- requirements ------------------------------------------------------ */
+
+.req
+{
+	margin: 1.1rem 0;
+	padding: 0.55rem 0 0.55rem 1rem;
+	border-left: 3px solid var(--req-edge);
+	scroll-margin-top: 1rem;
+}
+
+.req:target
+{
+	border-left-color: var(--accent);
+	background: var(--note-bg);
+}
+
+.req strong:first-child
+{
+	font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+	font-size: 0.9em;
+	color: var(--accent);
+}
+
+/* ---- callouts ---------------------------------------------------------- */
+
+.note, .warn
+{
+	margin: 1.25rem 0;
+	padding: 0.85rem 1.15rem;
+	border-left: 3px solid var(--note-edge);
+	background: var(--note-bg);
+	border-radius: 0 3px 3px 0;
+	font-size: 0.94rem;
+}
+
+.warn
+{
+	border-left-color: var(--warn-edge);
+	background: var(--warn-bg);
+}
+
+/* ---- tables ------------------------------------------------------------ */
+
+table
+{
+	width: 100%;
+	margin: 1.4rem 0;
+	border-collapse: collapse;
+	font-size: 0.9rem;
+	display: block;
+	overflow-x: auto;
+}
+
+thead th
+{
+	text-align: left;
+	font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--muted);
+	border-bottom: 2px solid var(--rule);
+	padding: 0.4rem 0.7rem 0.4rem 0;
+}
+
+td
+{
+	padding: 0.45rem 0.7rem 0.45rem 0;
+	border-bottom: 1px solid var(--rule);
+	vertical-align: top;
+}
+
+/* ---- definition lists -------------------------------------------------- */
+
+.terms dt
+{
+	margin-top: 1rem;
+	font-weight: 600;
+}
+
+.terms dd
+{
+	margin: 0.2rem 0 0 1.5rem;
+}
+
+dfn
+{
+	font-style: normal;
+	font-weight: 600;
+}
+
+/* ---- checklist --------------------------------------------------------- */
+
+.checklist
+{
+	padding-left: 1.3rem;
+}
+
+.checklist li
+{
+	margin: 0.45rem 0;
+}
+
+/* ---- footer ------------------------------------------------------------ */
+
+footer
+{
+	margin-top: 4rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--rule);
+	color: var(--muted);
+	font-size: 0.85rem;
+}
+
+footer p
+{
+	margin: 0.3rem 0;
+}
