@@ -137,12 +137,6 @@ tasks.register<Copy>("nonJarCopyClosedNative") {
     into("$rootDir/archive-closed-world-native-$osNameAndArch/")
 }
 
-sourceSets {
-    create("extra") {
-        java.srcDir("src/extra/java")
-    }
-}
-
 tasks.shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     mergeServiceFiles()
