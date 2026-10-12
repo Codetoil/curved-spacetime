@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<!--
+  Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.
+  Copyright (C) 2025-2026 Anthony Michalek (Codetoil)
+
+  This file is part of Curved Spacetime
+
+  This program is free software: you can redistribute it and/or modify it under the terms of
+  the GNU General Public License as published by the Free Software Foundation, either version 3
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with this program.
+  If not, see <https://www.gnu.org/licenses/>.
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Curved Spacetime Engine Specification</title>
+    <link rel="stylesheet" href="spec.css">
+</head>
+<body>
+
+<header>
+    <h1>Curved Spacetime Engine Specification</h1>
+    <dl class="docinfo">
+        <dt>Version</dt>
+        <dd>0.1.0-build.100</dd>
+        <dt>Status</dt>
+        <dd>Normative, and violated: describes how the engine should work. Where the code
+            disagrees, the code is wrong.
+        </dd>
+        <dt>Licence</dt>
+        <dd>GPL-3.0-or-later</dd>
+    </dl>
+</header>
+
+<nav>
+    <h2>Contents</h2>
+    <ol>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#conformance">Conformance</a></li>
+        <li><a href="#terminology">Terminology</a></li>
+        <li><a href="#init">Initialization</a></li>
+        <li><a href="#callbacks">Callbacks</a></li>
+        <li><a href="#checklist">Conformance checklist</a></li>
+    </ol>
+    <p><a href="#api">Appendix A. API source</a></p>
+</nav>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+
+    <p>Curved Spacetime is assembled at runtime from independently built <dfn>modules</dfn>. A loader
+        discovers those modules and hands their entrypoints to the engine, and the engine drives them
+        through a fixed initialization protocol, then runs the callbacks they register until it is
+        stopped. This document is for the authors of engines. It specifies what a conforming engine
+        must do: how it drives initialization through a loader, and when it calls each callback, on
+        which thread, and what a failure does.</p>
+
+    <p>It is complete on its own. Everything an engine compiles against is reproduced in
+        <a href="#api">Appendix A</a>, and every requirement that binds an engine is stated here, so a
+        third party can implement one without reading any other document.
+        <code>MainModuleEngineImpl</code> is the reference engine.</p>
+
+    <p>What a callback computes is deliberately <strong>out of scope</strong>.</p>
+
+    <h3 id="versioning">1.1 Versioning of this document</h3>
+
+    <p>This specification is published per version of Curved Spacetime, at
+        <code>specs/&lt;version&gt;/</code>, alongside the API documentation. The cadence tracks the
+        project's own <a href="https://semver.org/spec/v2.0.0.html">SemVer 2.0.0</a> maturity:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Project stage</th>
+            <th>A new specification version is cut</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Before <code>0.1.0</code> (current)</td>
+            <td>per build</td>
+        </tr>
+        <tr>
+            <td><code>0.x.y</code></td>
+            <td>per minor version</td>
+        </tr>
+        <tr>
+            <td><code>1.0.0</code> and later</td>
+            <td>per major version</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>The project is currently in the pre-<code>0.1.0</code> stage, so each release build publishes its
+        own copy of this document. <code>0.1.0</code> will be released once the project is functional,
+        even if incomplete; from that point the cadence drops to per minor version.</p>
+</section>
+
+<section id="conformance">
+    <h2>2. Conformance</h2>
+
+    <p>The key words <em>MUST</em>, <em>MUST NOT</em>, <em>REQUIRED</em>, <em>SHALL</em>,
+        <em>SHALL NOT</em>, <em>SHOULD</em>, <em>SHOULD NOT</em>, <em>RECOMMENDED</em>, <em>MAY</em>, and
+        <em>OPTIONAL</em> in this document are to be interpreted as described in
+        <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a>.</p>
+
+    <p>Requirements are numbered <code>R<var>n</var></code> and are individually linkable. The numbers
+        are stable identifiers shared across the project's specifications: a number missing here
+        belongs to a requirement that binds no engine, and a requirement that binds more than one kind
+        of implementation carries the same number and wording wherever it appears.</p>
+
+    <p>A <dfn>conforming engine</dfn> is a subclass of <code>io.codetoil.curved_spacetime.api.Engine</code>
+        that satisfies every requirement in <a href="#init">§4</a> and <a href="#callbacks">§5</a>.</p>
+</section>
+
+<section id="terminology">
+    <h2>3. Terminology</h2>
+
+    <dl class="terms">
+        <dt><dfn>engine</dfn></dt>
+        <dd>A subclass of the abstract class <code>Engine</code>. It passes itself to the loader's
+            <code>prepareModInit</code>, invokes every module's main entrypoint, and, once initialization
+            is complete, runs the modules' callbacks.
+        </dd>
+
+        <dt><dfn>loader</dfn></dt>
+        <dd>An implementation of <code>CurvedSpacetimeLoader</code>. It maps an entrypoint name and type
+            to a list of entrypoint instances.
+        </dd>
+
+        <dt><dfn>module</dfn></dt>
+        <dd>A unit of functionality with its own JPMS module, Gradle subproject, configuration file, and
+            at least one entrypoint.
+        </dd>
+
+        <dt><dfn>main entrypoint</dfn></dt>
+        <dd>A module's implementation of <code>ModuleInitializer</code>, registered under the entrypoint
+            name <code>main</code>.
+        </dd>
+
+        <dt><dfn>dependent entrypoint</dfn></dt>
+        <dd>A class registered by module <var>B</var> under module <var>A</var>'s dependent entrypoint
+            name, by which <var>B</var> learns of <var>A</var>'s main entrypoint.
+        </dd>
+
+        <dt><dfn>callback</dfn></dt>
+        <dd>A <code>MainCallback</code>, or a <code>SceneCallback</code> bound to one scene: module code
+            the engine runs once initialization is complete.
+        </dd>
+    </dl>
+</section>
+
+<section id="init">
+    <h2>4. Initialization</h2>
+
+    <p id="R6" class="req"><strong>R6.</strong> <code>prepareModInit</code> MUST be called by the engine
+        exactly once, before any entrypoint is invoked, with the run directory and the engine instance.
+        A loader MUST retain the engine reference such that <code>getEngine()</code> returns it
+        thereafter.</p>
+
+    <p id="R10" class="req"><strong>R10.</strong> <code>invokeEntrypoints</code> MUST apply the consumer
+        to every entrypoint <code>getEntrypoints</code> would return for the same arguments. It MUST NOT
+        impose an ordering, and callers MUST NOT depend on one.</p>
+
+    <p id="R20" class="req"><strong>R20.</strong> The engine MUST, in order: load its own configuration;
+        call <code>prepareModInit</code>; then invoke every <code>main</code> entrypoint's
+        <code>onInitialize</code>.</p>
+
+    <p id="R21" class="req"><strong>R21.</strong> The engine MUST invoke <code>main</code> entrypoints
+        <strong>concurrently</strong>, and MUST NOT assume any completion order.</p>
+
+    <p id="R22" class="req"><strong>R22.</strong> If any entrypoint terminates abnormally, the engine
+        MUST propagate that failure rather than continuing with a partially initialized module set.</p>
+
+    <p id="R28" class="req"><strong>R28.</strong> The executor the engine uses to invoke entrypoints MUST
+        be effectively unbounded — it MUST be able to run every entrypoint of a given name concurrently.
+        Both <code>TransferQueue.transfer</code> and <code>TransferQueue.take</code> block until the
+        other side arrives, so a producer and its consumer MUST be runnable at the same time. A bounded
+        pool deadlocks as soon as its threads are occupied by consumers whose producers are still
+        queued.</p>
+
+    <p class="note">In the reference engine this requirement is satisfied by
+        <code>Executors.newCachedThreadPool()</code>, and the documentation of
+        <code>Engine.callDependents</code> in <a href="#api">Appendix A</a> records <em>why</em> the pool
+        must stay unbounded. It is stated here as a requirement because substituting a fixed pool is an
+        easy and catastrophic change.</p>
+
+    <p id="R29" class="req"><strong>R29.</strong> An implementation SHOULD bound the handshake in time
+        and fail with a diagnostic naming the unsatisfied dependency, rather than blocking indefinitely.
+        A missing or miscounted dependency otherwise manifests as a silent hang at startup with no
+        indication of which module is waiting.</p>
+</section>
+
+<section id="callbacks">
+    <h2>5. Callbacks</h2>
+
+    <p>Once initialization is complete, the engine runs module code through callbacks. A module
+        registers a <code>MainCallback</code> for work independent of any scene, or a generator from
+        which the engine makes one <code>SceneCallback</code> per scene. The engine calls each
+        callback's <code>init</code> once, then its <code>loop</code> repeatedly, at the rate its
+        <code>getFPS()</code> reports, and its <code>clean</code> when the engine stops. What a
+        callback computes is out of scope (<a href="#introduction">§1</a>); this section fixes when it is
+        called, on which thread, and what a failure does.</p>
+
+    <h3>5.1 Lifecycle</h3>
+
+    <p id="R42" class="req"><strong>R42.</strong> The engine MUST call every callback's
+        <code>init</code>, <code>loop</code>, and <code>clean</code> from a single thread, the
+        <dfn>callback thread</dfn>. A callback MAY therefore hold mutable state without synchronising it
+        against other callbacks.</p>
+
+    <p id="R43" class="req"><strong>R43.</strong> The engine MUST call a callback's <code>init</code>
+        exactly once, and before the first call to its <code>loop</code>.</p>
+
+    <p id="R44" class="req"><strong>R44.</strong> The engine MUST apply a registered generator exactly
+        once to every scene: each scene that exists when the generator is registered, and each scene
+        registered afterwards. Every callback so produced is subject to <a href="#R42">R42</a> and
+        <a href="#R43">R43</a>.</p>
+
+    <p id="R45" class="req"><strong>R45.</strong> <code>registerMainCallback</code> and
+        <code>registerSceneCallbackGenerator</code> MUST return a future that completes once the
+        <code>init</code> calls the registration causes have finished: normally if every one returned,
+        exceptionally if one threw.</p>
+
+    <h3>5.2 Failure and shutdown</h3>
+
+    <p id="R46" class="req"><strong>R46.</strong> If a callback's <code>init</code> or
+        <code>loop</code>, or a generator applied under <a href="#R44">R44</a>, throws, the engine MUST
+        log the throwable, with its stack trace, at <code>SEVERE</code>, before it releases anything. It
+        MUST then stop as by <code>clean</code> (<a href="#R47">R47</a>). It MUST NOT discard the
+        throwable, and MUST NOT go on calling the remaining callbacks as though nothing had failed.</p>
+
+    <p class="note">Logging comes first so that the failure is on record even if the teardown it
+        triggers fails as well. A throwable that is caught and dropped, captured in a
+        <code>Future</code> nobody reads, or thrown out of a periodic task — whose executor then
+        suppresses every later run without a word — presents as a hang rather than an error.</p>
+
+    <p id="R47" class="req"><strong>R47.</strong> The engine's <code>clean</code> MUST stop the
+        callback loop without interrupting the callback thread; MUST call <code>clean</code> on every
+        registered callback, including one whose <code>init</code> threw, and deregister it, so that no
+        callback is cleaned twice; and MUST then shut down the callback executor. It MUST clean every
+        scene callback before any main callback, and main callbacks in the reverse of the order in
+        which their <code>init</code> was called. A second call MUST be a no-op. Called from a
+        callback's <code>loop</code>, it ends the current tick: the engine MUST NOT call
+        <code>loop</code> on any callback once <code>clean</code> has been called, and MUST NOT report
+        the call as a failure under <a href="#R46">R46</a>. Only the callback thread calls it.</p>
+
+    <p class="note">The order is reverse dependency order. A scene callback is built from what main
+        callbacks provide — a renderer's swap chain and surface come from the Vulkan module's device
+        and instance — and native APIs require an object's children to be destroyed before the
+        object itself.</p>
+
+    <p id="R48" class="req"><strong>R48.</strong> Once <code>clean</code> has been called, the engine
+        MUST ignore every registration whose <code>init</code> has not started, including one made
+        before the call: it MUST NOT call the callback's <code>init</code>, and the registration's
+        future MUST complete normally, immediately for a registration made after the call. It SHOULD
+        log that the registration was ignored.</p>
+</section>
+
+<section id="checklist">
+    <h2>6. Conformance checklist</h2>
+
+    <h3>6.1 Initialization</h3>
+
+    <ul class="checklist">
+        <li>Calls <code>prepareModInit</code> exactly once, before invoking any entrypoint
+            (<a href="#R6">R6</a>)
+        </li>
+        <li>Loads its configuration, prepares the loader, then invokes every <code>main</code> entrypoint
+            (<a href="#R20">R20</a>)
+        </li>
+        <li>Invokes entrypoints concurrently, on an effectively unbounded executor, relying on no order
+            (<a href="#R10">R10</a>, <a href="#R21">R21</a>, <a href="#R28">R28</a>)
+        </li>
+        <li>Propagates entrypoint failures (<a href="#R22">R22</a>)</li>
+        <li>Bounds the handshake in time, naming the unsatisfied dependency (<a href="#R29">R29</a>)</li>
+    </ul>
+
+    <h3>6.2 Callbacks</h3>
+
+    <ul class="checklist">
+        <li><code>init</code>, <code>loop</code>, and <code>clean</code> on one callback thread
+            (<a href="#R42">R42</a>)
+        </li>
+        <li><code>init</code> exactly once, before the first <code>loop</code>; every generator applied
+            to every scene (<a href="#R43">R43</a>, <a href="#R44">R44</a>)
+        </li>
+        <li>Registration returns a future that settles with <code>init</code>
+            (<a href="#R45">R45</a>)
+        </li>
+        <li>A throw is logged at <code>SEVERE</code> before any teardown, then the engine stops
+            (<a href="#R46">R46</a>)
+        </li>
+        <li><code>clean</code> stops without interrupting, cleans each callback once — scene callbacks
+            first, main callbacks in reverse order — shuts the executor down, and is idempotent; no
+            <code>loop</code> after it, and calling it from <code>loop</code> is not a failure
+            (<a href="#R47">R47</a>)
+        </li>
+        <li>Registrations whose <code>init</code> has not started when <code>clean</code> is called
+            are ignored, queued ones included (<a href="#R48">R48</a>)
+        </li>
+    </ul>
+</section>
+
+<!-- BEGIN APPENDIX A: generated from curved-spacetime-loader-module; do not edit by hand. -->
+<section id="api">
+    <h2>Appendix A. API source</h2>
+
+    <p>These files make up <code>io.codetoil.curved_spacetime.api</code>, the JPMS module, built from
+        <code>curved-spacetime-loader-module</code>, that every module, loader and engine compiles
+        against. Each is reproduced in full apart from the licence header it carries. The
+        declarations are normative. The documentation comments are informative: where one disagrees
+        with a numbered requirement, the requirement governs.</p>
+
+    <h3 id="api-moduleinfo">A.1 <code>module-info.java</code></h3>
+
+    <pre><code>/**
+ * Loader Module of Curved Spacetime
+ *
+ */
+module io.codetoil.curved_spacetime.api {
+	requires java.logging;
+	exports io.codetoil.curved_spacetime.loader;
+	exports io.codetoil.curved_spacetime.loader.entrypoint;
+	exports io.codetoil.curved_spacetime.api;
+	exports io.codetoil.curved_spacetime.api.scene;
+}</code></pre>
+
+    <h3 id="api-CurvedSpacetimeLoader">A.2 <code>io/codetoil/curved_spacetime/loader/CurvedSpacetimeLoader.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.loader;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Consumer;
+
+/**
+ * Discovers modules and resolves their entrypoints on the engine's behalf.
+ * &lt;p&gt;
+ * An implementation is free to resolve entrypoints however it likes. The closed-world loader holds them in static
+ * tables so that GraalVM native-image can reach them by ordinary static analysis; the Quilt loader delegates to Quilt
+ * Loader, which discovers them dynamically. Neither strategy is privileged by this interface.
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R6 through R11.
+ */
+public interface CurvedSpacetimeLoader
+{
+	/**
+	 * Prepares this loader for module initialization.
+	 * &lt;p&gt;
+	 * The engine calls this exactly once, before invoking any entrypoint. An implementation must retain {@code engine}
+	 * such that {@link #getEngine()} returns it thereafter.
+	 *
+	 * @param path
+	 * 		the run directory modules resolve their resources against
+	 * @param engine
+	 * 		the engine driving initialization
+	 */
+	void prepareModInit(Path path, Engine engine);
+
+	/**
+	 * Returns every entrypoint registered under the given name whose runtime type is assignable to
+	 * {@code moduleInitializerClass}.
+	 * &lt;p&gt;
+	 * An implementation returns the same instances across repeated calls within one run. The dependency handshake
+	 * relies on that: a dependent locates its own main entrypoint by filtering this list, then transfers to the queue
+	 * owned by that exact object.
+	 *
+	 * @param &lt;E&gt;
+	 * 		the entrypoint type
+	 * @param name
+	 * 		the entrypoint name, such as {@code main}
+	 * @param moduleInitializerClass
+	 * 		the type registered entrypoints must be assignable to
+	 *
+	 * @return the matching entrypoints, empty when the name is recognised but nothing is registered
+	 *
+	 * @throws IllegalArgumentException
+	 * 		if the entrypoint name is not recognised
+	 */
+	&lt;E&gt; List&lt;E&gt; getEntrypoints(String name, Class&lt;E&gt; moduleInitializerClass);
+
+	/**
+	 * Applies the given consumer to every entrypoint {@link #getEntrypoints} would return for the same arguments.
+	 * &lt;p&gt;
+	 * No ordering is imposed, and callers must not depend on one.
+	 *
+	 * @param &lt;E&gt;
+	 * 		the entrypoint type
+	 * @param name
+	 * 		the entrypoint name, such as {@code main}
+	 * @param moduleInitializerClass
+	 * 		the type registered entrypoints must be assignable to
+	 * @param moduleInitializerConsumer
+	 * 		the action to apply to each entrypoint
+	 *
+	 * @throws IllegalArgumentException
+	 * 		if the entrypoint name is not recognised
+	 */
+	&lt;E&gt; void invokeEntrypoints(String name, Class&lt;E&gt; moduleInitializerClass,
+							   Consumer&lt;? super E&gt; moduleInitializerConsumer);
+
+	/**
+	 * Returns the engine this loader was prepared with.
+	 *
+	 * @return the engine passed to {@link #prepareModInit}, or {@code null} before that call
+	 */
+	Engine getEngine();
+}</code></pre>
+
+    <h3 id="api-ModuleInitializer">A.3 <code>io/codetoil/curved_spacetime/loader/entrypoint/ModuleInitializer.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.loader.entrypoint;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
+
+/**
+ * A module's {@code main} entrypoint, the object the engine drives during initialization.
+ * &lt;p&gt;
+ * Every module registers exactly one of these. The engine invokes {@link #onInitialize(Engine)} on all of them
+ * concurrently, so a module must not assume anything about the order in which its peers come up; the only ordering
+ * guarantee available is the one the dependency handshake provides.
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R12 through R16.
+ */
+public interface ModuleInitializer
+{
+	/**
+	 * Brings this module up.
+	 * &lt;p&gt;
+	 * An implementation sets its logger's level from the engine's configuration, loads its own configuration and saves
+	 * it if loading substituted defaults, receives any dependencies it declares through
+	 * {@link #getDependencyModuleTransferQueue()}, performs any operations it must perform during initialization, and
+	 * finally invokes its own dependent entrypoints, passing itself and the engine.
+	 *
+	 * @param engine
+	 * 		the engine driving initialization
+	 */
+	void onInitialize(Engine engine);
+
+	/**
+	 * Returns this module's configuration.
+	 *
+	 * @return the configuration, or {@code null} before {@link #onInitialize(Engine)} has loaded it
+	 */
+	ModuleConfig getConfig();
+
+	/**
+	 * Returns the logger this module writes its diagnostics to.
+	 * &lt;p&gt;
+	 * The same instance is returned for the lifetime of this entrypoint.
+	 *
+	 * @return this module's logger
+	 */
+	Logger getLogger();
+
+	/**
+	 * Returns the queue by which this module receives the entrypoints it depends on.
+	 * &lt;p&gt;
+	 * A module does not look its dependencies up. Each module it depends on invokes a dependent entrypoint, which
+	 * transfers that module's own entrypoint into this queue. The same instance is returned for the lifetime of this
+	 * entrypoint; a fresh or defensively copied queue breaks the handshake, because the producer transfers into
+	 * whichever queue this method returned.
+	 *
+	 * @return this module's dependency transfer queue
+	 */
+	TransferQueue&lt;ModuleInitializer&gt; getDependencyModuleTransferQueue();
+}</code></pre>
+
+    <h3 id="api-ModuleDependentModuleInitializer">A.4 <code>io/codetoil/curved_spacetime/loader/entrypoint/ModuleDependentModuleInitializer.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.loader.entrypoint;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+/**
+ * The callback by which one module learns of another module it depends on.
+ * &lt;p&gt;
+ * Each module extends this with a named interface of its own, and any module depending on that module registers an
+ * implementation of it. When the depended-on module reaches the last step of its initialization, it invokes every such
+ * implementation, passing itself and the engine. The implementation's job is to hand that entrypoint to its own module,
+ * by transferring it into that module's {@link ModuleInitializer#getDependencyModuleTransferQueue() dependency queue}:
+ * &lt;pre&gt;{@code
+ * engine.getCurvedSpacetimeLoader()
+ *         .getEntrypoints("main", ModuleInitializer.class).stream()
+ *         .filter(MyModuleEntrypoint.class::isInstance)
+ *         .findFirst().orElseThrow()
+ *         .getDependencyModuleTransferQueue().transfer(moduleEntrypoint);
+ * }&lt;/pre&gt;
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R17 through R19 and R25.
+ *
+ * @param &lt;E&gt;
+ * 		the entrypoint type of the module being depended on
+ */
+public interface ModuleDependentModuleInitializer&lt;E extends ModuleInitializer&gt;
+{
+	/**
+	 * Receives the entrypoint of a module this module depends on.
+	 * &lt;p&gt;
+	 * Called on the depended-on module's initialization thread, not this module's.
+	 *
+	 * @param moduleEntrypoint
+	 * 		the entrypoint of the module being depended on
+	 * @param engine
+	 * 		the engine driving initialization
+	 */
+	void onInitialize(E moduleEntrypoint, Engine engine);
+}</code></pre>
+
+    <h3 id="api-ModuleConfig">A.5 <code>io/codetoil/curved_spacetime/loader/entrypoint/ModuleConfig.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.loader.entrypoint;
+
+import java.io.IOException;
+
+/**
+ * A module's persisted settings, backed by a {@code java.util.Properties} file under {@code config/}.
+ * &lt;p&gt;
+ * A configuration is never allowed to fail because its file is absent or incomplete. Loading substitutes a documented
+ * default for every key it cannot read, records that it did so, and the owning module then writes the completed file
+ * back:
+ * &lt;pre&gt;{@code
+ * this.config = new XModuleConfig(this.logger).load();
+ * if (this.config.isDirty()) this.config.save();
+ * }&lt;/pre&gt;
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R31 through R37.
+ */
+public interface ModuleConfig
+{
+	/**
+	 * Reads this configuration from disk, substituting defaults for anything missing or invalid.
+	 * &lt;p&gt;
+	 * An absent file is not an error. For each key that is missing or fails to parse, an implementation logs a warning
+	 * identifying the key and the accepted range, substitutes the documented default, and sets the dirty flag.
+	 *
+	 * @return this configuration, so that construction and loading compose
+	 *
+	 * @throws IOException
+	 * 		if the file exists but cannot be read
+	 */
+	ModuleConfig load() throws IOException;
+
+	/**
+	 * Writes this configuration to disk, creating {@code config/} if it does not exist.
+	 * &lt;p&gt;
+	 * Every known key is written, not only those that changed, so that a user who deletes the file gets a complete one
+	 * back on the next run. The dirty flag is cleared on success.
+	 *
+	 * @throws IOException
+	 * 		if the directory cannot be created or the file cannot be written
+	 */
+	void save() throws IOException;
+
+	/**
+	 * Returns whether this configuration differs from what is on disk.
+	 * &lt;p&gt;
+	 * Set whenever the in-memory state diverges from the file. {@link #load()} substituting a default for a missing or
+	 * unparseable key is the usual cause, but any later change to a value counts equally. {@link #save()} clears it,
+	 * since writing the file makes the two agree again.
+	 *
+	 * @return {@code true} if the file does not match this configuration and should be rewritten
+	 */
+	boolean isDirty();
+}</code></pre>
+
+    <h3 id="api-Engine">A.6 <code>io/codetoil/curved_spacetime/api/Engine.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.api;
+
+import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.scene.SceneCallback;
+import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * The engine: it owns the configuration, the scenes, and the callback loop, and it drives module initialization.
+ * &lt;p&gt;
+ * Constructing an engine is what starts the program: an implementation's constructor loads the main configuration,
+ * registers the initial scene, runs every module's {@code main} entrypoint, and then begins the callback loop — so by
+ * the time it returns, the whole module graph is up.
+ * &lt;p&gt;
+ * Callbacks all run on a single scheduled thread, so implementations need no synchronisation against one another.
+ * Module initialization is the opposite: entrypoints run concurrently on an unbounded pool, which the dependency
+ * handshake requires — see {@link #callDependents(String, Class, Consumer, Logger)}.
+ */
+public abstract class Engine
+{
+	/**
+	 * The loader module entrypoints are resolved through.
+	 */
+	protected final CurvedSpacetimeLoader loader;
+
+	/**
+	 * Creates an engine that resolves module entrypoints through the given loader.
+	 *
+	 * @param loader
+	 * 		the loader module entrypoints are resolved through
+	 */
+	public Engine(CurvedSpacetimeLoader loader)
+	{
+		this.loader = loader;
+	}
+
+	/**
+	 * Adds a scene and gives every registered generator a callback for it.
+	 *
+	 * @param scene
+	 * 		the scene to add
+	 */
+	public abstract void registerScene(Scene scene);
+
+	/**
+	 * Invokes every entrypoint registered under the given name, concurrently, and waits for all of them.
+	 * &lt;p&gt;
+	 * The pool this uses is unbounded, and must remain so. The dependency handshake blocks a consumer in
+	 * {@code TransferQueue.take} while its producer is still to run, so a producer and its consumer have to be runnable
+	 * at the same time; a bounded pool deadlocks as soon as its threads fill with consumers whose producers are still
+	 * queued.
+	 * &lt;p&gt;
+	 * The first entrypoint to fail aborts the whole call rather than leaving a half-initialized module graph running.
+	 *
+	 * @param &lt;E&gt;
+	 * 		the entrypoint type
+	 * @param name
+	 * 		the entrypoint name to invoke, such as {@code main}
+	 * @param moduleInitializerClass
+	 * 		the type registered entrypoints must be assignable to
+	 * @param onInitialize
+	 * 		the action to apply to each entrypoint
+	 * @param logger
+	 * 		the logger to trace dispatch through
+	 *
+	 * @throws Throwable
+	 * 		whatever the first failing entrypoint threw
+	 */
+	public abstract &lt;E&gt; void callDependents(String name,
+											Class&lt;E&gt; moduleInitializerClass,
+											Consumer&lt;E&gt; onInitialize,
+											Logger logger) throws Throwable;
+
+	/**
+	 * Prepares the loader and runs every module's {@code main} entrypoint.
+	 *
+	 * @throws RuntimeException
+	 * 		wrapping whatever a module's entrypoint threw
+	 */
+	public abstract void runEntrypoints();
+
+	/**
+	 * Returns the loader this engine resolves entrypoints through.
+	 *
+	 * @return the loader
+	 */
+	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
+	{
+		return this.loader;
+	}
+
+	/**
+	 * Registers scene-independent work and initialises it on the callback thread.
+	 *
+	 * @param mainCallback
+	 * 		the callback to register
+	 *
+	 * @return the completable future generated for this task
+	 */
+	public abstract CompletableFuture&lt;Void&gt; registerMainCallback(MainCallback mainCallback);
+
+	/**
+	 * Registers a factory that produces one callback per scene.
+	 * &lt;p&gt;
+	 * The generator is applied to every scene that exists now, and to each one registered later, so a module never has
+	 * to track scenes itself.
+	 *
+	 * @param sceneCallbackGenerator
+	 * 		the factory producing a callback for a given scene
+	 *
+	 * @return the completable future generated for this task
+	 */
+	public abstract CompletableFuture&lt;Void&gt; registerSceneCallbackGenerator(
+			Function&lt;Scene, SceneCallback&gt; sceneCallbackGenerator);
+
+	/**
+	 * Stops the callback loop, releases every callback, and then shuts the callback executor down.
+	 */
+	public abstract void clean();
+
+	/**
+	 * Logs a failure at {@code SEVERE} and stops the engine.
+	 *
+	 * @param t
+	 * 		the failure to log
+	 * @param message
+	 * 		the message to log it with
+	 */
+	public abstract void throwError(Throwable t, String message);
+
+	/**
+	 * Returns the console handler used for the Curved Spacetime Loggers.
+	 *
+	 * @return the console handler
+	 */
+	public abstract ConsoleHandler getConsoleHandler();
+
+	/**
+	 * Returns whether this engine has finished initializing.
+	 * &lt;p&gt;
+	 * That does not mean every callback is registered: a callback can be registered at any time, and registration is
+	 * asynchronous.
+	 *
+	 * @return {@code true} if the engine is initialized
+	 */
+	public abstract boolean isInitialized();
+
+	/**
+	 * Returns the level every module logger is set to.
+	 *
+	 * @return the logger level from this engine's configuration
+	 */
+	public abstract Level getLoggerLevel();
+
+	/**
+	 * Returns how many times per second the callback loop runs.
+	 *
+	 * @return the configured frame rate, in frames per second
+	 */
+	public abstract int getFPS();
+}</code></pre>
+
+    <h3 id="api-MainCallback">A.7 <code>io/codetoil/curved_spacetime/api/MainCallback.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.api;
+
+/**
+ * Work the engine runs once at start-up and then repeatedly, independent of any scene.
+ * &lt;p&gt;
+ * A module registers one of these with {@link Engine#registerMainCallback(MainCallback)}. The engine calls
+ * {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on shutdown. All three
+ * run on the engine's single callback thread, so an implementation may hold mutable state without synchronising it
+ * against the other callbacks.
+ */
+public abstract class MainCallback
+{
+	/**
+	 * The engine this callback belongs to.
+	 */
+	protected final Engine engine;
+
+	/**
+	 * Whether this callback has finished setting itself up.
+	 * &lt;p&gt;
+	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from its own
+	 * {@link #init()}, at the point where its setup is genuinely complete — only the implementation knows when that
+	 * is.
+	 */
+	protected boolean initialized = false;
+
+	/**
+	 * Creates a callback bound to the given engine.
+	 *
+	 * @param engine
+	 * 		the engine this callback belongs to
+	 */
+	protected MainCallback(Engine engine)
+	{
+		this.engine = engine;
+	}
+
+	/**
+	 * Returns whether this callback has finished setting itself up.
+	 *
+	 * @return {@code true} once the implementation has flagged its own setup complete
+	 */
+	public boolean isInitialized()
+	{
+		return this.initialized;
+	}
+
+	/**
+	 * Sets this callback up.
+	 * &lt;p&gt;
+	 * Called once, before the first {@link #loop()}. An implementation should set {@link #initialized} when it
+	 * finishes.
+	 */
+	public abstract void init();
+
+	/**
+	 * Advances this callback by one frame.
+	 * &lt;p&gt;
+	 * Called repeatedly at the frame rate the engine's configuration specifies.
+	 */
+	public abstract void loop();
+
+	/**
+	 * Releases whatever this callback acquired in {@link #init()}.
+	 */
+	public abstract void clean();
+}</code></pre>
+
+    <h3 id="api-Scene">A.8 <code>io/codetoil/curved_spacetime/api/scene/Scene.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.api.scene;
+
+/**
+ * One independent thing being simulated and drawn.
+ * &lt;p&gt;
+ * The engine holds a list of these and pairs each with a {@link SceneCallback} per registered generator, so modules act
+ * on scenes without tracking them. A scene currently carries no state of its own: what a scene &lt;em&gt;contains&lt;/em&gt; —
+ * spacetimes, metrics, worldlines — belongs to the simulation model, which has not been settled yet and is deliberately
+ * outside the scope of this API.
+ */
+public class Scene
+{
+	/**
+	 * Creates an empty scene.
+	 */
+	public Scene()
+	{
+	}
+}</code></pre>
+
+    <h3 id="api-SceneCallback">A.9 <code>io/codetoil/curved_spacetime/api/scene/SceneCallback.java</code></h3>
+
+    <pre><code>package io.codetoil.curved_spacetime.api.scene;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+/**
+ * Work the engine runs once at start-up and then repeatedly, against one particular scene.
+ * &lt;p&gt;
+ * A module does not register these directly. It registers a generator with
+ * {@link Engine#registerSceneCallbackGenerator}, and the engine applies that generator to every scene, so a module that
+ * wants to act on scenes gets one callback per scene without having to track scenes itself.
+ * &lt;p&gt;
+ * The engine calls {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on
+ * shutdown, all on its single callback thread.
+ */
+public abstract class SceneCallback
+{
+	/**
+	 * The engine this callback belongs to.
+	 */
+	protected final Engine engine;
+
+	/**
+	 * The scene this callback acts on.
+	 */
+	protected final Scene scene;
+
+	/**
+	 * Whether this callback has finished setting itself up.
+	 * &lt;p&gt;
+	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from its own
+	 * {@link #init()}, at the point where its setup is genuinely complete — only the implementation knows when that
+	 * is.
+	 */
+	protected boolean initialized = false;
+
+	/**
+	 * Creates a callback bound to the given engine and scene.
+	 *
+	 * @param engine
+	 * 		the engine this callback belongs to
+	 * @param scene
+	 * 		the scene this callback acts on
+	 */
+	protected SceneCallback(Engine engine, Scene scene)
+	{
+		this.engine = engine;
+		this.scene = scene;
+	}
+
+	/**
+	 * Returns whether this callback has finished setting itself up.
+	 *
+	 * @return {@code true} once the implementation has flagged its own setup complete
+	 */
+	public boolean isInitialized()
+	{
+		return this.initialized;
+	}
+
+	/**
+	 * Sets this callback up against its scene.
+	 * &lt;p&gt;
+	 * Called once, before the first {@link #loop()}. An implementation should set {@link #initialized} when it
+	 * finishes.
+	 */
+	public abstract void init();
+
+	/**
+	 * Advances this callback by one frame.
+	 * &lt;p&gt;
+	 * Called repeatedly at the frame rate the engine's configuration specifies.
+	 */
+	public abstract void loop();
+
+	/**
+	 * Releases whatever this callback acquired in {@link #init()}.
+	 */
+	public abstract void clean();
+}</code></pre>
+</section>
+<!-- END APPENDIX A -->
+
+<footer>
+    <p>Curved Spacetime — Copyright © 2023–2026 Anthony Michalek (Codetoil). Licensed
+        <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPL-3.0-or-later</a>.</p>
+    <p><a href="https://github.com/Codetoil/curved-spacetime">Source</a> ·
+        <a href="https://github.com/Codetoil/curved-spacetime/issues">Issues</a></p>
+</footer>
+
+</body>
+</html>
