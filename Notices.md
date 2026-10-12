@@ -3,6 +3,7 @@
 ## Vulkan Book
 
 ### Versions Used:
+
 | URL                                                                                      |
 |------------------------------------------------------------------------------------------|
 | https://github.com/lwjglgamedev/vulkanbook/tree/ee8d2d583f8c5f30768081646cffcde8bda9a9d4 |
@@ -38,6 +39,7 @@ SOFTWARE.
 ## Quilt Loader
 
 ### Versions Used:
+
 | Version       | URL                                                        |
 |---------------|------------------------------------------------------------|
 | 0.31.0-beta.2 | https://github.com/QuiltMC/quilt-loader/tree/0.31.0-beta.2 |
