@@ -20,8 +20,10 @@
  * Loader Module of Curved Spacetime
  *
  */
-module io.codetoil.curved_spacetime.loader {
+module io.codetoil.curved_spacetime.api {
 	requires java.logging;
 	exports io.codetoil.curved_spacetime.loader;
 	exports io.codetoil.curved_spacetime.loader.entrypoint;
+	exports io.codetoil.curved_spacetime.api;
+	exports io.codetoil.curved_spacetime.api.scene;
 }

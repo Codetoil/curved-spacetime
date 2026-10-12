@@ -23,7 +23,7 @@ import org.quiltmc.loader.impl.game.LibClassifier;
 
 enum CurvedSpacetimeModule implements LibClassifier.LibraryType
 {
-	MAIN_MODULE("io/codetoil/curved_spacetime/Start.class");
+	MAIN_MODULE("io/codetoil/curved_spacetime/start/Start.class");
 
 	private final String[] paths;
 

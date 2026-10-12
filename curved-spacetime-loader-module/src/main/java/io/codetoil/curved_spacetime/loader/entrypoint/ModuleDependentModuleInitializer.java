@@ -17,6 +17,8 @@
  */
 package io.codetoil.curved_spacetime.loader.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
+
 /**
  * The callback by which one module learns of another module it depends on.
  * <p>
@@ -46,6 +48,8 @@ public interface ModuleDependentModuleInitializer<E extends ModuleInitializer>
 	 *
 	 * @param moduleEntrypoint
 	 * 		the entrypoint of the module being depended on
+	 * @param engine
+	 * 		engine
 	 */
-	void onInitialize(E moduleEntrypoint);
+	void onInitialize(E moduleEntrypoint, Engine engine);
 }

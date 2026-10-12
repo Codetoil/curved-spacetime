@@ -16,31 +16,22 @@
  * href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.scene;
-
-import io.codetoil.curved_spacetime.MainModuleEngine;
+package io.codetoil.curved_spacetime.api;
 
 /**
- * Work the engine runs once at start-up and then repeatedly, against one particular scene.
+ * Work the engine runs once at start-up and then repeatedly, independent of any scene.
  * <p>
- * A module does not register these directly. It registers a generator with
- * {@link MainModuleEngine#registerSceneCallbackGenerator}, and the engine applies that generator to every scene, so a
- * module that wants to act on scenes gets one callback per scene without having to track scenes itself.
- * <p>
- * The engine calls {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on
- * shutdown, all on its single callback thread.
+ * A module registers one of these with {@link Engine#registerMainCallback(MainCallback)}. The engine calls
+ * {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on shutdown. All three
+ * run on the engine's single callback thread, so an implementation may hold mutable state without synchronising it
+ * against the other callbacks.
  */
-public abstract class SceneCallback
+public abstract class MainCallback
 {
 	/**
 	 * The engine this callback belongs to.
 	 */
-	protected final MainModuleEngine mainModuleEngine;
-
-	/**
-	 * The scene this callback acts on.
-	 */
-	protected final Scene scene;
+	protected final Engine engine;
 
 	/**
 	 * Whether this callback has finished setting itself up.
@@ -52,17 +43,14 @@ public abstract class SceneCallback
 	protected boolean initialized = false;
 
 	/**
-	 * Creates a callback bound to the given engine and scene.
+	 * Creates a callback bound to the given engine.
 	 *
-	 * @param mainModuleEngine
+	 * @param engine
 	 * 		the engine this callback belongs to
-	 * @param scene
-	 * 		the scene this callback acts on
 	 */
-	protected SceneCallback(MainModuleEngine mainModuleEngine, Scene scene)
+	protected MainCallback(Engine engine)
 	{
-		this.mainModuleEngine = mainModuleEngine;
-		this.scene = scene;
+		this.engine = engine;
 	}
 
 	/**
@@ -76,7 +64,7 @@ public abstract class SceneCallback
 	}
 
 	/**
-	 * Sets this callback up against its scene.
+	 * Sets this callback up.
 	 * <p>
 	 * Called once, before the first {@link #loop()}. An implementation should set {@link #initialized} when it
 	 * finishes.

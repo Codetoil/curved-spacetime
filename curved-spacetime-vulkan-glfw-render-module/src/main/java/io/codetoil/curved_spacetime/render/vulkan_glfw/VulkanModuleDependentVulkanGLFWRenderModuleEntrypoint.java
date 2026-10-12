@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
@@ -44,11 +44,11 @@ public class VulkanModuleDependentVulkanGLFWRenderModuleEntrypoint implements Vu
 
 
 	@Override
-	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint)
+	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint, Engine engine)
 	{
 		try
 		{
-			MainModuleEngine.getInstance().getCurvedSpacetimeLoader()
+			engine.getCurvedSpacetimeLoader()
 					.getEntrypoints("main", ModuleInitializer.class).stream()
 					.filter(VulkanGLFWRenderModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(vulkanModuleEntrypoint);

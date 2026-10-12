@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.cli.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.cli.CLIModuleEntrypoint;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 
@@ -37,5 +38,5 @@ public interface CLIModuleDependentModuleInitializer extends ModuleDependentModu
 	 * @param cliModuleEntrypoint
 	 * 		the CLI module's main entrypoint
 	 */
-	void onInitialize(CLIModuleEntrypoint cliModuleEntrypoint);
+	void onInitialize(CLIModuleEntrypoint cliModuleEntrypoint, Engine engine);
 }

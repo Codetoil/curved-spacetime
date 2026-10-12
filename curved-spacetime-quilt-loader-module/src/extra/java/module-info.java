@@ -21,6 +21,6 @@
  *
  */
 module io.codetoil.curved_spacetime.loader.quiltmc {
-	requires io.codetoil.curved_spacetime.loader;
+	requires io.codetoil.curved_spacetime.api;
 	requires org.quiltmc.loader;
 }

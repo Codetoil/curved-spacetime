@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.simulator;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.simulator.entrypoint.SimulatorModuleDependentModuleInitializer;
@@ -40,21 +40,23 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Simulator Module Logger");
 	private ModuleConfig config;
+	private Engine engine;
 
 	/**
 	 * Creates the simulator module's entrypoint.
 	 * <p>
-	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
 	public SimulatorModuleEntrypoint()
 	{
 	}
 
 	@Override
-	public void onInitialize()
+	public void onInitialize(Engine engine)
 	{
-		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
-		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.engine = engine;
+		this.logger.setLevel(this.engine.getLoggerLevel());
+		this.logger.addHandler(this.engine.getConsoleHandler());
 		this.logger.setUseParentHandlers(false);
 		try
 		{
@@ -66,7 +68,7 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			MainModuleEngine.callDependents("simulator_module_dependent",
+			this.engine.callDependents("simulator_module_dependent",
 					SimulatorModuleDependentModuleInitializer.class,
 					(SimulatorModuleDependentModuleInitializer simulatorModuleDependentModuleInitializer) ->
 							simulatorModuleDependentModuleInitializer.onInitialize(this), this.logger);

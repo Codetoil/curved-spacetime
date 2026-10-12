@@ -20,7 +20,7 @@ java {
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
-    api(project(":curved-spacetime-main-module"))
+    api(project(":curved-spacetime-loader-module"))
     api(project(":curved-spacetime-render-module"))
     api(project(":curved-spacetime-vulkan-module"))
     api(project(":curved-spacetime-glfw-render-module"))

@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
@@ -40,21 +40,23 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render Module Logger");
 	private ModuleConfig config;
+	private Engine engine;
 
 	/**
 	 * Creates the render module's entrypoint.
 	 * <p>
-	 * Called by the loader; nothing happens until {@link #onInitialize()} runs.
+	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
 	public RenderModuleEntrypoint()
 	{
 	}
 
 	@Override
-	public void onInitialize()
+	public void onInitialize(Engine engine)
 	{
-		this.logger.setLevel(MainModuleEngine.getInstance().mainModuleConfig.getLoggerLevel());
-		this.logger.addHandler(MainModuleEngine.getInstance().getConsoleHandler());
+		this.engine = engine;
+		this.logger.setLevel(this.engine.getLoggerLevel());
+		this.logger.addHandler(this.engine.getConsoleHandler());
 		this.logger.setUseParentHandlers(false);
 		try
 		{
@@ -66,9 +68,10 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			MainModuleEngine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
+			this.engine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
 					(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
-							renderModuleDependentModuleInitializer.onInitialize(this), this.logger);
+							renderModuleDependentModuleInitializer.onInitialize(this, this.engine),
+					this.logger);
 		} catch (Throwable e)
 		{
 			throw new RuntimeException(e);

@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.loader.quiltmc;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.api.entrypoint.EntrypointUtil;
@@ -49,7 +50,7 @@ public class CurvedSpacetimeLoaderQuiltLoader implements CurvedSpacetimeLoader
 	}
 
 	@Override
-	public void prepareModInit(Path path, Object engine)
+	public void prepareModInit(Path path, Engine engine)
 	{
 		QuiltLoaderImpl.INSTANCE.prepareModInit(path, engine);
 	}
@@ -69,8 +70,8 @@ public class CurvedSpacetimeLoaderQuiltLoader implements CurvedSpacetimeLoader
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Object getEngine()
+	public Engine getEngine()
 	{
-		return QuiltLoader.getGameInstance();
+		return (Engine) QuiltLoader.getGameInstance();
 	}
 }

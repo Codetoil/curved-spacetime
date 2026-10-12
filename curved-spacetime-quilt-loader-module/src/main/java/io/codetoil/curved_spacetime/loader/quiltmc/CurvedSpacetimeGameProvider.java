@@ -48,12 +48,12 @@ import java.util.*;
  * <p>
  * Quilt is built to load mods for a game, so running anything else under it means supplying a provider that answers
  * what that game is: its id and version, the jars it lives in, the built-in module it contributes, and how to launch
- * it. That last part is why {@code io.codetoil.curved_spacetime.Start.start} must keep its signature — this provider
- * invokes it reflectively, so a change there fails at run time rather than compile time.
+ * it. That last part is why {@code io.codetoil.curved_spacetime.start.Start.start} must keep its signature — this
+ * provider invokes it reflectively, so a change there fails at run time rather than compile time.
  */
 public class CurvedSpacetimeGameProvider implements GameProvider
 {
-	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.Start";
+	private static final String ENTRYPOINT = "io.codetoil.curved_spacetime.start.Start";
 	private final List<Path> gameJars = new ArrayList<>();
 	private final List<Path> miscGameLibraries = new ArrayList<>();
 	private final GameTransformer transformer = new GameTransformer();

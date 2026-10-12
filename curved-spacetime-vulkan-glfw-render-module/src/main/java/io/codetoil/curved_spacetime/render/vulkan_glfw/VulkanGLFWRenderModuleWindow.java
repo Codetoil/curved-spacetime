@@ -18,7 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
-import io.codetoil.curved_spacetime.MainModuleEngine;
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.render.glfw.GLFWRenderModuleWindow;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
@@ -46,7 +46,7 @@ public class VulkanGLFWRenderModuleWindow extends GLFWRenderModuleWindow
 	 * @param logger
 	 * 		the logger to write window diagnostics to
 	 */
-	public VulkanGLFWRenderModuleWindow(MainModuleEngine mainModuleEngine, String title, Logger logger)
+	public VulkanGLFWRenderModuleWindow(Engine mainModuleEngine, String title, Logger logger)
 	{
 		super(mainModuleEngine, title, logger);
 	}

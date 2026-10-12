@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.loader.closed_world;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
@@ -108,7 +109,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 	private static final String WEBSERVER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "webserver_module_dependent";
 	private static final List<WebserverModuleDependentModuleInitializer> WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS
 			= List.of();
-	private Object engine;
+	private Engine engine;
 
 	/**
 	 * Creates the loader.
@@ -120,7 +121,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 	}
 
 	@Override
-	public void prepareModInit(Path path, Object engine)
+	public void prepareModInit(Path path, Engine engine)
 	{
 		this.engine = engine;
 	}
@@ -188,7 +189,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 	}
 
 	@Override
-	public Object getEngine()
+	public Engine getEngine()
 	{
 		return this.engine;
 	}

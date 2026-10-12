@@ -18,6 +18,7 @@
 
 package io.codetoil.curved_spacetime.render.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
 
@@ -37,5 +38,5 @@ public interface RenderModuleDependentModuleInitializer extends ModuleDependentM
 	 * @param renderModuleEntrypoint
 	 * 		the render module's main entrypoint
 	 */
-	void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint);
+	void onInitialize(RenderModuleEntrypoint renderModuleEntrypoint, Engine engine);
 }
