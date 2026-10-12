@@ -69,7 +69,7 @@ jobs:
         # Guarded so that a tag predating the specs/ directory does not fail the release.
         run: |
           if [ -d source-specs/specs ]; then
-            sed -i -r 's/pre-0\.1\.0/${{ github.ref_name }}/g' source-specs/specs/module-system.html
+            sed -i -r 's/pre-0\.1\.0/${{ github.ref_name }}/g' source-specs/specs/*.html
             mkdir -p specs/${{ github.ref_name }}
             cp -R source-specs/specs/. specs/${{ github.ref_name }}/
           else
