@@ -135,12 +135,19 @@ nav h2 {
     color: var(--muted);
 }
 
-nav ol {
-    margin: 0;
-    padding-left: 1.4rem;
+nav ol, nav p {
     font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
     font-size: 0.94rem;
     line-height: 1.85;
+}
+
+nav ol {
+    margin: 0;
+    padding-left: 1.4rem;
+}
+
+nav p {
+    margin: 0.5rem 0 0;
 }
 
 /* ---- links ------------------------------------------------------------- */
