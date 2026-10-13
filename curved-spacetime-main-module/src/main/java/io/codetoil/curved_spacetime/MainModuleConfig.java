@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The engine's own settings, read from {@code config/main-module.config}.
+ * The engine's own settings, read from {@code config/curved-spacetime-main-module.config}.
  * <p>
  * Holds the frame rate the callback loop runs at and the level every module's logger is set to. Neither key is required
  * to be present: loading substitutes a documented default for anything missing or unparseable and reports that through
@@ -37,7 +37,7 @@ public class MainModuleConfig
 {
 	private static final Level DEFAULT_LOGGER_LEVEL = Level.INFO;
 	private static final int DEFAULT_FPS = 60;
-	private static final String FILENAME = "config/main-module.config";
+	private static final String FILENAME = "config/curved-spacetime-main-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 	private Level loggerLevel;

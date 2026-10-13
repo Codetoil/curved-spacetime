@@ -32,14 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The webserver module's settings, read from {@code config/webserver-module.config}.
+ * The webserver module's settings, read from {@code config/curved-spacetime-webserver-module.config}.
  * <p>
  * The module has no settings of its own yet, so the file is written empty — note that the port the server listens on is
  * currently hard-coded rather than read from here.
  */
 public class WebserverModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/webserver-module.config";
+	private static final String FILENAME = "config/curved-spacetime-webserver-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 

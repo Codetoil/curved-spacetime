@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The render module's settings, read from {@code config/render-module.config}.
+ * The render module's settings, read from {@code config/curved-spacetime-render-module.config}.
  * <p>
  * The render module is an API with no settings of its own yet, so the file is currently written empty. It exists so
  * that the file and its handling are already in place when the first key is added, and so that implementations have a
@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  */
 public class RenderModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/render-module.config";
+	private static final String FILENAME = "config/curved-spacetime-render-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 

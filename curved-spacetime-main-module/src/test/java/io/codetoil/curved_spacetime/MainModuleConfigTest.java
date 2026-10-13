@@ -49,7 +49,7 @@ class MainModuleConfigTest
 	/**
 	 * The path {@link MainModuleConfig} reads and writes, relative to the working directory.
 	 */
-	private static final String CONFIG_PATH = "config/main-module.config";
+	private static final String CONFIG_PATH = "config/curved-spacetime-main-module.config";
 
 	/**
 	 * The default frame rate substituted when {@code fps} is missing or invalid.

@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * <p>
  * The render module is an API: it defines what a window and its input look like, and owns no windowing library itself.
  * This entrypoint therefore does little beyond loading configuration and then handing itself to whichever
- * implementations depend on it — GLFW today — through the {@code render_module_dependent} entrypoint.
+ * implementations depend on it — GLFW today — through the {@code curved_spacetime_render_module_dependent} entrypoint.
  */
 public class RenderModuleEntrypoint implements ModuleInitializer
 {
@@ -71,7 +71,7 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("render_module_dependent", RenderModuleDependentModuleInitializer.class,
+			this.engine.callDependents("curved_spacetime_render_module_dependent", RenderModuleDependentModuleInitializer.class,
 					(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
 							renderModuleDependentModuleInitializer.onInitialize(this, this.engine),
 					this.logger);

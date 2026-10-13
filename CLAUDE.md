@@ -19,24 +19,14 @@ files alone.
 The specifications are authoritative. Where `CONTRIBUTING.md` and a specification disagree, the
 specification wins, and the disagreement is a bug worth reporting.
 
-Names are the exception, for now. The specifications and `CONTRIBUTING.md` use the target
-naming — `CurvedSpacetime`-prefixed entrypoint classes such as
-`CurvedSpacetimeRenderGLFWModuleEntrypoint`, API-first directories such as
-`curved-spacetime-render-glfw-module`, and config and entrypoint names derived from the full
-module key. The tree still uses the old names (`GLFWRenderModuleEntrypoint`,
-`curved-spacetime-glfw-render-module`, `render_module_dependent`). The rename is tracked in
-[#112](https://github.com/Codetoil/curved-spacetime/issues/112) and deferred until the engine
-runs end to end. Until it lands, write code against the names in the tree, and do not rename
-anything toward the specification as part of an unrelated change.
-
 When you change module-system behaviour — entrypoint naming, the handshake, the config
 contract — update `specs/module-system.html` in the same change. When you change how an engine
 initializes modules or runs callbacks, update `specs/engine.html` the same way.
 
 Appendix A of both specifications is generated, not written. When a release is published, the
 pages workflow runs `fill_api_appendix.py` (kept on the `pages` branch) to fill the empty
-`<section id="api-generated">` from `curved-spacetime-loader-module/src/main/java`. Leave that
-section empty in the tree. A change to the loader module needs no appendix edit, but any
+`<section id="api-generated">` from `curved-spacetime-api-module/src/main/java`. Leave that
+section empty in the tree. A change to the API module needs no appendix edit, but any
 requirement or prose that names what changed still has to be updated by hand.
 
 The two specifications serve separate audiences, and each must be readable without the other:
@@ -52,7 +42,7 @@ JPMS stack compiles with plain `javac` in dependency order — the only external
 is `java.logging`:
 
     javac -d /tmp/mods/io.codetoil.curved_spacetime.api \
-        $(find curved-spacetime-loader-module/src/main/java -name '*.java')
+        $(find curved-spacetime-api-module/src/main/java -name '*.java')
     javac -d /tmp/mods/io.codetoil.curved_spacetime --module-path /tmp/mods \
         $(find curved-spacetime-main-module/src/main/java -name '*.java')
     # then simulator, then the module under test

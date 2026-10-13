@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The Vulkan module's settings, read from {@code config/vulkan-module.config}.
+ * The Vulkan module's settings, read from {@code config/curved-spacetime-vulkan-module.config}.
  * <p>
  * Two keys: {@code validation} turns the Vulkan validation layers on, which is expensive but reports API misuse the
  * driver would otherwise ignore; {@code preferredDeviceName} names a GPU to use in preference to the automatic choice,
@@ -44,7 +44,7 @@ public class VulkanModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VALIDATE = false;
 	private static final String DEFAULT_PREFERRED_DEVICE_NAME = null;
-	private static final String FILENAME = "config/vulkan-module.config";
+	private static final String FILENAME = "config/curved-spacetime-vulkan-module.config";
 	private final Logger logger;
 	private boolean _validation;
 	private String preferredDeviceName;

@@ -20,7 +20,7 @@ java {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
-    // MainModuleConfig resolves config/main-module.config relative to the working directory,
+    // MainModuleConfig resolves config/curved-spacetime-main-module.config relative to the working directory,
     // so give the tests a scratch directory rather than letting them write into the source tree.
     workingDir = layout.buildDirectory.dir("test-working").get().asFile
     doFirst {
@@ -36,7 +36,7 @@ tasks.jar {
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
-    api(project(":curved-spacetime-loader-module"))
+    api(project(":curved-spacetime-api-module"))
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")

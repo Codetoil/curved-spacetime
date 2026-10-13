@@ -57,12 +57,12 @@ class CurvedSpacetimeLoaderClosedLoaderTest
 	/**
 	 * An entrypoint name the loader recognises but for which nothing is registered.
 	 */
-	private static final String EMPTY_ENTRYPOINT_NAME = "cli_module_dependent";
+	private static final String EMPTY_ENTRYPOINT_NAME = "curved_spacetime_cli_module_dependent";
 
 	/**
 	 * An entrypoint name no loader recognises.
 	 */
-	private static final String UNKNOWN_ENTRYPOINT_NAME = "no_such_module_dependent";
+	private static final String UNKNOWN_ENTRYPOINT_NAME = "curved_spacetime_no_such_module_dependent";
 
 	private CurvedSpacetimeLoaderClosedLoader loader;
 

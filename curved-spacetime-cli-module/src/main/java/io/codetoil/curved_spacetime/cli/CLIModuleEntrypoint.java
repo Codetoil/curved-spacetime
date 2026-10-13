@@ -70,7 +70,7 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("cli_module_dependent", CLIModuleDependentModuleInitializer.class,
+			this.engine.callDependents("curved_spacetime_cli_module_dependent", CLIModuleDependentModuleInitializer.class,
 					(CLIModuleDependentModuleInitializer cliModuleDependentModuleInitializer) ->
 							cliModuleDependentModuleInitializer.onInitialize(this, this.engine),
 					this.logger);

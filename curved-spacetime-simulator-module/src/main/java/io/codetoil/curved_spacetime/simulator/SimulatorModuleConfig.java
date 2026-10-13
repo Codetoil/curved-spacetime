@@ -32,14 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The simulator module's settings, read from {@code config/simulator-module.config}.
+ * The simulator module's settings, read from {@code config/curved-spacetime-simulator-module.config}.
  * <p>
  * The module has no settings of its own yet, so the file is written empty. It exists so that the file and its handling
  * are already in place when the simulation model gains its first tunable.
  */
 public class SimulatorModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/simulator-module.config";
+	private static final String FILENAME = "config/curved-spacetime-simulator-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 

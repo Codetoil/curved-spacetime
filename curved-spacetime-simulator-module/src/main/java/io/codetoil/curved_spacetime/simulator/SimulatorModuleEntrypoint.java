@@ -71,7 +71,7 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("simulator_module_dependent",
+			this.engine.callDependents("curved_spacetime_simulator_module_dependent",
 					SimulatorModuleDependentModuleInitializer.class,
 					(SimulatorModuleDependentModuleInitializer simulatorModuleDependentModuleInitializer) ->
 							simulatorModuleDependentModuleInitializer.onInitialize(this), this.logger);

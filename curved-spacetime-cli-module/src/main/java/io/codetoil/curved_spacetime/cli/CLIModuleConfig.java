@@ -32,14 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The CLI module's settings, read from {@code config/cli-module.config}.
+ * The CLI module's settings, read from {@code config/curved-spacetime-cli-module.config}.
  * <p>
  * The module has no settings of its own yet, so the file is written empty. It exists so that the file and its handling
  * are already in place when the first key is added.
  */
 public class CLIModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/cli-module.config";
+	private static final String FILENAME = "config/curved-spacetime-cli-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 

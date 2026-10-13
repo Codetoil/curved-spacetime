@@ -10,8 +10,7 @@ configuration format — see the
 the specification disagree, the specification wins.
 
 **The specification describes how the module system *should* work, and the existing code does
-not yet conform to it.** Module directory names, the engine class name, and the derived
-entrypoint and configuration names have all changed. Follow the specification for new work; when
+not yet conform to it.** Follow the specification for new work; when
 it disagrees with the sibling module you are copying from, the sibling is the one that is
 wrong.
 
@@ -31,7 +30,7 @@ mirrors that order segment for segment — API first, implementation last, `-mod
 `curved-spacetime-render-vulkan-glfw-module` therefore maps to
 `io.codetoil.curved_spacetime.render.vulkan_glfw`.
 
-The directories in the tree today are still ordered the other way round (`curved-spacetime-glfw-render-module`) and do
+The directories in the tree today are still ordered the other way round (`curved-spacetime-render-glfw-module`) and do
 not yet match.
 
 ## Adding a module
@@ -41,7 +40,7 @@ scratch — `curved-spacetime-render-glfw-module` is a reference for an implemen
 API `curved-spacetime-render-module`. A proper SDK will be made later.
 
 1. **`build.gradle.kts`** — plugins: java, java-library, javadoc-links, maven-publish.
-   `api(project(":curved-spacetime-loader-module"))`, plus the API module. **Leave the jar's `destinationDirectory`
+   `api(project(":curved-spacetime-api-module"))`, plus the API module. **Leave the jar's `destinationDirectory`
    alone.** Jar output stays at the Gradle default,
    `build/libs`. To place the module in a distribution, add a row to `quiltDistribution` (or the
    `closedWorldDistribution`) in the root `build.gradle.kts` — naming the module, its subdirectory
@@ -54,7 +53,7 @@ API `curved-spacetime-render-module`. A proper SDK will be made later.
    the module key in `PascalCase` with `-module` dropped. Its `onInitialize(Engine engine)` sets its
    logger level from `engine.getLoggerLevel()`, adds `engine.getConsoleHandler()` to that logger and
    calls `setUseParentHandlers(false)` on it (R23 in the specification explains why both are
-   needed), loads its config, then calls `engine.callDependents("<key_>_dependent", …)`, where
+   needed), loads its config, then calls `engine.callDependents("<key_>curved_spacetime__dependent", …)`, where
    `<key_>` is the module key with every `-` replaced by `_`.
 4. **`<Module 1>ModuleDependent<Module 2>ModuleEntrypoint implements <Module 1>ModuleDependentModuleInitializer`**
    — one per module you depend on, where module 1 is the depended-on module and module 2 is this
@@ -131,8 +130,8 @@ engine initializes modules or runs callbacks should update `specs/engine.html` t
 
 Appendix A of both specifications is generated, not written by hand. When a release is published,
 the pages workflow runs `fill_api_appendix.py` (kept on the `pages` branch), which copies every
-file in `curved-spacetime-loader-module/src/main/java` into the empty
-`<section id="api-generated">`. Leave that section empty in the repository. A change to the loader
+file in `curved-spacetime-api-module/src/main/java` into the empty
+`<section id="api-generated">`. Leave that section empty in the repository. A change to the API
 module needs no appendix edit, but any requirement or prose that names what changed should still
 be updated in the same change.
 
