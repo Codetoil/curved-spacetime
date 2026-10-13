@@ -76,7 +76,7 @@ jobs:
         run: |
           if [ -d source-specs/specs ]; then
             sed -i -r 's/pre-0\.1\.0/${{ github.ref_name }}/g' source-specs/specs/*.html
-            python fill_api_appendix.py loader/curved-spacetime-loader-module/src/main/java source-specs/specs/engine.html source-specs/module-system.html
+            python fill_api_appendix.py loader/curved-spacetime-loader-module/src/main/java source-specs/specs/engine.html source-specs/specs/module-system.html
             mkdir -p specs/${{ github.ref_name }}
             cp -R source-specs/specs/. specs/${{ github.ref_name }}/
           else
