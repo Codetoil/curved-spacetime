@@ -57,7 +57,7 @@ publishing {
                 developers {
                     developer {
                         id = "codetoil"
-                        name = "Anthony Michalek (Codetoil)"
+                        name = "Angelina Michalek / Anthony Michalek (Codetoil)"
                         email = "ianthisawesomee@gmail.com"
                         url = "https://codetoil.io"
                         roles = setOf("owner", "architect", "developer")
