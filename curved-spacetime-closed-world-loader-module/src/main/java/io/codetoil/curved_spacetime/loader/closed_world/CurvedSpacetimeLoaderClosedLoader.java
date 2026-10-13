@@ -74,8 +74,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			new GLFWRenderModuleEntrypoint(),
 			new VulkanRenderModuleEntrypoint(),
 			new VulkanGLFWRenderModuleEntrypoint()//,
-			//new WebserverModuleEntrypoint(),
-			//new WebserverOpenAPIModuleEntrypoint()
+			//new WebserverModuleEntrypoint()
 	);
 	private static final String CLI_MODULE_DEPENDENT_ENTRYPOINT_NAME
 			= "cli_module_dependent";
