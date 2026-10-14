@@ -127,8 +127,14 @@ to per minor version from that point.
 
 Changes to the module system — entrypoint naming, the handshake, the config contract — should
 update `specs/module-system.html` in the same change that alters the behaviour. Changes to how an
-engine initializes modules or runs callbacks should update `specs/engine.html` the same way, and a
-change to any file in `curved-spacetime-loader-module` should update Appendix A of both.
+engine initializes modules or runs callbacks should update `specs/engine.html` the same way.
+
+Appendix A of both specifications is generated, not written by hand. When a release is published,
+the pages workflow runs `fill_api_appendix.py` (kept on the `pages` branch), which copies every
+file in `curved-spacetime-loader-module/src/main/java` into the empty
+`<section id="api-generated">`. Leave that section empty in the repository. A change to the loader
+module needs no appendix edit, but any requirement or prose that names what changed should still
+be updated in the same change.
 
 ### Format states status
 
