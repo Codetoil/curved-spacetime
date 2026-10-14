@@ -89,7 +89,7 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 			server.start();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load start test server", ex);
+			throw new RuntimeException("Failed to start test server", ex);
 		}
 		System.out.println("Started test server");
 		try
