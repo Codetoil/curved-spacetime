@@ -8,7 +8,7 @@ on:
 jobs:
   publish-curved-spacetime-cli-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -38,7 +38,7 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-curved-spacetime-glfw-render-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -69,7 +69,7 @@ jobs:
 
   publish-curved-spacetime-loader-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -100,7 +100,7 @@ jobs:
 
   publish-curved-spacetime-main-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -131,7 +131,7 @@ jobs:
 
   publish-curved-spacetime-quilt-loader-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -162,7 +162,7 @@ jobs:
 
   publish-curved-spacetime-render-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -192,7 +192,7 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-curved-spacetime-simulator-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -222,7 +222,7 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-curved-spacetime-vulkan-glfw-render-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -253,7 +253,7 @@ jobs:
 
   publish-curved-spacetime-vulkan-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -285,7 +285,7 @@ jobs:
 
   publish-curved-spacetime-vulkan-render-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -316,7 +316,7 @@ jobs:
 
   publish-curved-spacetime-webserver-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write

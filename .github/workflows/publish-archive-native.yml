@@ -7,7 +7,7 @@ on:
 jobs:
   publish-curved-spacetime-closed-linux-x64:
     name: Publish curved-spacetime (Closed-World Native Variant) Linux x64
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     permissions:
       contents: write
@@ -34,7 +34,7 @@ jobs:
           files: ./curved-spacetime-closed-world-native-variant-linux-x64-${{ github.ref_name }}.zip
   publish-curved-spacetime-closed-linux-arm64:
     name: Publish curved-spacetime (Closed-World Native Variant) Linux arm64
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
 
     permissions:
       contents: write

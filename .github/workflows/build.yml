@@ -5,7 +5,7 @@ on: push
 jobs:
   build-curved-spacetime:
     name: Build curved-spacetime
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - uses: actions/checkout@v7
@@ -28,7 +28,7 @@ jobs:
         run: ./gradlew assemble
   build-curved-spacetime-linux-x64:
     name: Build curved-spacetime Linux x64
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - uses: actions/checkout@v7
@@ -44,7 +44,7 @@ jobs:
         run: ./gradlew nativeCompile
   build-curved-spacetime-linux-arm64:
     name: Build curved-spacetime Linux arm64
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
 
     steps:
       - uses: actions/checkout@v7
