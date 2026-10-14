@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * One key, {@code requestedImages}, which decides how many swap chain images to ask for. More images allow more frames
  * in flight at the cost of latency and memory; the surface's supported range is the final say.
  */
-public class RenderVulkanGLFWModuleConfig implements ModuleConfig
+public class CurvedSpacetimeRenderVulkanGLFWModuleConfig implements ModuleConfig
 {
 	private static final int DEFAULT_REQUESTED_IMAGES = 2;
 	private static final String FILENAME = "config/curved-spacetime-render-vulkan-glfw-module.config";
@@ -51,7 +51,7 @@ public class RenderVulkanGLFWModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when a key is missing or invalid
 	 */
-	public RenderVulkanGLFWModuleConfig(Logger logger)
+	public CurvedSpacetimeRenderVulkanGLFWModuleConfig(Logger logger)
 	{
 		this.logger = logger;
 	}
@@ -68,17 +68,17 @@ public class RenderVulkanGLFWModuleConfig implements ModuleConfig
 		return this.requestedImages;
 	}
 
-	public RenderVulkanGLFWModuleConfig load() throws IOException
+	public CurvedSpacetimeRenderVulkanGLFWModuleConfig load() throws IOException
 	{
 		Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(RenderVulkanGLFWModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeRenderVulkanGLFWModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
 			this.logger.log(Level.WARNING, ex,
-					() -> "Could not find config file " + RenderVulkanGLFWModuleConfig.FILENAME);
+					() -> "Could not find config file " + CurvedSpacetimeRenderVulkanGLFWModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -94,23 +94,23 @@ public class RenderVulkanGLFWModuleConfig implements ModuleConfig
 				this.logger.log(Level.WARNING, ex,
 						() -> "Invalid value for key requestedImages: " + requestedImagesPropValue +
 								", lower bound 2, resetting to default " +
-								RenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES);
-				this.requestedImages = RenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES;
+								CurvedSpacetimeRenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES);
+				this.requestedImages = CurvedSpacetimeRenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 			if (this.requestedImages < 2)
 			{
 				this.logger.log(Level.WARNING, "Invalid value for key requestedImages: " + this.requestedImages +
 						", lower bound 2, resetting to default " +
-						RenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES);
-				this.requestedImages = RenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES;
+						CurvedSpacetimeRenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES);
+				this.requestedImages = CurvedSpacetimeRenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES;
 				this.dirty = true;
 			}
 		} else
 		{
 			this.logger.warning("Could not find required key requestedImages, lower bound 2, resetting to default " +
-					RenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES);
-			this.requestedImages = RenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES;
+					CurvedSpacetimeRenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES);
+			this.requestedImages = CurvedSpacetimeRenderVulkanGLFWModuleConfig.DEFAULT_REQUESTED_IMAGES;
 			this.dirty = true;
 		}
 
@@ -122,7 +122,7 @@ public class RenderVulkanGLFWModuleConfig implements ModuleConfig
 		Properties props = new Properties();
 		props.put("requestedImages", String.valueOf(this.requestedImages));
 
-		try (FileWriter writer = new FileWriter(RenderVulkanGLFWModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(CurvedSpacetimeRenderVulkanGLFWModuleConfig.FILENAME))
 		{
 			props.store(writer, "Config for the Vulkan GLFW Render Module.");
 		}

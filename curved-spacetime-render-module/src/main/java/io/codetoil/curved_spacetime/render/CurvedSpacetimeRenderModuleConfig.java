@@ -19,7 +19,7 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.simulator;
+package io.codetoil.curved_spacetime.render;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 
@@ -32,14 +32,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The simulator module's settings, read from {@code config/curved-spacetime-simulator-module.config}.
+ * The render module's settings, read from {@code config/curved-spacetime-render-module.config}.
  * <p>
- * The module has no settings of its own yet, so the file is written empty. It exists so that the file and its handling
- * are already in place when the simulation model gains its first tunable.
+ * The render module is an API with no settings of its own yet, so the file is currently written empty. It exists so
+ * that the file and its handling are already in place when the first key is added, and so that implementations have a
+ * configuration to inherit the pattern from.
  */
-public class SimulatorModuleConfig implements ModuleConfig
+public class CurvedSpacetimeRenderModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/curved-spacetime-simulator-module.config";
+	private static final String FILENAME = "config/curved-spacetime-render-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 
@@ -49,39 +50,61 @@ public class SimulatorModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when the file is missing
 	 */
-	public SimulatorModuleConfig(Logger logger)
+	public CurvedSpacetimeRenderModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
 	}
 
-	public SimulatorModuleConfig load() throws IOException
+	/**
+	 * Reads the configuration from disk, tolerating an absent file.
+	 *
+	 * @return this configuration, so that construction and loading compose
+	 *
+	 * @throws IOException
+	 * 		if the file exists but cannot be read
+	 */
+	public CurvedSpacetimeRenderModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(SimulatorModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeRenderModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			logger.log(Level.WARNING, ex, () -> "Could not find config file " + SimulatorModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeRenderModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
 		return this;
 	}
 
+	/**
+	 * Writes the configuration to disk and clears the dirty flag.
+	 *
+	 * @throws IOException
+	 * 		if the file cannot be written
+	 */
 	public void save() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(SimulatorModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(CurvedSpacetimeRenderModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the Simulator Module.");
+			props.store(writer, "Config for the Render Module.");
 		}
 		this.dirty = false;
 	}
 
+	/**
+	 * Returns whether this configuration differs from what is on disk.
+	 * <p>
+	 * With no keys yet, the only cause is the file having been absent when it was loaded; {@link #save()} clears it.
+	 *
+	 * @return {@code true} if the file does not match this configuration and should be rewritten
+	 */
 	public boolean isDirty()
 	{
 		return this.dirty;

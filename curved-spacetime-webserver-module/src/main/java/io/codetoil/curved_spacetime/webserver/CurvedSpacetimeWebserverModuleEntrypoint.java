@@ -68,7 +68,7 @@ public class CurvedSpacetimeWebserverModuleEntrypoint implements ModuleInitializ
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new WebserverModuleConfig(this.logger).load();
+			this.config = new CurvedSpacetimeWebserverModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

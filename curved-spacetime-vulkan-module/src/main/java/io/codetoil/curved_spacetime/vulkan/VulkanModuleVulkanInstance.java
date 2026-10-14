@@ -136,7 +136,7 @@ public class VulkanModuleVulkanInstance
 					.apiVersion(VK13.VK_API_VERSION_1_3);
 
 			// Validation layers
-			boolean validation = ((VulkanModuleConfig) vulkanModuleEntrypoint.getConfig()).validation();
+			boolean validation = ((CurvedSpacetimeVulkanModuleConfig) vulkanModuleEntrypoint.getConfig()).validation();
 			List<String> validationLayers;
 			int numValidationLayers = 0;
 

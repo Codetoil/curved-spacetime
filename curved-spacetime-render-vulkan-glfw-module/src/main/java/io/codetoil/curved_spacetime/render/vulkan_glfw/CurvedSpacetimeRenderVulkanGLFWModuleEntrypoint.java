@@ -71,7 +71,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new RenderVulkanGLFWModuleConfig(this.logger).load();
+			this.config = new CurvedSpacetimeRenderVulkanGLFWModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

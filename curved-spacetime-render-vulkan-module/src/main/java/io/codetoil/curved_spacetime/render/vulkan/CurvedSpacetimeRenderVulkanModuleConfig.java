@@ -19,7 +19,7 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.cli;
+package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 
@@ -32,14 +32,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The CLI module's settings, read from {@code config/curved-spacetime-cli-module.config}.
+ * The Vulkan render module's settings, read from {@code config/curved-spacetime-render-vulkan-module.config}.
  * <p>
- * The module has no settings of its own yet, so the file is written empty. It exists so that the file and its handling
- * are already in place when the first key is added.
+ * The module has no settings of its own yet, so the file is written empty.
  */
-public class CLIModuleConfig implements ModuleConfig
+public class CurvedSpacetimeRenderVulkanModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/curved-spacetime-cli-module.config";
+	private static final String FILENAME = "config/curved-spacetime-render-vulkan-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 
@@ -49,60 +48,40 @@ public class CLIModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when the file is missing
 	 */
-	public CLIModuleConfig(Logger logger)
+	public CurvedSpacetimeRenderVulkanModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
 	}
 
-	/**
-	 * Reads the configuration from disk, tolerating an absent file.
-	 *
-	 * @return this configuration, so that construction and loading compose
-	 *
-	 * @throws IOException
-	 * 		if the file exists but cannot be read
-	 */
-	public CLIModuleConfig load() throws IOException
+	public CurvedSpacetimeRenderVulkanModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(CLIModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeRenderVulkanModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			logger.log(Level.WARNING, ex, () -> "Could not find config file " + CLIModuleConfig.FILENAME);
+			this.logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeRenderVulkanModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
 		return this;
 	}
 
-	/**
-	 * Writes the configuration to disk and clears the dirty flag.
-	 *
-	 * @throws IOException
-	 * 		if the file cannot be written
-	 */
 	public void save() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(CLIModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(CurvedSpacetimeRenderVulkanModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the CLI Module.");
+			props.store(writer, "Config for the Vulkan Render Module.");
 		}
 		this.dirty = false;
 	}
 
-	/**
-	 * Returns whether this configuration differs from what is on disk.
-	 * <p>
-	 * With no keys yet, the only cause is the file having been absent when it was loaded; {@link #save()} clears it.
-	 *
-	 * @return {@code true} if the file does not match this configuration and should be rewritten
-	 */
 	public boolean isDirty()
 	{
 		return this.dirty;

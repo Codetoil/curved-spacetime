@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * One key, {@code vsync}, which decides whether presentation waits for the display's refresh. The Vulkan render module
  * reads it when choosing a swap chain present mode.
  */
-public class RenderGLFWModuleConfig implements ModuleConfig
+public class CurvedSpacetimeRenderGLFWModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VSYNC = true;
 	private static final String FILENAME = "config/curved-spacetime-render-glfw-module.config";
@@ -51,7 +51,7 @@ public class RenderGLFWModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when a key is missing or invalid
 	 */
-	public RenderGLFWModuleConfig(Logger logger)
+	public CurvedSpacetimeRenderGLFWModuleConfig(Logger logger)
 	{
 		this.logger = logger;
 	}
@@ -67,16 +67,17 @@ public class RenderGLFWModuleConfig implements ModuleConfig
 	}
 
 
-	public RenderGLFWModuleConfig load() throws IOException
+	public CurvedSpacetimeRenderGLFWModuleConfig load() throws IOException
 	{
 		Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(RenderGLFWModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeRenderGLFWModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			logger.log(Level.WARNING, ex, () -> "Could not find config file " + RenderGLFWModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeRenderGLFWModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -87,17 +88,18 @@ public class RenderGLFWModuleConfig implements ModuleConfig
 		} else
 		{
 			logger.warning("Could not find required key vsync, resetting to default " +
-					RenderGLFWModuleConfig.DEFAULT_VSYNC);
-			this.vsync = RenderGLFWModuleConfig.DEFAULT_VSYNC;
+					CurvedSpacetimeRenderGLFWModuleConfig.DEFAULT_VSYNC);
+			this.vsync = CurvedSpacetimeRenderGLFWModuleConfig.DEFAULT_VSYNC;
 			this.dirty = true;
 		}
 
-		try (FileReader reader = new FileReader(RenderGLFWModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeRenderGLFWModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			logger.log(Level.WARNING, ex, () -> "Could not find config file " + RenderGLFWModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeRenderGLFWModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -109,7 +111,7 @@ public class RenderGLFWModuleConfig implements ModuleConfig
 		Properties props = new Properties();
 		props.put("vsync", String.valueOf(this.vsync));
 
-		try (FileWriter writer = new FileWriter(RenderGLFWModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(CurvedSpacetimeRenderGLFWModuleConfig.FILENAME))
 		{
 			props.store(writer, "Config for the GLFW Render Module.");
 		}

@@ -65,7 +65,7 @@ public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitiali
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new RenderGLFWModuleConfig(this.logger).load();
+			this.config = new CurvedSpacetimeRenderGLFWModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

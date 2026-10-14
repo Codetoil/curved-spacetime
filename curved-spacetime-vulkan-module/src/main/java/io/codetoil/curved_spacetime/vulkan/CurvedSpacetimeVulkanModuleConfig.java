@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  * default, so unlike other keys its absence does not mark the configuration dirty. In a future version
  * {@code preferredDeviceName} will be added as a comment if no such comment is there and the option is absent.
  */
-public class VulkanModuleConfig implements ModuleConfig
+public class CurvedSpacetimeVulkanModuleConfig implements ModuleConfig
 {
 	private static final boolean DEFAULT_VALIDATE = false;
 	private static final String DEFAULT_PREFERRED_DEVICE_NAME = null;
@@ -56,7 +56,7 @@ public class VulkanModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when a key is missing or invalid
 	 */
-	public VulkanModuleConfig(Logger logger)
+	public CurvedSpacetimeVulkanModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
@@ -70,16 +70,17 @@ public class VulkanModuleConfig implements ModuleConfig
 	 * @throws IOException
 	 * 		if the file exists but cannot be read
 	 */
-	public VulkanModuleConfig load() throws IOException
+	public CurvedSpacetimeVulkanModuleConfig load() throws IOException
 	{
 		Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(VulkanModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeVulkanModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			logger.log(Level.WARNING, ex, () -> "Could not find config file " + VulkanModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeVulkanModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -90,8 +91,8 @@ public class VulkanModuleConfig implements ModuleConfig
 		} else
 		{
 			logger.warning("Could not find required key validation, resetting to default {}" +
-					VulkanModuleConfig.DEFAULT_VALIDATE);
-			this._validation = VulkanModuleConfig.DEFAULT_VALIDATE;
+					CurvedSpacetimeVulkanModuleConfig.DEFAULT_VALIDATE);
+			this._validation = CurvedSpacetimeVulkanModuleConfig.DEFAULT_VALIDATE;
 			this.dirty = true;
 		}
 
@@ -101,7 +102,7 @@ public class VulkanModuleConfig implements ModuleConfig
 			this.preferredDeviceName = preferredDeviceNamePropValue.toString();
 		} else
 		{
-			this.preferredDeviceName = VulkanModuleConfig.DEFAULT_PREFERRED_DEVICE_NAME;
+			this.preferredDeviceName = CurvedSpacetimeVulkanModuleConfig.DEFAULT_PREFERRED_DEVICE_NAME;
 		}
 
 

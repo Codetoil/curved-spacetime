@@ -62,7 +62,7 @@ public class CurvedSpacetimeCLIModuleEntrypoint implements ModuleInitializer
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new CLIModuleConfig(this.logger).load();
+			this.config = new CurvedSpacetimeCLIModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

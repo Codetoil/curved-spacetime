@@ -157,7 +157,7 @@ public class VulkanModulePhysicalDevice
 					continue;
 				}
 
-				String preferredDeviceName = ((VulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
+				String preferredDeviceName = ((CurvedSpacetimeVulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
 						.getPreferredDeviceName();
 				if (preferredDeviceName != null && preferredDeviceName.equals(deviceName))
 				{

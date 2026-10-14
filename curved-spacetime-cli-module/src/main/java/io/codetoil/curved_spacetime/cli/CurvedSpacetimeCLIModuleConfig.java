@@ -19,7 +19,7 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render;
+package io.codetoil.curved_spacetime.cli;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 
@@ -32,15 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The render module's settings, read from {@code config/curved-spacetime-render-module.config}.
+ * The CLI module's settings, read from {@code config/curved-spacetime-cli-module.config}.
  * <p>
- * The render module is an API with no settings of its own yet, so the file is currently written empty. It exists so
- * that the file and its handling are already in place when the first key is added, and so that implementations have a
- * configuration to inherit the pattern from.
+ * The module has no settings of its own yet, so the file is written empty. It exists so that the file and its handling
+ * are already in place when the first key is added.
  */
-public class RenderModuleConfig implements ModuleConfig
+public class CurvedSpacetimeCLIModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/curved-spacetime-render-module.config";
+	private static final String FILENAME = "config/curved-spacetime-cli-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 
@@ -50,7 +49,7 @@ public class RenderModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when the file is missing
 	 */
-	public RenderModuleConfig(Logger logger)
+	public CurvedSpacetimeCLIModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
@@ -64,16 +63,17 @@ public class RenderModuleConfig implements ModuleConfig
 	 * @throws IOException
 	 * 		if the file exists but cannot be read
 	 */
-	public RenderModuleConfig load() throws IOException
+	public CurvedSpacetimeCLIModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(RenderModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeCLIModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			logger.log(Level.WARNING, ex, () -> "Could not find config file " + RenderModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeCLIModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -90,9 +90,9 @@ public class RenderModuleConfig implements ModuleConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(RenderModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(CurvedSpacetimeCLIModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the Render Module.");
+			props.store(writer, "Config for the CLI Module.");
 		}
 		this.dirty = false;
 	}

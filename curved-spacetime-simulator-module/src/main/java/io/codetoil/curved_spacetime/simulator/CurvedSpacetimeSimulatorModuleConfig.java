@@ -19,7 +19,7 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.webserver;
+package io.codetoil.curved_spacetime.simulator;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 
@@ -32,14 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The webserver module's settings, read from {@code config/curved-spacetime-webserver-module.config}.
+ * The simulator module's settings, read from {@code config/curved-spacetime-simulator-module.config}.
  * <p>
- * The module has no settings of its own yet, so the file is written empty — note that the port the server listens on is
- * currently hard-coded rather than read from here.
+ * The module has no settings of its own yet, so the file is written empty. It exists so that the file and its handling
+ * are already in place when the simulation model gains its first tunable.
  */
-public class WebserverModuleConfig implements ModuleConfig
+public class CurvedSpacetimeSimulatorModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/curved-spacetime-webserver-module.config";
+	private static final String FILENAME = "config/curved-spacetime-simulator-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 
@@ -49,22 +49,23 @@ public class WebserverModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when the file is missing
 	 */
-	public WebserverModuleConfig(Logger logger)
+	public CurvedSpacetimeSimulatorModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
 	}
 
-	public WebserverModuleConfig load() throws IOException
+	public CurvedSpacetimeSimulatorModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(WebserverModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeSimulatorModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			logger.log(Level.WARNING, ex, () -> "Could not find config file " + WebserverModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeSimulatorModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -75,9 +76,9 @@ public class WebserverModuleConfig implements ModuleConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(WebserverModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(CurvedSpacetimeSimulatorModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the Webserver Module.");
+			props.store(writer, "Config for the Simulator Module.");
 		}
 		this.dirty = false;
 	}

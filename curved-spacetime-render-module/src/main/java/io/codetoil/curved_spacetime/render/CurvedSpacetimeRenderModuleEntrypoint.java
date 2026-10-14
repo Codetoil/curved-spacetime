@@ -63,7 +63,7 @@ public class CurvedSpacetimeRenderModuleEntrypoint implements ModuleInitializer
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new RenderModuleConfig(this.logger).load();
+			this.config = new CurvedSpacetimeRenderModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

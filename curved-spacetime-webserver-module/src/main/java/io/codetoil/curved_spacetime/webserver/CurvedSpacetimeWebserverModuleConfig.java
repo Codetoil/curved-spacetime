@@ -19,7 +19,7 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan;
+package io.codetoil.curved_spacetime.webserver;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 
@@ -32,13 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The Vulkan render module's settings, read from {@code config/curved-spacetime-render-vulkan-module.config}.
+ * The webserver module's settings, read from {@code config/curved-spacetime-webserver-module.config}.
  * <p>
- * The module has no settings of its own yet, so the file is written empty.
+ * The module has no settings of its own yet, so the file is written empty — note that the port the server listens on is
+ * currently hard-coded rather than read from here.
  */
-public class RenderVulkanModuleConfig implements ModuleConfig
+public class CurvedSpacetimeWebserverModuleConfig implements ModuleConfig
 {
-	private static final String FILENAME = "config/curved-spacetime-render-vulkan-module.config";
+	private static final String FILENAME = "config/curved-spacetime-webserver-module.config";
 	private final Logger logger;
 	private boolean dirty = false;
 
@@ -48,22 +49,23 @@ public class RenderVulkanModuleConfig implements ModuleConfig
 	 * @param logger
 	 * 		the logger to warn through when the file is missing
 	 */
-	public RenderVulkanModuleConfig(Logger logger)
+	public CurvedSpacetimeWebserverModuleConfig(Logger logger)
 	{
 
 		this.logger = logger;
 	}
 
-	public RenderVulkanModuleConfig load() throws IOException
+	public CurvedSpacetimeWebserverModuleConfig load() throws IOException
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileReader reader = new FileReader(RenderVulkanModuleConfig.FILENAME))
+		try (FileReader reader = new FileReader(CurvedSpacetimeWebserverModuleConfig.FILENAME))
 		{
 			props.load(reader);
 		} catch (FileNotFoundException ex)
 		{
-			this.logger.log(Level.WARNING, ex, () -> "Could not find config file " + RenderVulkanModuleConfig.FILENAME);
+			logger.log(Level.WARNING, ex,
+					() -> "Could not find config file " + CurvedSpacetimeWebserverModuleConfig.FILENAME);
 			this.dirty = true;
 		}
 
@@ -74,9 +76,9 @@ public class RenderVulkanModuleConfig implements ModuleConfig
 	{
 		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") Properties props = new Properties();
 
-		try (FileWriter writer = new FileWriter(RenderVulkanModuleConfig.FILENAME))
+		try (FileWriter writer = new FileWriter(CurvedSpacetimeWebserverModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the Vulkan Render Module.");
+			props.store(writer, "Config for the Webserver Module.");
 		}
 		this.dirty = false;
 	}

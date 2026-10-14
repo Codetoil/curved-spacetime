@@ -23,7 +23,7 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.api.scene.Scene;
-import io.codetoil.curved_spacetime.render.glfw.RenderGLFWModuleConfig;
+import io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWModuleConfig;
 import io.codetoil.curved_spacetime.render.glfw.RenderGLFWModuleRenderer;
 import io.codetoil.curved_spacetime.render.vulkan.RenderVulkanModuleForwardRenderActivity;
 import io.codetoil.curved_spacetime.render.vulkan.RenderVulkanModuleGraphicsQueue;
@@ -130,9 +130,10 @@ public class RenderVulkanGLFWModuleRenderer extends RenderGLFWModuleRenderer
 		this.vulkanRenderModuleSwapChain =
 				new RenderVulkanModuleSwapChain(vulkanModuleLogicalDevice, this.vulkanRenderModuleSurface,
 						this.vulkanRenderGLFWWindow,
-						((RenderVulkanGLFWModuleConfig) this.entrypoint.getConfig())
+						((CurvedSpacetimeRenderVulkanGLFWModuleConfig) this.entrypoint.getConfig())
 								.getRequestedImages(),
-						((RenderGLFWModuleConfig) this.entrypoint.getGlfwRenderModuleEntrypoint().getConfig())
+						((CurvedSpacetimeRenderGLFWModuleConfig) this.entrypoint.getGlfwRenderModuleEntrypoint()
+								.getConfig())
 								.hasVSync(), logger);//, this.vulkanGraphicsPresentQueue,
 		// new VulkanGraphicsQueue[] {this.vulkanGraphicsQueue});
 		/*this.vulkanGraphicsCommandPool = new VulkanCommandPool(this.vulkanInstance.getVulkanLogicalDevice(),

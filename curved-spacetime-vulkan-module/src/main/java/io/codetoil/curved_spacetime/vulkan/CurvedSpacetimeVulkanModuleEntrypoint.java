@@ -64,7 +64,7 @@ public class CurvedSpacetimeVulkanModuleEntrypoint implements ModuleInitializer
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new VulkanModuleConfig(this.logger).load();
+			this.config = new CurvedSpacetimeVulkanModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{

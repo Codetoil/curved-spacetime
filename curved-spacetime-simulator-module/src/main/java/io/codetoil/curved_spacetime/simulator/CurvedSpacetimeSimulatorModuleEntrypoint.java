@@ -63,7 +63,7 @@ public class CurvedSpacetimeSimulatorModuleEntrypoint implements ModuleInitializ
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new SimulatorModuleConfig(this.logger).load();
+			this.config = new CurvedSpacetimeSimulatorModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
