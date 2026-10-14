@@ -76,7 +76,7 @@ public class VulkanRenderModuleConfig implements ModuleConfig
 
 		try (FileWriter writer = new FileWriter(VulkanRenderModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the GLFW Render Module.");
+			props.store(writer, "Config for the Vulkan Render Module.");
 		}
 		this.dirty = false;
 	}
