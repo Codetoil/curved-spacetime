@@ -19,7 +19,7 @@
  */
 
 /**
- * Vulkan Render Loader Module of Curved Spacetime
+ * Render Vulkan Module of Curved Spacetime
  *
  */
 module io.codetoil.curved_spacetime.render.vulkan {

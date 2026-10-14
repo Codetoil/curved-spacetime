@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 public class CurvedSpacetimeRenderVulkanModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
-	private final Logger logger = Logger.getLogger("Vulkan Render Module Logger");
+	private final Logger logger = Logger.getLogger("Curved Spacetime Render Vulkan Module Logger");
 	private ModuleConfig config;
 	private CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint = null;
 	private CurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint = null;
@@ -71,7 +71,7 @@ public class CurvedSpacetimeRenderVulkanModuleEntrypoint implements ModuleInitia
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+			throw new RuntimeException("Failed to load Render Vulkan Config", ex);
 		}
 		try
 		{

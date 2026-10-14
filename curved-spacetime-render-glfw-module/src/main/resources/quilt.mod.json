@@ -5,7 +5,7 @@
     "id": "curved-spacetime-render-glfw-module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {
-      "name": "Curved Spacetime GLFW Render Module",
+      "name": "Curved Spacetime Render GLFW Module",
       "description": "Implements GLFW Support for Curved Spacetime",
       "contributors": {
         "Codetoil": "Owner",

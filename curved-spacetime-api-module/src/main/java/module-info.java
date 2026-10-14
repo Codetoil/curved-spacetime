@@ -19,7 +19,7 @@
  */
 
 /**
- * Loader Module of Curved Spacetime
+ * API Module of Curved Spacetime
  *
  */
 module io.codetoil.curved_spacetime.api {

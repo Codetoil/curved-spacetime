@@ -5,7 +5,7 @@
     "id": "curved-spacetime-render-vulkan-glfw-module",
     "version": "0.1.0-SNAPSHOT",
     "metadata": {
-      "name": "Curved Spacetime Vulkan GLFW Render Module",
+      "name": "Curved Spacetime Render Vulkan GLFW Module",
       "description": "Implements the code depending on both GLFW and Vulkan in Curved Spacetime.",
       "contributors": {
         "Codetoil": "Owner",

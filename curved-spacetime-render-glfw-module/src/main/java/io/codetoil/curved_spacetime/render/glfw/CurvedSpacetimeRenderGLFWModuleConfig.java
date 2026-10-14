@@ -113,7 +113,7 @@ public class CurvedSpacetimeRenderGLFWModuleConfig implements ModuleConfig
 
 		try (FileWriter writer = new FileWriter(CurvedSpacetimeRenderGLFWModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the GLFW Render Module.");
+			props.store(writer, "Config for the Render GLFW Module.");
 		}
 		this.dirty = false;
 	}

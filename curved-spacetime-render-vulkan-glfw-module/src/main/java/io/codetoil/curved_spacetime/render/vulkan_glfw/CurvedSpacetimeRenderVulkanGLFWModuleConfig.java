@@ -124,7 +124,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleConfig implements ModuleConfig
 
 		try (FileWriter writer = new FileWriter(CurvedSpacetimeRenderVulkanGLFWModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the Vulkan GLFW Render Module.");
+			props.store(writer, "Config for the Render Vulkan GLFW Module.");
 		}
 		this.dirty = false;
 	}

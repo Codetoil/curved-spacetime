@@ -77,7 +77,7 @@ public class CurvedSpacetimeRenderVulkanModuleConfig implements ModuleConfig
 
 		try (FileWriter writer = new FileWriter(CurvedSpacetimeRenderVulkanModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the Vulkan Render Module.");
+			props.store(writer, "Config for the Render Vulkan Module.");
 		}
 		this.dirty = false;
 	}

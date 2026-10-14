@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
-	private final Logger logger = Logger.getLogger("Curved Spacetime GLFW Render Module Logger");
+	private final Logger logger = Logger.getLogger("Curved Spacetime Render GLFW Module Logger");
 	private ModuleConfig config;
 	private Engine engine;
 	private CurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint;
@@ -69,7 +69,7 @@ public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitiali
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load GLFW Render Config", ex);
+			throw new RuntimeException("Failed to load Render GLFW Config", ex);
 		}
 		try
 		{

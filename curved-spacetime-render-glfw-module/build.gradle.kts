@@ -65,7 +65,7 @@ publishing {
             pom {
                 packaging = "jar"
 
-                name = "Curved Spacetime GLFW Render Module"
+                name = "Curved Spacetime Render GLFW Module"
                 url = "https://github.com/Codetoil/curved-spacetime"
                 inceptionYear = "2023"
                 licenses {
