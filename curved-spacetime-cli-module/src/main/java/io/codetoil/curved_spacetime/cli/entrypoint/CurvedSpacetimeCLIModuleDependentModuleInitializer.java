@@ -18,20 +18,27 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint;
+package io.codetoil.curved_spacetime.cli.entrypoint;
 
 import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.cli.CurvedSpacetimeCLIModuleEntrypoint;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.render.vulkan_glfw.RenderVulkanGLFWModuleEntrypoint;
 
 /**
- * The entrypoint a module registers to depend on the Vulkan GLFW render module.
+ * The entrypoint a module registers to depend on the CLI module.
  * <p>
- * Registered under the Vulkan GLFW render module's dependent entrypoint name. Implementations transfer the received
- * entrypoint into their own module's dependency queue.
+ * Registered under the CLI module's dependent entrypoint name. Implementations transfer the received entrypoint into
+ * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
-public interface RenderVulkanGLFWModuleDependentModuleInitializer
-		extends ModuleDependentModuleInitializer<RenderVulkanGLFWModuleEntrypoint>
+public interface CurvedSpacetimeCLIModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<CurvedSpacetimeCLIModuleEntrypoint>
 {
-	void onInitialize(RenderVulkanGLFWModuleEntrypoint vulkanRenderGLFWModuleEntrypoint, Engine engine);
+	/**
+	 * Receives the CLI module's entrypoint.
+	 * <p>
+	 * Called on the CLI module's initialization thread, not the receiving module's.
+	 *
+	 * @param cliModuleEntrypoint
+	 * 		the CLI module's main entrypoint
+	 */
+	void onInitialize(CurvedSpacetimeCLIModuleEntrypoint cliModuleEntrypoint, Engine engine);
 }

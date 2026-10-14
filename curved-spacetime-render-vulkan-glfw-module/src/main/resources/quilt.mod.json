@@ -20,11 +20,11 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.vulkan_glfw.RenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_render_glfw_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.RenderGLFWModuleDependentRenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_render_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.RenderModuleDependentRenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.VulkanModuleDependentRenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_render_vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.RenderVulkanModuleDependentRenderVulkanGLFWModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
+      "curved_spacetime_render_glfw_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderGLFWModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
+      "curved_spacetime_render_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
+      "curved_spacetime_vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
+      "curved_spacetime_render_vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint"
     },
     "depends": [
       {

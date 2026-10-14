@@ -22,8 +22,8 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
-import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleDependentModuleInitializer;
 
 /**
  * Delivers the Vulkan module's entrypoint to the Vulkan GLFW render module.
@@ -33,26 +33,26 @@ import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModul
  * transfers the Vulkan entrypoint into that module's dependency queue, where the Vulkan GLFW render module is blocked
  * waiting for it.
  */
-public class VulkanModuleDependentRenderVulkanGLFWModuleEntrypoint implements VulkanModuleDependentModuleInitializer
+public class CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements CurvedSpacetimeVulkanModuleDependentModuleInitializer
 {
 	/**
 	 * Creates the dependent entrypoint.
 	 * <p>
 	 * Called by the loader; it holds no state of its own.
 	 */
-	public VulkanModuleDependentRenderVulkanGLFWModuleEntrypoint()
+	public CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint()
 	{
 	}
 
 
 	@Override
-	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint, Engine engine)
+	public void onInitialize(CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint, Engine engine)
 	{
 		try
 		{
 			engine.getCurvedSpacetimeLoader()
 					.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(RenderVulkanGLFWModuleEntrypoint.class::isInstance)
+					.filter(CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(vulkanModuleEntrypoint);
 		} catch (InterruptedException e)
 		{

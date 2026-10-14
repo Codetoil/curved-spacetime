@@ -24,8 +24,8 @@ package io.codetoil.curved_spacetime.render.glfw;
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.render.RenderModuleEntrypoint;
-import io.codetoil.curved_spacetime.render.glfw.entrypoint.RenderGLFWModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.glfw.entrypoint.CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -39,20 +39,20 @@ import java.util.logging.Logger;
  * blocks during initialization until that module's entrypoint is handed to it, then hands itself to modules that build
  * on GLFW — the Vulkan GLFW render module.
  */
-public class RenderGLFWModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime GLFW Render Module Logger");
 	private ModuleConfig config;
 	private Engine engine;
-	private RenderModuleEntrypoint renderModuleEntrypoint;
+	private CurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint;
 
 	/**
 	 * Creates the GLFW render module's entrypoint.
 	 * <p>
 	 * Called by the loader; GLFW is not initialised until a window is opened.
 	 */
-	public RenderGLFWModuleEntrypoint()
+	public CurvedSpacetimeRenderGLFWModuleEntrypoint()
 	{
 	}
 
@@ -81,8 +81,8 @@ public class RenderGLFWModuleEntrypoint implements ModuleInitializer
 		try
 		{
 			this.engine.callDependents("curved_spacetime_render_glfw_module_dependent",
-					RenderGLFWModuleDependentModuleInitializer.class,
-					(RenderGLFWModuleDependentModuleInitializer glfwRenderModuleDependentModuleInitializer) ->
+					CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer.class,
+					(CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer glfwRenderModuleDependentModuleInitializer) ->
 							glfwRenderModuleDependentModuleInitializer
 									.onInitialize(this, this.engine),
 					this.logger);
@@ -104,9 +104,9 @@ public class RenderGLFWModuleEntrypoint implements ModuleInitializer
 	{
 		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
 
-		if (moduleInitializer instanceof RenderModuleEntrypoint)
+		if (moduleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint)
 		{
-			this.renderModuleEntrypoint = (RenderModuleEntrypoint) moduleInitializer;
+			this.renderModuleEntrypoint = (CurvedSpacetimeRenderModuleEntrypoint) moduleInitializer;
 		}
 	}
 

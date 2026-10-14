@@ -24,7 +24,7 @@ import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.api.MainCallback;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneCallback;
-import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.cli.entrypoint.CurvedSpacetimeCLIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -183,9 +183,9 @@ class CurvedSpacetimeLoaderClosedLoaderTest
 	@Test
 	void recognisedNameWithNoRegistrationsYieldsEmptyList()
 	{
-		List<CLIModuleDependentModuleInitializer> entrypoints =
+		List<CurvedSpacetimeCLIModuleDependentModuleInitializer> entrypoints =
 				this.loader.getEntrypoints(CurvedSpacetimeLoaderClosedLoaderTest.EMPTY_ENTRYPOINT_NAME,
-						CLIModuleDependentModuleInitializer.class);
+						CurvedSpacetimeCLIModuleDependentModuleInitializer.class);
 
 		assertNotNull(entrypoints, "a recognised entrypoint name must never yield null");
 		assertTrue(entrypoints.isEmpty(), "a recognised name with no registrations must yield an empty list");

@@ -20,7 +20,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.RenderModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderModuleEntrypoint"
     },
     "depends": [
       {

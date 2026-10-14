@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  */
 public class RenderVulkanGLFWModuleRenderer extends RenderGLFWModuleRenderer
 {
-	private final RenderVulkanGLFWModuleEntrypoint entrypoint;
+	private final CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint entrypoint;
 
 	/**
 	 * The GLFW window this renderer draws into.
@@ -99,7 +99,7 @@ public class RenderVulkanGLFWModuleRenderer extends RenderGLFWModuleRenderer
 	 * 		the module entrypoint supplying configuration and dependencies
 	 */
 	public RenderVulkanGLFWModuleRenderer(Engine engine, Scene scene,
-										  RenderVulkanGLFWModuleEntrypoint entrypoint)
+										  CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint entrypoint)
 	{
 		super(engine, scene);
 		this.entrypoint = entrypoint;

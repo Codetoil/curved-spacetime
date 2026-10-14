@@ -20,7 +20,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint"
     },
     "depends": [
       {

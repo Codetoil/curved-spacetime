@@ -19,43 +19,39 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.webserver;
+package io.codetoil.curved_spacetime.vulkan;
 
-import com.sun.net.httpserver.HttpServer;
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.webserver.entrypoint.WebserverModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleDependentModuleInitializer;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.logging.Logger;
 
 /**
- * The webserver module's {@code main} entrypoint.
+ * The Vulkan module's {@code main} entrypoint.
  * <p>
- * Starts an HTTP server so the simulator can be driven or observed over the network, and hands itself to modules that
- * extend it — the OpenAPI module — through the {@code curved_spacetime_webserver_module_dependent} entrypoint.
- * <p>
- * The server is currently a placeholder: it binds a fixed port, serves one test route, and is not stopped when the
- * engine shuts down.
+ * Loads the Vulkan configuration and registers {@link VulkanModuleVulkan} as a main callback, so the instance and
+ * devices come up on the engine's callback thread. It then hands itself to the modules that depend on it — the Vulkan
+ * render modules — through the {@code curved_spacetime_vulkan_module_dependent} entrypoint.
  */
-public class WebserverModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeVulkanModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
-	private final Logger logger = Logger.getLogger("Curved Spacetime Webserver Module Logger");
+	private final Logger logger = Logger.getLogger("Curved Spacetime Vulkan Module Logger");
 	private ModuleConfig config;
+	private VulkanModuleVulkan vulkan;
 	private Engine engine;
 
 	/**
-	 * Creates the webserver module's entrypoint.
+	 * Creates the Vulkan module's entrypoint.
 	 * <p>
-	 * Called by the loader; no socket is opened until {@link #onInitialize(Engine)} runs.
+	 * Called by the loader; no Vulkan object exists until {@link #onInitialize(Engine)} runs.
 	 */
-	public WebserverModuleEntrypoint()
+	public CurvedSpacetimeVulkanModuleEntrypoint()
 	{
 	}
 
@@ -68,36 +64,18 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 		this.logger.setUseParentHandlers(false);
 		try
 		{
-			this.config = new WebserverModuleConfig(this.logger).load();
+			this.config = new VulkanModuleConfig(this.logger).load();
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load Webserver Module Config", ex);
+			throw new RuntimeException("Failed to load Vulkan Module Config", ex);
 		}
-
-		try
-		{ // from https://stackoverflow.com/questions/3732109/simple-http-server-in-java-using-only-java-se-api
-			HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-			server.createContext("/test", exchange -> {
-				String response = "This is the response";
-				exchange.sendResponseHeaders(200, response.length());
-				OutputStream os = exchange.getResponseBody();
-				os.write(response.getBytes());
-				os.close();
-			});
-			server.setExecutor(null);
-			server.start();
-		} catch (IOException ex)
-		{
-			throw new RuntimeException("Failed to start test server", ex);
-		}
-		System.out.println("Started test server");
+		this.engine.registerMainCallback(this.vulkan = new VulkanModuleVulkan(this.engine, this));
 		try
 		{
-			this.engine.callDependents("curved_spacetime_webserver_module_dependent",
-					WebserverModuleDependentModuleInitializer.class,
-					(WebserverModuleDependentModuleInitializer webserverModuleDependentModuleInitializer) ->
-							webserverModuleDependentModuleInitializer.onInitialize(this, this.engine),
+			this.engine.callDependents("curved_spacetime_vulkan_module_dependent", CurvedSpacetimeVulkanModuleDependentModuleInitializer.class,
+					(CurvedSpacetimeVulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
+							vulkanModuleDependentModuleInitializer.onInitialize(this, this.engine),
 					this.logger);
 		} catch (Throwable e)
 		{
@@ -121,5 +99,15 @@ public class WebserverModuleEntrypoint implements ModuleInitializer
 	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
+	}
+
+	/**
+	 * Returns the object owning the Vulkan instance and devices.
+	 *
+	 * @return the Vulkan callback, or {@code null} before {@link #onInitialize(Engine)}
+	 */
+	public VulkanModuleVulkan getVulkan()
+	{
+		return vulkan;
 	}
 }

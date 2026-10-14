@@ -21,7 +21,7 @@
 package io.codetoil.curved_spacetime.webserver.entrypoint;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
+import io.codetoil.curved_spacetime.webserver.CurvedSpacetimeWebserverModuleEntrypoint;
 
 /**
  * The entrypoint a module registers to depend on the webserver module.
@@ -29,8 +29,8 @@ import io.codetoil.curved_spacetime.webserver.WebserverModuleEntrypoint;
  * Registered under the webserver module's dependent entrypoint name. Implementations transfer the received entrypoint
  * into their own module's dependency queue.
  */
-public interface WebserverModuleDependentModuleInitializer
-		extends ModuleDependentModuleInitializer<WebserverModuleEntrypoint>
+public interface CurvedSpacetimeWebserverModuleDependentModuleInitializer
+		extends ModuleDependentModuleInitializer<CurvedSpacetimeWebserverModuleEntrypoint>
 {
 	/**
 	 * Receives the webserver module's entrypoint.
@@ -40,5 +40,5 @@ public interface WebserverModuleDependentModuleInitializer
 	 * @param webserverModuleEntrypoint
 	 * 		the webserver module's main entrypoint
 	 */
-	void onInitialize(WebserverModuleEntrypoint webserverModuleEntrypoint);
+	void onInitialize(CurvedSpacetimeWebserverModuleEntrypoint webserverModuleEntrypoint);
 }

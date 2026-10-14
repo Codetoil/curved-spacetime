@@ -24,7 +24,7 @@ package io.codetoil.curved_spacetime.simulator;
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.simulator.entrypoint.SimulatorModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.simulator.entrypoint.CurvedSpacetimeSimulatorModuleDependentModuleInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * to any dependents, but nothing is simulated yet, and the simulation model — spacetimes, metrics, worldlines — has not
  * been specified.
  */
-public class SimulatorModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeSimulatorModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Simulator Module Logger");
@@ -50,7 +50,7 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public SimulatorModuleEntrypoint()
+	public CurvedSpacetimeSimulatorModuleEntrypoint()
 	{
 	}
 
@@ -72,8 +72,8 @@ public class SimulatorModuleEntrypoint implements ModuleInitializer
 		try
 		{
 			this.engine.callDependents("curved_spacetime_simulator_module_dependent",
-					SimulatorModuleDependentModuleInitializer.class,
-					(SimulatorModuleDependentModuleInitializer simulatorModuleDependentModuleInitializer) ->
+					CurvedSpacetimeSimulatorModuleDependentModuleInitializer.class,
+					(CurvedSpacetimeSimulatorModuleDependentModuleInitializer simulatorModuleDependentModuleInitializer) ->
 							simulatorModuleDependentModuleInitializer.onInitialize(this), this.logger);
 		} catch (Throwable e)
 		{

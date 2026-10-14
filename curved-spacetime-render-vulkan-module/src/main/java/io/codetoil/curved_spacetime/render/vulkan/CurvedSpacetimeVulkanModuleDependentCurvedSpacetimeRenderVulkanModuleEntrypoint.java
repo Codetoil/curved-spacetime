@@ -22,8 +22,8 @@ package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.vulkan.VulkanModuleEntrypoint;
-import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleDependentModuleInitializer;
 
 /**
  * Delivers the Vulkan module's entrypoint to the Vulkan render module.
@@ -32,26 +32,26 @@ import io.codetoil.curved_spacetime.vulkan.entrypoint.VulkanModuleDependentModul
  * its own initialization; it locates the Vulkan render module's main entrypoint through the loader and transfers the
  * Vulkan entrypoint into that module's dependency queue, where the Vulkan render module is blocked waiting for it.
  */
-public class VulkanModuleDependentRenderVulkanModuleEntrypoint implements VulkanModuleDependentModuleInitializer
+public class CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanModuleEntrypoint implements CurvedSpacetimeVulkanModuleDependentModuleInitializer
 {
 	/**
 	 * Creates the dependent entrypoint.
 	 * <p>
 	 * Called by the loader; it holds no state of its own.
 	 */
-	public VulkanModuleDependentRenderVulkanModuleEntrypoint()
+	public CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanModuleEntrypoint()
 	{
 	}
 
 
 	@Override
-	public void onInitialize(VulkanModuleEntrypoint vulkanModuleEntrypoint, Engine engine)
+	public void onInitialize(CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint, Engine engine)
 	{
 		try
 		{
 			engine.getCurvedSpacetimeLoader()
 					.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(RenderVulkanModuleEntrypoint.class::isInstance)
+					.filter(CurvedSpacetimeRenderVulkanModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(vulkanModuleEntrypoint);
 		} catch (InterruptedException e)
 		{

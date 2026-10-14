@@ -22,7 +22,7 @@
 package io.codetoil.curved_spacetime.cli;
 
 import io.codetoil.curved_spacetime.api.Engine;
-import io.codetoil.curved_spacetime.cli.entrypoint.CLIModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.cli.entrypoint.CurvedSpacetimeCLIModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * Provides the command-line face of the simulator. Currently loads its configuration and hands itself to any
  * dependents; the command handling itself is not implemented yet.
  */
-public class CLIModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeCLIModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
@@ -49,7 +49,7 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CLIModuleEntrypoint()
+	public CurvedSpacetimeCLIModuleEntrypoint()
 	{
 	}
 
@@ -70,8 +70,8 @@ public class CLIModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_cli_module_dependent", CLIModuleDependentModuleInitializer.class,
-					(CLIModuleDependentModuleInitializer cliModuleDependentModuleInitializer) ->
+			this.engine.callDependents("curved_spacetime_cli_module_dependent", CurvedSpacetimeCLIModuleDependentModuleInitializer.class,
+					(CurvedSpacetimeCLIModuleDependentModuleInitializer cliModuleDependentModuleInitializer) ->
 							cliModuleDependentModuleInitializer.onInitialize(this, this.engine),
 					this.logger);
 		} catch (Throwable e)

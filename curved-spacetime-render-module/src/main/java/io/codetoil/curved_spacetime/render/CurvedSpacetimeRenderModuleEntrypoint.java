@@ -24,7 +24,7 @@ package io.codetoil.curved_spacetime.render;
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.render.entrypoint.RenderModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.entrypoint.CurvedSpacetimeRenderModuleDependentModuleInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * This entrypoint therefore does little beyond loading configuration and then handing itself to whichever
  * implementations depend on it — GLFW today — through the {@code curved_spacetime_render_module_dependent} entrypoint.
  */
-public class RenderModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeRenderModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render Module Logger");
@@ -50,7 +50,7 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public RenderModuleEntrypoint()
+	public CurvedSpacetimeRenderModuleEntrypoint()
 	{
 	}
 
@@ -71,8 +71,8 @@ public class RenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_render_module_dependent", RenderModuleDependentModuleInitializer.class,
-					(RenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
+			this.engine.callDependents("curved_spacetime_render_module_dependent", CurvedSpacetimeRenderModuleDependentModuleInitializer.class,
+					(CurvedSpacetimeRenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
 							renderModuleDependentModuleInitializer.onInitialize(this, this.engine),
 					this.logger);
 		} catch (Throwable e)

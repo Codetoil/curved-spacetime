@@ -18,27 +18,27 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.simulator.entrypoint;
+package io.codetoil.curved_spacetime.render.entrypoint;
 
+import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.simulator.SimulatorModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderModuleEntrypoint;
 
 /**
- * The entrypoint a module registers to depend on the simulator module.
+ * The entrypoint a module registers to depend on the render module.
  * <p>
- * Registered under the simulator module's dependent entrypoint name. Implementations transfer the received entrypoint
- * into their own module's dependency queue.
+ * Registered under the render module's dependent entrypoint name. Implementations transfer the received entrypoint into
+ * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
-public interface SimulatorModuleDependentModuleInitializer
-		extends ModuleDependentModuleInitializer<SimulatorModuleEntrypoint>
+public interface CurvedSpacetimeRenderModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<CurvedSpacetimeRenderModuleEntrypoint>
 {
 	/**
-	 * Receives the simulator module's entrypoint.
+	 * Receives the render module's entrypoint.
 	 * <p>
-	 * Called on the simulator module's initialization thread, not the receiving module's.
+	 * Called on the render module's initialization thread, not the receiving module's.
 	 *
-	 * @param simulatorModuleEntrypoint
-	 * 		the simulator module's main entrypoint
+	 * @param renderModuleEntrypoint
+	 * 		the render module's main entrypoint
 	 */
-	void onInitialize(SimulatorModuleEntrypoint simulatorModuleEntrypoint);
+	void onInitialize(CurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint, Engine engine);
 }

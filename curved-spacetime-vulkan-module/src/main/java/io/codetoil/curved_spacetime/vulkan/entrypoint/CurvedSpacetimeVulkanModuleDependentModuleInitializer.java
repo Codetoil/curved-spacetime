@@ -18,23 +18,27 @@
  * along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.<br>
  */
 
-package io.codetoil.curved_spacetime.render.glfw.entrypoint;
+package io.codetoil.curved_spacetime.vulkan.entrypoint;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.render.glfw.RenderGLFWModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint;
 
 /**
- * The entrypoint a module registers to depend on the GLFW render module.
+ * The entrypoint a module registers to depend on the Vulkan module.
  * <p>
- * Registered under the GLFW render module's dependent entrypoint name. Implementations transfer the received entrypoint
- * into their own module's dependency queue.
+ * Registered under the Vulkan module's dependent entrypoint name. Implementations transfer the received entrypoint into
+ * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
-public interface RenderGLFWModuleDependentModuleInitializer
-		extends ModuleDependentModuleInitializer<RenderGLFWModuleEntrypoint>
+public interface CurvedSpacetimeVulkanModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<CurvedSpacetimeVulkanModuleEntrypoint>
 {
 	/**
-	 * Runs the mod initializer.
+	 * Receives the Vulkan module's entrypoint.
+	 * <p>
+	 * Called on the Vulkan module's initialization thread, not the receiving module's.
+	 *
+	 * @param vulkanModuleEntrypoint
+	 * 		the Vulkan module's main entrypoint
 	 */
-	void onInitialize(RenderGLFWModuleEntrypoint glfwRenderModuleEntrypoint, Engine engine);
+	void onInitialize(CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint, Engine engine);
 }
