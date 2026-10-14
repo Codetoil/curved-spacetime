@@ -12,12 +12,16 @@ rootProject.name = "curved-spacetime"
 include("curved-spacetime-quilt-loader-patches")
 include("curved-spacetime-cli-module")
 include("curved-spacetime-vulkan-module")
+include("curved-spacetime-vulkan-ffm-module")
 include("curved-spacetime-render-module")
 include("curved-spacetime-simulator-module")
 include("curved-spacetime-webserver-module")
 include("curved-spacetime-render-glfw-module")
 include("curved-spacetime-render-vulkan-module")
 include("curved-spacetime-render-vulkan-glfw-module")
+include("curved-spacetime-render-glfw-ffm-module")
+include("curved-spacetime-render-vulkan-ffm-module")
+include("curved-spacetime-render-vulkan-ffm-glfw-ffm-module")
 include("curved-spacetime-main-module")
 include("curved-spacetime-api-module")
 include("curved-spacetime-quilt-loader-module")
@@ -26,12 +30,16 @@ include("curved-spacetime-closed-world-loader-module")
 project(":curved-spacetime-quilt-loader-patches").name = "curved-spacetime-quilt-loader-patches"
 project(":curved-spacetime-cli-module").name = "curved-spacetime-cli-module"
 project(":curved-spacetime-vulkan-module").name = "curved-spacetime-vulkan-module"
+project(":curved-spacetime-vulkan-ffm-module").name = "curved-spacetime-vulkan-ffm-module"
 project(":curved-spacetime-render-module").name = "curved-spacetime-render-module"
 project(":curved-spacetime-simulator-module").name = "curved-spacetime-simulator-module"
 project(":curved-spacetime-webserver-module").name = "curved-spacetime-webserver-module"
 project(":curved-spacetime-render-glfw-module").name = "curved-spacetime-render-glfw-module"
 project(":curved-spacetime-render-vulkan-module").name = "curved-spacetime-render-vulkan-module"
 project(":curved-spacetime-render-vulkan-glfw-module").name = "curved-spacetime-render-vulkan-glfw-module"
+project(":curved-spacetime-render-glfw-ffm-module").name = "curved-spacetime-render-glfw-ffm-module"
+project(":curved-spacetime-render-vulkan-ffm-module").name = "curved-spacetime-render-vulkan-ffm-module"
+project(":curved-spacetime-render-vulkan-ffm-glfw-ffm-module").name = "curved-spacetime-render-vulkan-ffm-glfw-ffm-module"
 project(":curved-spacetime-main-module").name = "curved-spacetime-main-module"
 project(":curved-spacetime-api-module").name = "curved-spacetime-api-module"
 project(":curved-spacetime-quilt-loader-module").name = "curved-spacetime-quilt-loader-module"

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm",
+    "id": "curved-spacetime-render-vulkan-ffm-glfw-ffm-module",
+    "version": "0.1.0-SNAPSHOT",
+    "metadata": {
+      "name": "Curved Spacetime Render Vulkan FFM GLFW FFM Module",
+      "description": "Implements Rendering using Vulkan, GLFW and FFM",
+      "contributors": {
+        "Codetoil": "Owner"
+      },
+      "contact": {
+        "homepage": "https://codetoil.io",
+        "issues": "https://github.com/Codetoil/curved-spacetime/issues",
+        "sources": "https://github.com/Codetoil/curved-spacetime.git"
+      },
+      "icon": "assets/curved-spacetime-render-vulkan-ffm-glfw-ffm-module/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "main": "io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm.CurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint",
+      "curved_spacetime_render_glfw_ffm_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm.CurvedSpacetimeRenderGLFWFFMModuleDependentCurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint",
+      "curved_spacetime_render_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint",
+      "curved_spacetime_render_vulkan_ffm_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm.CurvedSpacetimeRenderVulkanFFMModuleDependentCurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint",
+      "curved_spacetime_vulkan_ffm_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm.CurvedSpacetimeVulkanFFMModuleDependentCurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.30.1-beta.2"
+      },
+      {
+        "id": "curved-spacetime-main-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-vulkan-ffm-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-render-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-render-glfw-ffm-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-render-vulkan-ffm-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "java",
+        "versions": ">=25"
+      }
+    ]
+  },
+  "mixin": "curved-spacetime-render-vulkan-ffm-glfw-ffm-module.mixins.json"
+}
