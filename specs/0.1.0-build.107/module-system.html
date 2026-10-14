@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<!--
+  Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.
+  Copyright (C) 2025-2026 Angelina Michalek / Anthony Michalek (Codetoil)
+
+  This file is part of Curved Spacetime
+
+  This program is free software: you can redistribute it and/or modify it under the terms of
+  the GNU General Public License as published by the Free Software Foundation, either version 3
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with this program.
+  If not, see <https://www.gnu.org/licenses/>.
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Curved Spacetime Module System Specification</title>
+    <link rel="stylesheet" href="spec.css">
+</head>
+<body>
+
+<header>
+    <h1>Curved Spacetime Module System Specification</h1>
+    <dl class="docinfo">
+        <dt>Version</dt>
+        <dd>0.1.0-build.107</dd>
+        <dt>Status</dt>
+        <dd>Normative, and violated: describes how the module system should work. Where the code
+            disagrees, the code is wrong.
+        </dd>
+        <dt>Licence</dt>
+        <dd>GPL-3.0-or-later</dd>
+    </dl>
+</header>
+
+<nav>
+    <h2>Contents</h2>
+    <ol>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#conformance">Conformance</a></li>
+        <li><a href="#terminology">Terminology</a></li>
+        <li><a href="#naming">Module identity and naming</a></li>
+        <li><a href="#loader">Loaders</a></li>
+        <li><a href="#entrypoints">Entrypoints</a></li>
+        <li><a href="#init">Initialization protocol</a></li>
+        <li><a href="#config">Configuration</a></li>
+        <li><a href="#manifest">Quilt manifest</a></li>
+        <li><a href="#callbacks">Callbacks</a></li>
+        <li><a href="#checklist">Conformance checklist</a></li>
+    </ol>
+    <p><a href="#api">Appendix A. API source</a></p>
+</nav>
+
+<section id="introduction">
+    <h2>1. Introduction</h2>
+
+    <p>Curved Spacetime is assembled at runtime from independently built <dfn>modules</dfn>. A
+        <a href="#loader">loader</a> discovers those modules and hands their <a href="#entrypoints">entrypoints</a>
+        to the engine, and the engine drives them through a fixed initialization protocol, then runs
+        the callbacks they register. This document is for the authors of modules and of loaders. It
+        specifies what a conforming module and a conforming loader must do: the names a module must
+        adopt, the order of its initialization, the handshake by which one module obtains a reference
+        to another, its configuration, its manifest, and its callbacks.</p>
+
+    <p>It is complete on its own. Everything a module or a loader compiles against is reproduced in
+        <a href="#api">Appendix A</a>, and every requirement that binds a module or a loader is stated
+        here, so a third party can implement either without reading any other document or the engine's
+        source. Two loaders exist today and are cited throughout as reference implementations:
+        <code>CurvedSpacetimeLoaderClosedLoader</code>, which resolves entrypoints from static tables
+        compiled into the image, and <code>CurvedSpacetimeLoaderQuiltLoader</code>, which delegates to
+        Quilt Loader.</p>
+
+    <p>What a module computes is deliberately <strong>out of scope</strong>.</p>
+
+    <h3 id="versioning">1.1 Versioning of this document</h3>
+
+    <p>This specification is published per version of Curved Spacetime, at
+        <code>specs/&lt;version&gt;/</code>, alongside the API documentation. The cadence tracks the
+        project's own <a href="https://semver.org/spec/v2.0.0.html">SemVer 2.0.0</a> maturity:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Project stage</th>
+            <th>A new specification version is cut</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Before <code>0.1.0</code> (current)</td>
+            <td>per build</td>
+        </tr>
+        <tr>
+            <td><code>0.x.y</code></td>
+            <td>per minor version</td>
+        </tr>
+        <tr>
+            <td><code>1.0.0</code> and later</td>
+            <td>per major version</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>The project is currently in the pre-<code>0.1.0</code> stage, so each release build publishes its
+        own copy of this document. <code>0.1.0</code> will be released once the project is functional,
+        even if incomplete; from that point the cadence drops to per minor version.</p>
+</section>
+
+<section id="conformance">
+    <h2>2. Conformance</h2>
+
+    <p>The key words <em>MUST</em>, <em>MUST NOT</em>, <em>REQUIRED</em>, <em>SHALL</em>,
+        <em>SHALL NOT</em>, <em>SHOULD</em>, <em>SHOULD NOT</em>, <em>RECOMMENDED</em>, <em>MAY</em>, and
+        <em>OPTIONAL</em> in this document are to be interpreted as described in
+        <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a>.</p>
+
+    <p>Requirements are numbered <code>R<var>n</var></code> and are individually linkable. The numbers
+        are stable identifiers shared across the project's specifications: a number missing here
+        belongs to a requirement that binds neither modules nor loaders, and a requirement that binds more than one kind
+        of implementation carries the same number and wording wherever it appears.</p>
+
+    <p>A <dfn>conforming module</dfn> is a JPMS module that satisfies every requirement in
+        <a href="#naming">§4</a>, <a href="#entrypoints">§6</a>, <a href="#init">§7</a>,
+        <a href="#config">§8</a>, and <a href="#callbacks">§10</a>, and, when loaded by a Quilt-based
+        loader, <a href="#manifest">§9</a>.</p>
+
+    <p>A <dfn>conforming loader</dfn> is an implementation of
+        <code>io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader</code> that satisfies every
+        requirement in <a href="#loader">§5</a>.</p>
+
+    <p class="note">A conforming loader is not required to use Quilt or to discover modules dynamically.
+        Static resolution is explicitly permitted; see <a href="#R7">R7</a>.</p>
+</section>
+
+<section id="terminology">
+    <h2>3. Terminology</h2>
+
+    <dl class="terms">
+        <dt><dfn>engine</dfn></dt>
+        <dd>A subclass of the abstract class <code>Engine</code>. It passes itself to the loader's
+            <code>prepareModInit</code>, invokes every module's main entrypoint, and, once initialization
+            is complete, runs the modules' callbacks.
+        </dd>
+
+        <dt><dfn>loader</dfn></dt>
+        <dd>An implementation of <code>CurvedSpacetimeLoader</code>. It maps an entrypoint name and type
+            to a list of entrypoint instances.
+        </dd>
+
+        <dt><dfn>module</dfn></dt>
+        <dd>A unit of functionality with its own JPMS module, Gradle subproject, configuration file, and
+            at least one entrypoint.
+        </dd>
+
+        <dt><dfn>API module</dfn></dt>
+        <dd>A module that publishes an interface other modules implement or extend — for example
+            <code>curved-spacetime-render-module</code>.
+        </dd>
+
+        <dt><dfn>implementation module</dfn></dt>
+        <dd>A module that provides a concrete realisation of an API module — for example
+            <code>curved-spacetime-render-glfw-module</code>.
+        </dd>
+
+        <dt><dfn>module key</dfn></dt>
+        <dd>The module's directory name. For
+            <code>curved-spacetime-render-glfw-module</code> the module key is
+            <code>curved-spacetime-render-glfw-module</code>. Several other names derive from it.
+        </dd>
+
+        <dt><dfn>main entrypoint</dfn></dt>
+        <dd>A module's implementation of <code>ModuleInitializer</code>, registered under the entrypoint
+            name <code>main</code>.
+        </dd>
+
+        <dt><dfn>dependent entrypoint</dfn></dt>
+        <dd>A class registered by module <var>B</var> under module <var>A</var>'s dependent entrypoint
+            name, by which <var>B</var> learns of <var>A</var>'s main entrypoint.
+        </dd>
+
+        <dt><dfn>callback</dfn></dt>
+        <dd>A <code>MainCallback</code>, or a <code>SceneCallback</code> bound to one scene: module code
+            the engine runs once initialization is complete.
+        </dd>
+
+        <dt><dfn>callback thread</dfn></dt>
+        <dd>The single thread on which the engine calls every callback's <code>init</code>,
+            <code>loop</code>, and <code>clean</code>.
+        </dd>
+    </dl>
+</section>
+
+<section id="naming">
+    <h2>4. Module identity and naming</h2>
+
+    <p id="R1" class="req"><strong>R1.</strong> A module's directory name MUST match
+        the associated module key, and the module key MUST end in
+        <code>-module</code>.</p>
+
+    <p id="R2" class="req"><strong>R2.</strong> An implementation module's JPMS module name MUST be its
+        API module's name extended by exactly one segment naming the implementation. The segment MUST use
+        <code>snake_case</code> where the implementation name is compound.</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Directory</th>
+            <th>JPMS module</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>curved-spacetime-render-module</code></td>
+            <td><code>io.codetoil.curved_spacetime.render</code></td>
+        </tr>
+        <tr>
+            <td><code>curved-spacetime-render-glfw-module</code></td>
+            <td><code>io.codetoil.curved_spacetime.render.glfw</code></td>
+        </tr>
+        <tr>
+            <td><code>curved-spacetime-render-vulkan-module</code></td>
+            <td><code>io.codetoil.curved_spacetime.render.vulkan</code></td>
+        </tr>
+        <tr>
+            <td><code>curved-spacetime-render-vulkan-glfw-module</code></td>
+            <td><code>io.codetoil.curved_spacetime.render.vulkan_glfw</code></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p id="R3" class="req"><strong>R3.</strong> A module MUST include an associated dependent entrypoint.</p>
+
+    <p id="R4" class="req"><strong>R4.</strong> A module MUST export its own package and its <code>.entrypoint</code>
+        subpackage.</p>
+
+    <p id="R5" class="req"><strong>R5.</strong> Names derived from the module key MUST be formed as
+        follows, where <var>key</var> is the module key and <var>key_</var> is the module key with every
+        <code>-</code> replaced by <code>_</code>:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Derived name</th>
+            <th>Form</th>
+            <th>Example for <code>curved-spacetime-render-glfw-module</code></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Configuration file</td>
+            <td><code>config/&lt;key&gt;.config</code></td>
+            <td><code>config/curved-spacetime-render-glfw-module.config</code></td>
+        </tr>
+        <tr>
+            <td>Dependent entrypoint name</td>
+            <td><code>&lt;key_&gt;_dependent</code></td>
+            <td><code>curved_spacetime_render_glfw_module_dependent</code></td>
+        </tr>
+        <tr>
+            <td>Quilt mod id</td>
+            <td><code>&lt;key&gt;</code></td>
+            <td><code>curved-spacetime-render-glfw-module</code></td>
+        </tr>
+        <tr>
+            <td>Quilt group</td>
+            <td>the JPMS module name</td>
+            <td><code>io.codetoil.curved_spacetime.render.glfw</code></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section id="loader">
+    <h2>5. Loaders</h2>
+
+    <p id="R6" class="req"><strong>R6.</strong> <code>prepareModInit</code> MUST be called by the engine
+        exactly once, before any entrypoint is invoked, with the run directory and the engine instance.
+        A loader MUST retain the engine reference such that <code>getEngine()</code> returns it
+        thereafter.</p>
+
+    <p id="R7" class="req"><strong>R7.</strong> <code>getEntrypoints</code> MUST return every registered
+        entrypoint for the given name whose runtime type is assignable to
+        <code>moduleInitializerClass</code>. A loader MAY resolve these statically; it is not required to
+        scan the module path.</p>
+
+    <p id="R8" class="req"><strong>R8.</strong> <code>getEntrypoints</code> MUST return an empty list,
+        not <code>null</code>, when a recognised entrypoint name has no registrations.</p>
+
+    <p id="R9" class="req"><strong>R9.</strong> <code>getEntrypoints</code> SHOULD throw
+        <code>IllegalArgumentException</code> for an entrypoint name the loader does not recognise, and
+        the message SHOULD identify the name and the requested class. Silently returning an empty list
+        for an unknown name hides module wiring mistakes and is NOT RECOMMENDED.</p>
+
+    <p id="R10" class="req"><strong>R10.</strong> <code>invokeEntrypoints</code> MUST apply the consumer
+        to every entrypoint <code>getEntrypoints</code> would return for the same arguments. It MUST NOT
+        impose an ordering, and callers MUST NOT depend on one.</p>
+
+    <p id="R11" class="req"><strong>R11.</strong> A loader MUST return the same instance for a given
+        entrypoint across repeated <code>getEntrypoints</code> calls within one run. The handshake in
+        <a href="#init">§7</a> depends on identity: a dependent locates its own main entrypoint by
+        filtering this list, and transfers to the queue owned by that exact object.</p>
+</section>
+
+<section id="entrypoints">
+    <h2>6. Entrypoints</h2>
+
+    <h3>6.1 The main entrypoint</h3>
+
+    <p id="R12" class="req"><strong>R12.</strong> Every module MUST register exactly one main entrypoint
+        under the name <code>main</code>, implementing <code>ModuleInitializer</code>.</p>
+
+    <p id="R13" class="req"><strong>R13.</strong> The main entrypoint class SHOULD be named
+        <code>&lt;X&gt;ModuleEntrypoint</code>, where <code>&lt;X&gt;</code> is the module key in
+        <code>PascalCase</code> with <code>-module</code> dropped.</p>
+
+    <p id="R14" class="req"><strong>R14.</strong> <code>getLogger</code> MUST return the same
+        <code>Logger</code> instance for the lifetime of the entrypoint, and that logger MUST be the one
+        the module writes its diagnostics to.</p>
+
+    <p id="R15" class="req"><strong>R15.</strong> <code>getDependencyModuleTransferQueue</code> MUST
+        return the same <code>TransferQueue</code> instance for the lifetime of the entrypoint. A fresh
+        or defensively copied queue breaks the handshake.</p>
+
+    <p id="R16" class="req"><strong>R16.</strong> <code>getConfig</code> MUST return the module's
+        configuration once <code>onInitialize</code> has loaded it. It MAY return <code>null</code>
+        before that point, and callers MUST NOT invoke it before the owning module has initialized.</p>
+
+    <h3>6.2 Dependent entrypoints</h3>
+
+    <p id="R17" class="req"><strong>R17.</strong> A module MUST publish an interface named
+        <code>&lt;Module&gt;ModuleDependentModuleInitializer</code> in its<code>.entrypoint</code> subpackage, extending
+        <code>ModuleDependentModuleInitializer&lt;&lt;Module&gt;ModuleEntrypoint&gt;</code>.</p>
+
+    <p id="R18" class="req"><strong>R18.</strong> A module <var>B</var> that depends on module
+        <var>A</var> MUST register a class implementing <var>A</var>'s dependent interface under
+        <var>A</var>'s dependent entrypoint name, as derived in <a href="#R5">R5</a>.</p>
+
+    <p id="R19" class="req"><strong>R19.</strong> That class SHOULD be named
+        <code>&lt;Module A&gt;ModuleDependent&lt;Module B&gt;ModuleEntrypoint</code>.</p>
+
+    <p>For <code>curved-spacetime-render-glfw-module</code> depending on
+        <code>curved-spacetime-render-module</code>:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Role</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Entrypoint name</td>
+            <td><code>curved_spacetime_render_module_dependent</code></td>
+        </tr>
+        <tr>
+            <td>Interface</td>
+            <td><code>io.codetoil.curved_spacetime.render.entrypoint.CurvedSpacetimeRenderModuleDependentModuleInitializer</code>
+            </td>
+        </tr>
+        <tr>
+            <td>Implementation</td>
+            <td><code>io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderGLFWModuleEntrypoint</code>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section id="init">
+    <h2>7. Initialization protocol</h2>
+
+    <h3>7.1 Module sequence</h3>
+
+    <p id="R23" class="req"><strong>R23.</strong> A module's <code>onInitialize</code> MUST, in order:</p>
+
+    <ol>
+        <li>set its logger's level to the engine's <code>getLoggerLevel()</code>, add the engine's
+            console handler — <code>getConsoleHandler()</code> — to that logger, and stop the logger
+            forwarding to its parent handlers;
+        </li>
+        <li>load its own configuration, and save it if <code>isDirty()</code> reports the load
+            substituted defaults;
+        </li>
+        <li>if it declares dependencies, receive them per <a href="#handshake">§7.2</a>;</li>
+        <li>invoke its own dependent entrypoints, passing itself and the engine.</li>
+    </ol>
+
+    <p class="note">The engine's console handler is set to the configured level. Under the JDK's
+        default logging configuration the root logger's handler is at <code>INFO</code>, so a logger
+        whose level alone is set loses every record below <code>INFO</code>, and one that keeps its
+        parent handlers beside the engine's emits every record at <code>INFO</code> and above
+        twice.</p>
+
+    <p id="R24" class="req"><strong>R24.</strong> A module MUST NOT touch another module's state before
+        completing step 3. Until the handshake returns, no ordering guarantee exists.</p>
+
+    <h3 id="handshake">7.2 The dependency handshake</h3>
+
+    <p>A module does not look up its dependencies. It is <em>handed</em> them, through a
+        <code>TransferQueue</code> it owns, by dependent entrypoints running on other threads.</p>
+
+    <p>When module <var>A</var> reaches step 4, it invokes every entrypoint registered under
+        <code>&lt;a_key&gt;_dependent</code>, passing its own main entrypoint and the engine. Module
+        <var>B</var>'s implementation of that interface locates <var>B</var>'s main entrypoint through
+        the engine's loader and transfers <var>A</var> into <var>B</var>'s queue:</p>
+
+    <pre><code>@Override
+public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint,
+                         Engine engine)
+{
+    try
+    {
+        engine.getCurvedSpacetimeLoader()
+                .getEntrypoints("main", ModuleInitializer.class).stream()
+                .filter(CurvedSpacetimeRenderGLFWModuleEntrypoint.class::isInstance)
+                .findFirst().orElseThrow()
+                .getDependencyModuleTransferQueue().transfer(curvedSpacetimeRenderModuleEntrypoint);
+    } catch (InterruptedException e)
+    {
+        throw new RuntimeException(e);
+    }
+}</code></pre>
+
+    <p>Meanwhile <var>B</var> is blocked in step 3, taking one element per declared dependency and
+        sorting them by type:</p>
+
+    <pre><code>protected void receiveDependenciesFromTransferQueue() throws InterruptedException
+{
+    for (int i = 0; i &lt; DEPENDENCY_COUNT; i++)
+    {
+        ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
+
+        if (moduleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint)
+        {
+            this.curvedSpacetimeRenderModuleEntrypoint = curvedSpacetimeRenderModuleEntrypoint;
+        }
+        // … one branch per declared dependency
+    }
+}</code></pre>
+
+    <p id="R25" class="req"><strong>R25.</strong> A dependent entrypoint MUST transfer the entrypoint
+        it was given into the queue returned by its own module's
+        <code>getDependencyModuleTransferQueue()</code>.</p>
+
+    <p id="R26" class="req"><strong>R26.</strong> A module MUST consume exactly as many elements from its
+        queue as it has declared dependencies — no more, no fewer. Taking too few strands a producer
+        blocked in <code>transfer</code>; taking too many blocks the consumer forever.</p>
+
+    <p id="R27" class="req"><strong>R27.</strong> A module MUST classify received elements by runtime
+        type, and MUST NOT rely on arrival order. The transfers originate on independent threads.</p>
+
+    <p id="R29" class="req"><strong>R29.</strong> An implementation SHOULD bound the handshake in time
+        and fail with a diagnostic naming the unsatisfied dependency, rather than blocking indefinitely.
+        A missing or miscounted dependency otherwise manifests as a silent hang at startup with no
+        indication of which module is waiting.</p>
+
+    <p id="R30" class="req"><strong>R30.</strong> A module SHOULD derive its dependency count from its
+        declared dependencies rather than hard-coding a literal, so that adding or removing a dependency
+        cannot desynchronise the count from reality.</p>
+</section>
+
+<section id="config">
+    <h2>8. Configuration</h2>
+
+    <p id="R31" class="req"><strong>R31.</strong> A module's configuration MUST be stored at
+        <code>config/&lt;module key&gt;.config</code>, relative to the run directory, in
+        <code>java.util.Properties</code> text format.</p>
+
+    <p id="R32" class="req"><strong>R32.</strong> <code>load()</code> MUST return the receiver, so that
+        construction and loading compose as
+        <code>new XModuleConfig(logger).load()</code>.</p>
+
+    <p id="R33" class="req"><strong>R33.</strong> <code>load()</code> MUST NOT fail when the file is
+        absent. It MUST substitute defaults for every key and set the dirty flag.</p>
+
+    <p id="R34" class="req"><strong>R34.</strong> For each key that is missing or fails to parse,
+        <code>load()</code> MUST: log a warning identifying the key, the offending value where one
+        exists, and the accepted range; substitute the documented default; and set the dirty flag.</p>
+
+    <p id="R35" class="req"><strong>R35.</strong> <code>isDirty()</code> MUST report whether the
+        configuration differs from what is on disk. Loading having substituted a default is the
+        usual cause, but any later change to a value MUST be reflected too, and
+        <code>save()</code> MUST clear it. The caller is expected to persist a configuration that
+        does not match its file:</p>
+
+    <pre><code>this.config = new XModuleConfig(this.logger).load();
+if (this.config.isDirty()) this.config.save();</code></pre>
+
+    <p id="R36" class="req"><strong>R36.</strong> <code>save()</code> MUST create the
+        <code>config/</code> directory if it does not exist, MUST write every key it knows — not only
+        those that changed — and MUST clear the dirty flag on success.</p>
+
+    <p id="R37" class="req"><strong>R37.</strong> A configuration file MUST be self-describing after a
+        <code>save()</code>: a user who deletes it MUST get a complete, commented file back on the next
+        run.</p>
+
+    <p>A saved configuration:</p>
+
+    <pre><code>#Config for the Curved Spacetime Render GLFW Module.
+#Thu Jul 09 12:45:03 EDT 2026
+vsync=true</code></pre>
+</section>
+
+<section id="manifest">
+    <h2>9. Quilt manifest</h2>
+
+    <p id="R38" class="req"><strong>R38.</strong> Every module MUST ship
+        <code>quilt.mod.json</code> on its resource path, with <code>schema_version</code> 1.</p>
+
+    <p id="R39" class="req"><strong>R39.</strong> <code>quilt_loader.id</code> MUST equal the module's
+        directory name and <code>quilt_loader.group</code> MUST equal its JPMS module name, per
+        <a href="#R5">R5</a>.</p>
+
+    <p id="R40" class="req"><strong>R40.</strong> The <code>entrypoints</code> object MUST contain a
+        <code>main</code> key naming the module's main entrypoint class,
+        and one key per dependency, named per <a href="#R5">R5</a> and naming the corresponding dependent entrypoint
+        class.</p>
+
+    <p id="R41" class="req"><strong>R41.</strong> <code>depends</code> MUST list every module named in
+        <code>entrypoints</code>, plus <code>java</code>. The<code>entrypoints</code> map
+        and the <code>depends</code> array MUST agree; a dependent entrypoint
+        without a matching dependency is a conformance error.</p>
+
+    <pre><code>{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "io.codetoil.curved_spacetime.render.glfw",
+    "id": "curved-spacetime-render-glfw-module",
+    "version": "0.1.0-SNAPSHOT",
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "main": "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWModuleEntrypoint",
+      "curved_spacetime_render_module_dependent":
+        "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderGLFWModuleEntrypoint"
+    },
+    "depends": [
+      { "id": "curved-spacetime-main-module",  "versions": "&gt;=0.1.0-SNAPSHOT" },
+      { "id": "curved-spacetime-render-module","versions": "&gt;=0.1.0-SNAPSHOT" },
+      { "id": "java",                          "versions": "&gt;=25" }
+    ]
+  }
+}</code></pre>
+</section>
+
+<section id="callbacks">
+    <h2>10. Callbacks</h2>
+
+    <p>Once initialization is complete, the engine runs module code through callbacks. A module
+        registers a <code>MainCallback</code> for work independent of any scene, or a generator from
+        which the engine makes one <code>SceneCallback</code> per scene. The engine calls each
+        callback's <code>init</code> once, then its <code>loop</code> repeatedly, at the rate its
+        <code>getFPS()</code> reports, and its <code>clean</code> when the engine stops.
+        <a href="#api">Appendix A</a> documents what else the engine guarantees a callback. These
+        requirements bind the module's side.</p>
+
+    <p id="R49" class="req"><strong>R49.</strong> A callback's <code>clean</code> MUST tolerate being
+        called after its own <code>init</code> threw part-way, releasing only what <code>init</code>
+        actually acquired. The engine follows a failed <code>init</code> with
+        <code>clean</code>.</p>
+
+    <p id="R50" class="req"><strong>R50.</strong> A module MAY call the engine's <code>clean</code> to
+        stop it, and MUST do so from the callback thread, as a render module's window does from its
+        <code>loop</code> when it closes. A module that needs to stop the engine from another thread
+        registers a main callback that calls <code>clean</code> from its <code>loop</code>.
+        Otherwise a callback's <code>clean</code> would run on that thread instead of the callback thread,
+        while the callback's <code>loop</code> may still be running.</p>
+</section>
+
+<section id="checklist">
+    <h2>11. Conformance checklist</h2>
+
+    <h3>11.1 A conforming module</h3>
+
+    <ul class="checklist">
+        <li>Directory <code>&lt;key&gt;</code>; JPMS name nested under its API's
+            (<a href="#R1">R1</a>–<a href="#R2">R2</a>)
+        </li>
+        <li>Exports its package and its <code>.entrypoint</code> subpackage
+            (<a href="#R4">R4</a>)
+        </li>
+        <li>Exactly one <code>main</code> entrypoint implementing <code>ModuleInitializer</code>
+            (<a href="#R12">R12</a>)
+        </li>
+        <li>Stable <code>Logger</code> and <code>TransferQueue</code> instances
+            (<a href="#R14">R14</a>, <a href="#R15">R15</a>)
+        </li>
+        <li>A dependent interface (<a href="#R17">R17</a>)</li>
+        <li>A dependent entrypoint per dependency, correctly named
+            (<a href="#R18">R18</a>, <a href="#R19">R19</a>)
+        </li>
+        <li><code>onInitialize</code> follows the four-step order (<a href="#R23">R23</a>)</li>
+        <li>Logger publishes through the engine's console handler, not its parents
+            (<a href="#R23">R23</a>)
+        </li>
+        <li>Consumes exactly its dependency count, classifying by type
+            (<a href="#R26">R26</a>, <a href="#R27">R27</a>)
+        </li>
+        <li>Config at <code>config/&lt;key&gt;.config</code>, defaults on absence, dirty-then-save
+            (<a href="#R31">R31</a>–<a href="#R37">R37</a>)
+        </li>
+        <li><code>quilt.mod.json</code> whose entrypoints and depends agree
+            (<a href="#R38">R38</a>–<a href="#R41">R41</a>)
+        </li>
+        <li>Each callback's <code>clean</code> survives a failed <code>init</code>
+            (<a href="#R49">R49</a>)
+        </li>
+        <li>Stops the engine only from the callback thread (<a href="#R50">R50</a>)</li>
+    </ul>
+
+    <h3>11.2 A conforming loader</h3>
+
+    <ul class="checklist">
+        <li>Retains the engine from <code>prepareModInit</code> (<a href="#R6">R6</a>)</li>
+        <li>Type-filters entrypoints; empty list, never <code>null</code>
+            (<a href="#R7">R7</a>, <a href="#R8">R8</a>)
+        </li>
+        <li>Rejects unrecognised entrypoint names loudly (<a href="#R9">R9</a>)</li>
+        <li>Applies the consumer to every matching entrypoint, imposing no order
+            (<a href="#R10">R10</a>)
+        </li>
+        <li>Returns stable instances across calls (<a href="#R11">R11</a>)</li>
+    </ul>
+</section>
+
+<section id="api">
+    <h2>Appendix A. API source</h2>
+
+    <p>These files make up <code>io.codetoil.curved_spacetime.api</code>, the JPMS module, built from
+        <code>curved-spacetime-api-module</code>, that every module, loader and engine compiles
+        against. Each is reproduced in full. The declarations are normative. The documentation
+        comments are informative: where one disagrees with a numbered requirement, the requirement
+        governs. This code can also be found in the git repository.</p>
+
+    <!-- START GENERATED CODE - generated from curved-spacetime-api-module -->
+    <section id="api-generated">
+        <h3 id="api-moduleinfo">A.1 <code>module-info.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2023-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+/**
+ * API Module of Curved Spacetime
+ *
+ */
+module io.codetoil.curved_spacetime.api {
+	requires java.logging;
+	exports io.codetoil.curved_spacetime.loader;
+	exports io.codetoil.curved_spacetime.loader.entrypoint;
+	exports io.codetoil.curved_spacetime.api;
+	exports io.codetoil.curved_spacetime.api.scene;
+}</code></pre>
+
+        <h3 id="api-Engine">A.2 <code>io/codetoil/curved_spacetime/api/Engine.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2023-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+package io.codetoil.curved_spacetime.api;
+
+import io.codetoil.curved_spacetime.api.scene.Scene;
+import io.codetoil.curved_spacetime.api.scene.SceneCallback;
+import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * The engine: it owns the configuration, the scenes, and the callback loop, and it drives module initialization.
+ * &lt;p&gt;
+ * Constructing an engine is what starts the program: an implementation's constructor loads the main configuration,
+ * registers the initial scene, runs every module's {@code main} entrypoint, and then begins the callback loop — so by
+ * the time it returns, the whole module graph is up.
+ * &lt;p&gt;
+ * Callbacks all run on a single scheduled thread, so implementations need no synchronisation against one another.
+ * Module initialization is the opposite: entrypoints run concurrently on an unbounded pool, which the dependency
+ * handshake requires — see {@link #callDependents(String, Class, Consumer, Logger)}.
+ */
+public abstract class Engine
+{
+	/**
+	 * The loader module entrypoints are resolved through.
+	 */
+	protected final CurvedSpacetimeLoader loader;
+
+	/**
+	 * Creates an engine that resolves module entrypoints through the given loader.
+	 *
+	 * @param loader
+	 * 		the loader module entrypoints are resolved through
+	 */
+	public Engine(CurvedSpacetimeLoader loader)
+	{
+		this.loader = loader;
+	}
+
+	/**
+	 * Adds a scene and gives every registered generator a callback for it.
+	 *
+	 * @param scene
+	 * 		the scene to add
+	 */
+	public abstract void registerScene(Scene scene);
+
+	/**
+	 * Invokes every entrypoint registered under the given name, concurrently, and waits for all of them.
+	 * &lt;p&gt;
+	 * The pool this uses is unbounded, and must remain so. The dependency handshake blocks a consumer in
+	 * {@code TransferQueue.take} while its producer is still to run, so a producer and its consumer have to be runnable
+	 * at the same time; a bounded pool deadlocks as soon as its threads fill with consumers whose producers are still
+	 * queued.
+	 * &lt;p&gt;
+	 * The first entrypoint to fail aborts the whole call rather than leaving a half-initialized module graph running.
+	 *
+	 * @param &lt;E&gt;
+	 * 		the entrypoint type
+	 * @param name
+	 * 		the entrypoint name to invoke, such as {@code main}
+	 * @param moduleInitializerClass
+	 * 		the type registered entrypoints must be assignable to
+	 * @param onInitialize
+	 * 		the action to apply to each entrypoint
+	 * @param logger
+	 * 		the logger to trace dispatch through
+	 *
+	 * @throws Throwable
+	 * 		whatever the first failing entrypoint threw
+	 */
+	public abstract &lt;E&gt; void callDependents(String name,
+											Class&lt;E&gt; moduleInitializerClass,
+											Consumer&lt;E&gt; onInitialize,
+											Logger logger) throws Throwable;
+
+	/**
+	 * Prepares the loader and runs every module's {@code main} entrypoint.
+	 *
+	 * @throws RuntimeException
+	 * 		wrapping whatever a module's entrypoint threw
+	 */
+	public abstract void runEntrypoints();
+
+	/**
+	 * Returns the loader this engine resolves entrypoints through.
+	 *
+	 * @return the loader
+	 */
+	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
+	{
+		return this.loader;
+	}
+
+	/**
+	 * Registers scene-independent work and initialises it on the callback thread.
+	 *
+	 * @param mainCallback
+	 * 		the callback to register
+	 *
+	 * @return the completable future generated for this task
+	 */
+	public abstract CompletableFuture&lt;Void&gt; registerMainCallback(MainCallback mainCallback);
+
+	/**
+	 * Registers a factory that produces one callback per scene.
+	 * &lt;p&gt;
+	 * The generator is applied to every scene that exists now, and to each one registered later, so a module never has
+	 * to track scenes itself.
+	 *
+	 * @param sceneCallbackGenerator
+	 * 		the factory producing a callback for a given scene
+	 *
+	 * @return the completable future generated for this task
+	 */
+	public abstract CompletableFuture&lt;Void&gt; registerSceneCallbackGenerator(
+			Function&lt;Scene, SceneCallback&gt; sceneCallbackGenerator);
+
+	/**
+	 * Stops the callback loop, releases every callback, and then shuts the callback executor down.
+	 */
+	public abstract void clean();
+
+	/**
+	 * Logs a failure at {@code SEVERE} and stops the engine.
+	 *
+	 * @param t
+	 * 		the failure to log
+	 * @param message
+	 * 		the message to log it with
+	 */
+	public abstract void throwError(Throwable t, String message);
+
+	/**
+	 * Returns the console handler used for the Curved Spacetime Loggers.
+	 *
+	 * @return the console handler
+	 */
+	public abstract ConsoleHandler getConsoleHandler();
+
+	/**
+	 * Returns whether this engine has finished initializing.
+	 * &lt;p&gt;
+	 * That does not mean every callback is registered: a callback can be registered at any time, and registration is
+	 * asynchronous.
+	 *
+	 * @return {@code true} if the engine is initialized
+	 */
+	public abstract boolean isInitialized();
+
+	/**
+	 * Returns the level every module logger is set to.
+	 *
+	 * @return the logger level from this engine's configuration
+	 */
+	public abstract Level getLoggerLevel();
+
+	/**
+	 * Returns how many times per second the callback loop runs.
+	 *
+	 * @return the configured frame rate, in frames per second
+	 */
+	public abstract int getFPS();
+}</code></pre>
+
+        <h3 id="api-MainCallback">A.3 <code>io/codetoil/curved_spacetime/api/MainCallback.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2023-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+package io.codetoil.curved_spacetime.api;
+
+/**
+ * Work the engine runs once at start-up and then repeatedly, independent of any scene.
+ * &lt;p&gt;
+ * A module registers one of these with {@link Engine#registerMainCallback(MainCallback)}. The engine calls
+ * {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on shutdown. All three
+ * run on the engine's single callback thread, so an implementation may hold mutable state without synchronising it
+ * against the other callbacks.
+ */
+public abstract class MainCallback
+{
+	/**
+	 * The engine this callback belongs to.
+	 */
+	protected final Engine engine;
+
+	/**
+	 * Whether this callback has finished setting itself up.
+	 * &lt;p&gt;
+	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from its own
+	 * {@link #init()}, at the point where its setup is genuinely complete — only the implementation knows when that
+	 * is.
+	 */
+	protected boolean initialized = false;
+
+	/**
+	 * Creates a callback bound to the given engine.
+	 *
+	 * @param engine
+	 * 		the engine this callback belongs to
+	 */
+	protected MainCallback(Engine engine)
+	{
+		this.engine = engine;
+	}
+
+	/**
+	 * Returns whether this callback has finished setting itself up.
+	 *
+	 * @return {@code true} once the implementation has flagged its own setup complete
+	 */
+	public boolean isInitialized()
+	{
+		return this.initialized;
+	}
+
+	/**
+	 * Sets this callback up.
+	 * &lt;p&gt;
+	 * Called once, before the first {@link #loop()}. An implementation should set {@link #initialized} when it
+	 * finishes.
+	 */
+	public abstract void init();
+
+	/**
+	 * Advances this callback by one frame.
+	 * &lt;p&gt;
+	 * Called repeatedly at the frame rate the engine's configuration specifies.
+	 */
+	public abstract void loop();
+
+	/**
+	 * Releases whatever this callback acquired in {@link #init()}.
+	 */
+	public abstract void clean();
+}</code></pre>
+
+        <h3 id="api-Scene">A.4 <code>io/codetoil/curved_spacetime/api/scene/Scene.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2023-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+package io.codetoil.curved_spacetime.api.scene;
+
+/**
+ * One independent thing being simulated and drawn.
+ * &lt;p&gt;
+ * The engine holds a list of these and pairs each with a {@link SceneCallback} per registered generator, so modules act
+ * on scenes without tracking them. A scene currently carries no state of its own: what a scene &lt;em&gt;contains&lt;/em&gt; —
+ * spacetimes, metrics, worldlines — belongs to the simulation model, which has not been settled yet and is deliberately
+ * outside the scope of this API.
+ */
+public class Scene
+{
+	/**
+	 * Creates an empty scene.
+	 */
+	public Scene()
+	{
+	}
+}</code></pre>
+
+        <h3 id="api-SceneCallback">A.5 <code>io/codetoil/curved_spacetime/api/scene/SceneCallback.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2023-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+package io.codetoil.curved_spacetime.api.scene;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+/**
+ * Work the engine runs once at start-up and then repeatedly, against one particular scene.
+ * &lt;p&gt;
+ * A module does not register these directly. It registers a generator with
+ * {@link Engine#registerSceneCallbackGenerator}, and the engine applies that generator to every scene, so a module that
+ * wants to act on scenes gets one callback per scene without having to track scenes itself.
+ * &lt;p&gt;
+ * The engine calls {@link #init()} once, then {@link #loop()} at the configured frame rate, and {@link #clean()} on
+ * shutdown, all on its single callback thread.
+ */
+public abstract class SceneCallback
+{
+	/**
+	 * The engine this callback belongs to.
+	 */
+	protected final Engine engine;
+
+	/**
+	 * The scene this callback acts on.
+	 */
+	protected final Scene scene;
+
+	/**
+	 * Whether this callback has finished setting itself up.
+	 * &lt;p&gt;
+	 * Deliberately not maintained by this class. An implementation sets this to {@code true} from its own
+	 * {@link #init()}, at the point where its setup is genuinely complete — only the implementation knows when that
+	 * is.
+	 */
+	protected boolean initialized = false;
+
+	/**
+	 * Creates a callback bound to the given engine and scene.
+	 *
+	 * @param engine
+	 * 		the engine this callback belongs to
+	 * @param scene
+	 * 		the scene this callback acts on
+	 */
+	protected SceneCallback(Engine engine, Scene scene)
+	{
+		this.engine = engine;
+		this.scene = scene;
+	}
+
+	/**
+	 * Returns whether this callback has finished setting itself up.
+	 *
+	 * @return {@code true} once the implementation has flagged its own setup complete
+	 */
+	public boolean isInitialized()
+	{
+		return this.initialized;
+	}
+
+	/**
+	 * Sets this callback up against its scene.
+	 * &lt;p&gt;
+	 * Called once, before the first {@link #loop()}. An implementation should set {@link #initialized} when it
+	 * finishes.
+	 */
+	public abstract void init();
+
+	/**
+	 * Advances this callback by one frame.
+	 * &lt;p&gt;
+	 * Called repeatedly at the frame rate the engine's configuration specifies.
+	 */
+	public abstract void loop();
+
+	/**
+	 * Releases whatever this callback acquired in {@link #init()}.
+	 */
+	public abstract void clean();
+}</code></pre>
+
+        <h3 id="api-CurvedSpacetimeLoader">A.6 <code>io/codetoil/curved_spacetime/loader/CurvedSpacetimeLoader.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2025-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+package io.codetoil.curved_spacetime.loader;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Consumer;
+
+/**
+ * Discovers modules and resolves their entrypoints on the engine's behalf.
+ * &lt;p&gt;
+ * An implementation is free to resolve entrypoints however it likes. The closed-world loader holds them in static
+ * tables so that GraalVM native-image can reach them by ordinary static analysis; the Quilt loader delegates to Quilt
+ * Loader, which discovers them dynamically. Neither strategy is privileged by this interface.
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R6 through R11.
+ */
+public interface CurvedSpacetimeLoader
+{
+	/**
+	 * Prepares this loader for module initialization.
+	 * &lt;p&gt;
+	 * The engine calls this exactly once, before invoking any entrypoint. An implementation must retain {@code engine}
+	 * such that {@link #getEngine()} returns it thereafter.
+	 *
+	 * @param path
+	 * 		the run directory modules resolve their resources against
+	 * @param engine
+	 * 		the engine driving initialization
+	 */
+	void prepareModInit(Path path, Engine engine);
+
+	/**
+	 * Returns every entrypoint registered under the given name whose runtime type is assignable to
+	 * {@code moduleInitializerClass}.
+	 * &lt;p&gt;
+	 * An implementation returns the same instances across repeated calls within one run. The dependency handshake
+	 * relies on that: a dependent locates its own main entrypoint by filtering this list, then transfers to the queue
+	 * owned by that exact object.
+	 *
+	 * @param &lt;E&gt;
+	 * 		the entrypoint type
+	 * @param name
+	 * 		the entrypoint name, such as {@code main}
+	 * @param moduleInitializerClass
+	 * 		the type registered entrypoints must be assignable to
+	 *
+	 * @return the matching entrypoints, empty when the name is recognised but nothing is registered
+	 *
+	 * @throws IllegalArgumentException
+	 * 		if the entrypoint name is not recognised
+	 */
+	&lt;E&gt; List&lt;E&gt; getEntrypoints(String name, Class&lt;E&gt; moduleInitializerClass);
+
+	/**
+	 * Applies the given consumer to every entrypoint {@link #getEntrypoints} would return for the same arguments.
+	 * &lt;p&gt;
+	 * No ordering is imposed, and callers must not depend on one.
+	 *
+	 * @param &lt;E&gt;
+	 * 		the entrypoint type
+	 * @param name
+	 * 		the entrypoint name, such as {@code main}
+	 * @param moduleInitializerClass
+	 * 		the type registered entrypoints must be assignable to
+	 * @param moduleInitializerConsumer
+	 * 		the action to apply to each entrypoint
+	 *
+	 * @throws IllegalArgumentException
+	 * 		if the entrypoint name is not recognised
+	 */
+	&lt;E&gt; void invokeEntrypoints(String name, Class&lt;E&gt; moduleInitializerClass,
+							   Consumer&lt;? super E&gt; moduleInitializerConsumer);
+
+	/**
+	 * Returns the engine this loader was prepared with.
+	 *
+	 * @return the engine passed to {@link #prepareModInit}, or {@code null} before that call
+	 */
+	Engine getEngine();
+}</code></pre>
+
+        <h3 id="api-ModuleConfig">A.7 <code>io/codetoil/curved_spacetime/loader/entrypoint/ModuleConfig.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2025-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * Copyright (c) 2025 Antonio Hernández Bejarano&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+package io.codetoil.curved_spacetime.loader.entrypoint;
+
+import java.io.IOException;
+
+/**
+ * A module's persisted settings, backed by a {@code java.util.Properties} file under {@code config/}.
+ * &lt;p&gt;
+ * A configuration is never allowed to fail because its file is absent or incomplete. Loading substitutes a documented
+ * default for every key it cannot read, records that it did so, and the owning module then writes the completed file
+ * back:
+ * &lt;pre&gt;{@code
+ * this.config = new XModuleConfig(this.logger).load();
+ * if (this.config.isDirty()) this.config.save();
+ * }&lt;/pre&gt;
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R31 through R37.
+ */
+public interface ModuleConfig
+{
+	/**
+	 * Reads this configuration from disk, substituting defaults for anything missing or invalid.
+	 * &lt;p&gt;
+	 * An absent file is not an error. For each key that is missing or fails to parse, an implementation logs a warning
+	 * identifying the key and the accepted range, substitutes the documented default, and sets the dirty flag.
+	 *
+	 * @return this configuration, so that construction and loading compose
+	 *
+	 * @throws IOException
+	 * 		if the file exists but cannot be read
+	 */
+	ModuleConfig load() throws IOException;
+
+	/**
+	 * Writes this configuration to disk, creating {@code config/} if it does not exist.
+	 * &lt;p&gt;
+	 * Every known key is written, not only those that changed, so that a user who deletes the file gets a complete one
+	 * back on the next run. The dirty flag is cleared on success.
+	 *
+	 * @throws IOException
+	 * 		if the directory cannot be created or the file cannot be written
+	 */
+	void save() throws IOException;
+
+	/**
+	 * Returns whether this configuration differs from what is on disk.
+	 * &lt;p&gt;
+	 * Set whenever the in-memory state diverges from the file. {@link #load()} substituting a default for a missing or
+	 * unparseable key is the usual cause, but any later change to a value counts equally. {@link #save()} clears it,
+	 * since writing the file makes the two agree again.
+	 *
+	 * @return {@code true} if the file does not match this configuration and should be rewritten
+	 */
+	boolean isDirty();
+}</code></pre>
+
+        <h3 id="api-ModuleDependentModuleInitializer">A.8 <code>io/codetoil/curved_spacetime/loader/entrypoint/ModuleDependentModuleInitializer.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2025-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+package io.codetoil.curved_spacetime.loader.entrypoint;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+/**
+ * The callback by which one module learns of another module it depends on.
+ * &lt;p&gt;
+ * Each module extends this with a named interface of its own, and any module depending on that module registers an
+ * implementation of it. When the depended-on module reaches the last step of its initialization, it invokes every such
+ * implementation, passing itself and the engine. The implementation's job is to hand that entrypoint to its own module,
+ * by transferring it into that module's {@link ModuleInitializer#getDependencyModuleTransferQueue() dependency queue}:
+ * &lt;pre&gt;{@code
+ * engine.getCurvedSpacetimeLoader()
+ *         .getEntrypoints("main", ModuleInitializer.class).stream()
+ *         .filter(MyModuleEntrypoint.class::isInstance)
+ *         .findFirst().orElseThrow()
+ *         .getDependencyModuleTransferQueue().transfer(moduleEntrypoint);
+ * }&lt;/pre&gt;
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R17 through R19 and R25.
+ *
+ * @param &lt;E&gt;
+ * 		the entrypoint type of the module being depended on
+ */
+public interface ModuleDependentModuleInitializer&lt;E extends ModuleInitializer&gt;
+{
+	/**
+	 * Receives the entrypoint of a module this module depends on.
+	 * &lt;p&gt;
+	 * Called on the depended-on module's initialization thread, not this module's.
+	 *
+	 * @param moduleEntrypoint
+	 * 		the entrypoint of the module being depended on
+	 * @param engine
+	 * 		the engine driving initialization
+	 */
+	void onInitialize(E moduleEntrypoint, Engine engine);
+}</code></pre>
+
+        <h3 id="api-ModuleInitializer">A.9 <code>io/codetoil/curved_spacetime/loader/entrypoint/ModuleInitializer.java</code></h3>
+
+        <pre><code>/**
+ * Curved Spacetime is a work-in-progress easy-to-use modular simulator for General Relativity.&lt;br&gt;
+ * Copyright (C) 2023-2026 Angelina Michalek / Anthony Michalek (Codetoil)&lt;br&gt;
+ * Copyright 2022, 2023 QuiltMC&lt;br&gt;
+ * &lt;br&gt;
+ * This file is part of Curved Spacetime&lt;br&gt;
+ * &lt;br&gt;
+ * This program is free software: you can redistribute it and/or modify &lt;br&gt;
+ * it under the terms of the GNU General Public License as published by &lt;br&gt;
+ * the Free Software Foundation, either version 3 of the License, or &lt;br&gt;
+ * (at your option) any later version.&lt;br&gt;
+ * &lt;br&gt;
+ * This program is distributed in the hope that it will be useful,&lt;br&gt;
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;br&gt;
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;br&gt;
+ * GNU General Public License for more details.&lt;br&gt;
+ * &lt;br&gt;
+ * You should have received a copy of the GNU General Public License&lt;br&gt;
+ * along with this program.  If not, see &lt;a href="https://www.gnu.org/licenses/"&gt;https://www.gnu.org/licenses/&lt;/a&gt;.&lt;br&gt;
+ */
+
+package io.codetoil.curved_spacetime.loader.entrypoint;
+
+import io.codetoil.curved_spacetime.api.Engine;
+
+import java.util.concurrent.TransferQueue;
+import java.util.logging.Logger;
+
+/**
+ * A module's {@code main} entrypoint, the object the engine drives during initialization.
+ * &lt;p&gt;
+ * Every module registers exactly one of these. The engine invokes {@link #onInitialize(Engine)} on all of them
+ * concurrently, so a module must not assume anything about the order in which its peers come up; the only ordering
+ * guarantee available is the one the dependency handshake provides.
+ * &lt;p&gt;
+ * Implementations must satisfy requirements R12 through R16.
+ */
+public interface ModuleInitializer
+{
+	/**
+	 * Brings this module up.
+	 * &lt;p&gt;
+	 * An implementation sets its logger's level from the engine's configuration, loads its own configuration and saves
+	 * it if loading substituted defaults, receives any dependencies it declares through
+	 * {@link #getDependencyModuleTransferQueue()}, performs any operations it must perform during initialization, and
+	 * finally invokes its own dependent entrypoints, passing itself and the engine.
+	 *
+	 * @param engine
+	 * 		the engine driving initialization
+	 */
+	void onInitialize(Engine engine);
+
+	/**
+	 * Returns this module's configuration.
+	 *
+	 * @return the configuration, or {@code null} before {@link #onInitialize(Engine)} has loaded it
+	 */
+	ModuleConfig getConfig();
+
+	/**
+	 * Returns the logger this module writes its diagnostics to.
+	 * &lt;p&gt;
+	 * The same instance is returned for the lifetime of this entrypoint.
+	 *
+	 * @return this module's logger
+	 */
+	Logger getLogger();
+
+	/**
+	 * Returns the queue by which this module receives the entrypoints it depends on.
+	 * &lt;p&gt;
+	 * A module does not look its dependencies up. Each module it depends on invokes a dependent entrypoint, which
+	 * transfers that module's own entrypoint into this queue. The same instance is returned for the lifetime of this
+	 * entrypoint; a fresh or defensively copied queue breaks the handshake, because the producer transfers into
+	 * whichever queue this method returned.
+	 *
+	 * @return this module's dependency transfer queue
+	 */
+	TransferQueue&lt;ModuleInitializer&gt; getDependencyModuleTransferQueue();
+}</code></pre>
+    </section>
+    <!-- END GENERATED CODE -->
+</section>
+
+<footer>
+    <p>Curved Spacetime — Copyright © 2023–2026 Angelina Michalek / Anthony Michalek (Codetoil). Licensed
+        <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPL-3.0-or-later</a>.</p>
+    <p><a href="https://github.com/Codetoil/curved-spacetime">Source</a> ·
+        <a href="https://github.com/Codetoil/curved-spacetime/issues">Issues</a></p>
+</footer>
+
+</body>
+</html>
