@@ -38,6 +38,7 @@ import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Engine Implementation
@@ -114,10 +115,17 @@ public class MainModuleEngineImpl extends Engine
 		this.callbackLoopHandler = this.callbackExecutor.scheduleAtFixedRate(() -> {
 					try
 					{
-						this.mainCallbacks.forEach(MainCallback::loop);
-						this.sceneCallbacks.forEach((_,
-													 sceneCallbacksForGenerator) ->
-								sceneCallbacksForGenerator.forEach(SceneCallback::loop));
+						for (MainCallback c : List.copyOf(this.mainCallbacks))
+						{
+							if (this.callbackExecutor.isShutdown()) return;
+							c.loop();
+						}
+						for (List<SceneCallback> l : List.copyOf(this.sceneCallbacks.values()))
+							for (SceneCallback c : List.copyOf(l))
+							{
+								if (this.callbackExecutor.isShutdown()) return;
+								c.loop();
+							}
 					} catch (Throwable t)
 					{
 						this.throwError(t, "Exception called during Main Loop");
@@ -221,7 +229,8 @@ public class MainModuleEngineImpl extends Engine
 		{
 			return CompletableFuture.runAsync(() -> {
 						this.sceneCallbacks.put(sceneCallbackGenerator,
-								this.scenes.stream().map(sceneCallbackGenerator).toList());
+								this.scenes.stream().map(sceneCallbackGenerator)
+										.collect(Collectors.toCollection(ArrayList::new)));
 						this.sceneCallbacks.get(sceneCallbackGenerator).forEach(SceneCallback::init);
 					}, this.callbackExecutor)
 					.whenCompleteAsync((Void _, Throwable t) -> {
@@ -252,11 +261,9 @@ public class MainModuleEngineImpl extends Engine
 			 this.sceneCallbacks.entrySet().iterator(); it.hasNext(); )
 		{
 			Entry<Function<Scene, SceneCallback>, List<SceneCallback>> entry = it.next();
-			for (Iterator<SceneCallback> it2 = entry.getValue().iterator(); it2.hasNext(); )
+			for (SceneCallback sceneCallback : entry.getValue())
 			{
-				SceneCallback sceneCallback = it2.next();
 				sceneCallback.clean();
-				it2.remove();
 			}
 			it.remove();
 		}
