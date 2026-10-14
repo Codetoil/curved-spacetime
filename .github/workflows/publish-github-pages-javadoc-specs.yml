@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   javadoc:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - name: Set up JDK 8
@@ -38,7 +38,7 @@ jobs:
           path: build/docs/javadoc
 
   publish-to-github-pages:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     # Add a dependency to the build job
     needs: javadoc
     environment:
