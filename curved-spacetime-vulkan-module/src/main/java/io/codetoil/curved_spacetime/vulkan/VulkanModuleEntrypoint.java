@@ -68,7 +68,7 @@ public class VulkanModuleEntrypoint implements ModuleInitializer
 			if (this.config.isDirty()) this.config.save();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException("Failed to load Vulkan Render Config", ex);
+			throw new RuntimeException("Failed to load Vulkan Module Config", ex);
 		}
 		this.engine.registerMainCallback(this.vulkan = new VulkanModuleVulkan(this.engine, this));
 		try

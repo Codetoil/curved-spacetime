@@ -77,7 +77,7 @@ public class WebserverModuleConfig implements ModuleConfig
 
 		try (FileWriter writer = new FileWriter(WebserverModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the GLFW Render Module.");
+			props.store(writer, "Config for the Webserver Module.");
 		}
 		this.dirty = false;
 	}

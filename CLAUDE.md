@@ -31,14 +31,19 @@ anything toward the specification as part of an unrelated change.
 
 When you change module-system behaviour — entrypoint naming, the handshake, the config
 contract — update `specs/module-system.html` in the same change. When you change how an engine
-initializes modules or runs callbacks, update `specs/engine.html` the same way. When you change a
-file in `curved-spacetime-loader-module`, update Appendix A of both specifications to match.
+initializes modules or runs callbacks, update `specs/engine.html` the same way.
+
+Appendix A of both specifications is generated, not written. When a release is published, the
+pages workflow runs `fill_api_appendix.py` (kept on the `pages` branch) to fill the empty
+`<section id="api-generated">` from `curved-spacetime-loader-module/src/main/java`. Leave that
+section empty in the tree. A change to the loader module needs no appendix edit, but any
+requirement or prose that names what changed still has to be updated by hand.
 
 The two specifications serve separate audiences, and each must be readable without the other:
-`module-system.html` is for module and loader authors, `engine.html` for engine authors. Both
-reproduce every API file in Appendix A, and neither cites the other. A requirement that binds both
-audiences appears in both, with the same number and wording. `curved-spacetime.md` (the game)
-builds on both.
+`module-system.html` is for module and loader authors, `engine.html` for engine authors. Once
+published, both reproduce every API file in Appendix A, and neither cites the other. A requirement
+that binds both audiences appears in both, with the same number and wording. `curved-spacetime.md`
+(the game) builds on both.
 
 ## Verifying changes
 

@@ -92,7 +92,7 @@ public class RenderModuleConfig implements ModuleConfig
 
 		try (FileWriter writer = new FileWriter(RenderModuleConfig.FILENAME))
 		{
-			props.store(writer, "Config for the GLFW Render Module.");
+			props.store(writer, "Config for the Render Module.");
 		}
 		this.dirty = false;
 	}
