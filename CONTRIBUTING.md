@@ -30,9 +30,6 @@ mirrors that order segment for segment — API first, implementation last, `-mod
 `curved-spacetime-render-vulkan-glfw-module` therefore maps to
 `io.codetoil.curved_spacetime.render.vulkan_glfw`.
 
-The directories in the tree today are still ordered the other way round (`curved-spacetime-render-glfw-module`) and do
-not yet match.
-
 ## Adding a module
 
 Six files, plus a `settings.gradle.kts` edit. Copy an existing sibling rather than writing from
@@ -53,7 +50,7 @@ API `curved-spacetime-render-module`. A proper SDK will be made later.
    the module key in `PascalCase` with `-module` dropped. Its `onInitialize(Engine engine)` sets its
    logger level from `engine.getLoggerLevel()`, adds `engine.getConsoleHandler()` to that logger and
    calls `setUseParentHandlers(false)` on it (R23 in the specification explains why both are
-   needed), loads its config, then calls `engine.callDependents("<key_>curved_spacetime__dependent", …)`, where
+   needed), loads its config, then calls `engine.callDependents("<key_>_dependent", …)`, where
    `<key_>` is the module key with every `-` replaced by `_`.
 4. **`<Module 1>ModuleDependent<Module 2>ModuleEntrypoint implements <Module 1>ModuleDependentModuleInitializer`**
    — one per module you depend on, where module 1 is the depended-on module and module 2 is this
