@@ -81,7 +81,7 @@ public class RenderVulkanModuleImageView
 													.aspectMask(this.aspectMask)
 													.baseMipLevel(0)
 													.levelCount(this.mipLevels)
-													.baseMipLevel(vulkanImageViewData.baseArrayLayer)
+													.baseArrayLayer(vulkanImageViewData.baseArrayLayer)
 													.layerCount(vulkanImageViewData.layerCount));
 			VulkanUtils.vkCheck(
 					VK13.vkCreateImageView(vulkanModuleLogicalDevice.getVkDevice(), viewCreateInfo, null, lp),

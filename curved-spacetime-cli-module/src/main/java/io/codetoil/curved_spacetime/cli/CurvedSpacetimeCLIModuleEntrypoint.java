@@ -41,7 +41,7 @@ public class CurvedSpacetimeCLIModuleEntrypoint implements ModuleInitializer
 {
 	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
-	private Logger logger = Logger.getLogger("Curved Spacetime CLI Module Logger");
+	private final Logger logger = Logger.getLogger("Curved Spacetime CLI Module Logger");
 	private Engine engine;
 
 	/**
