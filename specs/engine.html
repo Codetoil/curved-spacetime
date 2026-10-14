@@ -171,7 +171,11 @@
 
     <p id="R20" class="req"><strong>R20.</strong> The engine MUST, in order: load its own configuration;
         call <code>prepareModInit</code>; then invoke every <code>main</code> entrypoint's
-        <code>onInitialize</code>.</p>
+        <code>onInitialize</code>. The engine's own configuration MUST be stored at
+        <code>config/&lt;engine key&gt;.config</code>, relative to the run directory, in
+        <code>java.util.Properties</code> text format, where the engine key is the name of the engine's
+        project directory (for this engine, <code>curved-spacetime-main-module</code>). The property keys
+        are the engine's to choose.</p>
 
     <p id="R21" class="req"><strong>R21.</strong> The engine MUST invoke <code>main</code> entrypoints
         <strong>concurrently</strong>, and MUST NOT assume any completion order.</p>
