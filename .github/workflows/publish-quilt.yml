@@ -66,9 +66,9 @@ jobs:
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  publish-curved-spacetime-ffm-glfw-render-module:
+  publish-curved-spacetime-render-glfw-ffm-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -88,11 +88,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build
-        run: ./gradlew :curved-spacetime-ffm-glfw-render-module:jar
+        run: ./gradlew :curved-spacetime-render-glfw-ffm-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle.kts
       - name: Publish to GitHub Packages
-        run: ./gradlew :curved-spacetime-ffm-glfw-render-module:publish
+        run: ./gradlew :curved-spacetime-render-glfw-ffm-module:publish
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -344,9 +344,9 @@ jobs:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-curved-spacetime-ffm-vulkan-glfw-render-module:
+  publish-curved-spacetime-render-vulkan-ffm-glfw-ffm-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -366,18 +366,18 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build
-        run: ./gradlew :curved-spacetime-ffm-vulkan-glfw-render-module:jar
+        run: ./gradlew :curved-spacetime-render-vulkan-ffm-glfw-ffm-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle.kts
       - name: Publish to GitHub Packages
-        run: ./gradlew :curved-spacetime-ffm-vulkan-glfw-render-module:publish
+        run: ./gradlew :curved-spacetime-render-vulkan-ffm-glfw-ffm-module:publish
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-curved-spacetime-ffm-vulkan-module:
+  publish-curved-spacetime-vulkan-ffm-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -397,19 +397,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build
-        run: ./gradlew :curved-spacetime-ffm-vulkan-module:shadowJar
+        run: ./gradlew :curved-spacetime-vulkan-ffm-module:shadowJar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle.kts
       - name: Publish to GitHub Packages
-        run: ./gradlew :curved-spacetime-ffm-vulkan-module:publish
+        run: ./gradlew :curved-spacetime-vulkan-ffm-module:publish
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-  publish-curved-spacetime-ffm-vulkan-render-module:
+  publish-curved-spacetime-render-vulkan-ffm-module:
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -429,11 +429,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build
-        run: ./gradlew :curved-spacetime-ffm-vulkan-render-module:jar
+        run: ./gradlew :curved-spacetime-render-vulkan-ffm-module:jar
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle.kts
       - name: Publish to GitHub Packages
-        run: ./gradlew :curved-spacetime-ffm-vulkan-render-module:publish
+        run: ./gradlew :curved-spacetime-render-vulkan-ffm-module:publish
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

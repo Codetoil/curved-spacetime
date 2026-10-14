@@ -47,8 +47,8 @@ import io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm.entrypoint.Curved
 import io.codetoil.curved_spacetime.simulator.entrypoint.CurvedSpacetimeSimulatorModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanFFMModuleEntrypoint;
-import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanFFMModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.vulkan_ffm.CurvedSpacetimeVulkanFFMModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan_ffm.entrypoint.CurvedSpacetimeVulkanFFMModuleDependentModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.entrypoint.CurvedSpacetimeWebserverModuleDependentModuleInitializer;
 
 import java.nio.file.Path;
@@ -108,11 +108,11 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			new CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanModuleEntrypoint(),
 			new CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint()
 	);
-	private static final String FFM_VULKAN_MODULE_DEPENDENT_ENTRYPOINT_NAME = "ffm_vulkan_module_dependent";
-	private static final List<FFMVulkanModuleDependentModuleInitializer> FFM_VULKAN_MODULE_DEPENDENT_ENTRYPOINTS =
+	private static final String FFM_VULKAN_MODULE_DEPENDENT_ENTRYPOINT_NAME = "curved_spacetime_vulkan_ffm_module_dependent";
+	private static final List<CurvedSpacetimeVulkanFFMModuleDependentModuleInitializer> FFM_VULKAN_MODULE_DEPENDENT_ENTRYPOINTS =
 			List.of(
-					new FFMVulkanModuleDependentFFMVulkanRenderModuleEntrypoint(),
-					new FFMVulkanModuleDependentFFMVulkanGLFWRenderModuleEntrypoint()
+					new CurvedSpacetimeVulkanFFMModuleDependentCurvedSpacetimeRenderVulkanFFMModuleEntrypoint(),
+					new CurvedSpacetimeVulkanFFMModuleDependentCurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint()
 			);
 	private static final String SIMULATOR_MODULE_DEPENDENT_ENTRYPOINT_NAME
 			= "curved_spacetime_simulator_module_dependent";
@@ -132,23 +132,24 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			= "curved_spacetime_render_vulkan_glfw_module_dependent";
 	private static final List<CurvedSpacetimeRenderVulkanGLFWModuleDependentModuleInitializer>
 			VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
-	private static final String FFM_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "ffm_glfw_render_module_dependent";
-	private static final List<FFMGLFWRenderModuleDependentModuleInitializer>
+	private static final String FFM_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME = "curved_spacetime_render_glfw_ffm_module_dependent";
+	private static final List<CurvedSpacetimeRenderGLFWFFMModuleDependentModuleInitializer>
 			FFM_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS
-			= List.of(new FFMGLFWRenderModuleDependentFFMVulkanGLFWRenderModuleEntrypoint());
+			= List.of(new CurvedSpacetimeRenderGLFWFFMModuleDependentCurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint());
 	private static final String FFM_VULKAN_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME =
-			"ffm_vulkan_render_module_dependent";
-	private static final List<FFMVulkanRenderModuleDependentModuleInitializer>
+			"curved_spacetime_render_vulkan_ffm_module_dependent";
+	private static final List<CurvedSpacetimeRenderVulkanFFMModuleDependentModuleInitializer>
 			FFM_VULKAN_RENDER_MODULE_DEPENDENT_ENTRYPOINTS
-			= List.of(new FFMVulkanRenderModuleDependentFFMVulkanGLFWRenderModuleEntrypoint());
+			= List.of(new CurvedSpacetimeRenderVulkanFFMModuleDependentCurvedSpacetimeRenderVulkanFFMGLFWFFMModuleEntrypoint());
 	private static final String FFM_VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME
-			= "ffm_vulkan_glfw_render_module_dependent";
-	private static final List<FFMVulkanGLFWRenderModuleDependentModuleInitializer>
+			= "curved_spacetime_render_vulkan_ffm_glfw_ffm_module_dependent";
+	private static final List<CurvedSpacetimeRenderVulkanFFMGLFWFFMModuleDependentModuleInitializer>
 			FFM_VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS = List.of();
 	private static final String WEBSERVER_MODULE_DEPENDENT_ENTRYPOINT_NAME =
 			"curved_spacetime_webserver_module_dependent";
 	private static final List<CurvedSpacetimeWebserverModuleDependentModuleInitializer>
-			WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS;
+			WEBSERVER_MODULE_DEPENDENT_ENTRYPOINTS
+			= List.of();
 	private Engine engine;
 
 	/**
@@ -190,7 +191,7 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			return (List<E>) VULKAN_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (FFM_VULKAN_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(FFMVulkanModuleDependentModuleInitializer.class))
+				moduleInitializerClass.isAssignableFrom(CurvedSpacetimeVulkanFFMModuleDependentModuleInitializer.class))
 		{
 			return (List<E>) FFM_VULKAN_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
@@ -218,17 +219,17 @@ public class CurvedSpacetimeLoaderClosedLoader implements CurvedSpacetimeLoader
 			return (List<E>) VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (FFM_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(FFMGLFWRenderModuleDependentModuleInitializer.class))
+				moduleInitializerClass.isAssignableFrom(CurvedSpacetimeRenderGLFWFFMModuleDependentModuleInitializer.class))
 		{
 			return (List<E>) FFM_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (FFM_VULKAN_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(FFMVulkanRenderModuleDependentModuleInitializer.class))
+				moduleInitializerClass.isAssignableFrom(CurvedSpacetimeRenderVulkanFFMModuleDependentModuleInitializer.class))
 		{
 			return (List<E>) FFM_VULKAN_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
 		if (FFM_VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINT_NAME.equals(name) &&
-				moduleInitializerClass.isAssignableFrom(FFMVulkanGLFWRenderModuleDependentModuleInitializer.class))
+				moduleInitializerClass.isAssignableFrom(CurvedSpacetimeRenderVulkanFFMGLFWFFMModuleDependentModuleInitializer.class))
 		{
 			return (List<E>) FFM_VULKAN_GLFW_RENDER_MODULE_DEPENDENT_ENTRYPOINTS;
 		}
