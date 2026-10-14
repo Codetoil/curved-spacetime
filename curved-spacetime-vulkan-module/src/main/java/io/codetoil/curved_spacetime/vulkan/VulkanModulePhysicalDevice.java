@@ -120,7 +120,7 @@ public class VulkanModulePhysicalDevice
 	 * 		if no device is present, or none meets the requirements
 	 */
 	public static VulkanModulePhysicalDevice createPhysicalDevice(VulkanModuleVulkanInstance instance,
-																  VulkanModuleEntrypoint vulkanModuleEntrypoint,
+																  CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint,
 																  Logger logger)
 	{
 		logger.fine(() -> "Selecting physical devices");
@@ -157,7 +157,7 @@ public class VulkanModulePhysicalDevice
 					continue;
 				}
 
-				String preferredDeviceName = ((VulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
+				String preferredDeviceName = ((CurvedSpacetimeVulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
 						.getPreferredDeviceName();
 				if (preferredDeviceName != null && preferredDeviceName.equals(deviceName))
 				{

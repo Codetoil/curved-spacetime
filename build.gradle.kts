@@ -88,9 +88,9 @@ val quiltDistribution = listOf(
     Triple("curved-spacetime-cli-module", "cli-modules", "jar"),
     Triple("curved-spacetime-render-module", "modules", "jar"),
     Triple("curved-spacetime-simulator-module", "modules", "jar"),
-    Triple("curved-spacetime-vulkan-render-module", "modules", "jar"),
-    Triple("curved-spacetime-vulkan-glfw-render-module", "modules", "jar"),
-    Triple("curved-spacetime-glfw-render-module", "modules", "shadowJar"),
+    Triple("curved-spacetime-render-vulkan-module", "modules", "jar"),
+    Triple("curved-spacetime-render-vulkan-glfw-module", "modules", "jar"),
+    Triple("curved-spacetime-render-glfw-module", "modules", "shadowJar"),
     Triple("curved-spacetime-vulkan-module", "modules", "shadowJar"),
     Triple("curved-spacetime-webserver-module", "webserver-modules", "jar"),
 )

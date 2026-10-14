@@ -65,18 +65,18 @@ jobs:
           ref: ${{ github.ref_name }}
           path: source-specs
           sparse-checkout: specs
-      - name: Check out the loader module from the release tag
+      - name: Check out the api module from the release tag
         uses: actions/checkout@v7
         with:
           ref: ${{ github.ref_name }}
-          path: loader
-          sparse-checkout: curved-spacetime-loader-module
+          path: api
+          sparse-checkout: curved-spacetime-api-module
       - name: Publish the specifications
         # Guarded so that a tag predating the specs/ directory does not fail the release.
         run: |
           if [ -d source-specs/specs ]; then
             sed -i -r 's/pre-0\.1\.0/${{ github.ref_name }}/g' source-specs/specs/*.html
-            python fill_api_appendix.py loader/curved-spacetime-loader-module/src/main/java source-specs/specs/engine.html source-specs/specs/module-system.html
+            python fill_api_appendix.py api/curved-spacetime-api-module/src/main/java source-specs/specs/engine.html source-specs/specs/module-system.html
             mkdir -p specs/${{ github.ref_name }}
             cp -R source-specs/specs/. specs/${{ github.ref_name }}/
           else

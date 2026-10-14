@@ -20,7 +20,7 @@ java {
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
 
-    api(project(":curved-spacetime-loader-module"))
+    api(project(":curved-spacetime-api-module"))
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")

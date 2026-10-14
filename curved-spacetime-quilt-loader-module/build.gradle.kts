@@ -20,7 +20,7 @@ java {
 
 dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
-    implementation(project(":curved-spacetime-loader-module"))
+    implementation(project(":curved-spacetime-api-module"))
     implementation(project(":curved-spacetime-quilt-loader-patches"))
     implementation("org.quiltmc:quilt-loader:$quiltLoaderVersion") {
         exclude("annotations")

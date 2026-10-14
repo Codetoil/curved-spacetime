@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "io.codetoil.curved_spacetime.render.vulkan",
+    "id": "curved-spacetime-render-vulkan-module",
+    "version": "0.1.0-SNAPSHOT",
+    "metadata": {
+      "name": "Curved Spacetime Render Vulkan Module",
+      "description": "Implements Vulkan Rendering Support for Curved Spacetime",
+      "contributors": {
+        "Codetoil": "Owner",
+        "Claude Opus 5": "Contributor"
+      },
+      "contact": {
+        "homepage": "https://github.com/Codetoil/curved-spacetime/",
+        "issues": "https://github.com/Codetoil/curved-spacetime/issues",
+        "sources": "https://github.com/Codetoil/curved-spacetime.git"
+      },
+      "icon": "assets/curved-spacetime-render-vulkan-module/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "main": "io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderVulkanModuleEntrypoint",
+      "curved_spacetime_render_module_dependent": "io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderVulkanModuleEntrypoint",
+      "curved_spacetime_vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanModuleEntrypoint"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.30.1-beta.2"
+      },
+      {
+        "id": "curved-spacetime-main-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-vulkan-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "curved-spacetime-render-module",
+        "versions": ">=0.1.0-SNAPSHOT"
+      },
+      {
+        "id": "java",
+        "versions": ">=25"
+      }
+    ]
+  },
+  "mixin": "curved-spacetime-render-vulkan-module.mixins.json"
+}
