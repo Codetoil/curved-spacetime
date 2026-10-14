@@ -29,9 +29,8 @@ import io.codetoil.curved_spacetime.render.entrypoint.CurvedSpacetimeRenderModul
  * Delivers the render module's entrypoint to the GLFW render module.
  * <p>
  * Registered by the GLFW render module under {@code curved_spacetime_render_module_dependent}. The render module
- * invokes this during its
- * own initialization; it locates the GLFW module's main entrypoint through the loader and transfers the render
- * entrypoint into that module's dependency queue, where the GLFW module is blocked waiting for it.
+ * invokes this during its own initialization; it locates the GLFW module's main entrypoint through the loader and
+ * transfers the render entrypoint into that module's dependency queue, where the GLFW module is blocked waiting for it.
  */
 public class CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderGLFWModuleEntrypoint
 		implements CurvedSpacetimeRenderModuleDependentModuleInitializer
