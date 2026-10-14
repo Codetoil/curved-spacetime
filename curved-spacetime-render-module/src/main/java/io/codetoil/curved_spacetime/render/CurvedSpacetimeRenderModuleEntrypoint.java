@@ -71,7 +71,8 @@ public class CurvedSpacetimeRenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_render_module_dependent", CurvedSpacetimeRenderModuleDependentModuleInitializer.class,
+			this.engine.callDependents("curved_spacetime_render_module_dependent",
+					CurvedSpacetimeRenderModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeRenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
 							renderModuleDependentModuleInitializer.onInitialize(this, this.engine),
 					this.logger);

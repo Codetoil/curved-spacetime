@@ -30,7 +30,8 @@ import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleIniti
  * Registered under the CLI module's dependent entrypoint name. Implementations transfer the received entrypoint into
  * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
-public interface CurvedSpacetimeCLIModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<CurvedSpacetimeCLIModuleEntrypoint>
+public interface CurvedSpacetimeCLIModuleDependentModuleInitializer
+		extends ModuleDependentModuleInitializer<CurvedSpacetimeCLIModuleEntrypoint>
 {
 	/**
 	 * Receives the CLI module's entrypoint.

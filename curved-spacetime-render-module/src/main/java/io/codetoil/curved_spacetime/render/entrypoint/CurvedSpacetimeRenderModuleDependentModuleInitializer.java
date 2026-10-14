@@ -30,7 +30,8 @@ import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderModuleEntrypoint
  * Registered under the render module's dependent entrypoint name. Implementations transfer the received entrypoint into
  * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
-public interface CurvedSpacetimeRenderModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<CurvedSpacetimeRenderModuleEntrypoint>
+public interface CurvedSpacetimeRenderModuleDependentModuleInitializer
+		extends ModuleDependentModuleInitializer<CurvedSpacetimeRenderModuleEntrypoint>
 {
 	/**
 	 * Receives the render module's entrypoint.

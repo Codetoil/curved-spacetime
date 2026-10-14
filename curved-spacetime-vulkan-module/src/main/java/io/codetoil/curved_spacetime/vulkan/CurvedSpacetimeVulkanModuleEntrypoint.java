@@ -73,7 +73,8 @@ public class CurvedSpacetimeVulkanModuleEntrypoint implements ModuleInitializer
 		this.engine.registerMainCallback(this.vulkan = new VulkanModuleVulkan(this.engine, this));
 		try
 		{
-			this.engine.callDependents("curved_spacetime_vulkan_module_dependent", CurvedSpacetimeVulkanModuleDependentModuleInitializer.class,
+			this.engine.callDependents("curved_spacetime_vulkan_module_dependent",
+					CurvedSpacetimeVulkanModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeVulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
 							vulkanModuleDependentModuleInitializer.onInitialize(this, this.engine),
 					this.logger);

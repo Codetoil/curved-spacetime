@@ -28,7 +28,8 @@ import io.codetoil.curved_spacetime.render.vulkan.entrypoint.CurvedSpacetimeRend
 /**
  * Delivers the Vulkan render module's entrypoint to the Vulkan GLFW render module.
  * <p>
- * Registered by the Vulkan GLFW render module under {@code curved_spacetime_render_vulkan_module_dependent}. The Vulkan render module
+ * Registered by the Vulkan GLFW render module under {@code curved_spacetime_render_vulkan_module_dependent}. The Vulkan
+ * render module
  * invokes this during its own initialization; it locates the Vulkan GLFW module's main entrypoint through the loader
  * and transfers the Vulkan render entrypoint into that module's dependency queue, where the Vulkan GLFW module is
  * blocked waiting for it.

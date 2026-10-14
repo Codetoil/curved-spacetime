@@ -30,7 +30,8 @@ import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint
  * Registered under the Vulkan module's dependent entrypoint name. Implementations transfer the received entrypoint into
  * their own module's dependency queue, as described on {@link ModuleDependentModuleInitializer}.
  */
-public interface CurvedSpacetimeVulkanModuleDependentModuleInitializer extends ModuleDependentModuleInitializer<CurvedSpacetimeVulkanModuleEntrypoint>
+public interface CurvedSpacetimeVulkanModuleDependentModuleInitializer
+		extends ModuleDependentModuleInitializer<CurvedSpacetimeVulkanModuleEntrypoint>
 {
 	/**
 	 * Receives the Vulkan module's entrypoint.
