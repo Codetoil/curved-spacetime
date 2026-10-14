@@ -15,8 +15,7 @@
         "homepage": "https://github.com/Codetoil/curved-spacetime/",
         "issues": "https://github.com/Codetoil/curved-spacetime/issues",
         "sources": "https://github.com/Codetoil/curved-spacetime.git"
-      },
-      "icon": "assets/curved-spacetime-webserver-module/icon.png"
+      }
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {

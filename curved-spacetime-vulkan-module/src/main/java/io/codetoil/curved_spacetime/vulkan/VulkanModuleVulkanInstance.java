@@ -199,7 +199,6 @@ public class VulkanModuleVulkanInstance
 			}
 
 			// Create instance info
-			assert requiredLayers != null;
 			VkInstanceCreateInfo instanceInfo =
 					VkInstanceCreateInfo.calloc(stack)
 							.sType$Default()
