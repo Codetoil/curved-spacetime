@@ -82,8 +82,8 @@ public class RenderVulkanGLFWModuleRenderModuleSurface extends RenderVulkanModul
 		try (MemoryStack stack = MemoryStack.stackPush())
 		{
 			LongBuffer pSurface = stack.mallocLong(1);
-			GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(),
-					windowHandle, null, pSurface);
+			VulkanUtils.vkCheck(GLFWVulkan.glfwCreateWindowSurface(vulkanModuleVulkanInstance.getVkInstance(),
+					windowHandle, null, pSurface), "Failed to create window surface");
 			this.vkSurface = pSurface.get(0);
 			this.surfaceCaps = VkSurfaceCapabilitiesKHR.calloc();
 
