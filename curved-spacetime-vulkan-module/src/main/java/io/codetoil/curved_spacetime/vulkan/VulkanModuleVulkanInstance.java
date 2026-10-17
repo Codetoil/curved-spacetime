@@ -235,7 +235,7 @@ public class VulkanModuleVulkanInstance
 			VK13.vkEnumerateInstanceLayerProperties(numLayersArray, null);
 			int numLayers = numLayersArray.get(0);
 			this.logger.fine("Instance supports [" + numLayers + "] layers");
-			VkLayerProperties.Buffer propsBuffer = VkLayerProperties.calloc(numLayers, stack);
+			VkLayerProperties.Buffer propsBuffer = VkLayerProperties.calloc(numLayers);
 			VK13.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
 			List<String> supportedLayers = new ArrayList<>();
 			for (int index = 0; index < numLayers; index++)
@@ -278,7 +278,7 @@ public class VulkanModuleVulkanInstance
 			int numExtensions = numExtensionsBuf.get(0);
 			this.logger.fine("Instance supports [" + numExtensions + "] extensions");
 
-			VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions, stack);
+			VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions);
 			VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
 			for (int index = 0; index < numExtensions; index++)
 			{
