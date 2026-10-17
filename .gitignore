@@ -51,3 +51,4 @@ archive-closed-world-native**
 /test
 
 .mcp.json
+/.claude/worktrees/spec-101-entrypoints/
