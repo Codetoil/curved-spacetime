@@ -135,7 +135,7 @@ public class VulkanModuleLogicalDevice
 			int numExtensions = numExtensionsBuf.get(0);
 			this.logger.fine("Device supports [" + numExtensions + "] extensions");
 
-			VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions, stack);
+			VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions);
 			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
 					(String) null,
 					numExtensionsBuf, propsBuff);

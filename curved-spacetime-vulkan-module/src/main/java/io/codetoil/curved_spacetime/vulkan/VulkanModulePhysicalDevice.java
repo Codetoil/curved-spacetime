@@ -24,6 +24,7 @@ package io.codetoil.curved_spacetime.vulkan;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.*;
 
 import java.nio.IntBuffer;
@@ -219,7 +220,7 @@ public class VulkanModulePhysicalDevice
 		logger.fine("Detected " + numDevices + " physical device(s)");
 
 		// Populate physical devices list pointer
-		pPhysicalDevices = stack.mallocPointer(numDevices);
+		pPhysicalDevices = MemoryUtil.memAllocPointer(numDevices);
 		VulkanUtils.vkCheck(VK13.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, pPhysicalDevices),
 				"Failed to get physical devices");
 		return pPhysicalDevices;
