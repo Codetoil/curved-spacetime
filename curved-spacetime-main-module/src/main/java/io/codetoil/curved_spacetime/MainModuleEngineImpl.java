@@ -195,12 +195,6 @@ public class MainModuleEngineImpl extends Engine
 	}
 
 	@Override
-	public CurvedSpacetimeLoader getCurvedSpacetimeLoader()
-	{
-		return loader;
-	}
-
-	@Override
 	public CompletableFuture<Void> registerMainCallback(MainCallback mainCallback)
 	{
 		if (!this.callbackExecutor.isShutdown())
