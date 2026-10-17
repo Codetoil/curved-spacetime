@@ -147,7 +147,19 @@
 
         <dt><dfn>dependent entrypoint</dfn></dt>
         <dd>A class registered by module <var>B</var> under module <var>A</var>'s dependent entrypoint
-            name, by which <var>B</var> learns of <var>A</var>'s main entrypoint.
+            name. <var>A</var> invokes it once <var>A</var> is ready, and it hands <var>A</var>'s main
+            entrypoint, through the handshake, to a receiving entrypoint of <var>B</var>.
+        </dd>
+
+        <dt><dfn>handshake</dfn></dt>
+        <dd>The protocol by which one entrypoint hands an object to another, through a
+            <code>TransferQueue</code> the receiving entrypoint owns. It connects entrypoints, not
+            modules: the two are usually in different modules, but need not be.
+        </dd>
+
+        <dt><dfn>receiving entrypoint</dfn></dt>
+        <dd>An entrypoint that owns a queue and receives through the handshake. The main entrypoint of
+            every module with dependencies is one, and any other entrypoint may be.
         </dd>
 
         <dt><dfn>callback</dfn></dt>
@@ -199,7 +211,7 @@
     <p id="R29" class="req"><strong>R29.</strong> An implementation SHOULD bound the handshake in time
         and fail with a diagnostic naming the unsatisfied dependency, rather than blocking indefinitely.
         A missing or miscounted dependency otherwise manifests as a silent hang at startup with no
-        indication of which module is waiting.</p>
+        indication of which entrypoint is waiting.</p>
 </section>
 
 <section id="callbacks">
