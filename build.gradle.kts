@@ -85,7 +85,7 @@ allprojects {
 val quiltDistribution = listOf(
     Triple("curved-spacetime-main-module", "", "jar"),
     Triple("curved-spacetime-quilt-loader-module", "", "shadowJar"),
-    Triple("curved-spacetime-cli-module", "cli-modules", "jar"),
+    Triple("curved-spacetime-cli-module", "modules", "jar"),
     Triple("curved-spacetime-render-module", "modules", "jar"),
     Triple("curved-spacetime-simulator-module", "modules", "jar"),
     Triple("curved-spacetime-render-vulkan-module", "modules", "jar"),
