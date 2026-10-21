@@ -181,7 +181,26 @@
 
         <dt><dfn>dependent entrypoint</dfn></dt>
         <dd>A class registered by module <var>B</var> under module <var>A</var>'s dependent entrypoint
-            name, by which <var>B</var> learns of <var>A</var>'s main entrypoint.
+            name. <var>A</var> invokes it once <var>A</var> is ready, and it hands <var>A</var>'s main
+            entrypoint, through the handshake, to a receiving entrypoint of <var>B</var>.
+        </dd>
+
+        <dt><dfn>module-defined entrypoint</dfn></dt>
+        <dd>An entrypoint name, other than <code>main</code> and a dependent entrypoint name, that a
+            module publishes and invokes itself, so that other modules can supply it with something it
+            needs (<a href="#module-defined">§6.3</a>).
+        </dd>
+
+        <dt><dfn>handshake</dfn></dt>
+        <dd>The protocol by which one entrypoint hands an object to another, through a
+            <code>TransferQueue</code> the receiving entrypoint owns (<a href="#handshake">§7.2</a>).
+            It connects entrypoints, not modules: the two are usually in different modules, but need
+            not be.
+        </dd>
+
+        <dt><dfn>receiving entrypoint</dfn></dt>
+        <dd>An entrypoint that owns a queue and receives through the handshake. The main entrypoint of
+            every module with dependencies is one, and any other entrypoint may be.
         </dd>
 
         <dt><dfn>callback</dfn></dt>
@@ -263,6 +282,12 @@
             <td><code>curved_spacetime_render_glfw_module_dependent</code></td>
         </tr>
         <tr>
+            <td>Module-defined entrypoint name</td>
+            <td><code>&lt;key_&gt;_&lt;purpose&gt;</code>, where <code>&lt;purpose&gt;</code> is
+                <code>snake_case</code> and is not <code>dependent</code></td>
+            <td><code>curved_spacetime_render_glfw_module_&lt;purpose&gt;</code></td>
+        </tr>
+        <tr>
             <td>Quilt mod id</td>
             <td><code>&lt;key&gt;</code></td>
             <td><code>curved-spacetime-render-glfw-module</code></td>
@@ -303,8 +328,10 @@
 
     <p id="R11" class="req"><strong>R11.</strong> A loader MUST return the same instance for a given
         entrypoint across repeated <code>getEntrypoints</code> calls within one run. The handshake in
-        <a href="#init">§7</a> depends on identity: a dependent locates its own main entrypoint by
-        filtering this list, and transfers to the queue owned by that exact object.</p>
+        <a href="#init">§7</a> depends on identity: a dependent locates the receiving entrypoint it
+        delivers to by filtering this list, and transfers to the queue owned by that exact object. A
+        module-defined entrypoint that receives through the handshake is located the same way, and
+        MUST be the same instance its publishing module invokes.</p>
 </section>
 
 <section id="entrypoints">
@@ -325,7 +352,8 @@
 
     <p id="R15" class="req"><strong>R15.</strong> <code>getDependencyModuleTransferQueue</code> MUST
         return the same <code>TransferQueue</code> instance for the lifetime of the entrypoint. A fresh
-        or defensively copied queue breaks the handshake.</p>
+        or defensively copied queue breaks the handshake. Any other receiving entrypoint MUST likewise
+        keep one queue for its lifetime.</p>
 
     <p id="R16" class="req"><strong>R16.</strong> <code>getConfig</code> MUST return the module's
         configuration once <code>onInitialize</code> has loaded it. It MAY return <code>null</code>
@@ -338,11 +366,14 @@
         <code>ModuleDependentModuleInitializer&lt;&lt;Module&gt;ModuleEntrypoint&gt;</code>.</p>
 
     <p id="R18" class="req"><strong>R18.</strong> A module <var>B</var> that depends on module
-        <var>A</var> MUST register a class implementing <var>A</var>'s dependent interface under
-        <var>A</var>'s dependent entrypoint name, as derived in <a href="#R5">R5</a>.</p>
+        <var>A</var> MUST register, for each of its receiving entrypoints that needs <var>A</var>, a class
+        implementing <var>A</var>'s dependent interface under <var>A</var>'s dependent entrypoint name, as
+        derived in <a href="#R5">R5</a>.</p>
 
     <p id="R19" class="req"><strong>R19.</strong> That class SHOULD be named
-        <code>&lt;Module A&gt;ModuleDependent&lt;Module B&gt;ModuleEntrypoint</code>.</p>
+        <code>&lt;Module A&gt;ModuleDependent&lt;R&gt;</code>, where <code>&lt;R&gt;</code> is the simple
+        class name of the receiving entrypoint it delivers to. For delivery to <var>B</var>'s main
+        entrypoint, that is <code>&lt;Module A&gt;ModuleDependent&lt;Module B&gt;ModuleEntrypoint</code>.</p>
 
     <p>For <code>curved-spacetime-render-glfw-module</code> depending on
         <code>curved-spacetime-render-module</code>:</p>
@@ -367,6 +398,63 @@
         <tr>
             <td>Implementation</td>
             <td><code>io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderGLFWModuleEntrypoint</code>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 id="module-defined">6.3 Module-defined entrypoints</h3>
+
+    <p>A dependent entrypoint tells a module's dependents that it is ready. Sometimes a module needs
+        something from other modules <em>before</em> it can become ready. The Vulkan module, for example,
+        has to know which instance extensions to enable before it creates its instance, and only the
+        modules that will present to a window know which those are. A module-defined entrypoint
+        carries such a request.</p>
+
+    <p id="R51" class="req"><strong>R51.</strong> A module MAY publish further entrypoint names, formed
+        per <a href="#R5">R5</a>, and invoke them itself. For each, it MUST publish in its
+        <code>.entrypoint</code> subpackage the interface its registrations implement, named
+        <code>&lt;Module&gt;Module&lt;Purpose&gt;ModuleInitializer</code>, where
+        <code>&lt;Purpose&gt;</code> is <code>&lt;purpose&gt;</code> in <code>PascalCase</code>. It MUST
+        document when it invokes them and what it passes.</p>
+
+    <p id="R52" class="req"><strong>R52.</strong> A class registered by module <var>B</var> under
+        module <var>A</var>'s module-defined entrypoint name SHOULD be named
+        <code>&lt;Module A&gt;Module&lt;Purpose&gt;&lt;Module B&gt;ModuleEntrypoint</code>.</p>
+
+    <p id="R53" class="req"><strong>R53.</strong> A module-defined entrypoint MAY be invoked before the
+        main entrypoint of the module that registered it has run. It MUST NOT read the state of any
+        other entrypoint, its own module's main entrypoint included, except what it has received
+        through the handshake (<a href="#handshake">§7.2</a>) as a receiving entrypoint.</p>
+
+    <p>For <code>curved-spacetime-render-vulkan-glfw-module</code> requesting instance extensions
+        from <code>curved-spacetime-vulkan-module</code>:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Role</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Entrypoint name</td>
+            <td><code>curved_spacetime_vulkan_module_extension_request</code></td>
+        </tr>
+        <tr>
+            <td>Interface</td>
+            <td><code>io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleExtensionRequestModuleInitializer</code>
+            </td>
+        </tr>
+        <tr>
+            <td>Implementation</td>
+            <td><code>io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeVulkanModuleExtensionRequestCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint</code>
+            </td>
+        </tr>
+        <tr>
+            <td>Dependent entrypoint delivering the GLFW render module to it (<a href="#R19">R19</a>)</td>
+            <td><code>io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderGLFWModuleDependentCurvedSpacetimeVulkanModuleExtensionRequestCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint</code>
             </td>
         </tr>
         </tbody>
@@ -398,15 +486,24 @@
         parent handlers beside the engine's emits every record at <code>INFO</code> and above
         twice.</p>
 
-    <p id="R24" class="req"><strong>R24.</strong> A module MUST NOT touch another module's state before
-        completing step 3. Until the handshake returns, no ordering guarantee exists.</p>
+    <p id="R24" class="req"><strong>R24.</strong> An entrypoint MUST NOT touch another entrypoint's
+        state, other than the queue it transfers into, until it has received that entrypoint through the
+        handshake. Until then, no ordering guarantee exists.</p>
 
-    <h3 id="handshake">7.2 The dependency handshake</h3>
+    <p id="R54" class="req"><strong>R54.</strong> A module MAY invoke its own module-defined entrypoints
+        (<a href="#module-defined">§6.3</a>) at any point after step 2. One invoked before step 4 MUST
+        NOT wait, directly or through further handshakes, on anything the module delivers in step 4:
+        until step 4 runs, nothing it delivers there exists, and initialization deadlocks.</p>
 
-    <p>A module does not look up its dependencies. It is <em>handed</em> them, through a
-        <code>TransferQueue</code> it owns, by dependent entrypoints running on other threads.</p>
+    <h3 id="handshake">7.2 The handshake</h3>
 
-    <p>When module <var>A</var> reaches step 4, it invokes every entrypoint registered under
+    <p>The handshake is how one entrypoint hands an object to another. It connects entrypoints, not
+        modules: the two are usually in different modules, but nothing requires it. A receiving
+        entrypoint does not look up what it needs. It is <em>handed</em> it, through a
+        <code>TransferQueue</code> it owns, by entrypoints running on other threads.</p>
+
+    <p>The dependency handshake is the common case. When module <var>A</var> reaches step 4, it
+        invokes every entrypoint registered under
         <code>&lt;a_key&gt;_dependent</code>, passing its own main entrypoint and the engine. Module
         <var>B</var>'s implementation of that interface locates <var>B</var>'s main entrypoint through
         the engine's loader and transfers <var>A</var> into <var>B</var>'s queue:</p>
@@ -428,8 +525,8 @@ public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRe
     }
 }</code></pre>
 
-    <p>Meanwhile <var>B</var> is blocked in step 3, taking one element per declared dependency and
-        sorting them by type:</p>
+    <p>Meanwhile <var>B</var>'s main entrypoint is blocked in step 3, taking one element per declared
+        dependency and sorting them by type:</p>
 
     <pre><code>protected void receiveDependenciesFromTransferQueue() throws InterruptedException
 {
@@ -445,25 +542,32 @@ public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRe
     }
 }</code></pre>
 
+    <p>Any other receiving entrypoint works the same way. A module-defined entrypoint that needs
+        another module to be ready first owns a queue, and its module registers a dependent entrypoint
+        that delivers there instead of to the main entrypoint (<a href="#R18">R18</a>).</p>
+
     <p id="R25" class="req"><strong>R25.</strong> A dependent entrypoint MUST transfer the entrypoint
-        it was given into the queue returned by its own module's
+        it was given into the queue of the receiving entrypoint it delivers to, which MUST belong to the
+        same module as the dependent entrypoint. For a main entrypoint, that queue is the one returned by
         <code>getDependencyModuleTransferQueue()</code>.</p>
 
-    <p id="R26" class="req"><strong>R26.</strong> A module MUST consume exactly as many elements from its
-        queue as it has declared dependencies — no more, no fewer. Taking too few strands a producer
-        blocked in <code>transfer</code>; taking too many blocks the consumer forever.</p>
+    <p id="R26" class="req"><strong>R26.</strong> A receiving entrypoint MUST consume exactly as many
+        elements from its queue as there are dependent entrypoints delivering to it — no more, no
+        fewer. Taking too few strands a producer blocked in <code>transfer</code>; taking too many
+        blocks the consumer forever.</p>
 
-    <p id="R27" class="req"><strong>R27.</strong> A module MUST classify received elements by runtime
-        type, and MUST NOT rely on arrival order. The transfers originate on independent threads.</p>
+    <p id="R27" class="req"><strong>R27.</strong> A receiving entrypoint MUST classify received
+        elements by runtime type, and MUST NOT rely on arrival order. The transfers originate on
+        independent threads.</p>
 
     <p id="R29" class="req"><strong>R29.</strong> An implementation SHOULD bound the handshake in time
         and fail with a diagnostic naming the unsatisfied dependency, rather than blocking indefinitely.
         A missing or miscounted dependency otherwise manifests as a silent hang at startup with no
-        indication of which module is waiting.</p>
+        indication of which entrypoint is waiting.</p>
 
-    <p id="R30" class="req"><strong>R30.</strong> A module SHOULD derive its dependency count from its
-        declared dependencies rather than hard-coding a literal, so that adding or removing a dependency
-        cannot desynchronise the count from reality.</p>
+    <p id="R30" class="req"><strong>R30.</strong> A receiving entrypoint SHOULD derive its count from
+        the dependent entrypoints declared to deliver to it rather than hard-coding a literal, so that
+        adding or removing a dependency cannot desynchronise the count from reality.</p>
 </section>
 
 <section id="config">
@@ -519,13 +623,15 @@ vsync=true</code></pre>
         <a href="#R5">R5</a>.</p>
 
     <p id="R40" class="req"><strong>R40.</strong> The <code>entrypoints</code> object MUST contain a
-        <code>main</code> key naming the module's main entrypoint class,
-        and one key per dependency, named per <a href="#R5">R5</a> and naming the corresponding dependent entrypoint
-        class.</p>
+        <code>main</code> key naming the module's main entrypoint class; one key per dependency, named
+        per <a href="#R5">R5</a>, naming the corresponding dependent entrypoint class, or an array of
+        them where the module delivers that dependency to more than one receiving entrypoint; and one
+        key per module-defined entrypoint the module registers against, named per <a href="#R5">R5</a>
+        and naming the registered class.</p>
 
     <p id="R41" class="req"><strong>R41.</strong> <code>depends</code> MUST list every module named in
         <code>entrypoints</code>, plus <code>java</code>. The<code>entrypoints</code> map
-        and the <code>depends</code> array MUST agree; a dependent entrypoint
+        and the <code>depends</code> array MUST agree; a dependent or module-defined entrypoint
         without a matching dependency is a conformance error.</p>
 
     <pre><code>{
@@ -592,14 +698,23 @@ vsync=true</code></pre>
             (<a href="#R14">R14</a>, <a href="#R15">R15</a>)
         </li>
         <li>A dependent interface (<a href="#R17">R17</a>)</li>
-        <li>A dependent entrypoint per dependency, correctly named
+        <li>A dependent entrypoint per dependency and receiving entrypoint, correctly named
             (<a href="#R18">R18</a>, <a href="#R19">R19</a>)
+        </li>
+        <li>Module-defined entrypoints publish their interface, registrations are correctly named, and
+            none reads state it was not handed (<a href="#R51">R51</a>–<a href="#R53">R53</a>)
         </li>
         <li><code>onInitialize</code> follows the four-step order (<a href="#R23">R23</a>)</li>
         <li>Logger publishes through the engine's console handler, not its parents
             (<a href="#R23">R23</a>)
         </li>
-        <li>Consumes exactly its dependency count, classifying by type
+        <li>Touches no other entrypoint's state before receiving it
+            (<a href="#R24">R24</a>)
+        </li>
+        <li>Its own module-defined entrypoints, invoked before step 4, never wait on step 4
+            (<a href="#R54">R54</a>)
+        </li>
+        <li>Each receiving entrypoint consumes exactly its count, classifying by type
             (<a href="#R26">R26</a>, <a href="#R27">R27</a>)
         </li>
         <li>Config at <code>config/&lt;key&gt;.config</code>, defaults on absence, dirty-then-save
