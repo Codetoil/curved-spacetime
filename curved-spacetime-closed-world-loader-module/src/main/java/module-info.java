@@ -35,4 +35,8 @@ module io.codetoil.curved_spacetime.loader.closed_world {
 	requires io.codetoil.curved_spacetime.cli;
 	requires io.codetoil.curved_spacetime.simulator;
 	requires java.logging;
+	requires io.codetoil.curved_spacetime.render.glfw_ffm;
+	requires io.codetoil.curved_spacetime.render.vulkan_ffm;
+	requires io.codetoil.curved_spacetime.render.vulkan_ffm_glfw_ffm;
+	requires io.codetoil.curved_spacetime.vulkan_ffm;
 }
