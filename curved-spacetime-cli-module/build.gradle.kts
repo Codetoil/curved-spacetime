@@ -8,8 +8,6 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val junitVersion = project.findProperty("junitVersion") as String
-
 val nonJar = configurations.create("nonJar")
 
 java {
@@ -22,7 +20,7 @@ dependencies {
 
     api(project(":curved-spacetime-api-module"))
 
-    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

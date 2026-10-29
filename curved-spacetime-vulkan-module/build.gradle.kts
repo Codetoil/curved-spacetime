@@ -9,9 +9,6 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion = project.findProperty("lwjglVersion") as String
-val junitVersion = project.findProperty("junitVersion") as String
-
 val nonJar = configurations.create("nonJar")
 
 java {
@@ -24,15 +21,24 @@ dependencies {
 
     api(project(":curved-spacetime-api-module"))
 
-    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion")
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:$it") }
-    api("org.lwjgl:lwjgl-vulkan:$lwjglVersion")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos")
-    runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:natives-macos-arm64")
+    api(platform(libs.lwjgl.bom))
+    runtimeOnly(libs.lwjgl)
+    lwjglNativesNames.forEach { name ->
+        runtimeOnly(variantOf(libs.lwjgl) {
+            classifier(name)
+        })
+    }
+    api(libs.lwjgl.vulkan)
+    runtimeOnly(variantOf(libs.lwjgl.vulkan) {
+        classifier("natives-macos")
+    })
+    runtimeOnly(variantOf(libs.lwjgl.vulkan) {
+        classifier("natives-macos-arm64")
+    })
 }
 
 tasks.named<Test>("test") {
