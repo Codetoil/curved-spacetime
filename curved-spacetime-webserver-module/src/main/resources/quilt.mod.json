@@ -19,7 +19,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.webserver.CurvedSpacetimeWebserverModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.webserver.CurvedSpacetimeWebserverMainModuleEntrypoint"
     },
     "depends": [
       {

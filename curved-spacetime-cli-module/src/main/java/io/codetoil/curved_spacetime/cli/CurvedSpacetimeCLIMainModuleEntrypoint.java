@@ -23,8 +23,8 @@ package io.codetoil.curved_spacetime.cli;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.cli.entrypoint.CurvedSpacetimeCLIModuleDependentModuleInitializer;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -37,9 +37,9 @@ import java.util.logging.Logger;
  * Provides the command-line face of the simulator. Currently loads its configuration and hands itself to any
  * dependents; the command handling itself is not implemented yet.
  */
-public class CurvedSpacetimeCLIModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeCLIMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
 	private final Logger logger = Logger.getLogger("Curved Spacetime CLI Module Logger");
 	private Engine engine;
@@ -49,7 +49,7 @@ public class CurvedSpacetimeCLIModuleEntrypoint implements ModuleInitializer
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeCLIModuleEntrypoint()
+	public CurvedSpacetimeCLIMainModuleEntrypoint()
 	{
 	}
 
@@ -70,7 +70,7 @@ public class CurvedSpacetimeCLIModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_cli_module_dependent",
+			this.engine.callDependents("curved_spacetime_cli_module_dependent_module_initializer",
 					CurvedSpacetimeCLIModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeCLIModuleDependentModuleInitializer cliModuleDependentModuleInitializer) ->
 							cliModuleDependentModuleInitializer.onInitialize(this, this.engine),
@@ -94,7 +94,7 @@ public class CurvedSpacetimeCLIModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.depdencyModuleTransferQueue;
 	}

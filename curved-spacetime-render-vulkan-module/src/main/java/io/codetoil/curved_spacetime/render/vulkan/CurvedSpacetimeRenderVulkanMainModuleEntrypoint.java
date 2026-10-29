@@ -22,11 +22,11 @@
 package io.codetoil.curved_spacetime.render.vulkan;
 
 import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderMainModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan.entrypoint.CurvedSpacetimeRenderVulkanModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanMainModuleEntrypoint;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -40,13 +40,13 @@ import java.util.logging.Logger;
  * devices and queues. It depends on both, so it blocks during initialization until each has been handed to it, then
  * hands itself to the windowing-specific module that actually draws.
  */
-public class CurvedSpacetimeRenderVulkanModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeRenderVulkanMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render Vulkan Module Logger");
 	private ModuleConfig config;
-	private CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint = null;
-	private CurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint = null;
+	private CurvedSpacetimeVulkanMainModuleEntrypoint vulkanModuleEntrypoint = null;
+	private CurvedSpacetimeRenderMainModuleEntrypoint renderModuleEntrypoint = null;
 	private Engine engine;
 
 	/**
@@ -54,7 +54,7 @@ public class CurvedSpacetimeRenderVulkanModuleEntrypoint implements ModuleInitia
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeRenderVulkanModuleEntrypoint()
+	public CurvedSpacetimeRenderVulkanMainModuleEntrypoint()
 	{
 	}
 
@@ -82,7 +82,7 @@ public class CurvedSpacetimeRenderVulkanModuleEntrypoint implements ModuleInitia
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_render_vulkan_module_dependent",
+			this.engine.callDependents("curved_spacetime_render_vulkan_module_dependent_module_initializer",
 					CurvedSpacetimeRenderVulkanModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeRenderVulkanModuleDependentModuleInitializer vulkanRenderModuleDependentModuleInitializer) ->
 							vulkanRenderModuleDependentModuleInitializer.onInitialize(this, this.engine),
@@ -104,26 +104,26 @@ public class CurvedSpacetimeRenderVulkanModuleEntrypoint implements ModuleInitia
 	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{
-		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
+		MainModuleInitializer mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-		if (moduleInitializer instanceof CurvedSpacetimeVulkanModuleEntrypoint)
+		if (mainModuleInitializer instanceof CurvedSpacetimeVulkanMainModuleEntrypoint)
 		{
-			this.vulkanModuleEntrypoint = (CurvedSpacetimeVulkanModuleEntrypoint) moduleInitializer;
+			this.vulkanModuleEntrypoint = (CurvedSpacetimeVulkanMainModuleEntrypoint) mainModuleInitializer;
 		}
-		if (moduleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint)
+		if (mainModuleInitializer instanceof CurvedSpacetimeRenderMainModuleEntrypoint)
 		{
-			this.renderModuleEntrypoint = (CurvedSpacetimeRenderModuleEntrypoint) moduleInitializer;
+			this.renderModuleEntrypoint = (CurvedSpacetimeRenderMainModuleEntrypoint) mainModuleInitializer;
 		}
 
-		moduleInitializer = this.dependencyModuleTransferQueue.take();
+		mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-		if (moduleInitializer instanceof CurvedSpacetimeVulkanModuleEntrypoint)
+		if (mainModuleInitializer instanceof CurvedSpacetimeVulkanMainModuleEntrypoint)
 		{
-			this.vulkanModuleEntrypoint = (CurvedSpacetimeVulkanModuleEntrypoint) moduleInitializer;
+			this.vulkanModuleEntrypoint = (CurvedSpacetimeVulkanMainModuleEntrypoint) mainModuleInitializer;
 		}
-		if (moduleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint)
+		if (mainModuleInitializer instanceof CurvedSpacetimeRenderMainModuleEntrypoint)
 		{
-			this.renderModuleEntrypoint = (CurvedSpacetimeRenderModuleEntrypoint) moduleInitializer;
+			this.renderModuleEntrypoint = (CurvedSpacetimeRenderMainModuleEntrypoint) mainModuleInitializer;
 		}
 	}
 
@@ -139,7 +139,7 @@ public class CurvedSpacetimeRenderVulkanModuleEntrypoint implements ModuleInitia
 		return this.logger;
 	}
 
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
 	}

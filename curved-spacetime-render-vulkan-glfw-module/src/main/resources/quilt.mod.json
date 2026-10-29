@@ -19,11 +19,11 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_render_glfw_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderGLFWModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_render_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
-      "curved_spacetime_render_vulkan_module_dependent": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint",
+      "curved_spacetime_render_glfw_module_dependent_module_initializer": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderGLFWModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
+      "curved_spacetime_render_module_dependent_module_initializer": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
+      "curved_spacetime_vulkan_module_dependent_module_initializer": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeVulkanModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint",
+      "curved_spacetime_render_vulkan_module_dependent_module_initializer": "io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint"
     },
     "depends": [
       {

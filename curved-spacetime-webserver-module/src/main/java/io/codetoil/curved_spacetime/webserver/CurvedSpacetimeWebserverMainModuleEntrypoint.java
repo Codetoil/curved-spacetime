@@ -23,8 +23,8 @@ package io.codetoil.curved_spacetime.webserver;
 
 import com.sun.net.httpserver.HttpServer;
 import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.webserver.entrypoint.CurvedSpacetimeWebserverModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -38,14 +38,14 @@ import java.util.logging.Logger;
  * The webserver module's {@code main} entrypoint.
  * <p>
  * Starts an HTTP server so the simulator can be driven or observed over the network, and hands itself to modules that
- * extend it — the OpenAPI module — through the {@code curved_spacetime_webserver_module_dependent} entrypoint.
+ * extend it — the OpenAPI module — through the {@code curved_spacetime_webserver_module_dependent_module_initializer} entrypoint.
  * <p>
  * The server is currently a placeholder: it binds a fixed port, serves one test route, and is not stopped when the
  * engine shuts down.
  */
-public class CurvedSpacetimeWebserverModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeWebserverMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Webserver Module Logger");
 	private ModuleConfig config;
 	private Engine engine;
@@ -55,7 +55,7 @@ public class CurvedSpacetimeWebserverModuleEntrypoint implements ModuleInitializ
 	 * <p>
 	 * Called by the loader; no socket is opened until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeWebserverModuleEntrypoint()
+	public CurvedSpacetimeWebserverMainModuleEntrypoint()
 	{
 	}
 
@@ -94,7 +94,7 @@ public class CurvedSpacetimeWebserverModuleEntrypoint implements ModuleInitializ
 		System.out.println("Started test server");
 		try
 		{
-			this.engine.callDependents("curved_spacetime_webserver_module_dependent",
+			this.engine.callDependents("curved_spacetime_webserver_module_dependent_module_initializer",
 					CurvedSpacetimeWebserverModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeWebserverModuleDependentModuleInitializer webserverModuleDependentModuleInitializer) ->
 							webserverModuleDependentModuleInitializer.onInitialize(this, this.engine),
@@ -118,7 +118,7 @@ public class CurvedSpacetimeWebserverModuleEntrypoint implements ModuleInitializ
 	}
 
 	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
 	}

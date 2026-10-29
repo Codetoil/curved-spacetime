@@ -22,8 +22,8 @@
 package io.codetoil.curved_spacetime.simulator;
 
 import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.simulator.entrypoint.CurvedSpacetimeSimulatorModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -38,9 +38,9 @@ import java.util.logging.Logger;
  * to any dependents, but nothing is simulated yet, and the simulation model — spacetimes, metrics, worldlines — has not
  * been specified.
  */
-public class CurvedSpacetimeSimulatorModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeSimulatorMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Simulator Module Logger");
 	private ModuleConfig config;
 	private Engine engine;
@@ -50,7 +50,7 @@ public class CurvedSpacetimeSimulatorModuleEntrypoint implements ModuleInitializ
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeSimulatorModuleEntrypoint()
+	public CurvedSpacetimeSimulatorMainModuleEntrypoint()
 	{
 	}
 
@@ -71,7 +71,7 @@ public class CurvedSpacetimeSimulatorModuleEntrypoint implements ModuleInitializ
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_simulator_module_dependent",
+			this.engine.callDependents("curved_spacetime_simulator_module_dependent_module_initializer",
 					CurvedSpacetimeSimulatorModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeSimulatorModuleDependentModuleInitializer simulatorModuleDependentModuleInitializer) ->
 							simulatorModuleDependentModuleInitializer.onInitialize(this), this.logger);
@@ -94,7 +94,7 @@ public class CurvedSpacetimeSimulatorModuleEntrypoint implements ModuleInitializ
 	}
 
 	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.depdencyModuleTransferQueue;
 	}

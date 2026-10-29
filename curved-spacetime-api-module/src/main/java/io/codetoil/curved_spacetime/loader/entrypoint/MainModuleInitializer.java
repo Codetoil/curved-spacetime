@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * <p>
  * Implementations must satisfy requirements R12 through R16.
  */
-public interface ModuleInitializer
+public interface MainModuleInitializer
 {
 	/**
 	 * Brings this module up.
@@ -76,5 +76,5 @@ public interface ModuleInitializer
 	 *
 	 * @return this module's dependency transfer queue
 	 */
-	TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue();
+	TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue();
 }
