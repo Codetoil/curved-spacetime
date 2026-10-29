@@ -23,12 +23,11 @@ import io.codetoil.curved_spacetime.MainModuleEngineImpl;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
 
 /**
- * The common entry point every variant of Curved Spacetime starts through.
+ * The common entry point Curved Spacetime starts through.
  * <p>
- * Each variant reaches this class differently but arrives at the same place. The closed-world variants call
- * {@link #start} directly from their {@code Main}; the Quilt variant loads this class reflectively and invokes
- * {@code start} as a static method, which is why the signature below is part of the game provider's contract and must
- * not change without updating {@code CurvedSpacetimeGameProvider}.
+ * The Quilt variant loads this class reflectively and invokes {@code start} as a static method, which is why the
+ * signature below is part of the game provider's contract and must not change without updating
+ * {@code CurvedSpacetimeGameProvider}.
  */
 public class Start
 {

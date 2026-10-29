@@ -45,9 +45,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-archive-quilt
-archive-closed-world-jar
-archive-closed-world-native**
+/run
+
 /test
 
 .mcp.json
