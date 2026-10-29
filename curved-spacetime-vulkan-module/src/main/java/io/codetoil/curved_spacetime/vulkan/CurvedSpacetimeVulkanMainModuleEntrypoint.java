@@ -22,8 +22,8 @@
 package io.codetoil.curved_spacetime.vulkan;
 
 import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
 import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -36,11 +36,11 @@ import java.util.logging.Logger;
  * <p>
  * Loads the Vulkan configuration and registers {@link VulkanModuleVulkan} as a main callback, so the instance and
  * devices come up on the engine's callback thread. It then hands itself to the modules that depend on it — the Vulkan
- * render modules — through the {@code curved_spacetime_vulkan_module_dependent} entrypoint.
+ * render modules — through the {@code curved_spacetime_vulkan_module_dependent_module_initializer} entrypoint.
  */
-public class CurvedSpacetimeVulkanModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeVulkanMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Vulkan Module Logger");
 	private ModuleConfig config;
 	private VulkanModuleVulkan vulkan;
@@ -51,7 +51,7 @@ public class CurvedSpacetimeVulkanModuleEntrypoint implements ModuleInitializer
 	 * <p>
 	 * Called by the loader; no Vulkan object exists until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeVulkanModuleEntrypoint()
+	public CurvedSpacetimeVulkanMainModuleEntrypoint()
 	{
 	}
 
@@ -73,7 +73,7 @@ public class CurvedSpacetimeVulkanModuleEntrypoint implements ModuleInitializer
 		this.engine.registerMainCallback(this.vulkan = new VulkanModuleVulkan(this.engine, this));
 		try
 		{
-			this.engine.callDependents("curved_spacetime_vulkan_module_dependent",
+			this.engine.callDependents("curved_spacetime_vulkan_module_dependent_module_initializer",
 					CurvedSpacetimeVulkanModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeVulkanModuleDependentModuleInitializer vulkanModuleDependentModuleInitializer) ->
 							vulkanModuleDependentModuleInitializer.onInitialize(this, this.engine),
@@ -97,7 +97,7 @@ public class CurvedSpacetimeVulkanModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
 	}

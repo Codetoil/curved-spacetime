@@ -21,8 +21,8 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint;
 
 import io.codetoil.curved_spacetime.api.Engine;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint;
+import io.codetoil.curved_spacetime.loader.entrypoint.DependentModuleInitializer;
+import io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint;
 
 /**
  * The entrypoint a module registers to depend on the Vulkan GLFW render module.
@@ -31,7 +31,7 @@ import io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderVulk
  * entrypoint into their own module's dependency queue.
  */
 public interface CurvedSpacetimeRenderVulkanGLFWModuleDependentModuleInitializer
-		extends ModuleDependentModuleInitializer<CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint>
+		extends DependentModuleInitializer<CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint>
 {
-	void onInitialize(CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint vulkanRenderGLFWModuleEntrypoint, Engine engine);
+	void onInitialize(CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint vulkanRenderGLFWModuleEntrypoint, Engine engine);
 }

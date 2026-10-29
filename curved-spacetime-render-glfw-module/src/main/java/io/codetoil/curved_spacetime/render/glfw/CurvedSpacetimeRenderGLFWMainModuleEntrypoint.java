@@ -22,9 +22,9 @@
 package io.codetoil.curved_spacetime.render.glfw;
 
 import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderMainModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.entrypoint.CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -39,20 +39,20 @@ import java.util.logging.Logger;
  * blocks during initialization until that module's entrypoint is handed to it, then hands itself to modules that build
  * on GLFW — the Vulkan GLFW render module.
  */
-public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeRenderGLFWMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render GLFW Module Logger");
 	private ModuleConfig config;
 	private Engine engine;
-	private CurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint;
+	private CurvedSpacetimeRenderMainModuleEntrypoint renderModuleEntrypoint;
 
 	/**
 	 * Creates the GLFW render module's entrypoint.
 	 * <p>
 	 * Called by the loader; GLFW is not initialised until a window is opened.
 	 */
-	public CurvedSpacetimeRenderGLFWModuleEntrypoint()
+	public CurvedSpacetimeRenderGLFWMainModuleEntrypoint()
 	{
 	}
 
@@ -80,7 +80,7 @@ public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitiali
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_render_glfw_module_dependent",
+			this.engine.callDependents("curved_spacetime_render_glfw_module_dependent_module_initializer",
 					CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer glfwRenderModuleDependentModuleInitializer) ->
 							glfwRenderModuleDependentModuleInitializer
@@ -102,11 +102,11 @@ public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitiali
 	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{
-		ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
+		MainModuleInitializer mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-		if (moduleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint)
+		if (mainModuleInitializer instanceof CurvedSpacetimeRenderMainModuleEntrypoint)
 		{
-			this.renderModuleEntrypoint = (CurvedSpacetimeRenderModuleEntrypoint) moduleInitializer;
+			this.renderModuleEntrypoint = (CurvedSpacetimeRenderMainModuleEntrypoint) mainModuleInitializer;
 		}
 	}
 
@@ -123,7 +123,7 @@ public class CurvedSpacetimeRenderGLFWModuleEntrypoint implements ModuleInitiali
 	}
 
 	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
 	}

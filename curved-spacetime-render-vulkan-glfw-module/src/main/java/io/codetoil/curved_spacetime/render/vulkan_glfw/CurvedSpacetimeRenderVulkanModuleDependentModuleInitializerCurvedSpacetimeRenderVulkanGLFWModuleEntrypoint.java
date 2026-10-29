@@ -21,19 +21,19 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.Engine;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderVulkanModuleEntrypoint;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
+import io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderVulkanMainModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan.entrypoint.CurvedSpacetimeRenderVulkanModuleDependentModuleInitializer;
 
 /**
  * Delivers the Vulkan render module's entrypoint to the Vulkan GLFW render module.
  * <p>
- * Registered by the Vulkan GLFW render module under {@code curved_spacetime_render_vulkan_module_dependent}. The Vulkan
+ * Registered by the Vulkan GLFW render module under {@code curved_spacetime_render_vulkan_module_dependent_module_initializer}. The Vulkan
  * render module invokes this during its own initialization; it locates the Vulkan GLFW module's main entrypoint through
  * the loader and transfers the Vulkan render entrypoint into that module's dependency queue, where the Vulkan GLFW
  * module is blocked waiting for it.
  */
-public class CurvedSpacetimeRenderVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint
+public class CurvedSpacetimeRenderVulkanModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint
 		implements CurvedSpacetimeRenderVulkanModuleDependentModuleInitializer
 {
 	/**
@@ -41,19 +41,19 @@ public class CurvedSpacetimeRenderVulkanModuleDependentCurvedSpacetimeRenderVulk
 	 * <p>
 	 * Called by the loader; it holds no state of its own.
 	 */
-	public CurvedSpacetimeRenderVulkanModuleDependentCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint()
+	public CurvedSpacetimeRenderVulkanModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint()
 	{
 	}
 
 
 	@Override
-	public void onInitialize(CurvedSpacetimeRenderVulkanModuleEntrypoint vulkanRenderModuleEntrypoint, Engine engine)
+	public void onInitialize(CurvedSpacetimeRenderVulkanMainModuleEntrypoint vulkanRenderModuleEntrypoint, Engine engine)
 	{
 		try
 		{
 			engine.getCurvedSpacetimeLoader()
-					.getEntrypoints("main", ModuleInitializer.class).stream()
-					.filter(CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint.class::isInstance)
+					.getEntrypoints("main", MainModuleInitializer.class).stream()
+					.filter(CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue()
 					.transfer(vulkanRenderModuleEntrypoint);
 		} catch (InterruptedException e)

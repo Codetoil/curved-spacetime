@@ -23,7 +23,7 @@ package io.codetoil.curved_spacetime.render;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.render.entrypoint.CurvedSpacetimeRenderModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -36,11 +36,11 @@ import java.util.logging.Logger;
  * <p>
  * The render module is an API: it defines what a window and its input look like, and owns no windowing library itself.
  * This entrypoint therefore does little beyond loading configuration and then handing itself to whichever
- * implementations depend on it — GLFW today — through the {@code curved_spacetime_render_module_dependent} entrypoint.
+ * implementations depend on it — GLFW today — through the {@code curved_spacetime_render_module_dependent_module_initializer} entrypoint.
  */
-public class CurvedSpacetimeRenderModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeRenderMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render Module Logger");
 	private ModuleConfig config;
 	private Engine engine;
@@ -50,7 +50,7 @@ public class CurvedSpacetimeRenderModuleEntrypoint implements ModuleInitializer
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeRenderModuleEntrypoint()
+	public CurvedSpacetimeRenderMainModuleEntrypoint()
 	{
 	}
 
@@ -71,7 +71,7 @@ public class CurvedSpacetimeRenderModuleEntrypoint implements ModuleInitializer
 		}
 		try
 		{
-			this.engine.callDependents("curved_spacetime_render_module_dependent",
+			this.engine.callDependents("curved_spacetime_render_module_dependent_module_initializer",
 					CurvedSpacetimeRenderModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeRenderModuleDependentModuleInitializer renderModuleDependentModuleInitializer) ->
 							renderModuleDependentModuleInitializer.onInitialize(this, this.engine),
@@ -95,7 +95,7 @@ public class CurvedSpacetimeRenderModuleEntrypoint implements ModuleInitializer
 	}
 
 	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.depdencyModuleTransferQueue;
 	}

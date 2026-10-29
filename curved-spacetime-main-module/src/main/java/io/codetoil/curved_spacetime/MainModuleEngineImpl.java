@@ -25,7 +25,7 @@ import io.codetoil.curved_spacetime.api.MainCallback;
 import io.codetoil.curved_spacetime.api.scene.Scene;
 import io.codetoil.curved_spacetime.api.scene.SceneCallback;
 import io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -151,7 +151,7 @@ public class MainModuleEngineImpl extends Engine
 		this.loader.prepareModInit(Paths.get(System.getProperty("user.dir")), this);
 		try
 		{
-			this.callDependents("main", ModuleInitializer.class,
+			this.callDependents("main", MainModuleInitializer.class,
 					(e) -> e.onInitialize(this), this.logger);
 			this.initialized = true;
 		} catch (Throwable e)

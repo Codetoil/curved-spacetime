@@ -27,7 +27,7 @@ import io.codetoil.curved_spacetime.api.Engine;
  * Each module extends this with a named interface of its own, and any module depending on that module registers an
  * implementation of it. When the depended-on module reaches the last step of its initialization, it invokes every such
  * implementation, passing itself and the engine. The implementation's job is to hand that entrypoint to its own module,
- * by transferring it into that module's {@link ModuleInitializer#getDependencyModuleTransferQueue() dependency queue}:
+ * by transferring it into that module's {@link MainModuleInitializer#getDependencyModuleTransferQueue() dependency queue}:
  * <pre>{@code
  * engine.getCurvedSpacetimeLoader()
  *         .getEntrypoints("main", ModuleInitializer.class).stream()
@@ -41,7 +41,7 @@ import io.codetoil.curved_spacetime.api.Engine;
  * @param <E>
  * 		the entrypoint type of the module being depended on
  */
-public interface ModuleDependentModuleInitializer<E extends ModuleInitializer>
+public interface DependentModuleInitializer<E extends MainModuleInitializer>
 {
 	/**
 	 * Receives the entrypoint of a module this module depends on.

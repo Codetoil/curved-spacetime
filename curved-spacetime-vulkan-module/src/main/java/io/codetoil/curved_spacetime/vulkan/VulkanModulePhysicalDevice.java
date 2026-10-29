@@ -121,7 +121,7 @@ public class VulkanModulePhysicalDevice
 	 * 		if no device is present, or none meets the requirements
 	 */
 	public static VulkanModulePhysicalDevice createPhysicalDevice(VulkanModuleVulkanInstance instance,
-																  CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint,
+																  CurvedSpacetimeVulkanMainModuleEntrypoint vulkanModuleEntrypoint,
 																  Logger logger)
 	{
 		logger.fine(() -> "Selecting physical devices");

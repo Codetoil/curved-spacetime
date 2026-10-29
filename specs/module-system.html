@@ -277,7 +277,7 @@
         <tr>
             <td>Dependent entrypoint name</td>
             <td><code>&lt;key_&gt;_dependent</code></td>
-            <td><code>curved_spacetime_render_glfw_module_dependent</code></td>
+            <td><code>curved_spacetime_render_glfw_module_dependent_module_initializer</code></td>
         </tr>
         <tr>
             <td>Module-defined entrypoint name</td>
@@ -386,7 +386,7 @@
         <tbody>
         <tr>
             <td>Entrypoint name</td>
-            <td><code>curved_spacetime_render_module_dependent</code></td>
+            <td><code>curved_spacetime_render_module_dependent_module_initializer</code></td>
         </tr>
         <tr>
             <td>Interface</td>
@@ -395,7 +395,7 @@
         </tr>
         <tr>
             <td>Implementation</td>
-            <td><code>io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderGLFWModuleEntrypoint</code>
+            <td><code>io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentModuleInitializerCurvedSpacetimeRenderGLFWModuleEntrypoint</code>
             </td>
         </tr>
         </tbody>
@@ -530,9 +530,9 @@ public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRe
 {
     for (int i = 0; i &lt; DEPENDENCY_COUNT; i++)
     {
-        ModuleInitializer moduleInitializer = this.dependencyModuleTransferQueue.take();
+        ModuleInitializer mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-        if (moduleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint)
+        if (mainModuleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint)
         {
             this.curvedSpacetimeRenderModuleEntrypoint = curvedSpacetimeRenderModuleEntrypoint;
         }
@@ -640,9 +640,9 @@ vsync=true</code></pre>
     "version": "0.1.0-SNAPSHOT",
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWModuleEntrypoint",
-      "curved_spacetime_render_module_dependent":
-        "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentCurvedSpacetimeRenderGLFWModuleEntrypoint"
+      "main": "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWMainModuleEntrypoint",
+      "curved_spacetime_render_module_dependent_module_initializer":
+        "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentModuleInitializerCurvedSpacetimeRenderGLFWModuleEntrypoint"
     },
     "depends": [
       { "id": "curved-spacetime-main-module",  "versions": "&gt;=0.1.0-SNAPSHOT" },

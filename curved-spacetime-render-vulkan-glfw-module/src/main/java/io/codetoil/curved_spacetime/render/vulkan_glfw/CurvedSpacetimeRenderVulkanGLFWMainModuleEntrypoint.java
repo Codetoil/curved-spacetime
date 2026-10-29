@@ -22,13 +22,13 @@
 package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.Engine;
+import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.loader.entrypoint.ModuleInitializer;
-import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderModuleEntrypoint;
-import io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWModuleEntrypoint;
-import io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderVulkanModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderVulkanMainModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.vulkan_glfw.entrypoint.CurvedSpacetimeRenderVulkanGLFWModuleDependentModuleInitializer;
-import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanModuleEntrypoint;
+import io.codetoil.curved_spacetime.vulkan.CurvedSpacetimeVulkanMainModuleEntrypoint;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
@@ -42,15 +42,15 @@ import java.util.logging.Logger;
  * present before it can do anything, and it blocks during initialization until every one of them has been handed to it.
  * Once they have, it registers a scene callback generator, so each scene gets a renderer.
  */
-public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleInitializer
+public class CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint implements MainModuleInitializer
 {
-	private final TransferQueue<ModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
+	private final TransferQueue<MainModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render Vulkan GLFW Module Logger");
 	private ModuleConfig config;
-	private CurvedSpacetimeRenderGLFWModuleEntrypoint glfwRenderModuleEntrypoint = null;
-	private CurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint = null;
-	private CurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint = null;
-	private CurvedSpacetimeRenderVulkanModuleEntrypoint vulkanRenderModuleEntrypoint = null;
+	private CurvedSpacetimeRenderGLFWMainModuleEntrypoint glfwRenderModuleEntrypoint = null;
+	private CurvedSpacetimeRenderMainModuleEntrypoint renderModuleEntrypoint = null;
+	private CurvedSpacetimeVulkanMainModuleEntrypoint vulkanModuleEntrypoint = null;
+	private CurvedSpacetimeRenderVulkanMainModuleEntrypoint vulkanRenderModuleEntrypoint = null;
 	private Engine engine;
 
 	/**
@@ -58,7 +58,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint()
+	public CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint()
 	{
 	}
 
@@ -88,7 +88,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 				new RenderVulkanGLFWModuleRenderer(this.engine, scene, this));
 		try
 		{
-			this.engine.callDependents("curved_spacetime_render_vulkan_glfw_module_dependent",
+			this.engine.callDependents("curved_spacetime_render_vulkan_glfw_module_dependent_module_initializer",
 					CurvedSpacetimeRenderVulkanGLFWModuleDependentModuleInitializer.class,
 					(CurvedSpacetimeRenderVulkanGLFWModuleDependentModuleInitializer vulkanGLFWModuleDependentModuleInitializer) ->
 							vulkanGLFWModuleDependentModuleInitializer
@@ -112,26 +112,26 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 	 */
 	protected void recieveDependenciesFromTransferQueue() throws InterruptedException
 	{
-		ModuleInitializer moduleInitializer;
+		MainModuleInitializer mainModuleInitializer;
 		for (int i = 0; i < 4; i++)
 		{
-			moduleInitializer = this.dependencyModuleTransferQueue.take();
+			mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-			if (moduleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint)
+			if (mainModuleInitializer instanceof CurvedSpacetimeRenderMainModuleEntrypoint)
 			{
-				this.renderModuleEntrypoint = (CurvedSpacetimeRenderModuleEntrypoint) moduleInitializer;
+				this.renderModuleEntrypoint = (CurvedSpacetimeRenderMainModuleEntrypoint) mainModuleInitializer;
 			}
-			if (moduleInitializer instanceof CurvedSpacetimeVulkanModuleEntrypoint)
+			if (mainModuleInitializer instanceof CurvedSpacetimeVulkanMainModuleEntrypoint)
 			{
-				this.vulkanModuleEntrypoint = (CurvedSpacetimeVulkanModuleEntrypoint) moduleInitializer;
+				this.vulkanModuleEntrypoint = (CurvedSpacetimeVulkanMainModuleEntrypoint) mainModuleInitializer;
 			}
-			if (moduleInitializer instanceof CurvedSpacetimeRenderGLFWModuleEntrypoint)
+			if (mainModuleInitializer instanceof CurvedSpacetimeRenderGLFWMainModuleEntrypoint)
 			{
-				this.glfwRenderModuleEntrypoint = (CurvedSpacetimeRenderGLFWModuleEntrypoint) moduleInitializer;
+				this.glfwRenderModuleEntrypoint = (CurvedSpacetimeRenderGLFWMainModuleEntrypoint) mainModuleInitializer;
 			}
-			if (moduleInitializer instanceof CurvedSpacetimeRenderVulkanModuleEntrypoint)
+			if (mainModuleInitializer instanceof CurvedSpacetimeRenderVulkanMainModuleEntrypoint)
 			{
-				this.vulkanRenderModuleEntrypoint = (CurvedSpacetimeRenderVulkanModuleEntrypoint) moduleInitializer;
+				this.vulkanRenderModuleEntrypoint = (CurvedSpacetimeRenderVulkanMainModuleEntrypoint) mainModuleInitializer;
 			}
 		}
 	}
@@ -149,7 +149,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 	}
 
 	@Override
-	public TransferQueue<ModuleInitializer> getDependencyModuleTransferQueue()
+	public TransferQueue<MainModuleInitializer> getDependencyModuleTransferQueue()
 	{
 		return this.dependencyModuleTransferQueue;
 	}
@@ -159,7 +159,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 	 *
 	 * @return the GLFW render entrypoint, or {@code null} before the handshake completes
 	 */
-	public CurvedSpacetimeRenderGLFWModuleEntrypoint getGlfwRenderModuleEntrypoint()
+	public CurvedSpacetimeRenderGLFWMainModuleEntrypoint getGlfwRenderModuleEntrypoint()
 	{
 		return glfwRenderModuleEntrypoint;
 	}
@@ -169,7 +169,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 	 *
 	 * @return the render entrypoint, or {@code null} before the handshake completes
 	 */
-	public CurvedSpacetimeRenderModuleEntrypoint getRenderModuleEntrypoint()
+	public CurvedSpacetimeRenderMainModuleEntrypoint getRenderModuleEntrypoint()
 	{
 		return renderModuleEntrypoint;
 	}
@@ -179,7 +179,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 	 *
 	 * @return the Vulkan entrypoint, or {@code null} before the handshake completes
 	 */
-	public CurvedSpacetimeVulkanModuleEntrypoint getVulkanModuleEntrypoint()
+	public CurvedSpacetimeVulkanMainModuleEntrypoint getVulkanModuleEntrypoint()
 	{
 		return vulkanModuleEntrypoint;
 	}
@@ -189,7 +189,7 @@ public class CurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements ModuleIn
 	 *
 	 * @return the Vulkan render entrypoint, or {@code null} before the handshake completes
 	 */
-	public CurvedSpacetimeRenderVulkanModuleEntrypoint getRenderVulkanModuleEntrypoint()
+	public CurvedSpacetimeRenderVulkanMainModuleEntrypoint getRenderVulkanModuleEntrypoint()
 	{
 		return vulkanRenderModuleEntrypoint;
 	}
