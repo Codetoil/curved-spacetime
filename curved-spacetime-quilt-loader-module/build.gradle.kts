@@ -7,10 +7,6 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val junitVersion = project.findProperty("junitVersion") as String
-val fabricMixinVersion = project.findProperty("fabricMixinVersion") as String
-val quiltLoaderVersion = project.findProperty("quiltLoaderVersion") as String
-
 val nonJar = configurations.create("nonJar")
 
 java {
@@ -22,16 +18,16 @@ dependencies {
     nonJar(files("../LICENSE.md", "../Notices.md"))
     implementation(project(":curved-spacetime-api-module"))
     implementation(project(":curved-spacetime-quilt-loader-patches"))
-    implementation("org.quiltmc:quilt-loader:$quiltLoaderVersion") {
+    implementation(libs.quilt.loader) {
         exclude("annotations")
     }
-    implementation("org.quiltmc:quilt-loader-dependencies:$quiltLoaderVersion")
+    implementation(libs.quilt.loader.dependencies)
 
-    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    implementation("net.fabricmc:sponge-mixin:$fabricMixinVersion")
+    implementation(libs.fabric.mixin)
 }
 
 sourceSets {

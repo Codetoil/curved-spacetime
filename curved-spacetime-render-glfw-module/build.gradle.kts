@@ -9,9 +9,6 @@ plugins {
 group = "io.codetoil"
 version = "0.1.0-SNAPSHOT"
 
-val lwjglVersion = project.findProperty("lwjglVersion") as String
-val junitVersion = project.findProperty("junitVersion") as String
-
 val nonJar = configurations.create("nonJar")
 
 java {
@@ -25,14 +22,23 @@ dependencies {
     api(project(":curved-spacetime-api-module"))
     api(project(":curved-spacetime-render-module"))
 
-    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion")
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:$it") }
-    api("org.lwjgl:lwjgl-glfw:$lwjglVersion")
-    (lwjglNativesNames as List<*>).forEach { runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$it") }
+    api(platform(libs.lwjgl.bom))
+    runtimeOnly(libs.lwjgl)
+    lwjglNativesNames.forEach { name ->
+        runtimeOnly(variantOf(libs.lwjgl) {
+            classifier(name)
+        })
+    }
+    api(libs.lwjgl.glfw)
+    lwjglNativesNames.forEach { name ->
+        runtimeOnly(variantOf(libs.lwjgl.glfw) {
+            classifier(name)
+        })
+    }
 }
 
 tasks.named<Test>("test") {
