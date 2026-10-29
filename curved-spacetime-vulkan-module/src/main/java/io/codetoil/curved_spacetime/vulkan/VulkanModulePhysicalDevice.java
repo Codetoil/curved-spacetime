@@ -21,6 +21,7 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleDeviceExtensionsRequest;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -47,15 +48,15 @@ import java.util.logging.Logger;
 public class VulkanModulePhysicalDevice
 {
 	/**
-	 * Extensions a device must support to be considered usable, currently just the swap chain.
+	 * Extensions a device must support to be considered usable.
+	 * @see CurvedSpacetimeVulkanModuleDeviceExtensionsRequest#requiredDeviceExtensions()
 	 */
-	protected static final Set<String> REQUIRED_EXTENSIONS;
-
-	static
-	{
-		REQUIRED_EXTENSIONS = new HashSet<>();
-		REQUIRED_EXTENSIONS.add(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-	}
+	protected static final Set<String> REQUIRED_EXTENSIONS = new HashSet<>();
+	/**
+	 * Extensions a device may optionally support for extra features.
+	 * @see CurvedSpacetimeVulkanModuleDeviceExtensionsRequest#optionalDeviceExtensions()
+	 */
+	protected static final Set<String> OPTIONAL_EXTENSIONS = new HashSet<>();
 
 	private final VkExtensionProperties.Buffer vkDeviceExtensions;
 	private final VkPhysicalDeviceMemoryProperties vkMemoryProperties;
