@@ -33,10 +33,9 @@ import java.util.function.Consumer;
 /**
  * A loader that delegates to Quilt Loader.
  * <p>
- * Where the closed-world loader hard-codes its entrypoints so a native image can reach them, this one discovers modules
- * at run time: Quilt reads each module's {@code quilt.mod.json}, resolves dependencies, and holds the entrypoint
- * registry that the methods here read from. That makes the Quilt variant the extensible one — modules can be dropped in
- * without rebuilding — at the cost of needing the loader present at run time.
+ * This loader discovers modules at run time: Quilt reads each module's {@code quilt.mod.json}, resolves dependencies,
+ * and holds the entrypoint registry that the methods here read from. That makes the Quilt variant extensible —
+ * modules can be dropped in without rebuilding — at the cost of needing the loader present at run time.
  *
  * @see io.codetoil.curved_spacetime.loader.CurvedSpacetimeLoader
  */

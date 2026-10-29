@@ -29,9 +29,9 @@ import java.util.function.Consumer;
 /**
  * Discovers modules and resolves their entrypoints on the engine's behalf.
  * <p>
- * An implementation is free to resolve entrypoints however it likes. The closed-world loader holds them in static
- * tables so that GraalVM native-image can reach them by ordinary static analysis; the Quilt loader delegates to Quilt
- * Loader, which discovers them dynamically. Neither strategy is privileged by this interface.
+ * An implementation is free to resolve entrypoints however it likes, whether from tables fixed ahead of time or, as
+ * the Quilt loader does by delegating to Quilt Loader, by discovering them at run time. Neither strategy is privileged
+ * by this interface.
  * <p>
  * Implementations must satisfy requirements R6 through R11.
  */

@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.qodana") version "2026.2.2"
     id("io.github.sgtsilvio.gradle.javadoc-links") version "0.10.0" apply false
     id("com.gradleup.shadow") version "9.6.1" apply false
-    id("org.graalvm.buildtools.native") version "1.1.14" apply false
 }
 
 val nonJar = configurations.create("nonJar")
@@ -64,8 +63,7 @@ allprojects {
     }
 }
 
-// The distribution layout — which module's finished artifact goes where under archive-quilt/ and
-// archive-closed-world-jar/.
+// The distribution layout — which module's finished artifact goes where under build/archive/ and run/
 //
 // These directories are populated by copying finished jars into them. No jar task points its
 // destinationDirectory here, and none should. Redirecting a jar task makes the distribution
@@ -75,14 +73,14 @@ allprojects {
 //      any Gradle invocation can trigger that — including the background daemon the VS Code Gradle
 //      extension runs on its own schedule, not just an explicit ./gradlew build.
 //   2. The IDE points at it. The root project's classpath resolves each subproject to its jar's
-//      destinationDirectory, so the language server adopts archive-quilt/** as library paths, then
+//      destinationDirectory, so the language server adopts build/archive/** as library paths, then
 //      reports "Project 'curved-spacetime' is missing required library" the moment (1) happens.
 //
 // Keeping jar output at the Gradle default (build/libs) gives the IDE a stable path that nothing
 // empties, and makes the distribution a downstream artifact rather than a build output.
 //
 // Columns: module name, subdirectory within the archive, name of the task producing the artifact.
-val quiltDistribution = listOf(
+val distribution = listOf(
     Triple("curved-spacetime-main-module", "", "jar"),
     Triple("curved-spacetime-quilt-loader-module", "", "shadowJar"),
     Triple("curved-spacetime-cli-module", "cli-modules", "jar"),
@@ -95,10 +93,6 @@ val quiltDistribution = listOf(
     Triple("curved-spacetime-webserver-module", "webserver-modules", "jar"),
 )
 
-val closedWorldDistribution = listOf(
-    Triple("curved-spacetime-closed-world-loader-module", "", "shadowJar"),
-)
-
 fun Copy.distributionOf(entries: List<Triple<String, String, String>>) {
     entries.forEach { (moduleName, subdirectory, artifactTask) ->
         into(subdirectory) {
@@ -107,29 +101,14 @@ fun Copy.distributionOf(entries: List<Triple<String, String, String>>) {
     }
 }
 
-tasks.register<Copy>("jarCopyQuilt") {
-    description = "Copy the module jars into the output directory for the Quilt Jar"
-    into("$rootDir/archive-quilt/")
-    distributionOf(quiltDistribution)
-    mustRunAfter("cleanJar")
-}
-
-tasks.register<Copy>("jarCopyClosedJar") {
-    description = "Copy the shadow jar into the output directory for the Closed World Jar"
-    into("$rootDir/archive-closed-world-jar/")
-    distributionOf(closedWorldDistribution)
-    mustRunAfter("cleanJar")
-}
-
-tasks.register("cleanJar") {
-    description = "Clean the output directories for the Quilt and Closed World Versions of Stale Files"
+tasks.register("cleanRun") {
+    description = "Clean the run directory"
     run {
         files(
-            "$rootDir/archive-quilt/",
-            "$rootDir/archive-quilt/webserver-modules",
-            "$rootDir/archive-quilt/cli-modules",
-            "$rootDir/archive-quilt/modules",
-            "$rootDir/archive-closed-world-jar/",
+            "$rootDir/run/",
+            "$rootDir/run/webserver-modules",
+            "$rootDir/run/cli-modules",
+            "$rootDir/run/modules",
         ).forEach { folderIt ->
             if (folderIt.listFiles() != null && folderIt.listFiles()!!.size != 0) {
                 folderIt.listFiles()!!.forEach { fileIt ->
@@ -153,24 +132,38 @@ tasks.register("cleanJar") {
     }
 }
 
-tasks.register<Copy>("nonJarCopyClosedJar") {
-    description = "Put the nonJar stuff into the output directory for the Closed World Jar"
+tasks.register<Copy>("moduleJarCopyArchive") {
+    description = "Copy the module jars into the Archive Output Directory"
+    into("$rootDir/build/archive/")
+    distributionOf(distribution)
+    mustRunAfter("clean")
+}
+
+tasks.register<Copy>("moduleJarCopyRun") {
+    description = "Copy the module jars into the run directory"
+    into("$rootDir/run/")
+    distributionOf(distribution)
+    mustRunAfter("cleanRun")
+}
+
+tasks.register<Copy>("nonJarCopyArchive") {
+    description = "Copy the nonJar files into the Archive Output directory"
     from(nonJar)
-    into("$rootDir/archive-closed-world-jar/")
+    into("$rootDir/build/archive/")
     // Ordered against assemble, not build: mustRunAfter is a soft constraint that simply does not
     // apply when the named task is absent from the graph, so pointing it at build would silently
     // drop the ordering whenever the distribution is assembled without the test suite.
     mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "assemble" } }
-        .map { it.tasks.assemble })
+        .map { it.tasks.assemble }, "clean")
 }
 
-tasks.register<Copy>("nonJarCopyQuilt") {
-    description = "Put the nonJar stuff into the output directory for the Quilt Jar"
+tasks.register<Copy>("nonJarCopyRun") {
+    description = "Copy the nonJar files into the run directory"
     from(nonJar)
-    into("$rootDir/archive-quilt/")
-    // See nonJarCopyClosedJar for why this is ordered against assemble rather than build.
+    into("$rootDir/run/")
+    // See nonJarCopyArchive for why this is ordered against assemble rather than build.
     mustRunAfter(rootProject.subprojects.filter { it2 -> it2.tasks.any { it.name == "assemble" } }
-        .map { it.tasks.assemble })
+        .map { it.tasks.assemble }, "cleanRun")
 }
 
 // Hung off assemble rather than build: assembling the distribution is artifact production, not
@@ -178,9 +171,9 @@ tasks.register<Copy>("nonJarCopyQuilt") {
 // but it also lets a release path skip the test suite — ./gradlew assemble —
 // without silently producing empty archive directories.
 tasks.assemble {
-    dependsOn(tasks["cleanJar"], rootProject.tasks.clean)
+    dependsOn(tasks["cleanRun"], rootProject.tasks.clean)
     finalizedBy(
-        tasks["nonJarCopyClosedJar"], tasks["nonJarCopyQuilt"],
-        tasks["jarCopyClosedJar"], tasks["jarCopyQuilt"],
+         tasks["nonJarCopyArchive"], tasks["moduleJarCopyArchive"],
+        tasks["nonJarCopyRun"], tasks["moduleJarCopyRun"]
     )
 }

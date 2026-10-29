@@ -1,4 +1,4 @@
-name: Publish Archive (Jar)
+name: Publish Archive
 
 on:
   release:
@@ -28,21 +28,17 @@ jobs:
       - name: Build
         # A release must not be blocked by verification — the artifacts are what is being
         # published, and checking them is the Check workflow's job. assemble is exactly artifact
-        # production: `build` is `assemble` + `check`, and the distribution copies (jarCopyQuilt,
-        # jarCopyClosedJar, nonJarCopy*) are attached to assemble, so the archives are fully
+        # production: `build` is `assemble` + `check`, and the distribution copies
+        # (moduleJarCopyArchive, nonJarCopyArchive) are attached to assemble, so the archive is fully
         # populated here. Excluding only `test` would leave the release exposed to any future
         # check task.
         run: ./gradlew assemble
-      - run: git archive --format=tar.gz -o ./archive-quilt/source.tar.gz HEAD
-      - run: git archive --format=tar.gz -o ./archive-closed-world-jar/source.tar.gz HEAD
-      - run: zip -r ../curved-spacetime-quilt-variant-${{ github.ref_name }}.zip .
-        working-directory: archive-quilt
-      - run: zip -r ../curved-spacetime-closed-world-jar-variant-${{ github.ref_name }}.zip .
-        working-directory: archive-closed-world-jar
+      - run: git archive --format=tar.gz -o ./build/archive/source.tar.gz HEAD
+      - run: zip -r ../curved-spacetime-${{ github.ref_name }}.zip .
+        working-directory: build/archive
       - name: Publish
         uses: softprops/action-gh-release@v3
         if: github.ref_type == 'tag'
         with:
           files: |
-            ./curved-spacetime-quilt-variant-${{ github.ref_name }}.zip
-            ./curved-spacetime-closed-world-jar-variant-${{ github.ref_name }}.zip
+            ./curved-spacetime-${{ github.ref_name }}.zip
