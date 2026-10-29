@@ -21,6 +21,7 @@
 
 package io.codetoil.curved_spacetime.vulkan;
 
+import io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleInstanceExtensionsRequest;
 import io.codetoil.curved_spacetime.vulkan.utils.VulkanUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -47,6 +48,16 @@ import java.util.logging.Logger;
  */
 public class VulkanModuleVulkanInstance
 {
+	/**
+	 * Extensions vulkan must support for this program to run.
+	 * @see CurvedSpacetimeVulkanModuleInstanceExtensionsRequest#requiredInstanceExtensions()
+	 */
+	protected static final Set<String> REQUIRED_EXTENSIONS = new HashSet<>();
+	/**
+	 * Extensions vulkan may optionally support for extra features.
+	 * @see CurvedSpacetimeVulkanModuleInstanceExtensionsRequest#optionalInstanceExtensions()
+	 */
+	protected static final Set<String> OPTIONAL_EXTENSIONS = new HashSet<>();
 	/**
 	 * Which severities the debug messenger reports: errors and warnings only.
 	 */
