@@ -173,7 +173,7 @@
         </dd>
 
         <dt><dfn>main entrypoint</dfn></dt>
-        <dd>A module's implementation of <code>ModuleInitializer</code>, registered under the entrypoint
+        <dd>A module's implementation of <code>MainModuleInitializer</code>, registered under the entrypoint
             name <code>main</code>.
         </dd>
 
@@ -276,7 +276,7 @@
         </tr>
         <tr>
             <td>Dependent entrypoint name</td>
-            <td><code>&lt;key_&gt;_dependent</code></td>
+            <td><code>&lt;key_&gt;_dependent_module_initializer</code></td>
             <td><code>curved_spacetime_render_glfw_module_dependent_module_initializer</code></td>
         </tr>
         <tr>
@@ -338,10 +338,10 @@
     <h3>6.1 The main entrypoint</h3>
 
     <p id="R12" class="req"><strong>R12.</strong> Every module MUST register exactly one main entrypoint
-        under the name <code>main</code>, implementing <code>ModuleInitializer</code>.</p>
+        under the name <code>main</code>, implementing <code>MainModuleInitializer</code>.</p>
 
     <p id="R13" class="req"><strong>R13.</strong> The main entrypoint class SHOULD be named
-        <code>&lt;X&gt;ModuleEntrypoint</code>, where <code>&lt;X&gt;</code> is the module key in
+        <code>&lt;X&gt;MainModuleEntrypoint</code>, where <code>&lt;X&gt;</code> is the module key in
         <code>PascalCase</code> with <code>-module</code> dropped.</p>
 
     <p id="R14" class="req"><strong>R14.</strong> <code>getLogger</code> MUST return the same
@@ -361,7 +361,7 @@
 
     <p id="R17" class="req"><strong>R17.</strong> A module MUST publish an interface named
         <code>&lt;Module&gt;ModuleDependentModuleInitializer</code> in its<code>.entrypoint</code> subpackage, extending
-        <code>ModuleDependentModuleInitializer&lt;&lt;Module&gt;ModuleEntrypoint&gt;</code>.</p>
+        <code>DependentModuleInitializer&lt;&lt;Module&gt;MainModuleEntrypoint&gt;</code>.</p>
 
     <p id="R18" class="req"><strong>R18.</strong> A module <var>B</var> that depends on module
         <var>A</var> MUST register, for each of its receiving entrypoints that needs <var>A</var>, a class
@@ -369,9 +369,9 @@
         derived in <a href="#R5">R5</a>.</p>
 
     <p id="R19" class="req"><strong>R19.</strong> That class SHOULD be named
-        <code>&lt;Module A&gt;ModuleDependent&lt;R&gt;</code>, where <code>&lt;R&gt;</code> is the simple
-        class name of the receiving entrypoint it delivers to. For delivery to <var>B</var>'s main
-        entrypoint, that is <code>&lt;Module A&gt;ModuleDependent&lt;Module B&gt;ModuleEntrypoint</code>.</p>
+        <code>&lt;Purpose&gt;&lt;Module B&gt;ModuleEntrypoint</code>, where <code>&lt;Purpose&gt;</code> is
+        the simple name of the interface it implements. For <var>A</var>'s dependent interface, that is
+        <code>&lt;Module A&gt;ModuleDependentModuleInitializer&lt;Module B&gt;ModuleEntrypoint</code>.</p>
 
     <p>For <code>curved-spacetime-render-glfw-module</code> depending on
         <code>curved-spacetime-render-module</code>:</p>
@@ -502,19 +502,19 @@
 
     <p>The dependency handshake is the common case. When module <var>A</var> reaches step 4, it
         invokes every entrypoint registered under
-        <code>&lt;a_key&gt;_dependent</code>, passing its own main entrypoint and the engine. Module
+        <code>&lt;a_key&gt;_dependent_module_initializer</code>, passing its own main entrypoint and the engine. Module
         <var>B</var>'s implementation of that interface locates <var>B</var>'s main entrypoint through
         the engine's loader and transfers <var>A</var> into <var>B</var>'s queue:</p>
 
     <pre><code>@Override
-public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint,
+public void onInitialize(CurvedSpacetimeRenderMainModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint,
                          Engine engine)
 {
     try
     {
         engine.getCurvedSpacetimeLoader()
-                .getEntrypoints("main", ModuleInitializer.class).stream()
-                .filter(CurvedSpacetimeRenderGLFWModuleEntrypoint.class::isInstance)
+                .getEntrypoints("main", MainModuleInitializer.class).stream()
+                .filter(CurvedSpacetimeRenderGLFWMainModuleEntrypoint.class::isInstance)
                 .findFirst().orElseThrow()
                 .getDependencyModuleTransferQueue().transfer(curvedSpacetimeRenderModuleEntrypoint);
     } catch (InterruptedException e)
@@ -530,9 +530,9 @@ public void onInitialize(CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRe
 {
     for (int i = 0; i &lt; DEPENDENCY_COUNT; i++)
     {
-        ModuleInitializer mainModuleInitializer = this.dependencyModuleTransferQueue.take();
+        MainModuleInitializer mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-        if (mainModuleInitializer instanceof CurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint)
+        if (mainModuleInitializer instanceof CurvedSpacetimeRenderMainModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint)
         {
             this.curvedSpacetimeRenderModuleEntrypoint = curvedSpacetimeRenderModuleEntrypoint;
         }
@@ -689,7 +689,7 @@ vsync=true</code></pre>
         <li>Exports its package and its <code>.entrypoint</code> subpackage
             (<a href="#R4">R4</a>)
         </li>
-        <li>Exactly one <code>main</code> entrypoint implementing <code>ModuleInitializer</code>
+        <li>Exactly one <code>main</code> entrypoint implementing <code>MainModuleInitializer</code>
             (<a href="#R12">R12</a>)
         </li>
         <li>Stable <code>Logger</code> and <code>TransferQueue</code> instances
