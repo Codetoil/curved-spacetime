@@ -173,7 +173,7 @@ tasks.register<Copy>("nonJarCopyRun") {
 tasks.assemble {
     dependsOn(tasks["cleanRun"], rootProject.tasks.clean)
     finalizedBy(
-         tasks["nonJarCopyArchive"], tasks["moduleJarCopyArchive"],
+        tasks["nonJarCopyArchive"], tasks["moduleJarCopyArchive"],
         tasks["nonJarCopyRun"], tasks["moduleJarCopyRun"]
     )
 }

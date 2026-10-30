@@ -290,7 +290,8 @@ public class RenderVulkanModuleSwapChain
 		for (int index = 0; index < numImages; index++)
 		{
 			result[index] =
-					new RenderVulkanModuleImageView(vulkanModuleLogicalDevice, swapChainImages.get(index), imageViewData);
+					new RenderVulkanModuleImageView(vulkanModuleLogicalDevice, swapChainImages.get(index),
+							imageViewData);
 		}
 
 		return result;

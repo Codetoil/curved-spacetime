@@ -1,16 +1,16 @@
 [versions]
 # Maven Central - https://repo1.maven.org/maven2/
 # org.lwjgl:lwjgl, org.lwjgl:lwjgl-glfw, org.lwjgl:lwjgl-vulkan
-lwjgl="3.4.3"
+lwjgl = "3.4.3"
 # FabricMC Maven - https://maven.fabricmc.net/
 # net.fabricmc:sponge-mixin
-fabricMixin="0.17.5+mixin.0.8.7"
+fabricMixin = "0.17.5+mixin.0.8.7"
 # QuiltMC Maven - https://maven.quiltmc.org/repository/release/
 # org.quiltmc:quilt-loader, org.quiltmc:quilt-loader-dependencies
-quiltLoader="0.31.0-beta.4"
+quiltLoader = "0.31.0-beta.4"
 # Maven Central - https://repo1.maven.org/maven2/
 # org.junit:junit-bom
-junit="6.1.3"
+junit = "6.1.3"
 
 [libraries]
 lwjgl-bom = { module = "org.lwjgl:lwjgl-bom", version.ref = "lwjgl" }
@@ -19,6 +19,6 @@ lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw" }
 lwjgl-vulkan = { module = "org.lwjgl:lwjgl-vulkan" }
 fabric-mixin = { module = "net.fabricmc:sponge-mixin", version.ref = "fabricMixin" }
 quilt-loader = { module = "org.quiltmc:quilt-loader", version.ref = "quiltLoader" }
-quilt-loader-dependencies = { module = "org.quiltmc:quilt-loader-dependencies", version.ref = "quiltLoader"}
+quilt-loader-dependencies = { module = "org.quiltmc:quilt-loader-dependencies", version.ref = "quiltLoader" }
 
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }

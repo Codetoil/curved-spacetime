@@ -33,5 +33,6 @@ import io.codetoil.curved_spacetime.render.vulkan_glfw.MainCurvedSpacetimeRender
 public interface CurvedSpacetimeRenderVulkanGLFWModuleDependentModuleInitializer
 		extends DependentModuleInitializer<MainCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint>
 {
-	void onInitialize(MainCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint vulkanRenderGLFWModuleEntrypoint, Engine engine);
+	void onInitialize(MainCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint vulkanRenderGLFWModuleEntrypoint,
+	                  Engine engine);
 }

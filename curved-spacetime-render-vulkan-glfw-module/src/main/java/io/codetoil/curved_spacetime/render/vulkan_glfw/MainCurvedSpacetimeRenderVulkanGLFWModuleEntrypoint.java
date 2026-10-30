@@ -131,7 +131,8 @@ public class MainCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint implements Main
 			}
 			if (mainModuleInitializer instanceof MainCurvedSpacetimeRenderVulkanModuleEntrypoint)
 			{
-				this.vulkanRenderModuleEntrypoint = (MainCurvedSpacetimeRenderVulkanModuleEntrypoint) mainModuleInitializer;
+				this.vulkanRenderModuleEntrypoint =
+						(MainCurvedSpacetimeRenderVulkanModuleEntrypoint) mainModuleInitializer;
 			}
 		}
 	}

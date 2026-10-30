@@ -31,12 +31,14 @@ public interface CurvedSpacetimeVulkanModuleInstanceExtensionsRequest
 	 * Extensions Vulkan must support to Initialize
 	 * Prevents Vulkan from initializing if not available.
 	 * If a feature is optional use {@link optionalInstanceExtensions()} instead.
+	 *
 	 * @return the requested required instance extensions
 	 */
 	List<String> requiredInstanceExtensions();
 
 	/**
 	 * Extensions Vulkan may optionally support for extra features.
+	 *
 	 * @return the requested optional instance extensions
 	 */
 	List<String> optionalInstanceExtensions();
