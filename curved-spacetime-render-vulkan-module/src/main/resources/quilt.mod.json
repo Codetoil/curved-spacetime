@@ -19,7 +19,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderVulkanMainModuleEntrypoint",
+      "main": "io.codetoil.curved_spacetime.render.vulkan.MainCurvedSpacetimeRenderVulkanModuleEntrypoint",
       "curved_spacetime_render_module_dependent_module_initializer": "io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeRenderModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanModuleEntrypoint",
       "curved_spacetime_vulkan_module_dependent_module_initializer": "io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeVulkanModuleDependentModuleInitializerCurvedSpacetimeRenderVulkanModuleEntrypoint",
       "curved_spacetime_vulkan_module_device_extensions_request": "io.codetoil.curved_spacetime.render.vulkan.CurvedSpacetimeVulkanModuleDeviceExtensionsRequestCurvedSpacetimeRenderVulkanModuleEntrypoint",

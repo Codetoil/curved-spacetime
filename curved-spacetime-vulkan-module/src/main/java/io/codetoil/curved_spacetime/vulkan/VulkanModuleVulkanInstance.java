@@ -132,7 +132,7 @@ public class VulkanModuleVulkanInstance
 	 * @throws AssertionError
 	 * 		if the instance or the debug messenger cannot be created
 	 */
-	public VulkanModuleVulkanInstance(CurvedSpacetimeVulkanMainModuleEntrypoint vulkanModuleEntrypoint, Logger logger)
+	public VulkanModuleVulkanInstance(MainCurvedSpacetimeVulkanModuleEntrypoint vulkanModuleEntrypoint, Logger logger)
 	{
 		this.logger = logger;
 		try (MemoryStack stack = MemoryStack.stackPush())

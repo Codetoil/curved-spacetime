@@ -24,7 +24,7 @@ package io.codetoil.curved_spacetime.render.glfw;
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
 import io.codetoil.curved_spacetime.loader.entrypoint.ModuleConfig;
-import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.MainCurvedSpacetimeRenderModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.entrypoint.CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer;
 
 import java.io.IOException;
@@ -39,20 +39,20 @@ import java.util.logging.Logger;
  * blocks during initialization until that module's entrypoint is handed to it, then hands itself to modules that build
  * on GLFW — the Vulkan GLFW render module.
  */
-public class CurvedSpacetimeRenderGLFWMainModuleEntrypoint implements MainModuleInitializer
+public class MainCurvedSpacetimeRenderGLFWModuleEntrypoint implements MainModuleInitializer
 {
 	private final TransferQueue<MainModuleInitializer> dependencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render GLFW Module Logger");
 	private ModuleConfig config;
 	private Engine engine;
-	private CurvedSpacetimeRenderMainModuleEntrypoint renderModuleEntrypoint;
+	private MainCurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint;
 
 	/**
 	 * Creates the GLFW render module's entrypoint.
 	 * <p>
 	 * Called by the loader; GLFW is not initialised until a window is opened.
 	 */
-	public CurvedSpacetimeRenderGLFWMainModuleEntrypoint()
+	public MainCurvedSpacetimeRenderGLFWModuleEntrypoint()
 	{
 	}
 
@@ -104,9 +104,9 @@ public class CurvedSpacetimeRenderGLFWMainModuleEntrypoint implements MainModule
 	{
 		MainModuleInitializer mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-		if (mainModuleInitializer instanceof CurvedSpacetimeRenderMainModuleEntrypoint)
+		if (mainModuleInitializer instanceof MainCurvedSpacetimeRenderModuleEntrypoint)
 		{
-			this.renderModuleEntrypoint = (CurvedSpacetimeRenderMainModuleEntrypoint) mainModuleInitializer;
+			this.renderModuleEntrypoint = (MainCurvedSpacetimeRenderModuleEntrypoint) mainModuleInitializer;
 		}
 	}
 

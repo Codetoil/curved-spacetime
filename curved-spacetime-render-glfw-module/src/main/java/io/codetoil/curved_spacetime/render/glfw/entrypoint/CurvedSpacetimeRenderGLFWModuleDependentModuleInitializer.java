@@ -22,7 +22,7 @@ package io.codetoil.curved_spacetime.render.glfw.entrypoint;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.DependentModuleInitializer;
-import io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.glfw.MainCurvedSpacetimeRenderGLFWModuleEntrypoint;
 
 /**
  * The entrypoint a module registers to depend on the GLFW render module.
@@ -31,10 +31,10 @@ import io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWMainMod
  * into their own module's dependency queue.
  */
 public interface CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer
-		extends DependentModuleInitializer<CurvedSpacetimeRenderGLFWMainModuleEntrypoint>
+		extends DependentModuleInitializer<MainCurvedSpacetimeRenderGLFWModuleEntrypoint>
 {
 	/**
 	 * Runs the mod initializer.
 	 */
-	void onInitialize(CurvedSpacetimeRenderGLFWMainModuleEntrypoint glfwRenderModuleEntrypoint, Engine engine);
+	void onInitialize(MainCurvedSpacetimeRenderGLFWModuleEntrypoint glfwRenderModuleEntrypoint, Engine engine);
 }

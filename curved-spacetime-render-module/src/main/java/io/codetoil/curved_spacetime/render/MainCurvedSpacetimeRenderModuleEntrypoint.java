@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * This entrypoint therefore does little beyond loading configuration and then handing itself to whichever
  * implementations depend on it — GLFW today — through the {@code curved_spacetime_render_module_dependent_module_initializer} entrypoint.
  */
-public class CurvedSpacetimeRenderMainModuleEntrypoint implements MainModuleInitializer
+public class MainCurvedSpacetimeRenderModuleEntrypoint implements MainModuleInitializer
 {
 	private final TransferQueue<MainModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Render Module Logger");
@@ -50,7 +50,7 @@ public class CurvedSpacetimeRenderMainModuleEntrypoint implements MainModuleInit
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeRenderMainModuleEntrypoint()
+	public MainCurvedSpacetimeRenderModuleEntrypoint()
 	{
 	}
 

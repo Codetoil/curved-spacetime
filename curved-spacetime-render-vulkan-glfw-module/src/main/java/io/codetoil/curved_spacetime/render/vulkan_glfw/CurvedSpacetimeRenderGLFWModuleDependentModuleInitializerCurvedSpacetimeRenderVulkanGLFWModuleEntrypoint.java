@@ -22,7 +22,7 @@ package io.codetoil.curved_spacetime.render.vulkan_glfw;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.MainModuleInitializer;
-import io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.glfw.MainCurvedSpacetimeRenderGLFWModuleEntrypoint;
 import io.codetoil.curved_spacetime.render.glfw.entrypoint.CurvedSpacetimeRenderGLFWModuleDependentModuleInitializer;
 
 /**
@@ -48,13 +48,13 @@ public class CurvedSpacetimeRenderGLFWModuleDependentModuleInitializerCurvedSpac
 
 
 	@Override
-	public void onInitialize(CurvedSpacetimeRenderGLFWMainModuleEntrypoint glfwRenderModuleEntrypoint, Engine engine)
+	public void onInitialize(MainCurvedSpacetimeRenderGLFWModuleEntrypoint glfwRenderModuleEntrypoint, Engine engine)
 	{
 		try
 		{
 			engine.getCurvedSpacetimeLoader()
 					.getEntrypoints("main", MainModuleInitializer.class).stream()
-					.filter(CurvedSpacetimeRenderVulkanGLFWMainModuleEntrypoint.class::isInstance)
+					.filter(MainCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint.class::isInstance)
 					.findFirst().orElseThrow().getDependencyModuleTransferQueue().transfer(glfwRenderModuleEntrypoint);
 		} catch (InterruptedException e)
 		{
