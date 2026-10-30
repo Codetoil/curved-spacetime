@@ -135,16 +135,18 @@ public class VulkanModuleLogicalDevice
 			int numExtensions = numExtensionsBuf.get(0);
 			this.logger.fine("Device supports [" + numExtensions + "] extensions");
 
-			VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions);
-			VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
-					(String) null,
-					numExtensionsBuf, propsBuff);
-			for (int index = 0; index < numExtensions; index++)
+			try (VkExtensionProperties.Buffer propsBuff = VkExtensionProperties.calloc(numExtensions))
 			{
-				VkExtensionProperties props = propsBuff.get(index);
-				String extensionName = props.extensionNameString();
-				deviceExtensions.add(extensionName);
-				this.logger.fine("Supported device extension [" + extensionName + "]");
+				VK13.vkEnumerateDeviceExtensionProperties(this.vulkanModulePhysicalDevice.getVkPhysicalDevice(),
+						(String) null,
+						numExtensionsBuf, propsBuff);
+				for (int index = 0; index < numExtensions; index++)
+				{
+					VkExtensionProperties props = propsBuff.get(index);
+					String extensionName = props.extensionNameString();
+					deviceExtensions.add(extensionName);
+					this.logger.fine("Supported device extension [" + extensionName + "]");
+				}
 			}
 		}
 		return deviceExtensions;

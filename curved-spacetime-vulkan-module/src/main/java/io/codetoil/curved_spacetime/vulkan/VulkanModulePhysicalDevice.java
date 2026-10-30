@@ -131,57 +131,61 @@ public class VulkanModulePhysicalDevice
 		{
 			// Get available devices
 			PointerBuffer pPhysicalDevices = getPhysicalDevices(instance, stack, logger);
-			int numDevices = pPhysicalDevices.capacity();
-			if (numDevices <= 0)
-			{
-				throw new RuntimeException("No physical devices found");
+			try {
+				int numDevices = pPhysicalDevices.capacity();
+				if (numDevices <= 0)
+				{
+					throw new RuntimeException("No physical devices found");
+				}
+
+				//Populate available devices
+				List<VulkanModulePhysicalDevice> physDevices = new ArrayList<>();
+				for (int i = 0; i < numDevices; i++)
+				{
+					var vkPhysicalDevice = new VkPhysicalDevice(pPhysicalDevices.get(i), instance.getVkInstance());
+					var physDevice = new VulkanModulePhysicalDevice(vkPhysicalDevice, logger);
+
+					String deviceName = physDevice.getDeviceName();
+					if (!physDevice.hasGraphicsQueueFamily())
+					{
+						logger.fine(() -> "Device [" + deviceName + "] does not support graphics queue family");
+						physDevice.cleanup();
+						continue;
+					}
+
+					if (!physDevice.supportsExtensions(REQUIRED_EXTENSIONS))
+					{
+						logger.fine("Device [" + deviceName + "] does not support required extensions");
+						physDevice.cleanup();
+						continue;
+					}
+
+					String preferredDeviceName = ((CurvedSpacetimeVulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
+							.getPreferredDeviceName();
+					if (preferredDeviceName != null && preferredDeviceName.equals(deviceName))
+					{
+						selectedVulkanModulePhysicalDevice = physDevice;
+						break;
+					}
+					if (physDevice.vkPhysicalDeviceProperties.properties().deviceType()
+							== VK13.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+					{
+						physDevices.addFirst(physDevice);
+					} else
+					{
+						physDevices.add(physDevice);
+					}
+				}
+				// No preferred device, or it does not meet requirements, just pick the first one
+				selectedVulkanModulePhysicalDevice =
+						selectedVulkanModulePhysicalDevice == null &&
+								!physDevices.isEmpty() ? physDevices.removeFirst() : selectedVulkanModulePhysicalDevice;
+
+				// Clean up non-selected devices
+				physDevices.forEach(VulkanModulePhysicalDevice::cleanup);
+			} finally {
+				MemoryUtil.memFree(pPhysicalDevices);
 			}
-
-			//Populate available devices
-			List<VulkanModulePhysicalDevice> physDevices = new ArrayList<>();
-			for (int i = 0; i < numDevices; i++)
-			{
-				var vkPhysicalDevice = new VkPhysicalDevice(pPhysicalDevices.get(i), instance.getVkInstance());
-				var physDevice = new VulkanModulePhysicalDevice(vkPhysicalDevice, logger);
-
-				String deviceName = physDevice.getDeviceName();
-				if (!physDevice.hasGraphicsQueueFamily())
-				{
-					logger.fine(() -> "Device [" + deviceName + "] does not support graphics queue family");
-					physDevice.cleanup();
-					continue;
-				}
-
-				if (!physDevice.supportsExtensions(REQUIRED_EXTENSIONS))
-				{
-					logger.fine("Device [" + deviceName + "] does not support required extensions");
-					physDevice.cleanup();
-					continue;
-				}
-
-				String preferredDeviceName = ((CurvedSpacetimeVulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
-						.getPreferredDeviceName();
-				if (preferredDeviceName != null && preferredDeviceName.equals(deviceName))
-				{
-					selectedVulkanModulePhysicalDevice = physDevice;
-					break;
-				}
-				if (physDevice.vkPhysicalDeviceProperties.properties().deviceType()
-						== VK13.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-				{
-					physDevices.addFirst(physDevice);
-				} else
-				{
-					physDevices.add(physDevice);
-				}
-			}
-			// No preferred device, or it does not meet requirements, just pick the first one
-			selectedVulkanModulePhysicalDevice =
-					selectedVulkanModulePhysicalDevice == null &&
-							!physDevices.isEmpty() ? physDevices.removeFirst() : selectedVulkanModulePhysicalDevice;
-
-			// Clean up non-selected devices
-			physDevices.forEach(VulkanModulePhysicalDevice::cleanup);
 
 			if (selectedVulkanModulePhysicalDevice == null)
 			{
@@ -222,8 +226,16 @@ public class VulkanModulePhysicalDevice
 
 		// Populate physical devices list pointer
 		pPhysicalDevices = MemoryUtil.memAllocPointer(numDevices);
-		VulkanUtils.vkCheck(VK13.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, pPhysicalDevices),
-				"Failed to get physical devices");
+		try
+		{
+			VulkanUtils.vkCheck(VK13.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, pPhysicalDevices),
+					"Failed to get physical devices");
+		}
+		catch (Throwable e)
+		{
+			MemoryUtil.memFree(pPhysicalDevices);
+			throw e;
+		}
 		return pPhysicalDevices;
 	}
 
