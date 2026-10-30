@@ -50,11 +50,13 @@ public class VulkanModuleVulkanInstance
 {
 	/**
 	 * Extensions vulkan must support for this program to run.
+	 *
 	 * @see CurvedSpacetimeVulkanModuleInstanceExtensionsRequest#requiredInstanceExtensions()
 	 */
 	protected static final Set<String> REQUIRED_EXTENSIONS = new HashSet<>();
 	/**
 	 * Extensions vulkan may optionally support for extra features.
+	 *
 	 * @see CurvedSpacetimeVulkanModuleInstanceExtensionsRequest#optionalInstanceExtensions()
 	 */
 	protected static final Set<String> OPTIONAL_EXTENSIONS = new HashSet<>();
@@ -291,7 +293,8 @@ public class VulkanModuleVulkanInstance
 			int numExtensions = numExtensionsBuf.get(0);
 			this.logger.fine("Instance supports [" + numExtensions + "] extensions");
 
-			try (VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions)) {
+			try (VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions))
+			{
 				VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
 				for (int index = 0; index < numExtensions; index++)
 				{

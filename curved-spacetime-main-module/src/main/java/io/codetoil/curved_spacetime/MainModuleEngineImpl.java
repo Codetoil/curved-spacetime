@@ -121,11 +121,13 @@ public class MainModuleEngineImpl extends Engine
 							c.loop();
 						}
 						for (List<SceneCallback> l : List.copyOf(this.sceneCallbacks.values()))
+						{
 							for (SceneCallback c : List.copyOf(l))
 							{
 								if (this.callbackExecutor.isShutdown()) return;
 								c.loop();
 							}
+						}
 					} catch (Throwable t)
 					{
 						this.throwError(t, "Exception called during Main Loop");

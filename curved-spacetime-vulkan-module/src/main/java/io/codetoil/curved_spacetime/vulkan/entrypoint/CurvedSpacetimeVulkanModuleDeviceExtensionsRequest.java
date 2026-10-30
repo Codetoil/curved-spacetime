@@ -31,12 +31,14 @@ public interface CurvedSpacetimeVulkanModuleDeviceExtensionsRequest
 	 * Extensions a device must supply to initialize Vulkan
 	 * Prevents Vulkan from initializing if no device supports these extensions.
 	 * If a feature is optional use {@link optionalDeviceExtensions()} instead.
+	 *
 	 * @return the requested required device extensions
 	 */
 	List<String> requiredDeviceExtensions();
 
 	/**
 	 * Extensions a device may optionally support for extra features.
+	 *
 	 * @return the requested optional device extensions
 	 */
 	List<String> optionalDeviceExtensions();

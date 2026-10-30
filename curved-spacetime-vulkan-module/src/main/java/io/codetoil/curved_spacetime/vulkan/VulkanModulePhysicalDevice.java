@@ -131,7 +131,8 @@ public class VulkanModulePhysicalDevice
 		{
 			// Get available devices
 			PointerBuffer pPhysicalDevices = getPhysicalDevices(instance, stack, logger);
-			try {
+			try
+			{
 				int numDevices = pPhysicalDevices.capacity();
 				if (numDevices <= 0)
 				{
@@ -160,8 +161,9 @@ public class VulkanModulePhysicalDevice
 						continue;
 					}
 
-					String preferredDeviceName = ((CurvedSpacetimeVulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
-							.getPreferredDeviceName();
+					String preferredDeviceName =
+							((CurvedSpacetimeVulkanModuleConfig) vulkanModuleEntrypoint.getConfig())
+									.getPreferredDeviceName();
 					if (preferredDeviceName != null && preferredDeviceName.equals(deviceName))
 					{
 						selectedVulkanModulePhysicalDevice = physDevice;
@@ -183,7 +185,8 @@ public class VulkanModulePhysicalDevice
 
 				// Clean up non-selected devices
 				physDevices.forEach(VulkanModulePhysicalDevice::cleanup);
-			} finally {
+			} finally
+			{
 				MemoryUtil.memFree(pPhysicalDevices);
 			}
 
@@ -233,8 +236,7 @@ public class VulkanModulePhysicalDevice
 		{
 			VulkanUtils.vkCheck(VK13.vkEnumeratePhysicalDevices(instance.getVkInstance(), intBuffer, pPhysicalDevices),
 					"Failed to get physical devices");
-		}
-		catch (Throwable e)
+		} catch (Throwable e)
 		{
 			MemoryUtil.memFree(pPhysicalDevices);
 			throw e;
