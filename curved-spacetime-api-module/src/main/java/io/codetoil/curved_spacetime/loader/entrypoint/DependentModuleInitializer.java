@@ -30,8 +30,8 @@ import io.codetoil.curved_spacetime.api.Engine;
  * by transferring it into that module's {@link MainModuleInitializer#getDependencyModuleTransferQueue() dependency queue}:
  * <pre>{@code
  * engine.getCurvedSpacetimeLoader()
- *         .getEntrypoints("main", ModuleInitializer.class).stream()
- *         .filter(MyModuleEntrypoint.class::isInstance)
+ *         .getEntrypoints("main", MainModuleInitializer.class).stream()
+ *         .filter(MainMyModuleEntrypoint.class::isInstance)
  *         .findFirst().orElseThrow()
  *         .getDependencyModuleTransferQueue().transfer(moduleEntrypoint);
  * }</pre>

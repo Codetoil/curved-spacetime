@@ -165,7 +165,7 @@ the specification governs the mechanism and this one governs the physics.
 | Light-cone output, §11.1 | a `SceneCallback` per scene, supplied by a registered generator | R23, R42–R44 |
 | Observer input, §17.2 | the render module's keyboard and mouse interfaces | R17–R19 |
 | Asynchronous scheduling, §12 | the entrypoint executor, which must be effectively unbounded | **R28** |
-| A module depending on the simulator | a dependent entrypoint registered under `<key_>_dependent` | R17–R19, R25–R27 |
+| A module depending on the simulator | a dependent entrypoint registered under `<key_>_dependent_module_initializer` | R17–R19, R25–R27 |
 
 Four consequences are not obvious and are easy to get wrong.
 
