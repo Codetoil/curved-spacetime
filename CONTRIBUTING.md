@@ -39,23 +39,30 @@ API `curved-spacetime-render-module`. A proper SDK will be made later.
 1. **`build.gradle.kts`** — plugins: java, java-library, javadoc-links, maven-publish.
    `api(project(":curved-spacetime-api-module"))`, plus the API module. **Leave the jar's `destinationDirectory`
    alone.** Jar output stays at the Gradle default,
-   `build/libs`. To place the module in a distribution, add a row to `quiltDistribution` (or the
-   `closedWorldDistribution`) in the root `build.gradle.kts` — naming the module, its subdirectory
-   within the archive, and the task producing the artifact. The root build file explains why
+   `build/libs`. To place the module in a distribution, add a row to `distribution` in the root
+   `build.gradle.kts` — naming the module, its subdirectory within the archive, and the task
+   producing the artifact. The root build file explains why
    redirecting a jar task instead makes the archive a task *output*, which Gradle then empties
    from under the IDE.
 2. **`src/main/java/module-info.java`** — requires `io.codetoil.curved_spacetime.api`,
  `java.logging`, plus the API module. Export the module's package and its `.entrypoint` subpackage.
-3. **`<X>ModuleEntrypoint implements ModuleInitializer`** — the `main` entrypoint, where `<X>` is
-   the module key in `PascalCase` with `-module` dropped. Its `onInitialize(Engine engine)` sets its
-   logger level from `engine.getLoggerLevel()`, adds `engine.getConsoleHandler()` to that logger and
-   calls `setUseParentHandlers(false)` on it (R23 in the specification explains why both are
-   needed), loads its config, then calls `engine.callDependents("<key_>_dependent", …)`, where
-   `<key_>` is the module key with every `-` replaced by `_`.
-4. **`<Module 1>ModuleDependent<Module 2>ModuleEntrypoint implements <Module 1>ModuleDependentModuleInitializer`**
-   — one per module you depend on, where module 1 is the depended-on module and module 2 is this
-   one. Looks itself up via `getEntrypoints("main", ModuleInitializer.class)` and hands the
-   received entrypoint to its own `getDependencyModuleTransferQueue().transfer(…)`.
+3. **`Main<X>ModuleEntrypoint implements MainModuleInitializer`** — the `main` entrypoint, where
+   `<X>` is the module key in `PascalCase` with `-module` dropped and acronyms such as `GLFW` in
+   capitals. Its `onInitialize(Engine engine)` sets its logger level from `engine.getLoggerLevel()`,
+   adds `engine.getConsoleHandler()` to that logger and calls `setUseParentHandlers(false)` on it
+   (R23 in the specification explains why both are needed), loads its config, then calls
+   `engine.callDependents("<key_>_dependent_module_initializer", …)`, where `<key_>` is the module
+   key with every `-` replaced by `_`.
+4. **`<D>ModuleDependentModuleInitializer<X>ModuleEntrypoint implements <D>ModuleDependentModuleInitializer`**
+   — one per module you depend on, where `<D>` is the depended-on module, formed like `<X>`, and
+   registered under its `<key_>_dependent_module_initializer`. Looks up this module's main
+   entrypoint via `getEntrypoints("main", MainModuleInitializer.class)`, filtered to
+   `Main<X>ModuleEntrypoint`, and hands the received entrypoint to its
+   `getDependencyModuleTransferQueue().transfer(…)`.
+
+   Both class names follow the specification's form for every entrypoint class,
+   `<Purpose>(<Classifier>)<Module>ModuleEntrypoint` (§6), where `<Purpose>` is the entrypoint name
+   in `PascalCase`.
 5. **`<X>ModuleConfig implements ModuleConfig`** — `Properties`-backed, with `load()`, `save()`,
    and `isDirty()`; the file is `config/<key>.config`.
 6. **`entrypoint/<X>ModuleDependentModuleInitializer`** — required of *every* module, not only
