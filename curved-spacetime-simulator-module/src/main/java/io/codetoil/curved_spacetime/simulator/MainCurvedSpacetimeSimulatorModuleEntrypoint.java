@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * to any dependents, but nothing is simulated yet, and the simulation model — spacetimes, metrics, worldlines — has not
  * been specified.
  */
-public class CurvedSpacetimeSimulatorMainModuleEntrypoint implements MainModuleInitializer
+public class MainCurvedSpacetimeSimulatorModuleEntrypoint implements MainModuleInitializer
 {
 	private final TransferQueue<MainModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private final Logger logger = Logger.getLogger("Curved Spacetime Simulator Module Logger");
@@ -50,7 +50,7 @@ public class CurvedSpacetimeSimulatorMainModuleEntrypoint implements MainModuleI
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeSimulatorMainModuleEntrypoint()
+	public MainCurvedSpacetimeSimulatorModuleEntrypoint()
 	{
 	}
 

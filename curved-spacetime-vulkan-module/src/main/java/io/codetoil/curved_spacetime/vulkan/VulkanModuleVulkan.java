@@ -36,7 +36,7 @@ import io.codetoil.curved_spacetime.api.MainCallback;
  */
 public class VulkanModuleVulkan extends MainCallback
 {
-	private final CurvedSpacetimeVulkanMainModuleEntrypoint entrypoint;
+	private final MainCurvedSpacetimeVulkanModuleEntrypoint entrypoint;
 
 	/**
 	 * The Vulkan instance, created first during {@link #init()}.
@@ -63,7 +63,7 @@ public class VulkanModuleVulkan extends MainCallback
 	 * @param entrypoint
 	 * 		the Vulkan module's entrypoint, supplying configuration and logger
 	 */
-	public VulkanModuleVulkan(Engine engine, CurvedSpacetimeVulkanMainModuleEntrypoint entrypoint)
+	public VulkanModuleVulkan(Engine engine, MainCurvedSpacetimeVulkanModuleEntrypoint entrypoint)
 	{
 		super(engine);
 		this.entrypoint = entrypoint;

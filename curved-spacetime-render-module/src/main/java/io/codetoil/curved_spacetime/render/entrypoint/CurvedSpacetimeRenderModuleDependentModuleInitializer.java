@@ -22,7 +22,7 @@ package io.codetoil.curved_spacetime.render.entrypoint;
 
 import io.codetoil.curved_spacetime.api.Engine;
 import io.codetoil.curved_spacetime.loader.entrypoint.DependentModuleInitializer;
-import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.render.MainCurvedSpacetimeRenderModuleEntrypoint;
 
 /**
  * The entrypoint a module registers to depend on the render module.
@@ -31,7 +31,7 @@ import io.codetoil.curved_spacetime.render.CurvedSpacetimeRenderMainModuleEntryp
  * their own module's dependency queue, as described on {@link DependentModuleInitializer}.
  */
 public interface CurvedSpacetimeRenderModuleDependentModuleInitializer
-		extends DependentModuleInitializer<CurvedSpacetimeRenderMainModuleEntrypoint>
+		extends DependentModuleInitializer<MainCurvedSpacetimeRenderModuleEntrypoint>
 {
 	/**
 	 * Receives the render module's entrypoint.
@@ -41,5 +41,5 @@ public interface CurvedSpacetimeRenderModuleDependentModuleInitializer
 	 * @param renderModuleEntrypoint
 	 * 		the render module's main entrypoint
 	 */
-	void onInitialize(CurvedSpacetimeRenderMainModuleEntrypoint renderModuleEntrypoint, Engine engine);
+	void onInitialize(MainCurvedSpacetimeRenderModuleEntrypoint renderModuleEntrypoint, Engine engine);
 }

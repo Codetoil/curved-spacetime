@@ -21,7 +21,7 @@
 package io.codetoil.curved_spacetime.simulator.entrypoint;
 
 import io.codetoil.curved_spacetime.loader.entrypoint.DependentModuleInitializer;
-import io.codetoil.curved_spacetime.simulator.CurvedSpacetimeSimulatorMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.simulator.MainCurvedSpacetimeSimulatorModuleEntrypoint;
 
 /**
  * The entrypoint a module registers to depend on the simulator module.
@@ -30,7 +30,7 @@ import io.codetoil.curved_spacetime.simulator.CurvedSpacetimeSimulatorMainModule
  * into their own module's dependency queue.
  */
 public interface CurvedSpacetimeSimulatorModuleDependentModuleInitializer
-		extends DependentModuleInitializer<CurvedSpacetimeSimulatorMainModuleEntrypoint>
+		extends DependentModuleInitializer<MainCurvedSpacetimeSimulatorModuleEntrypoint>
 {
 	/**
 	 * Receives the simulator module's entrypoint.
@@ -40,5 +40,5 @@ public interface CurvedSpacetimeSimulatorModuleDependentModuleInitializer
 	 * @param simulatorModuleEntrypoint
 	 * 		the simulator module's main entrypoint
 	 */
-	void onInitialize(CurvedSpacetimeSimulatorMainModuleEntrypoint simulatorModuleEntrypoint);
+	void onInitialize(MainCurvedSpacetimeSimulatorModuleEntrypoint simulatorModuleEntrypoint);
 }

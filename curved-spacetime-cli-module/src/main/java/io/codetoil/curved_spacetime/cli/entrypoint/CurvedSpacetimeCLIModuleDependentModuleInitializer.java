@@ -21,7 +21,7 @@
 package io.codetoil.curved_spacetime.cli.entrypoint;
 
 import io.codetoil.curved_spacetime.api.Engine;
-import io.codetoil.curved_spacetime.cli.CurvedSpacetimeCLIMainModuleEntrypoint;
+import io.codetoil.curved_spacetime.cli.MainCurvedSpacetimeCLIModuleEntrypoint;
 import io.codetoil.curved_spacetime.loader.entrypoint.DependentModuleInitializer;
 
 /**
@@ -31,7 +31,7 @@ import io.codetoil.curved_spacetime.loader.entrypoint.DependentModuleInitializer
  * their own module's dependency queue, as described on {@link DependentModuleInitializer}.
  */
 public interface CurvedSpacetimeCLIModuleDependentModuleInitializer
-		extends DependentModuleInitializer<CurvedSpacetimeCLIMainModuleEntrypoint>
+		extends DependentModuleInitializer<MainCurvedSpacetimeCLIModuleEntrypoint>
 {
 	/**
 	 * Receives the CLI module's entrypoint.
@@ -41,5 +41,5 @@ public interface CurvedSpacetimeCLIModuleDependentModuleInitializer
 	 * @param cliModuleEntrypoint
 	 * 		the CLI module's main entrypoint
 	 */
-	void onInitialize(CurvedSpacetimeCLIMainModuleEntrypoint cliModuleEntrypoint, Engine engine);
+	void onInitialize(MainCurvedSpacetimeCLIModuleEntrypoint cliModuleEntrypoint, Engine engine);
 }

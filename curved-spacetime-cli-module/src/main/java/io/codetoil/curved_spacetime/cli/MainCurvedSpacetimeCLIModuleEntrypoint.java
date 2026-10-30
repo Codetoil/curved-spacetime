@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * Provides the command-line face of the simulator. Currently loads its configuration and hands itself to any
  * dependents; the command handling itself is not implemented yet.
  */
-public class CurvedSpacetimeCLIMainModuleEntrypoint implements MainModuleInitializer
+public class MainCurvedSpacetimeCLIModuleEntrypoint implements MainModuleInitializer
 {
 	private final TransferQueue<MainModuleInitializer> depdencyModuleTransferQueue = new LinkedTransferQueue<>();
 	private ModuleConfig config;
@@ -49,7 +49,7 @@ public class CurvedSpacetimeCLIMainModuleEntrypoint implements MainModuleInitial
 	 * <p>
 	 * Called by the loader; nothing happens until {@link #onInitialize(Engine)} runs.
 	 */
-	public CurvedSpacetimeCLIMainModuleEntrypoint()
+	public MainCurvedSpacetimeCLIModuleEntrypoint()
 	{
 	}
 
