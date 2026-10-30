@@ -246,15 +246,17 @@ public class VulkanModuleVulkanInstance
 			VK13.vkEnumerateInstanceLayerProperties(numLayersArray, null);
 			int numLayers = numLayersArray.get(0);
 			this.logger.fine("Instance supports [" + numLayers + "] layers");
-			VkLayerProperties.Buffer propsBuffer = VkLayerProperties.calloc(numLayers);
-			VK13.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
 			List<String> supportedLayers = new ArrayList<>();
-			for (int index = 0; index < numLayers; index++)
+			try (VkLayerProperties.Buffer propsBuffer = VkLayerProperties.calloc(numLayers))
 			{
-				VkLayerProperties props = propsBuffer.get(index);
-				String layerName = props.layerNameString();
-				supportedLayers.add(layerName);
-				this.logger.fine("Supported Layer [" + layerName + "]");
+				VK13.vkEnumerateInstanceLayerProperties(numLayersArray, propsBuffer);
+				for (int index = 0; index < numLayers; index++)
+				{
+					VkLayerProperties props = propsBuffer.get(index);
+					String layerName = props.layerNameString();
+					supportedLayers.add(layerName);
+					this.logger.fine("Supported Layer [" + layerName + "]");
+				}
 			}
 			List<String> layersToUse = new ArrayList<>();
 
@@ -289,14 +291,15 @@ public class VulkanModuleVulkanInstance
 			int numExtensions = numExtensionsBuf.get(0);
 			this.logger.fine("Instance supports [" + numExtensions + "] extensions");
 
-			VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions);
-			VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
-			for (int index = 0; index < numExtensions; index++)
-			{
-				VkExtensionProperties props = instanceExtensionProps.get(index);
-				String extensionName = props.extensionNameString();
-				instanceExtensions.add(extensionName);
-				this.logger.fine("Supported instance extension [" + extensionName + "]");
+			try (VkExtensionProperties.Buffer instanceExtensionProps = VkExtensionProperties.calloc(numExtensions)) {
+				VK13.vkEnumerateInstanceExtensionProperties((String) null, numExtensionsBuf, instanceExtensionProps);
+				for (int index = 0; index < numExtensions; index++)
+				{
+					VkExtensionProperties props = instanceExtensionProps.get(index);
+					String extensionName = props.extensionNameString();
+					instanceExtensions.add(extensionName);
+					this.logger.fine("Supported instance extension [" + extensionName + "]");
+				}
 			}
 			return instanceExtensions;
 		}
