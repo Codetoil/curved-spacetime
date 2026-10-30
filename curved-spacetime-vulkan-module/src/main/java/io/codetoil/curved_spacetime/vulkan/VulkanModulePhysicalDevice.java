@@ -205,7 +205,7 @@ public class VulkanModulePhysicalDevice
 	 * Enumerates the handles of every physical device the instance can see.
 	 * <p>
 	 * The returned buffer is allocated on the heap, not on {@code stack}, so the caller must release it with
-	 * {@code MemoryUtil#memFree(org.lwjgl.system.CustomBuffer) MemoryUtil.memFree}.
+	 * {@code MemoryUtil.memFree}.
 	 *
 	 * @param instance
 	 * 		the instance to enumerate from
