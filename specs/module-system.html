@@ -281,9 +281,9 @@
         </tr>
         <tr>
             <td>Module-defined entrypoint name</td>
-            <td><code>&lt;key_&gt;_&lt;purpose&gt;</code>, where <code>&lt;purpose&gt;</code> is
-                <code>snake_case</code> and is not <code>dependent</code></td>
-            <td><code>curved_spacetime_render_glfw_module_&lt;purpose&gt;</code></td>
+            <td><code>&lt;key_&gt;_&lt;suffix&gt;</code>, where <code>&lt;suffix&gt;</code> is
+                <code>snake_case</code> and is not <code>dependent_module_initializer</code></td>
+            <td><code>curved_spacetime_render_glfw_module_&lt;suffix&gt;</code></td>
         </tr>
         <tr>
             <td>Quilt mod id</td>
@@ -335,14 +335,43 @@
 <section id="entrypoints">
     <h2>6. Entrypoints</h2>
 
+    <p id="entrypoint-names">An entrypoint class is named after the entrypoint name it is registered
+        under and the module that registers it, in the form
+        <code>&lt;Purpose&gt;(&lt;Classifier&gt;)&lt;Module&gt;ModuleEntrypoint</code>, where the
+        parenthesised part is optional:</p>
+
+    <ul>
+        <li><code>&lt;purpose&gt;</code> is the entrypoint name, such as <code>main</code>,
+            <code>curved_spacetime_render_module_dependent_module_initializer</code>, or
+            <code>curved_spacetime_vulkan_module_instance_extensions_request</code>. Apart from
+            <code>main</code>, an entrypoint name contains the key of the module that defines it, per
+            <a href="#R5">R5</a>, so <code>&lt;Purpose&gt;</code> contains that module's name.
+        </li>
+        <li><code>&lt;Purpose&gt;</code> is <code>&lt;purpose&gt;</code> in <code>PascalCase</code>:
+            <code>Main</code>, <code>CurvedSpacetimeRenderModuleDependentModuleInitializer</code>,
+            <code>CurvedSpacetimeVulkanModuleInstanceExtensionsRequest</code>.
+        </li>
+        <li><code>&lt;Module&gt;</code> is the registering module's key in <code>PascalCase</code>, with
+            <code>-module</code> dropped.
+        </li>
+        <li><code>&lt;Classifier&gt;</code> is a <code>PascalCase</code> word that tells apart two of a
+            module's classes that would otherwise share a name, such as two dependent entrypoints
+            delivering one dependency to different receiving entrypoints (<a href="#R40">R40</a>).
+        </li>
+    </ul>
+
+    <p>In each <code>PascalCase</code> conversion, an acronym such as <code>glfw</code> or
+        <code>cli</code> is written in capitals: the key <code>curved-spacetime-render-glfw-module</code>
+        gives the <code>&lt;Module&gt;</code> <code>CurvedSpacetimeRenderGLFW</code>.</p>
+
     <h3>6.1 The main entrypoint</h3>
 
     <p id="R12" class="req"><strong>R12.</strong> Every module MUST register exactly one main entrypoint
         under the name <code>main</code>, implementing <code>MainModuleInitializer</code>.</p>
 
     <p id="R13" class="req"><strong>R13.</strong> The main entrypoint class SHOULD be named
-        <code>&lt;X&gt;MainModuleEntrypoint</code>, where <code>&lt;X&gt;</code> is the module key in
-        <code>PascalCase</code> with <code>-module</code> dropped.</p>
+        <code>Main&lt;Module&gt;ModuleEntrypoint</code>, per the form in
+        <a href="#entrypoint-names">§6</a>.</p>
 
     <p id="R14" class="req"><strong>R14.</strong> <code>getLogger</code> MUST return the same
         <code>Logger</code> instance for the lifetime of the entrypoint, and that logger MUST be the one
@@ -361,17 +390,19 @@
 
     <p id="R17" class="req"><strong>R17.</strong> A module MUST publish an interface named
         <code>&lt;Module&gt;ModuleDependentModuleInitializer</code> in its<code>.entrypoint</code> subpackage, extending
-        <code>DependentModuleInitializer&lt;&lt;Module&gt;MainModuleEntrypoint&gt;</code>.</p>
+        <code>DependentModuleInitializer&lt;Main&lt;Module&gt;ModuleEntrypoint&gt;</code>.</p>
 
     <p id="R18" class="req"><strong>R18.</strong> A module <var>B</var> that depends on module
         <var>A</var> MUST register, for each of its receiving entrypoints that needs <var>A</var>, a class
         implementing <var>A</var>'s dependent interface under <var>A</var>'s dependent entrypoint name, as
         derived in <a href="#R5">R5</a>.</p>
 
-    <p id="R19" class="req"><strong>R19.</strong> That class SHOULD be named
-        <code>&lt;Purpose&gt;&lt;Module B&gt;ModuleEntrypoint</code>, where <code>&lt;Purpose&gt;</code> is
-        the simple name of the interface it implements. For <var>A</var>'s dependent interface, that is
-        <code>&lt;Module A&gt;ModuleDependentModuleInitializer&lt;Module B&gt;ModuleEntrypoint</code>.</p>
+    <p id="R19" class="req"><strong>R19.</strong> That class SHOULD be named per the form in
+        <a href="#entrypoint-names">§6</a>, with <var>A</var>'s dependent entrypoint name as
+        <code>&lt;purpose&gt;</code>:
+        <code>&lt;Module A&gt;ModuleDependentModuleInitializer(&lt;Classifier&gt;)&lt;Module B&gt;ModuleEntrypoint</code>.
+        Where <var>B</var> registers more than one such class for <var>A</var>, classifiers tell them
+        apart.</p>
 
     <p>For <code>curved-spacetime-render-glfw-module</code> depending on
         <code>curved-spacetime-render-module</code>:</p>
@@ -412,13 +443,15 @@
     <p id="R51" class="req"><strong>R51.</strong> A module MAY publish further entrypoint names, formed
         per <a href="#R5">R5</a>, and invoke them itself. For each, it MUST publish in its
         <code>.entrypoint</code> subpackage the interface its registrations implement, named
-        <code>&lt;Module&gt;Module&lt;Purpose&gt;ModuleInitializer</code>, where
-        <code>&lt;Purpose&gt;</code> is <code>&lt;purpose&gt;</code> in <code>PascalCase</code>. It MUST
-        document when it invokes them and what it passes.</p>
+        <code>&lt;Purpose&gt;</code>, where <code>&lt;purpose&gt;</code> is the entrypoint name
+        (<a href="#entrypoint-names">§6</a>). It MUST document when it invokes them and what it
+        passes.</p>
 
     <p id="R52" class="req"><strong>R52.</strong> A class registered by module <var>B</var> under
-        module <var>A</var>'s module-defined entrypoint name SHOULD be named
-        <code>&lt;Module A&gt;Module&lt;Purpose&gt;&lt;Module B&gt;ModuleEntrypoint</code>.</p>
+        module <var>A</var>'s module-defined entrypoint name SHOULD be named per the form in
+        <a href="#entrypoint-names">§6</a>:
+        <code>&lt;Purpose&gt;(&lt;Classifier&gt;)&lt;Module B&gt;ModuleEntrypoint</code>, where
+        <code>&lt;Purpose&gt;</code> is the name of <var>A</var>'s interface (<a href="#R51">R51</a>).</p>
 
     <p id="R53" class="req"><strong>R53.</strong> A module-defined entrypoint MAY be invoked before the
         main entrypoint of the module that registered it has run. It MUST NOT read the state of any
@@ -438,21 +471,23 @@
         <tbody>
         <tr>
             <td>Entrypoint name</td>
-            <td><code>curved_spacetime_vulkan_module_extension_request</code></td>
+            <td><code>curved_spacetime_vulkan_module_instance_extensions_request</code></td>
         </tr>
         <tr>
             <td>Interface</td>
-            <td><code>io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleExtensionRequestModuleInitializer</code>
+            <td><code>io.codetoil.curved_spacetime.vulkan.entrypoint.CurvedSpacetimeVulkanModuleInstanceExtensionsRequest</code>
             </td>
         </tr>
         <tr>
             <td>Implementation</td>
-            <td><code>io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeVulkanModuleExtensionRequestCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint</code>
+            <td><code>io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeVulkanModuleInstanceExtensionsRequestCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint</code>
             </td>
         </tr>
         <tr>
-            <td>Dependent entrypoint delivering the GLFW render module to it (<a href="#R19">R19</a>)</td>
-            <td><code>io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderGLFWModuleDependentCurvedSpacetimeVulkanModuleExtensionRequestCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint</code>
+            <td>Dependent entrypoint delivering the GLFW render module to it (<a href="#R19">R19</a>),
+                beside the one delivering it to the main entrypoint, so it carries a classifier
+            </td>
+            <td><code>io.codetoil.curved_spacetime.render.vulkan_glfw.CurvedSpacetimeRenderGLFWModuleDependentModuleInitializerInstanceExtensionsRequestCurvedSpacetimeRenderVulkanGLFWModuleEntrypoint</code>
             </td>
         </tr>
         </tbody>
@@ -507,14 +542,14 @@
         the engine's loader and transfers <var>A</var> into <var>B</var>'s queue:</p>
 
     <pre><code>@Override
-public void onInitialize(CurvedSpacetimeRenderMainModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint,
+public void onInitialize(MainCurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint,
                          Engine engine)
 {
     try
     {
         engine.getCurvedSpacetimeLoader()
                 .getEntrypoints("main", MainModuleInitializer.class).stream()
-                .filter(CurvedSpacetimeRenderGLFWMainModuleEntrypoint.class::isInstance)
+                .filter(MainCurvedSpacetimeRenderGLFWModuleEntrypoint.class::isInstance)
                 .findFirst().orElseThrow()
                 .getDependencyModuleTransferQueue().transfer(curvedSpacetimeRenderModuleEntrypoint);
     } catch (InterruptedException e)
@@ -532,7 +567,7 @@ public void onInitialize(CurvedSpacetimeRenderMainModuleEntrypoint curvedSpaceti
     {
         MainModuleInitializer mainModuleInitializer = this.dependencyModuleTransferQueue.take();
 
-        if (mainModuleInitializer instanceof CurvedSpacetimeRenderMainModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint)
+        if (mainModuleInitializer instanceof MainCurvedSpacetimeRenderModuleEntrypoint curvedSpacetimeRenderModuleEntrypoint)
         {
             this.curvedSpacetimeRenderModuleEntrypoint = curvedSpacetimeRenderModuleEntrypoint;
         }
@@ -647,7 +682,7 @@ vsync=true</code></pre>
     "version": "0.1.0-SNAPSHOT",
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "main": "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderGLFWMainModuleEntrypoint",
+      "main": "io.codetoil.curved_spacetime.render.glfw.MainCurvedSpacetimeRenderGLFWModuleEntrypoint",
       "curved_spacetime_render_module_dependent_module_initializer":
         "io.codetoil.curved_spacetime.render.glfw.CurvedSpacetimeRenderModuleDependentModuleInitializerCurvedSpacetimeRenderGLFWModuleEntrypoint"
     },
