@@ -7,7 +7,7 @@ lwjgl = "3.4.3"
 fabricMixin = "0.17.5+mixin.0.8.7"
 # QuiltMC Maven - https://maven.quiltmc.org/repository/release/
 # org.quiltmc:quilt-loader, org.quiltmc:quilt-loader-dependencies
-quiltLoader = "0.31.0-beta.4"
+quiltLoader = "0.31.0-beta.6"
 # Maven Central - https://repo1.maven.org/maven2/
 # org.junit:junit-bom
 junit = "6.1.3"
