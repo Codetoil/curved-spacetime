@@ -15,7 +15,7 @@ dependencies {
     rootProject.subprojects.filter { project -> !project.name.contains("quilt-loader-patches") }
         .forEach { subproject ->
             subproject.plugins.withId("java") {
-                javadoc(subproject)
+                javadoc(project(subproject.path))
             }
         }
 }
