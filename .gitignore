@@ -50,4 +50,4 @@ bin/
 /test
 
 .mcp.json
-/.claude/worktrees/spec-101-entrypoints/
+/.claude/worktrees
