@@ -2,9 +2,19 @@
 # package ecosystems to update and where the package manifests are located.
 
 version: 2
+registries:
+  quilt-maven:
+    type: maven-repository
+    url: https://maven.quiltmc.org/repository/release/
+  fabric-maven:
+    type: maven-repository
+    url: https://maven.fabricmc.net/
 updates:
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/" # Location of package manifests
+    registries:
+      - quilt-maven
+      - fabric-maven
     schedule:
       interval: "weekly"
     target-branch: dev
