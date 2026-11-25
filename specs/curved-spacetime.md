@@ -12,9 +12,12 @@
 > - **Parts are actively disputed by the author.** Revision 3 settles precision — §17.6 makes it a
 >   uniform declared input — but *certified error bounds* remain unaddressed: §13 measures
 >   residuals and §14.1 falls back to shadowing, and neither produces a number you could rely on.
-> - **§16 lists seven open problems**, including whether the coupled field-plus-mesh system is
->   well-posed at all. §15 marks its own steps 11–13 as research-grade.
+> - **§16 lists ten open problems**, including whether the coupled field-plus-mesh system is
+>   well-posed at all. §15 marks its own steps 11–13 and step 14(c) as research-grade.
 > - **It straddles two Cartan nodes** (§11.4) and the dispatch differs between them.
+> - **§18 is the most speculative section.** New in Revision 5, it recasts the tower of effective
+>   descriptions as a filtration of tracked observables over the diamond complex, and its formal
+>   grounding (§18.6) is operator-algebraic — ahead of §0's classical scope by design.
 >
 > It is snapshotted per release alongside the normative specifications, so
 > `specs/<release>/curved-spacetime.md` (`simulation.md` in earlier releases) records what the
@@ -25,7 +28,7 @@
 
 **Observer-adapted, variationally consistent field evolution with a smooth dynamical resolution field, over a declared Klein pair with per-diamond reduction.**
 
-*Revision 4. Changes from Revision 1 are summarised in Appendix A; from Revision 2 in Appendix B; from Revision 3 in Appendix C.*
+*Revision 5. Changes from Revision 1 are summarised in Appendix A; from Revision 2 in Appendix B; from Revision 3 in Appendix C; from Revision 4 in Appendix D.*
 
 ---
 
@@ -51,7 +54,9 @@ Most referenced literature uses other conventions and this is flagged where it m
 
 **Interactive operation** — a human moving an observer and editing the state while the simulation runs — is in scope, and is governed by §17. It is not merely a presentation concern: by §6.2 the observer enters the action, so the manner in which it is controlled decides whether the system remains a gauge theory of $\mathfrak g$ or silently becomes a modified one.
 
-**Out of scope.** Quantum fields, dissipative closures beyond the GENERIC reservoir of §10, and any claim of trajectory fidelity over chaotic timescales (§14).
+**Out of scope.** Quantum fields, dissipative closures beyond the GENERIC reservoirs of §10 and §18.5, and any claim of trajectory fidelity over chaotic timescales (§14).
+
+§18 is stated for an observable algebra, so it holds verbatim for the commutative algebra of the classical fields in scope here. It is also the section through which quantum fields would enter, and its formal grounding (§18.6) is given for that case rather than retrofitted later.
 
 ---
 
@@ -61,7 +66,7 @@ Most referenced literature uses other conventions and this is flagged where it m
 
 If the step size, mesh motion, and refinement level are smooth functions on phase space, the evolution map remains a symplectomorphism and backward error analysis applies. If any of them depends on a step counter, an error estimator, or a discontinuous level index, the shadow Hamiltonian ceases to exist and energy drifts secularly. This is the content of the Calvo–Sanz-Serna obstruction, and it is the single constraint from which the rest of the design follows.
 
-The corresponding constructive move, used four times:
+The corresponding constructive move, used five times:
 
 | Knob | Made dynamical by | Its equation of motion is |
 |---|---|---|
@@ -69,10 +74,13 @@ The corresponding constructive move, used four times:
 | Shift $N^i$ | varying node positions $x_i$ | momentum conservation |
 | Resolution | mesh map $\chi$ with inertia | equidistribution of the monitor |
 | Frame choice | section $\zeta$ of the reduction bundle, stepped geodesically | §5.3 |
+| Cutoff $\Lambda$ | the same mesh map: $\Lambda\sim\pi/\Delta x$, $\Delta x = J^{1/d}$ | RG flow of the Wilson coefficients, §18.3 |
 
 Ge–Marsden bounds what is achievable: a symplectic, exactly energy-conserving, adaptive integrator on a system with no invariants independent of $H$ *is* the exact flow up to time reparametrisation. The escape is that the reparametrisation is gauge — it is the lapse. The target is therefore not exact energy but **exact structure with bounded energy**: symplectic form exact, momentum maps exact, topological charges exactly integer-valued, energy oscillating in a band of width $O(h^p)$ with zero secular drift.
 
 **Extension to the reduction.** The same criterion decides how $H$ may vary. A *continuous* choice within a conjugacy class — the section field of §5.3 — is a smooth function on phase space and is admissible. A *discrete* choice of conjugacy class is not a smooth function of anything, and §9.2 shows it must therefore be static. The design contains exactly two discrete fields, $m_K$ and the stratum label, and only the first is permitted to move.
+
+**Extension to the filtration.** The same criterion decides how the tracked observables of §18 may vary. A smearing scale slaved to $J$, and Wilson coefficients that are smooth functions of it, are admissible. So is a bound-state observable whose weight is a smooth function of diamond proper time (§18.4). Switching a tracked set on at a threshold is not, for the reason $m_K$ needs hysteresis and the stratum label must be static. §18 is built to add no third discrete field.
 
 ---
 
@@ -98,6 +106,7 @@ defaulted, and recorded:
 | Spacetime dimension $d+1$ | $3+1$ | §2.6, §3.1, §4.6 |
 | Matter content: fields with their $G$-representations | Dirac spinor in $\mathbf4$; scalar in $\mathbf1$ | §2.7, §7.1 |
 | Arithmetic precision and representation | 128-bit, fixed point | §17.6 |
+| Tracked-set data: smearing law, Wilson-coefficient tables, spectral gaps | $\Lambda = \pi/\Delta x$; $c_i(\Lambda)$ per tracked set; $\Delta E$ per bound state | §18 |
 
 **These are preconditions, not defaults.** §10.3's excision argument is invalid without censorship and the NEC; §5.4's hyperboloidal chart assumes asymptotic flatness; §12 fails outright in de Sitter, where $\mathcal I^+$ is spacelike.
 
@@ -336,6 +345,8 @@ with $\tau$ computational time. All resolution adaptivity is motion of $\chi$ ($
 
 The mesh velocity $v = \partial_\tau\chi$ **is** the shift $N^i$. Spatial gauge and mesh motion are the same object.
 
+Point 1 is the classical shadow of a stronger statement made in §18: the observable algebra never changes at all, and what varies from diamond to diamond is only which subalgebra the scheme tracks. Restricting the tracked set *is* a projection with memory, which is why §18.5 routes it through a reservoir rather than presenting it as canonical.
+
 ### 3.3 The decorated diamond complex
 
 The computational atom is a causal diamond $D = J^+(p)\cap J^-(q)$. Each carries a stratum label $H_D$, so the complex is a functor from the diamond poset to the classification poset: objects to nodes, faces to arrows.
@@ -423,6 +434,8 @@ Structurally the observer term sits at the *parabolic* node $(\mathfrak{so}(3,1)
   $$E_{ij} = R^{(3)}_{ij} + K K_{ij} - K_{ik}K^k{}_j - (\text{matter terms}),$$
   so only spatial derivatives enter and the mesh equations remain second order — no Ostrogradsky mode. Its eigenframe supplies anisotropy axes; cells elongate along tidal directions automatically.
 - **Ricci** is algebraically $T_{\mu\nu}$ and is the relativistic completion of the Jeans floor, not a substitute for it.
+
+**These floors are validity conditions for an effective description, not only for a mesh.** §18.4 reads them a second time, as the matter-side criteria that weight which observables a diamond tracks.
 
 ### 4.5 Budget control
 
@@ -772,6 +785,8 @@ Collapse is unbounded (§4.6). Fixed node count cannot follow it.
 
 **Monotone refinement is free.** With nested spaces $Q_j\subset Q_{j+1} = Q_j\oplus W_j$ (hierarchical FEM, wavelets), initialising new modes at $(q_W,p_W) = (0,0)$ is an exact symplectic embedding: exactly canonical, exactly energy-preserving. If you only ever add and never remove, structure is preserved exactly. The state grows; nothing is lost.
 
+**…but $(0,0)$ is the right lift only for modes in their ground state.** Where the new modes are excited — a hot region handed to a finer description — the lift must be a state conditioned on the coarse data, with the energy the new modes carry drawn from the cell's reservoir so that total energy stays exact (§18.5).
+
 **Coarsening is not free.** Deleting a mode removes nonzero energy; the reduced dynamics is Markovian term + memory kernel + noise (Mori–Zwanzig), and coarse-graining a Hamiltonian system is provably non-Hamiltonian.
 
 **Sinks.** Where the interior need not be resolved, replace it with a low-dimensional effective object carrying mass, momentum, spin, and an entropy variable, in GENERIC form:
@@ -779,6 +794,8 @@ Collapse is unbounded (§4.6). Fixed node count cannot follow it.
 $$\dot u = L\,\frac{\delta E}{\delta u} + M\,\frac{\delta S}{\delta u},\qquad L\,\frac{\delta S}{\delta u} = 0,\quad M\,\frac{\delta E}{\delta u} = 0 .$$
 
 The degeneracy conditions give exactly conserved total energy and monotone entropy production. Discarded energy is *accounted*, not leaked, and $\dot S\ge0$ is a first-class diagnostic. Trigger on Jeans violation, boundedness, and convergence — well before horizon scale.
+
+§18.5 generalises the sink: every cell whose tracked set has been restricted carries this reservoir, not only cells whose interior has been replaced by an effective object.
 
 ### 10.3 Excision
 
@@ -874,7 +891,7 @@ Every choice made for geometric reasons is also the parallel-friendly one. Not c
 
 *Numerics note.* A "halo exchange" is the refresh of each process's copy of its neighbours' boundary cells.
 
-**Diamond tiling.** Compute a spacetime tile whose spatial footprint shrinks each substep — the numerical domain of dependence — so $k$ steps cost one exchange of depth $k$. The tile is a causal diamond $J^+(p)\cap J^-(q)$; communication drops by $k$ at the cost of redundant work in the overlap. Multisymplecticity is per-cell and survives arbitrary tiling exactly. The tiles are the natural conservation cells of §13, **and the carriers of the stratum label of §9** — one object, three roles.
+**Diamond tiling.** Compute a spacetime tile whose spatial footprint shrinks each substep — the numerical domain of dependence — so $k$ steps cost one exchange of depth $k$. The tile is a causal diamond $J^+(p)\cap J^-(q)$; communication drops by $k$ at the cost of redundant work in the overlap. Multisymplecticity is per-cell and survives arbitrary tiling exactly. The tiles are the natural conservation cells of §13, **and the carriers of the stratum label of §9** — one object, three roles. The overlap is also where §18.6's collar goes: the margin around a tile that a level's coarse-graining maps are allowed to use.
 
 **Synchronisation.** Conservative scheduling (advance only when no earlier message can arrive) requires nonzero *lookahead* to avoid deadlock, and the stability condition supplies exactly that: a neighbour cannot influence a cell for at least $\Delta x/c$. Finite light speed gives free lookahead, making conservative scheduling unusually well-suited. Optimistic scheduling (advance speculatively, roll back) is also cheap, because a palindromic symplectic integrator satisfies $\Phi_h^{-1} = \Phi_{-h}$ and can *reverse-compute* instead of storing checkpoints — the same reversibility used in §11.4.
 
@@ -925,13 +942,16 @@ In SI with $x^0 = ct$: energy flux $S^i = c\,T^{0i}$ and momentum density $g^i =
 | $\lambda(\tau)$ history | budget pressure | report with results |
 | $m^\star/m$ | polaron drag | lower $\mu$; renormalise |
 | $Q$ (integer) | topological charge | degenerate-triangle check |
-| **classifier tuple + $(a,b)$ + $\ell_0$ + $d$ + matter content + precision/representation** | run identity | record in every log header (§17.6, §2.6, §2.7) |
+| **classifier tuple + $(a,b)$ + $\ell_0$ + $d$ + matter content + precision/representation + tracked-set data** | run identity | record in every log header (§17.6, §2.6, §2.7, §18) |
 | **operator interventions** | non-autonomous forcing | reset conservation baselines at each; §13.1 will otherwise read a gesture as a failure |
 | wave amplitude vs constraint residual | physical radiation or junk | §17.4 — gate on this before trusting rate dependence |
+| RG-commutativity residual | truncation error of a tracked set (§18.7) | **alarm only** — never a switching criterion (§1) |
+| patch test across tracked-set interfaces | ghost forces (§18.7) | fix the interface coupling; do not damp the symptom |
+| $\dot S\ge0$ per restricted cell | per-cell reservoir honesty (§18.5) | the restriction is leaking energy |
 
 The confluence test deserves emphasis: running two schedules and comparing is simultaneously a race-condition check and a measurement of the constraint-algebra anomaly. It is the cheapest high-value diagnostic in the set, and it is the gate on enabling §9.
 
-The last row is not decoration. Reproducing a result requires knowing which node the run was on; "Lorentzian, reductive, $\dim\mathfrak h = 3$, $d_{\rm contr}$" plus $(a,b,\ell_0)$ is seven numbers.
+The run-identity row is not decoration. Reproducing a result requires knowing which node the run was on; "Lorentzian, reductive, $\dim\mathfrak h = 3$, $d_{\rm contr}$" plus $(a,b,\ell_0)$ is seven numbers.
 
 ### 13.4 Cocycle closure
 
@@ -959,6 +979,8 @@ What reaches an observer at time $T$ left radius $cT$ at $t = 0$. Just-in-time r
 
 Coarse-graining is lossy by construction: Mori–Zwanzig memory is nonlocal in time and generically not representable by any finite local state. A simulation with fewer degrees of freedom than its target cannot be exact, at any step size, with any integrator. $r$-adaptivity moves resolution; it does not create it.
 
+§18 is the systematic form of this paragraph. A coarse description is a compression of the dynamics onto a tracked subalgebra; it is Markovian only under scale separation, and §18.7's residual measures how far from Markovian it is.
+
 ### 14.4 Residual discreteness
 
 One *moving* discontinuity survives the design: $m_K\in\mathbb Z$. It is mild (canonical change of scheme, no lost degrees of freedom, no memory kernel) but real, and hysteresis is mandatory, not advisory. The stratum label of §9 is also discrete but static by §9.2 and therefore contributes nothing here.
@@ -985,8 +1007,9 @@ Signature gives a **necessary** condition for a well-posed IVP, never a sufficie
 11. **Excision.** MOTS finder, horizon-adapted slicing locally, moving punctures. $\ell_{\max}$ monitoring.
 12. **Fixed-point arithmetic** if determinism or exact rollback is needed.
 13. **Dynamical gravity last**, with the fiducial split, $(a,b)$ declared, and only after the mesh sector's characteristic analysis is done. Use the §7.1 first-order primitives so this is the same code path as §7.3.
+14. **Observable filtration (§18), in three stages.** (a) Hamiltonian Wilson coefficients slaved to $J$ — dispersion-matched coarse operators; may follow step 4. (b) Dissipative coefficients with per-cell reservoirs — needs step 10. (c) Gap-weighted bound-state observables and conditioned lifts. Run §18.7's residual and patch test before trusting any stage.
 
-Steps 1–8 are rigorous and use deployed techniques. Step 9 is Cauchy–characteristic matching in new clothing — deployed, but its interface is the hard part. Step 10's closure is thermodynamically sound but problem-specific. Steps 11–13 in combination are research-grade.
+Steps 1–8 are rigorous and use deployed techniques. Step 9 is Cauchy–characteristic matching in new clothing — deployed, but its interface is the hard part. Step 10's closure is thermodynamically sound but problem-specific. Steps 11–13 in combination are research-grade. Step 14(a) is deployed technique; 14(b) rests on GENERIC integrators, deployed but young; 14(c) is research-grade.
 
 ---
 
@@ -999,6 +1022,9 @@ Steps 1–8 are rigorous and use deployed techniques. Step 9 is Cauchy–charact
 5. **Sink closure.** The memory kernel is problem-specific; this is where physics judgement, not formalism, determines quality.
 6. **Anomaly classification.** Whether a given monitor-driven lapse keeps the discrete algebroid residual soft is currently empirical.
 7. **Multi-stratum interfaces.** §9.3 covers a single interface. Triple junctions, and whether the cocycle condition of §13.4 is sufficient there, are untested.
+8. **Closure without scale separation.** Restriction to a tracked subalgebra is Markovian only when the dropped observables are fast compared with the tracked ones (§18.5). Where they are not — the effective theory of large-scale structure is the standard example, its counterterms non-local in time — no finite local state reproduces the compressed dynamics (§14.3). Which memory approximations preserve the GENERIC degeneracy conditions is open.
+9. **Collars for the theory actually evolved.** §18.6 needs coarse-graining maps with collars, which the split property supplies, and split is established for free massive fields and a range of $1+1$ interacting models. For the coupled gravitational system it is unknown — and even the classical phase space of a gauge theory fails to factorise across a sharp cut (§18.6).
+10. **The lift.** §18.5's conditioned state — ground state, or local equilibrium — must be chosen from data in $J^-(D)$ to keep §12.1's functor. Whether a canonical, schedule-invariant choice exists away from equilibrium is open.
 
 ---
 
@@ -1180,7 +1206,130 @@ addition associative, so §12.4's bitwise determinism and exact rollback still r
 
 ---
 
-## 18. Key references
+## 18. Observable filtration
+
+New in Revision 5. Sections 3–10 adapt *resolution*: how finely a fixed set of fields is sampled. This section adapts *description*: which observables a diamond tracks at all. It is the form a tower of effective theories takes in this design, and it is stated so that nothing in it changes when the observable algebra stops being commutative.
+
+### 18.1 One algebra, many tracked subalgebras
+
+The temptation is to treat each rung of a tower — quarks, hadrons, nuclei, atoms, fluid elements — as a different theory with different fields, stitched together at interfaces where degrees of freedom are created and destroyed. **That picture is an artefact of describing theories by Lagrangians.** Described by their observables, there is one theory throughout:
+
+- **Bound states are already operators in the algebra.** Haag–Ruelle scattering theory builds the asymptotic field of a bound state from *any* quasi-local operator with a nonzero matrix element between the vacuum and that one-particle state, provided its mass shell is isolated in the energy–momentum spectrum. Relatively local fields generate the same net (the Borchers class), so a nucleus is not a new field: it is a different smearing of operators already present.
+- **Constituents need not be in it at all.** Quark and gluon fields are not gauge invariant, so they are not observables. In the scaling-algebra framework (Buchholz–Verch) colour charges appear as superselection sectors of the *scaling-limit* net and are absent at finite scales — Buchholz's criterion for confinement, and an exact statement of where the bottom rung of a hadronic tower lives.
+- **Fluids are states, not fields.** A fluid element is a local-equilibrium state probed by coarse observables (the local thermal observables of Buchholz–Ojima–Roos), not a new degree of freedom.
+
+So the rungs differ only in **which observables are tracked**:
+
+$$\boxed{\;\text{each diamond } D \text{ tracks a subalgebra } \mathfrak T_D\subseteq\mathfrak A(D);\ \text{the algebra } \mathfrak A \text{ itself never changes}\;}$$
+
+The scheme evolves expectation values $\omega(\alpha(A))$ for $A\in\mathfrak T_D$ only, and must close those equations on $\mathfrak T_D$. That is the moment-closure problem — the BBGKY and Kadanoff–Baym hierarchies are its textbook cases — and every hard question in this section is a question about it.
+
+**Scope.** For the classical fields of §0, $\mathfrak A(D)$ is commutative — functions on the phase space of $D$ — and everything below holds verbatim, with §18.4's $\hbar/\Delta E$ read as $1/\Delta\omega$. §18.6's grounding is operator-algebraic, which is where it has to be stated for quantum fields to enter later.
+
+### 18.2 The smearing scale is the mesh
+
+Generate $\mathfrak T_D$ by smeared operators
+
+$$B = \int f(x)\,\alpha_x(A)\,d^{d+1}x ,$$
+
+with the spread of $f$ bounded below by the local resolution. The cutoff is then a field,
+
+$$\Lambda(\xi)\sim\frac{\pi}{\Delta x(\xi)},\qquad \Delta x = J^{1/d},$$
+
+slaved to the mesh of §3.2 and exactly as smooth as it is. **Within one family of observables the tower is a continuum, not a ladder**, and the mesh map $\chi$ already moves along it. Nothing new becomes dynamical; what is new is that the Lagrangian of a coarse cell must know its own cutoff.
+
+### 18.3 Wilson coefficients slaved to $J$
+
+A cell resolved at $\Lambda$ evolves with the effective Lagrangian of its tracked set, $\mathcal L_\Lambda = \mathcal L + \sum_i c_i(\Lambda)\,\mathcal O_i$, the coefficients carried along by the exact renormalisation-group flow (Polchinski; Wetterich) as $\Lambda$ moves. $\Lambda$ is a smooth function of $J$, so every $c_i$ is too, and §1 is satisfied.
+
+The coefficients come in two kinds, and the distinction is structural:
+
+- **Hamiltonian** coefficients — dispersive, higher-derivative — keep the cell variational. Multisymplecticity and the momentum maps survive untouched.
+- **Dissipative** coefficients — effective viscosity, the effective stress of integrated-out modes — are not Hamiltonian at all. They need §18.5's reservoir, and where they are present the cell's guarantee is GENERIC rather than multisymplectic.
+
+*Worked figure.* A periodic harmonic chain — 512 sites of spacing $a$, mass $m$, spring $k$ — coarse-grained to 256 sites by $Q_j = (q_{2j}+q_{2j+1})/2$, $P_j = p_{2j}+p_{2j+1}$. Tree-level matching gives a nearest-neighbour spring $K = k/2$. One next-nearest-neighbour coefficient, $K_1 = 5k/8$ with $K_2 = -k/32$, matches the acoustic dispersion through $O(\kappa^4)$ and keeps $\omega^2\ge0$ for every $\kappa$. §18.7's residual — the relative $\ell^2$ error in $Q$ — at $t = 200\sqrt{m/k}$:
+
+| Initial data | energy in tracked observables | residual, tree level | residual, one coefficient |
+|---|---:|---:|---:|
+| long-wave pulse, width $24a$ | 99.9 % | $2.5\times10^{-3}$ | $8.7\times10^{-6}$ |
+| short-wave packet, $\kappa a = 2$ | 8.6 % | $\approx1.7$ | $\approx1.6$ |
+
+One coefficient buys a factor of about 280 where the scales separate, and nothing where they do not. The second row is a region that belongs to a finer tracked set: 91 % of its energy is in observables the coarse set dropped. Total momentum passes through the coarse-graining exactly, $\sum_j P_j = \sum_i p_i$, by construction.
+
+### 18.4 Gap-weighted bound-state observables
+
+A smearing scale alone does not produce bound states. Isolating one needs energy–momentum filtering — $\hat f$ supported near its mass shell and away from its nearest neighbour in the spectrum — and Fourier duality then fixes the minimum smearing time at the inverse gap. The result is a rule that is Lorentz-invariant and causal at once:
+
+$$\boxed{\;\text{a bound state with gap } \Delta E \text{ is a valid tracked observable on diamonds of proper time } \tau_D\gtrsim\hbar/\Delta E\;}$$
+
+with $\Delta E$ the gap to the nearest state carrying the same quantum numbers.
+
+| Bound state | gap $\Delta E$ | $\hbar/\Delta E$ | $c\hbar/\Delta E$ |
+|---|---:|---:|---:|
+| proton — gap to the $p\pi^0$ threshold, $m_{\pi^0}c^2$ | 135.0 MeV | $4.9\times10^{-24}$ s | 1.5 fm |
+| deuteron — binding energy | 2.224 MeV | $3.0\times10^{-22}$ s | 89 fm |
+| hydrogen — 1s–2s | 10.2 eV | $6.5\times10^{-17}$ s | 19 nm |
+| H$_2$ — vibration | 0.516 eV | $1.3\times10^{-15}$ s | 0.38 µm |
+| CO — rotation, $J = 0\to1$ | 0.477 meV | $1.4\times10^{-12}$ s | 0.41 mm |
+
+**The tower is ordered by spectral gaps, and diamond proper time is what climbs it.**
+
+Two rules keep this inside §1 and §12.1:
+
+- **Weight, never threshold.** A bound-state observable enters $\mathfrak T_D$ with weight $w(\tau_D\Delta E/\hbar)$, $w$ smooth and monotone. A threshold would be a moving discrete field, inheriting §8.4's chatter with nothing to anchor a hysteresis band.
+- **Select causally.** Which observables are offered, and the criteria that weight them, are functions of data in $J^-(D)$ only — §3.3's rule, for §3.3's reason. The §4.4 floors are those criteria on the matter side: Jeans, tidal and curvature scales decide when a description is valid, not only how finely to sample it.
+
+*Example — collisionless matter.* For dark matter the natural tracked observable is the one-body phase-space density, whose expectation is the distribution function $f$ on the mass shell. That mass shell is the observer space $\mathcal O^7$ of §4.1, where the monitor already lives, so Einstein–Vlasov needs no new geometry. The velocity moments of $f$ are the next coarser set. **Shell crossing is where that coarser set stops closing**: the pressureless fluid develops caustics in finite time (Zel'dovich), and the scheme must restore $f$ there — a closure failure in the sense of §18.1, not a numerical one.
+
+### 18.5 Restriction and lift
+
+Changing $\mathfrak T_D$ is the only event in this section that is not smooth by construction, and its two directions are not inverses. The transition graph is directed, as §9.3 already requires of any dynamic label.
+
+**Restriction** to a smaller tracked set is the compression $\mathbb E\circ\alpha_t\circ\iota$ onto it: lossy, non-Hamiltonian, with Mori–Zwanzig memory (§10.2, §14.3). The energy of the dropped observables is booked, not discarded, to a **per-cell GENERIC reservoir**. §10.2's sink is the special case in which a whole interior is restricted to a few charges; here every restricted cell carries an entropy variable, and $\dot S\ge0$ per cell joins §13.3. The compression is Markovian only when the dropped observables are fast compared with the tracked ones. Where they are not, the closure has memory — the counterterms of the effective theory of large-scale structure are non-local in time, because its short modes evolve on the Hubble time — and §16 problem 8 applies.
+
+**Lift** to a larger tracked set needs a state on the new observables, conditioned on the coarse data. Where the new modes are unexcited this is the ground state, and it recovers §10.2's $(q_W,p_W) = (0,0)$. Where they are excited — a hot region handed to a finer description — it is a local-equilibrium state at the cell's temperature, with the energy the new modes carry drawn from the cell's reservoir so that total energy stays exact. The honest claim after a lift is §14.1's, one level down: *exactly a* universe consistent with the coarse data.
+
+**Interfaces** between diamonds tracking different sets exchange what every level shares. All levels carry the gauged symmetry of §2, so the $\mathfrak g^*$-valued momentum maps are a common currency, and §7.1's flux uniqueness holds across a tracked-set interface, unchanged, for every conserved quantity. Anything else that crosses needs an explicit map, and §18.7's patch test gates it.
+
+### 18.6 Collars
+
+One would like restriction to be a state-preserving normal conditional expectation onto $\mathfrak T_D$. **Takesaki's theorem rules that out in general:** such an expectation onto a von Neumann subalgebra exists iff the subalgebra is globally invariant under the modular group of the reference state. The vacuum's modular group is geometric for wedges (Bisognano–Wichmann), and for double cones only in conformal theories (Hislop–Longo; Brunetti–Guido–Longo); for the local algebras of a massive theory it is not, and a coarse subalgebra has no reason to be invariant under it. Two exits remain: unital completely positive maps that preserve the reference state only approximately, or exactness paid for with a collar.
+
+**Split inclusions** supply the collar. An inclusion $\mathcal N\subset\mathcal M$ is *split* if a type I factor $\mathcal F$ sits between them (Doplicher–Longo); a net has the split property if $\mathfrak A(D_1)\subset\mathfrak A(D_2)$ is split whenever the closure of $D_1$ lies inside $D_2$. Then:
+
+- $\mathfrak A(D_1)\vee\mathfrak A(D_2)'\cong\mathfrak A(D_1)\mathbin{\bar\otimes}\mathfrak A(D_2)'$, implemented by a canonical unitary $W$, with $\mathcal F = W^*(\mathcal B(\mathcal H)\otimes1)W$. Inside and outside can be prepared independently once a collar separates them.
+- $\mathcal F$ is a type I factor, so $\mathfrak A(D_2)\cong\mathcal F\mathbin{\bar\otimes}(\mathcal F'\cap\mathfrak A(D_2))$, and slice maps give normal conditional expectations onto $\mathcal F$. Takesaki's obstruction is evaded; the price is that the image is the collar-sized $\mathcal F$, not $\mathfrak A(D_1)$.
+- Buchholz–Doplicher–Longo used exactly this to build **local Noether charges**: generators that implement a global symmetry on $\mathfrak A(D_1)$ and are localised in $\mathfrak A(D_2)$. They are the operator-algebraic form of §7.1's diamond-local fluxes and §13.1's residual, and they live in the collar.
+
+So a level with cutoff $\Lambda_n$ uses collars of width $\varepsilon_n\sim1/\Lambda_n$ — the precise form of "an effective theory is local only down to its cutoff" — and §12.3's tile overlap is where the collar goes.
+
+**Why the collar cannot close.** Double-cone algebras are type III$_1$; no type I factor fits between $\mathfrak A(D)$ and itself, and entanglement across a sharp cut is unbounded. *Worked figure:* a free scalar of mass $m$ in $1+1$, ground state on a ring of circumference $20\,\bar\lambda$ with $\bar\lambda = \hbar/mc$; $A$ an interval of length $\bar\lambda$, $B$ everything beyond a collar of width $\varepsilon$ on either side; $I(A{:}B)$ the mutual information.
+
+| Lattice spacing | $I(A{:}B)$, $\varepsilon = \bar\lambda/8$ | $I(A{:}B)$, $\varepsilon = \bar\lambda/4$ | no collar, $2S(A)$ |
+|---|---:|---:|---:|
+| $\bar\lambda/16$ | 0.4778 | 0.2651 | 1.8209 |
+| $\bar\lambda/32$ | 0.4793 | 0.2654 | 2.2813 |
+| $\bar\lambda/64$ | 0.4795 | 0.2654 | 2.7430 |
+| $\bar\lambda/128$ | 0.4796 | 0.2654 | 3.2049 |
+
+With a collar the mutual information converges to four digits. Without one it grows by $\tfrac23\ln2 = 0.462$ per halving of the spacing — the logarithmic law $S = \tfrac c3\ln(\ell/a)$ at $c = 1$ — and never converges. A lattice is always type I; the continuum statement is convergence under refinement.
+
+**The hypothesis is about the theory, not the scheme.** Split follows from the nuclearity condition of Buchholz–Wichmann — finiteness of local phase space — and from modular nuclearity (Buchholz–D'Antoni–Longo), and it is established for free massive fields and a range of $1+1$ interacting models. For gauge fields even the *classical* phase space fails to factorise across a sharp cut, through the Gauss constraint (edge modes; Donnelly–Freidel), so the collar is needed before any quantisation. Whether the coupled gravitational system of this document admits collar-compatible coarse-graining maps is §16 problem 9.
+
+### 18.7 Diagnostics
+
+- **RG-commutativity residual.** On test diamonds, compare *evolve, then restrict* with *restrict, then evolve the tracked set*. It is the analogue of §13.3's confluence test and measures the truncation error of $\mathfrak T_D$ directly; §18.3's worked figure is this residual.
+- **It is an alarm, never a switching criterion.** Driving restriction or lift from the residual would make $\mathfrak T_D$ depend on an error estimator, which is exactly what §1 forbids. Select on §18.4's smooth physical criteria, and let the residual say when they were wrong.
+- **Patch test at tracked-set interfaces.** A uniform state must stay stationary across the interface. Atomistic–continuum coupling learned this the hard way: naive quasicontinuum coupling produces spurious *ghost forces* at the interface, and the patch test is the standard check against them.
+- **Momentum maps across interfaces.** Exact by construction (§18.5); any residual is an interface bug, localised by §13.1.
+
+### 18.8 Where the filtration ends
+
+It has no top. The finest tracked set available is the theory being evolved — classical GR with matter here; at best GR and the Standard Model, as an effective theory below the Planck scale. A diamond whose §18.4 criteria demand a finer set than exists has no admissible description. That is §17.5's *structural* trespass, and its remedy is §17.5's: render it, do not fake it.
+
+---
+
+## 19. Key references
 
 **Cartan geometry and classification.** Sharpe, *Differential Geometry: Cartan's Generalization of Klein's Erlangen Program* (signature-free). Čap & Slovák, *Parabolic Geometries I* — normality, the Kostant codifferential $\partial^*$, Weyl structures as an affine space. Stelle & West, PRD 21, 1466 (1980) — the Goldstone section; mostly-plus. MacDowell & Mansouri, PRL 38, 739 (1977); mostly-plus. Gielen & Wise on observer space. Patera, Winternitz & Zassenhaus on subalgebra classification. Figueroa-O'Farrill & Prohazka on kinematical Lie algebras.
 
@@ -1197,6 +1346,12 @@ addition associative, so §12.4's bitwise determinism and exact rollback still r
 **Structure and thermodynamics.** Öttinger, *Beyond Equilibrium Thermodynamics* (GENERIC). Chorin, Hald & Kupferman on Mori–Zwanzig.
 
 **Parallel.** Frigo & Strumpen on cache-oblivious stencils (diamond tiling). Fujimoto on conservative and optimistic synchronisation.
+
+**Observable filtration (§18).** Haag, *Local Quantum Physics* — Haag–Ruelle scattering, the Borchers class, Bisognano–Wichmann. Buchholz & Verch, Rev. Math. Phys. 7 (1995) — scaling algebras. Buchholz, Nucl. Phys. B 469 (1996) — colour charges in the scaling limit. Buchholz, Ojima & Roos, Ann. Phys. 297 (2002) — local thermal observables. Takesaki, J. Funct. Anal. 9 (1972) — conditional expectations and modular invariance. Hislop & Longo, Commun. Math. Phys. 84 (1982) — geometric modular action on double cones for the free massless field; Brunetti, Guido & Longo, Commun. Math. Phys. 156 (1993) — for conformal nets in general. Doplicher & Longo, Invent. Math. 75 (1984) — standard and split inclusions. Buchholz & Wichmann, Commun. Math. Phys. 106 (1986) — nuclearity and causal independence. Buchholz, D'Antoni & Longo, Commun. Math. Phys. 129 (1990) — modular nuclearity. Buchholz, Doplicher & Longo, Ann. Phys. 170 (1986) — local Noether charges. Morinelli, Morsella, Stottmeister & Tanimoto, Commun. Math. Phys. (2021) — operator-algebraic renormalisation by wavelets. Donnelly & Freidel, JHEP 09 (2016) 102 — edge modes. Casini & Huerta, J. Phys. A 42 (2009) — entanglement in free fields, the method behind §18.6's worked figure.
+
+**Renormalisation and effective theories.** Polchinski, Nucl. Phys. B 231 (1984); Wetterich, Phys. Lett. B 301 (1993) — exact renormalisation-group flow. Baumann, Nicolis, Senatore & Zaldarriaga, JCAP (2012); Carrasco, Hertzberg & Senatore, JHEP (2012) — the effective theory of large-scale structure. Zel'dovich, Astron. Astrophys. 5 (1970) — caustics in pressureless collapse. Andréasson, *The Einstein–Vlasov System/Kinetic Theory* (Living Rev. Rel.).
+
+**GENERIC integration and multiscale coupling.** Öttinger, J. Non-Equilib. Thermodyn. 43 (2018) — GENERIC integrators. Shang & Öttinger, Proc. R. Soc. A 476 (2020) — reversible–irreversible splitting. Tadmor, Ortiz & Phillips, Phil. Mag. A 73 (1996) — the quasicontinuum method. Shenoy *et al.*, J. Mech. Phys. Solids 47 (1999) — ghost forces. Miller & Tadmor, Modelling Simul. Mater. Sci. Eng. 17 (2009) — benchmark of atomistic/continuum coupling methods. E & Engquist, Commun. Math. Sci. 1 (2003) — heterogeneous multiscale methods.
 
 ---
 
@@ -1284,3 +1439,29 @@ addition associative, so §12.4's bitwise determinism and exact rollback still r
 **Unchanged in substance.** §1 design principle, §2.2–§2.4, §3–§8, §9.2–§9.5, §10–§16, §17 interactive operation.
 
 **Not yet reconciled.** §15's implementation order does not mention exercising steps 1–8 at $2+1$ before $3+1$, which §2.6 recommends, nor does it place the dynamic scheduler — it belongs around step 7, where subcycling first needs per-cell clocks. §4 and §10 remain written for $3+1$ Lorentzian throughout — correctly, since they are simulator-side by §2.5, but the prose does not say so. §16 gains no entry, though two questions raised here have the same empirical character as the ones already listed: whether the Lorentzian and barrier-based schedulers share enough structure to be one implementation, and whether a monitor-derived lapse can be kept smooth enough in practice to satisfy §1 once it is exposed as an overridable method.
+
+---
+
+## Appendix D. Changes from Revision 4
+
+**Corrections.**
+
+| § | Revision 4 | Revision 5 |
+|---|---|---|
+| 13.3 | "The last row is not decoration", meaning the run-identity row, which stopped being last when Revision 3 appended two rows after it | "The run-identity row is not decoration" |
+| 10.2 | initialising new modes at $(q_W,p_W) = (0,0)$ presented as *the* lift | correct only for modes in their ground state; an excited region needs a state conditioned on the coarse data, with the energy drawn from the cell's reservoir (§18.5) |
+| 0 | quantum fields out of scope, with nothing saying where they would enter | still out of scope; §18 is stated for an observable algebra, holds verbatim in the classical commutative case, and is where quantum fields would enter |
+
+**Additions.**
+
+- §18 observable filtration: one algebra with a tracked subalgebra per diamond — bound states as operators already in the algebra, constituents absent from the observable net, fluids as states; the smearing scale slaved to the mesh; Wilson coefficients slaved to $J$, split into Hamiltonian and dissipative kinds, with a worked harmonic-chain figure; gap-weighted bound-state observables and the $\tau_D\gtrsim\hbar/\Delta E$ rule, tabulated from hadrons to molecular rotation; collisionless matter on $\mathcal O^7$, with shell crossing as a closure failure; restriction and lift as directed, with per-cell reservoirs and conditioned states; Takesaki's obstruction, split-inclusion collars, and local Noether charges as the operator-algebraic diamond fluxes, with a worked collar figure; the RG-commutativity residual and the interface patch test; where the filtration ends.
+- §1 a fifth knob — the cutoff, made dynamical by the same mesh map, with renormalisation-group flow as its equation of motion — and the extension of the design principle to tracked observables.
+- §2.1 tracked-set data as a declared input; §13.3 run identity extended to record it.
+- §3.2, §4.4, §10.2, §12.3 and §14.3 tied to §18.
+- §13.3 rows for the RG-commutativity residual, the interface patch test, and per-cell $\dot S\ge0$.
+- §15 step 14, staged by maturity; §16 problems 8–10.
+- §19 references for operator-algebraic coarse-graining, renormalisation, GENERIC integration and multiscale coupling. The key references, previously §18, are renumbered.
+
+**Unchanged in substance.** §2.2–§2.7, §3.1, §3.3–§3.5, §4.1–§4.3, §4.5–§4.6, §5–§9, §10.1, §10.3–§10.4, §11, §12.1–§12.2, §12.4, §13.1–§13.2, §13.4, §14.1–§14.2, §14.4–§14.5, §17.
+
+**Not yet reconciled.** §2.5 does not say how tracked-set data reaches the simulator. The Module System Specification's module-defined entrypoints (R51–R54) are the natural mechanism — the simulator publishing a matter-content interface in its `.entrypoint` subpackage, matter modules registering against it — but §2.7's gate check needs matter declarations before the simulator's `main` entrypoint passes or throws, so R54's ordering is the constraint to check first. §2.7's matter table does not yet carry spectral gaps, which §18.4 consumes. §0 keeps quantum fields out of scope while §18.6 grounds collars operator-algebraically: deliberate, but it makes §18.6 the one place where the document argues from a structure it does not yet evolve. Appendix C's unreconciled items — exercising steps 1–8 at $2+1$ first, and placing the dynamic scheduler — remain open, and step 14(a) inherits the first of them.
